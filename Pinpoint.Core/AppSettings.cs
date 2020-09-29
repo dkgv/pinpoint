@@ -1,12 +1,13 @@
 ﻿using System.Text.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Pinpoint.Core
 {
     public static class AppSettings
     {
-        private static readonly Dictionary<object, object> Container = new Dictionary<object, object>();
+        private static readonly List<Setting> Settings = new List<Setting>();
 
         public static T GetAs<T>(object key)
         {
@@ -21,17 +22,38 @@ namespace Pinpoint.Core
 
         public static object Get(object key)
         {
-            return Container.TryGetValue(key, out var value) ? value : null;
+            return Settings.FirstOrDefault(s => s.Key.Equals(key));
         }
 
         public static void Put(object key, object value)
         {
-            Container.Add(key, value);
+            var index = IndexOf(key);
+
+            if (index == -1)
+            {
+                Settings.Add(new Setting(key, value));
+            }
+            else
+            {
+                Settings[index] = new Setting(key, value);
+            }
+        }
+
+        public static int IndexOf(object key)
+        {
+            return Settings.FindIndex(s => s.Key.Equals(key));
         }
 
         public static void Save()
         {
-            var json = JsonSerializer.Serialize(Container);
+            if (!File.Exists(Constants.SettingsFilePath))
+            {
+                Directory.CreateDirectory(Constants.MainDirectory);
+
+                File.Create(Constants.SettingsFilePath).Close();
+            }
+
+            var json = JsonSerializer.Serialize(Settings);
             File.WriteAllText(Constants.SettingsFilePath, json);
         }
 
@@ -44,6 +66,19 @@ namespace Pinpoint.Core
             {
                 Put(key, value);
             }
+        }
+
+        private class Setting
+        {
+            public Setting(object key, object value)
+            {
+                Key = key;
+                Value = value;
+            }
+
+            public object Key { get; set; }
+
+            public object Value { get; set; }
         }
     }
 }
