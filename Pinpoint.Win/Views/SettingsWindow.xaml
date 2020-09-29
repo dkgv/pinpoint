@@ -7,53 +7,86 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:fa="http://schemas.fontawesome.io/icons/" 
         mc:Ignorable="d"
-        Title="Pinpoint Settings" Height="294" Width="504">
+        Title="Pinpoint Settings" Height="449" Width="469" WindowStartupLocation="CenterScreen">
     <Border Margin="5">
         <TabControl>
             <!-- General settings -->
             <TabItem Header="General">
                 <Border Margin="5">
-
-                </Border>
-            </TabItem>
-
-            <!-- Snippet file sources -->
-            <TabItem Header="Snippet Sources">
-                <Border Margin="5">
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
 
-                        <DataGrid Grid.Row="0" x:Name="GrdSnippetSources"></DataGrid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto" MinWidth="200"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
 
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                            <xctk:IconButton x:Name="BtnDeleteSource">
-                                <xctk:IconButton.Icon>
-                                    <fa:ImageAwesome Height="16" Icon="Trash"></fa:ImageAwesome>
-                                </xctk:IconButton.Icon>
-                            </xctk:IconButton>
+                        <Label Grid.Row="0" Grid.Column="1" HorizontalAlignment="Right">Startup:</Label>
+                        <CheckBox x:Name="ChbLaunchOnStartup" IsChecked="True" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">Launch Pinpoint at login</CheckBox>
 
-                            <xctk:IconButton x:Name="BtnAddSource">
-                                <xctk:IconButton.Icon>
-                                    <fa:ImageAwesome Height="16" Icon="Plus" Foreground="Green"></fa:ImageAwesome>
-                                </xctk:IconButton.Icon>
-                            </xctk:IconButton>
-                        </StackPanel>
+                        <Label Grid.Row="1" Grid.Column="1">Pinpoint Hotkey:</Label>
+                        <Grid Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
 
-                        <GroupBox Grid.Row="3" Header="Help">
-                            <Border Margin="5">
-                                <TextBlock TextWrapping="Wrap">
-                                    You can customize your snippet sources above, i.e. which files to search when a query is made. 
-                                    Individual files (e.g. X.java) and directories are accepted. It may take a short while for newly added entries to be indexed.
-                                    <LineBreak/>
-                                    Caution: selecting a directory will recursively select ALL its subdirectories.</TextBlock>
-                            </Border>
-                        </GroupBox>
+                            <TextBox Grid.Column="0" x:Name="TxtHotkey" GotFocus="TxtHotkey_GotFocus" IsReadOnly="True">CTRL + SPACE</TextBox>
+                            <Button x:Name="BtnChangeHotkey" Grid.Column="1">Change</Button>
+                        </Grid>
+
+                        <Label Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right">Search History:</Label>
+                        <CheckBox Grid.Row="2" Grid.Column="2" VerticalContentAlignment="Center" VerticalAlignment="Center">Save for search suggestions</CheckBox>
                     </Grid>
+                </Border>
+            </TabItem>
+
+            <!-- Snippet settings -->
+            <TabItem Header="Snippets">
+                <Border Margin="5">
+                    <StackPanel>
+                        <GroupBox Header="File Sources (Optional)">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                </Grid.RowDefinitions>
+
+                                <ListBox Grid.Row="0" x:Name="LstFileSources" KeyDown="LstFileSources_KeyDown" MinHeight="100" ItemsSource="{Binding FileSources}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Content="{Binding Identifier}"></Label>
+                                                <Label Content="{Binding Location}"></Label>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+
+                                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <xctk:IconButton x:Name="BtnDeleteSource" Click="BtnDeleteSource_Click">
+                                        <xctk:IconButton.Icon>
+                                            <fa:ImageAwesome Height="16" Icon="Trash"></fa:ImageAwesome>
+                                        </xctk:IconButton.Icon>
+                                    </xctk:IconButton>
+
+                                    <xctk:IconButton x:Name="BtnAddSource" Click="BtnAddSource_Click">
+                                        <xctk:IconButton.Icon>
+                                            <fa:ImageAwesome Height="16" Icon="Plus"></fa:ImageAwesome>
+                                        </xctk:IconButton.Icon>
+                                    </xctk:IconButton>
+                                </StackPanel>
+                            </Grid>
+                        </GroupBox>
+                    </StackPanel>
                 </Border>
             </TabItem>
         </TabControl>

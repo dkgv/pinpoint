@@ -18,10 +18,9 @@
             return !Prefix().Equals("!") ? string.Empty : Parts[0];
         }
 
-        public bool HasBang()
-        {
-            return !string.IsNullOrEmpty(Bang());
-        }
+        public bool HasBang => !string.IsNullOrEmpty(Bang());
+
+        public bool IsEmpty => RawQuery.Length == 0;
 
         public string RawQuery { get; set; }
 

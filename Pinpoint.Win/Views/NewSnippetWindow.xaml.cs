@@ -12,7 +12,7 @@ namespace Pinpoint.Win.Views
         public NewSnippetWindow(Bitmap screenshot)
         {
             InitializeComponent();
-            ImgScreenshot.Source = screenshot.ToImageSource();
+
         }
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)

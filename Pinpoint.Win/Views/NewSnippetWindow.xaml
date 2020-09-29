@@ -5,34 +5,40 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pinpoint.Win.Views"
         mc:Ignorable="d"
-        Title="New Snippet" Height="304" Width="324" Topmost="True" WindowStartupLocation="CenterOwner">
+        Title="New Snippet" Height="304" Width="324" Topmost="True" WindowStartupLocation="CenterOwner" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight">
     <Border Margin="5">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <GroupBox Grid.Row="0">
-                <GroupBox.Header>
-                    Screenshots
-                </GroupBox.Header>
-
-                <ScrollViewer HorizontalScrollBarVisibility="Auto">
-                    <Image x:Name="ImgScreenshot"></Image>
-                </ScrollViewer>
+            <GroupBox Grid.Row="0" Header="Title">
+                <TextBox x:Name="TxtTitle"></TextBox>
             </GroupBox>
 
-            <GroupBox Grid.Row="1">
-                <GroupBox.Header>
-                    Content
-                </GroupBox.Header>
-                
-                <TextBox x:Name="TxtContent" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" />
+            <GroupBox Grid.Row="1" Header="Content">
+                <ListBox x:Name="LstBitmapPairs" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                </Grid.RowDefinitions>
+
+                                <Image Grid.Row="0" x:Name="ImgScreenshot"></Image>
+                                <TextBox Grid.Row="1" x:Name="TxtContent" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </GroupBox>
 
-            <Button x:Name="BtnSave" Grid.Row="2" Click="BtnSave_Click">Save</Button>
+            <Button x:Name="BtnSave" Grid.Row="3" Click="BtnSave_Click">Save</Button>
         </Grid>
     </Border>
 </Window>

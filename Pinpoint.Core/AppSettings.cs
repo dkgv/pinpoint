@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -9,23 +10,30 @@ namespace Pinpoint.Core
     {
         private static readonly List<Setting> Settings = new List<Setting>();
 
-        public static T GetAs<T>(object key)
+        public static T GetAs<T>(string key)
         {
-            var item = Get(key);
-            return item == null ? default : (T)item;
+            return !(Get(key) is Setting item) ? default : (T) item.Value;
         }
 
-        public static string GetStr(object key)
+        public static List<T> GetListAs<T>(string key)
+        {
+            var json = GetAs<JsonElement>(key);
+            return json.EnumerateArray()
+                .Select(element => JsonSerializer.Deserialize<T>(element.ToString()))
+                .ToList();
+        }
+
+        public static string GetStr(string key)
         {
             return GetAs<string>(key);
         }
 
-        public static object Get(object key)
+        public static object Get(string key)
         {
             return Settings.FirstOrDefault(s => s.Key.Equals(key));
         }
 
-        public static void Put(object key, object value)
+        public static void Put(string key, object value)
         {
             var index = IndexOf(key);
 
@@ -39,8 +47,20 @@ namespace Pinpoint.Core
             }
         }
 
-        public static int IndexOf(object key)
+        public static void PutAndSave(string key, object value)
         {
+            Put(key, value);
+            Save();
+        }
+
+        public static bool Contains(string key)
+        {
+            return IndexOf(key) >= 0;
+        }
+
+        public static int IndexOf(string key)
+        {
+            Settings.ForEach(s => Debug.WriteLine("k="+s.Key + " vs " + key));
             return Settings.FindIndex(s => s.Key.Equals(key));
         }
 
@@ -57,26 +77,38 @@ namespace Pinpoint.Core
             File.WriteAllText(Constants.SettingsFilePath, json);
         }
 
-        public static void Load()
+        public static bool Load()
         {
-            var json = File.ReadAllText(Constants.SettingsFilePath);
-            var container = JsonSerializer.Deserialize<Dictionary<object, object>>(json);
-
-            foreach (var (key, value) in container)
+            if (!File.Exists(Constants.SettingsFilePath))
             {
-                Put(key, value);
+                return false;
             }
+
+            var json = File.ReadAllText(Constants.SettingsFilePath);
+            var container = JsonSerializer.Deserialize<List<Setting>>(json);
+
+            foreach (var setting in container)
+            {
+                Put(setting.Key, setting.Value);
+            }
+
+            
+            return true;
         }
 
         private class Setting
         {
-            public Setting(object key, object value)
+            public Setting()
+            {
+            }
+
+            public Setting(string key, object value)
             {
                 Key = key;
                 Value = value;
             }
 
-            public object Key { get; set; }
+            public string Key { get; set; }
 
             public object Value { get; set; }
         }

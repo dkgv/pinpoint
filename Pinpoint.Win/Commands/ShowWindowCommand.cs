@@ -1,8 +1,4 @@
-﻿using System.Linq;
-using System.Windows;
-using System.Windows.Input;
-using Hardcodet.Wpf.TaskbarNotification;
-using Xceed.Wpf.AvalonDock.Controls;
+﻿using System.Windows.Input;
 
 namespace Pinpoint.Win.Commands
 {
@@ -10,15 +6,7 @@ namespace Pinpoint.Win.Commands
     {
         public override void Execute(object parameter)
         {
-            var window = GetTaskbarWindow(parameter);
-
-            var icon = window.FindVisualChildren<TaskbarIcon>().First();
-            var position = icon.GetPopupTrayPosition();
-
-            window.Left = position.X - window.Width;
-            window.Top = SystemParameters.WorkArea.Height - window.Height;
-            window.Show();
-
+            GetTaskbarWindow(parameter).Show();
             CommandManager.InvalidateRequerySuggested();
         }
 
