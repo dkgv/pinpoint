@@ -1,0 +1,92 @@
+﻿<Window x:Class="Pinpoint.Win.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+        xmlns:fa="http://schemas.fontawesome.io/icons/" 
+        xmlns:commands="clr-namespace:Pinpoint.Win.Commands"
+        MinHeight="350" MinWidth="300" 
+        WindowStyle="None"
+        WindowStartupLocation="Manual"
+        ResizeMode="NoResize" 
+        ShowInTaskbar="False" 
+        SizeToContent="WidthAndHeight" Topmost="True" Loaded="Window_Loaded" Background="#FF191919">
+    <Grid>
+        <!-- Tray icon -->
+        <tb:TaskbarIcon x:Name="NotifyIcon"
+                        IconSource="/Icons/Error.ico"
+                        ToolTipText="Pinpoint"
+                        TrayContextMenuOpen="NotifyIcon_TrayContextMenuOpen"
+                        PreviewTrayContextMenuOpen="NotifyIcon_PreviewTrayContextMenuOpen">
+
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <TextBlock Text="Hiding the sample window will not close it!" />
+                    <MenuItem Header="_Show Sample Window [S]"
+                              Command="{commands:ShowWindowCommand}"
+                              CommandParameter="{Binding}" Click="MenuItem_Click">
+                        <MenuItem.Icon>
+                            <Image Width="16"
+                                   Height="16"
+                                   Source="/Images/Add.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+
+                    <Separator />
+
+                    <MenuItem Header="_Hide Sample Window [H]"
+                              Command="{commands:HideWindowCommand}"
+                              CommandParameter="{Binding}">
+                        <MenuItem.Icon>
+                            <Image Width="16"
+                                   Height="16"
+                                   Source="/Images/Remove.png" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+
+        <!-- Main content -->
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Border Grid.Row="0" Grid.Column="0" Background="#FF2D2D2D">
+                <Border Margin="5">
+                    <xctk:WatermarkTextBox x:Name="TxtQuery" Watermark="Execute something..." BorderThickness="0" KeepWatermarkOnGotFocus="True" FontSize="18" BorderBrush="{x:Null}" SelectionTextBrush="#FFD8D8D8" Foreground="#FFD8D8D8" Background="{x:Null}" CaretBrush="#FFD8D8D8" KeyUp="TxtQuery_KeyUp"/>
+                </Border>
+            </Border>
+
+            <!-- Results -->
+
+
+            <!-- Footer (status bar) -->
+            <Border Grid.Row="2" Background="#FF2D2D2D">
+                <Border Margin="5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Image x:Name="ImgStatus" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,0,15,0"></Image>
+                        <Label x:Name="LblStatus" Grid.Column="1" Foreground="#FFD8D8D8" Grid.ColumnSpan="3" Margin="0,0,170,0">-</Label>
+
+                        <xctk:IconButton x:Name="BtnSettings" Cursor="Hand" Grid.Column="3" HorizontalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" MouseOverBackground="{x:Null}" MouseOverBorderBrush="{x:Null}" MousePressedBorderBrush="{x:Null}" MousePressedBackground="{x:Null}" Click="BtnSettings_Click" MouseEnter="BtnSettings_MouseEnter" MouseLeave="BtnSettings_MouseLeave">
+                            <xctk:IconButton.Icon>
+                                <fa:ImageAwesome Height="20" Icon="Cogs" Foreground="#FF575757"></fa:ImageAwesome>
+                            </xctk:IconButton.Icon>
+                        </xctk:IconButton>
+                    </Grid>
+                </Border>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

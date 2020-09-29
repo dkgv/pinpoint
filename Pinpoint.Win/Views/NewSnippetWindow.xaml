@@ -1,0 +1,38 @@
+﻿<Window x:Class="Pinpoint.Win.Views.NewSnippetWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Pinpoint.Win.Views"
+        mc:Ignorable="d"
+        Title="New Snippet" Height="304" Width="324" Topmost="True" WindowStartupLocation="CenterOwner">
+    <Border Margin="5">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <GroupBox Grid.Row="0">
+                <GroupBox.Header>
+                    Screenshots
+                </GroupBox.Header>
+
+                <ScrollViewer HorizontalScrollBarVisibility="Auto">
+                    <Image x:Name="ImgScreenshot"></Image>
+                </ScrollViewer>
+            </GroupBox>
+
+            <GroupBox Grid.Row="1">
+                <GroupBox.Header>
+                    Content
+                </GroupBox.Header>
+                
+                <TextBox x:Name="TxtContent" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" />
+            </GroupBox>
+
+            <Button x:Name="BtnSave" Grid.Row="2" Click="BtnSave_Click">Save</Button>
+        </Grid>
+    </Border>
+</Window>
