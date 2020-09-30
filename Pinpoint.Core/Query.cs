@@ -22,8 +22,8 @@
 
         public bool IsEmpty => RawQuery.Length == 0;
 
-        public string RawQuery { get; set; }
+        public string RawQuery { get; }
 
-        public string[] Parts { get; set; }
+        public string[] Parts { get; }
     }
 }

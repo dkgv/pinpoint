@@ -33,8 +33,9 @@ namespace Pinpoint.Win.Views
 
         protected override void OnClosing(CancelEventArgs e)
         {
+            e.Cancel = true;
             AppSettings.Save();
-            base.OnClosing(e);
+            Hide();
         }
 
         private void TxtHotkey_GotFocus(object sender, RoutedEventArgs e)

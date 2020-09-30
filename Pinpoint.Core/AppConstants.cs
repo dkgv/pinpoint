@@ -3,7 +3,7 @@ using System.IO;
 
 namespace Pinpoint.Core
 {
-    public static class Constants
+    public static class AppConstants
     {
         private static readonly string UserHome = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 

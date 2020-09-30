@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -60,39 +59,40 @@ namespace Pinpoint.Core
 
         public static int IndexOf(string key)
         {
-            Settings.ForEach(s => Debug.WriteLine("k="+s.Key + " vs " + key));
             return Settings.FindIndex(s => s.Key.Equals(key));
         }
 
         public static void Save()
         {
-            if (!File.Exists(Constants.SettingsFilePath))
+            if (!File.Exists(AppConstants.SettingsFilePath))
             {
-                Directory.CreateDirectory(Constants.MainDirectory);
-
-                File.Create(Constants.SettingsFilePath).Close();
+                Directory.CreateDirectory(AppConstants.MainDirectory);
+                File.Create(AppConstants.SettingsFilePath).Close();
             }
 
             var json = JsonSerializer.Serialize(Settings);
-            File.WriteAllText(Constants.SettingsFilePath, json);
+            File.WriteAllText(AppConstants.SettingsFilePath, json);
         }
 
         public static bool Load()
         {
-            if (!File.Exists(Constants.SettingsFilePath))
+            if (!File.Exists(AppConstants.SettingsFilePath))
             {
                 return false;
             }
 
-            var json = File.ReadAllText(Constants.SettingsFilePath);
-            var container = JsonSerializer.Deserialize<List<Setting>>(json);
+            var json = File.ReadAllText(AppConstants.SettingsFilePath);
+            if (string.IsNullOrEmpty(json))
+            {
+                return false;
+            }
 
+            var container = JsonSerializer.Deserialize<List<Setting>>(json);
             foreach (var setting in container)
             {
                 Put(setting.Key, setting.Value);
             }
 
-            
             return true;
         }
 

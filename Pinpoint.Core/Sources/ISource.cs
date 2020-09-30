@@ -7,7 +7,8 @@ namespace Pinpoint.Core.Sources
     {
         public async Task<bool> Applicable(Query query)
         {
-            return Identifier.Contains(query.RawQuery) || RawContent.Contains(query.RawQuery);
+            var lowerQuery = query.RawQuery.ToLower();
+            return Identifier.ToLower().Contains(lowerQuery) || RawContent.ToLower().Contains(lowerQuery);
         }
 
         [JsonIgnore]

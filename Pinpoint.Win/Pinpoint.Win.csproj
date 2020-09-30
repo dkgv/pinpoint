@@ -10,27 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Icons\Bulb.ico" />
-    <None Remove="Icons\Computers.ico" />
     <None Remove="Icons\Error.ico" />
-    <None Remove="Icons\Inactive.ico" />
-    <None Remove="Icons\NetDrives.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Icons\Bulb.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Computers.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
     <Resource Include="Icons\Error.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\Inactive.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Icons\NetDrives.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
@@ -39,10 +23,19 @@
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.0.1" />
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.0.8" />
+    <PackageReference Include="NHotkey.Wpf" Version="2.1.0" />
+    <PackageReference Include="Pranas.ScreenshotCapture" Version="1.0.11" />
+    <PackageReference Include="Tesseract" Version="4.1.0-beta1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Pinpoint.Core\Pinpoint.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="tessdata\eng.traineddata">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

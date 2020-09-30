@@ -3,8 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
-        xmlns:fa="http://schemas.fontawesome.io/icons/" 
-        xmlns:commands="clr-namespace:Pinpoint.Win.Commands"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         MinWidth="550" 
         WindowStyle="None"
         ResizeMode="NoResize" 
@@ -23,28 +22,27 @@
 
                 <tb:TaskbarIcon.ContextMenu>
                     <ContextMenu>
-                        <TextBlock Text="Hiding the sample window will not close it!" />
-                        <MenuItem Header="_Show Sample Window [S]"
-                                  Command="{commands:ShowWindowCommand}"
-                                  CommandParameter="{Binding}" Click="MenuItem_Click">
+                        <MenuItem x:Name="ItmNewSimpleSnippet" Header="_New Simple Snippet" Click="ItmNewSimpleSnippet_OnClick">
                             <MenuItem.Icon>
-                                <Image Width="16"
-                                       Height="16"
-                                       Source="/Images/Add.png" />
+                                <fa:ImageAwesome Icon="Plus"></fa:ImageAwesome>
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <MenuItem x:Name="ItmNewCustomSnippet" Header="_New Custom Snippet" Click="ItmNewCustomSnippet_OnClick">
+                            <MenuItem.Icon>
+                                <fa:ImageAwesome Icon="Camera"></fa:ImageAwesome>
+                            </MenuItem.Icon>
+                        </MenuItem>
+
+                        <MenuItem x:Name="ItmSettings" Header="_Settings" Click="ItmSettings_Click">
+                            <MenuItem.Icon>
+                                <fa:ImageAwesome Icon="Cogs"></fa:ImageAwesome>
                             </MenuItem.Icon>
                         </MenuItem>
 
                         <Separator />
 
-                        <MenuItem Header="_Hide Sample Window [H]"
-                                  Command="{commands:HideWindowCommand}"
-                                  CommandParameter="{Binding}">
-                            <MenuItem.Icon>
-                                <Image Width="16"
-                                       Height="16"
-                                       Source="/Images/Remove.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
+                        <MenuItem x:Name="ItmExit" Header="_Exit" Click="ItmExit_Click"></MenuItem>
                     </ContextMenu>
                 </tb:TaskbarIcon.ContextMenu>
             </tb:TaskbarIcon>

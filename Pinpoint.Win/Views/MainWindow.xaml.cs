@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using FontAwesome.WPF;
+using NHotkey;
+using NHotkey.Wpf;
 using Pinpoint.Core;
 using Pinpoint.Core.Sources;
 using Pinpoint.Win.Models;
@@ -26,8 +29,11 @@ namespace Pinpoint.Win.Views
             InitializeComponent();
             Model = new MainWindowModel();
 
+            // Load old settings
+            AppSettings.Load();
+
             // Load existing snippet sources
-            if (AppSettings.Load() && AppSettings.Contains("sources"))
+            if (AppSettings.Contains("sources"))
             {
                 var sources = AppSettings.GetListAs<FileSource>("sources");
                 QueryEngine.AddSources(sources);
@@ -35,12 +41,28 @@ namespace Pinpoint.Win.Views
             
             // Initialize after loading settings
             _settingsWindow = new SettingsWindow();
+            HotkeyManager.Current.AddOrReplace("Show/Hide", Key.Space, ModifierKeys.Alt, OnToggleVisibility);
         }
 
         internal MainWindowModel Model
         {
-            get => (MainWindowModel) DataContext;
+            get => (MainWindowModel)DataContext;
             set => DataContext = value;
+        }
+
+        private void OnToggleVisibility(object? sender, HotkeyEventArgs e)
+        {
+            if (Visibility == Visibility.Visible)
+            {
+                Hide();
+            }
+            else
+            {
+                Show();
+                TxtQuery.Focus();
+            }
+
+            e.Handled = true;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -66,11 +88,6 @@ namespace Pinpoint.Win.Views
 
         private void NotifyIcon_PreviewTrayContextMenuOpen(object sender, RoutedEventArgs e)
         {
-        }
-
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            Debug.WriteLine("Click");
         }
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
@@ -122,6 +139,12 @@ namespace Pinpoint.Win.Views
 
         private async void TxtQuery_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
+            if (string.IsNullOrWhiteSpace(TxtQuery.Text))
+            {
+                Model.Results.Clear();
+                return;
+            }
+
             await UpdateResults();
         }
 
@@ -129,14 +152,14 @@ namespace Pinpoint.Win.Views
         {
             Model.Results.Clear();
 
-            var query = new Query(TxtQuery.Text);
+            var query = new Query(TxtQuery.Text.Trim());
 
             if (query.IsEmpty)
             {
                 return;
             }
 
-            foreach (var result in await QueryEngine.Process(query))
+            await foreach(var result in QueryEngine.Process(query))
             {
                 Model.Results.Add(result);
             }
@@ -195,6 +218,31 @@ namespace Pinpoint.Win.Views
             {
                 OpenSelectedResult();
             }
+        }
+
+        private void ItmSettings_Click(object sender, RoutedEventArgs e)
+        {
+            _settingsWindow.Show();
+            Hide();
+        }
+
+        private void ItmExit_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void ItmNewSimpleSnippet_OnClick(object sender, RoutedEventArgs e)
+        {
+            var newSimpleSnippetWindow = new SimpleSnippetWindow();
+            newSimpleSnippetWindow.Show();
+            Hide();
+        }
+
+        private void ItmNewCustomSnippet_OnClick(object sender, RoutedEventArgs e)
+        {
+            var screenCaptureOverlay = new ScrenCaptureOverlayWindow();
+            screenCaptureOverlay.Show();
+            Hide();
         }
     }
 }

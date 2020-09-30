@@ -16,6 +16,7 @@ namespace Pinpoint.Core
 
         public static bool AddSource(ISource source)
         {
+            // Prevents duplicate sources
             if (Sources.Contains(source))
             {
                 return false;
@@ -33,18 +34,15 @@ namespace Pinpoint.Core
             AppSettings.PutAndSave("sources", Sources);
         }
 
-        public static async Task<List<ISource>> Process(Query query)
+        public static async IAsyncEnumerable<ISource> Process(Query query)
         {
-            var results = new List<ISource>();
             foreach (var source in Sources)
             {
                 if (await source.Applicable(query))
                 {
-                    results.Add(source);
+                    yield return source;
                 }
             }
-
-            return results;
         }
     }
 }
