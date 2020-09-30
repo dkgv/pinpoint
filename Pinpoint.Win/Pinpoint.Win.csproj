@@ -6,6 +6,7 @@
     <UseWPF>true</UseWPF>
     <StartupObject>Pinpoint.Win.App</StartupObject>
     <AssemblyName>Pinpoint</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>

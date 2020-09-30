@@ -1,0 +1,29 @@
+﻿<Window x:Class="Pinpoint.Win.Views.SimpleSnippetWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Pinpoint.Win.Views"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+        mc:Ignorable="d"
+        Title="New Simple Snippet" MinWidth="500" Topmost="True" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight">
+    <Border Margin="5">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <xctk:WatermarkTextBox Grid.Row="0" x:Name="TxtTitle" Watermark="Snippet Identifier (title, tags etc.)" KeepWatermarkOnGotFocus="True"></xctk:WatermarkTextBox>
+
+            <GroupBox Grid.Row="1" Header="Content">
+                <TextBox AcceptsReturn="True" AcceptsTab="True" MinLines="10"></TextBox>
+            </GroupBox>
+
+            <Button x:Name="BtnSave" Grid.Row="3" Click="BtnSave_OnClick">Add Snippet</Button>
+        </Grid>
+    </Border>
+</Window>

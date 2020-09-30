@@ -1,11 +1,12 @@
-﻿<Window x:Class="Pinpoint.Win.Views.NewSnippetWindow"
+﻿<Window x:Class="Pinpoint.Win.Views.CustomSnippetWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pinpoint.Win.Views"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
         mc:Ignorable="d"
-        Title="New Snippet" Height="304" Width="324" Topmost="True" WindowStartupLocation="CenterOwner" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight">
+        Title="New Custom Snippet" MinWidth="500" Topmost="True" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight">
     <Border Margin="5">
         <Grid>
             <Grid.RowDefinitions>
@@ -16,12 +17,10 @@
                 <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <GroupBox Grid.Row="0" Header="Title">
-                <TextBox x:Name="TxtTitle"></TextBox>
-            </GroupBox>
+            <xctk:WatermarkTextBox Grid.Row="0" x:Name="TxtTitle" Watermark="Snippet Identifier (title, tags etc.)" KeepWatermarkOnGotFocus="True"></xctk:WatermarkTextBox>
 
             <GroupBox Grid.Row="1" Header="Content">
-                <ListBox x:Name="LstBitmapPairs" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                <ListBox x:Name="LstBitmapPairs" ItemsSource="{Binding BitmapPairs}" ScrollViewer.HorizontalScrollBarVisibility="Auto" MinHeight="150">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -30,15 +29,15 @@
                                     <RowDefinition Height="Auto"></RowDefinition>
                                 </Grid.RowDefinitions>
 
-                                <Image Grid.Row="0" x:Name="ImgScreenshot"></Image>
-                                <TextBox Grid.Row="1" x:Name="TxtContent" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" />
+                                <Image Grid.Row="0" x:Name="ImgScreenshot" Source="{Binding Source}"></Image>
+                                <TextBox Grid.Row="1" x:Name="TxtContent" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Text="{Binding Content}" />
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
             </GroupBox>
 
-            <Button x:Name="BtnSave" Grid.Row="3" Click="BtnSave_Click">Save</Button>
+            <Button x:Name="BtnSave" Grid.Row="3" Click="BtnSave_Click">Save Snippet</Button>
         </Grid>
     </Border>
 </Window>
