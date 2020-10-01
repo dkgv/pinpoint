@@ -4,13 +4,19 @@ namespace Pinpoint.Win.Models
 {
     public class BitmapTextPair
     {
-        public BitmapTextPair(ImageSource source, string content)
+        public BitmapTextPair(ImageSource original, ImageSource modified, string content)
         {
-            Source = source;
+            Original = original;
+            Modified = modified;
             Content = content;
         }
 
-        public ImageSource Source { get; }
+        public ImageSource Original { get; }
+
+        /// <summary>
+        /// The scaled, potentially inverted bitmap.
+        /// </summary>
+        public ImageSource Modified { get; }
 
         public string Content { get; set; }
     }

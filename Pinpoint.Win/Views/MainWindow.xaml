@@ -22,13 +22,13 @@
 
                 <tb:TaskbarIcon.ContextMenu>
                     <ContextMenu>
-                        <MenuItem x:Name="ItmNewSimpleSnippet" Header="_New Simple Snippet" Click="ItmNewSimpleSnippet_OnClick">
+                        <MenuItem x:Name="ItmNewSimpleSnippet" Header="_New Text Snippet" Click="ItmNewSimpleSnippet_OnClick">
                             <MenuItem.Icon>
                                 <fa:ImageAwesome Icon="Plus"></fa:ImageAwesome>
                             </MenuItem.Icon>
                         </MenuItem>
 
-                        <MenuItem x:Name="ItmNewCustomSnippet" Header="_New Custom Snippet" Click="ItmNewCustomSnippet_OnClick">
+                        <MenuItem x:Name="ItmNewCustomSnippet" Header="_New OCR Snippet" Click="ItmNewCustomSnippet_OnClick">
                             <MenuItem.Icon>
                                 <fa:ImageAwesome Icon="Camera"></fa:ImageAwesome>
                             </MenuItem.Icon>
@@ -88,7 +88,7 @@
                                 </Grid.RowDefinitions>
                                 <StackPanel>
                                     <Label Foreground="#FFD8D8D8" Content="{Binding Identifier}"></Label>
-                                    <Label Foreground="#FFE9E9E9" Content="{Binding Location}"></Label>
+                                    <Label Foreground="#FF9E9E9E" Content="{Binding FilePath}"></Label>
                                 </StackPanel>
                             </Grid>
                         </DataTemplate>

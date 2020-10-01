@@ -1,6 +1,6 @@
 ﻿namespace Pinpoint.Core
 {
-    public class Query
+    public sealed class Query
     {
         public Query(string rawQuery)
         {

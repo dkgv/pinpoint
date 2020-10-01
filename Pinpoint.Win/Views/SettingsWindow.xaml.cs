@@ -1,10 +1,11 @@
-﻿using Pinpoint.Core;
+﻿using System.Collections.ObjectModel;
+using Pinpoint.Core;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
-using Pinpoint.Core.Sources;
+using Pinpoint.Core.Snippets;
 using Pinpoint.Win.Models;
 
 namespace Pinpoint.Win.Views
@@ -12,17 +13,30 @@ namespace Pinpoint.Win.Views
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class SettingsWindow : Window
+    public partial class SettingsWindow : Window, ISnippetListener
     {
-        public SettingsWindow()
+        private readonly QueryEngine _queryEngine;
+
+        public SettingsWindow(QueryEngine queryEngine)
         {
+            _queryEngine = queryEngine;
+
             InitializeComponent();
             Model = new SettingsWindowModel();
 
-            foreach (var source in QueryEngine.Sources.Where(src => src is FileSource).Cast<FileSource>())
+            foreach (var snippet in queryEngine.Snippets)
             {
-                Model.FileSources.Add(source);
+                if (snippet is FileSnippet fileSnippet)
+                {
+                    Model.FileSnippets.Add(fileSnippet);
+                }
+                else if (snippet is ManualSnippet manualSnippet)
+                {
+                    Model.ManualSnippets.Add(manualSnippet);
+                }
             }
+
+            queryEngine.Listeners.Add(this);
         }
 
         internal SettingsWindowModel Model
@@ -43,7 +57,7 @@ namespace Pinpoint.Win.Views
 
         }
 
-        private void BtnAddSource_Click(object sender, RoutedEventArgs e)
+        private void BtnAddFileSnippet_Click(object sender, RoutedEventArgs e)
         {
             var fileOpener = new OpenFileDialog
             {
@@ -60,34 +74,108 @@ namespace Pinpoint.Win.Views
 
             foreach (var fileName in fileOpener.FileNames)
             {
-                var fileSource = new FileSource(fileName);
-                if (QueryEngine.AddSource(fileSource))
+                var fileSource = new FileSnippet(fileName);
+                if (_queryEngine.AddSnippet(fileSource))
                 {
-                    Model.FileSources.Add(fileSource);
+                    Model.FileSnippets.Add(fileSource);
                 }
             }
         }
 
-        private void BtnDeleteSource_Click(object sender, RoutedEventArgs e)
+        private void BtnAddManualSnippet_OnClick(object sender, RoutedEventArgs e)
         {
-            DeleteSelectedSource();
+            var newSimpleSnippetWindow = new TextSnippetWindow();
+            newSimpleSnippetWindow.Show();
+            Hide();
         }
 
-        private void LstFileSources_KeyDown(object sender, KeyEventArgs e)
+        private void BtnAddCustomSnippet_OnClick(object sender, RoutedEventArgs e)
+        {
+            var screenCaptureOverlay = new ScreenCaptureOverlayWindow(_queryEngine);
+            screenCaptureOverlay.Show();
+            Hide();
+        }
+
+        private void LstFileSnippets_KeyDown(object sender, KeyEventArgs e)
+        {
+            HandleLstSnippetKeyDown(sender, Model.FileSnippets, e);
+        }
+
+        private void LstManualSnippets_OnKeyDown(object sender, KeyEventArgs e)
+        {
+            HandleLstSnippetKeyDown(sender, Model.ManualSnippets, e);
+        }
+
+        private void HandleLstSnippetKeyDown<T>(object sender, ObservableCollection<T> collection, KeyEventArgs e) where T : ISnippet
         {
             if (e.Key == Key.Delete || e.Key == Key.Back)
             {
-                DeleteSelectedSource();
+                RemoveSelectedSnippet(sender, collection);
             }
         }
 
-        private void DeleteSelectedSource()
+        private void BtnRemoveFileSnippet_Click(object sender, RoutedEventArgs e)
         {
-            if (LstFileSources.SelectedIndex >= 0)
+            RemoveSelectedSnippet(LstFileSnippets, Model.FileSnippets);
+        }
+
+        private void BtnRemoveManualSnippet_OnClick(object sender, RoutedEventArgs e)
+        {
+            RemoveSelectedSnippet(LstManualSnippets, Model.ManualSnippets);
+        }
+
+        private void RemoveSelectedSnippet<T>(object sender, ObservableCollection<T> collection) where T : ISnippet
+        {
+            var lst = sender as ListBox;
+            if (lst.SelectedIndex >= 0)
             {
-                var index = LstFileSources.SelectedIndex;
-                QueryEngine.RemoveSource(Model.FileSources[index]);
-                Model.FileSources.RemoveAt(index);
+                var index = lst.SelectedIndex;
+                _queryEngine.RemoveSnippet(collection[index]);
+                collection.RemoveAt(index);
+            }
+            else
+            {
+                MessageBox.Show("Please select a snippet to delete.", "Error", MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        public void SnippetAdded(object sender, ISnippet snippet)
+        {
+            if (Equals(sender, this))
+            {
+                return;
+            }
+
+            switch (snippet)
+            {
+                case FileSnippet fileSnippet:
+                    Model.FileSnippets.Add(fileSnippet);
+                    break;
+
+                case ManualSnippet manualSnippet:
+                    Model.ManualSnippets.Add(manualSnippet);
+                    break;
+            }
+        }
+
+        public void SnippetRemoved(object sender, ISnippet snippet)
+        {
+            if (Equals(sender, this))
+            {
+                return;
+            }
+
+
+            switch (snippet)
+            {
+                case FileSnippet fileSnippet:
+                    Model.FileSnippets.Remove(fileSnippet);
+                    break;
+
+                case ManualSnippet manualSnippet:
+                    Model.ManualSnippets.Remove(manualSnippet);
+                    break;
             }
         }
     }

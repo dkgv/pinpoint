@@ -9,7 +9,7 @@ using FontAwesome.WPF;
 using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Core;
-using Pinpoint.Core.Sources;
+using Pinpoint.Core.Snippets;
 using Pinpoint.Win.Models;
 using Xceed.Wpf.Toolkit;
 using Color = System.Windows.Media.Color;
@@ -22,6 +22,7 @@ namespace Pinpoint.Win.Views
     public partial class MainWindow : Window
     {
         private readonly SettingsWindow _settingsWindow;
+        private readonly QueryEngine _queryEngine;
         private static readonly Stack<string> QueryHistory = new Stack<string>();
 
         public MainWindow()
@@ -33,14 +34,11 @@ namespace Pinpoint.Win.Views
             AppSettings.Load();
 
             // Load existing snippet sources
-            if (AppSettings.Contains("sources"))
-            {
-                var sources = AppSettings.GetListAs<FileSource>("sources");
-                QueryEngine.AddSources(sources);
-            }
+            _queryEngine = new QueryEngine();
+            _queryEngine.Initialize();
             
             // Initialize after loading settings
-            _settingsWindow = new SettingsWindow();
+            _settingsWindow = new SettingsWindow(_queryEngine);
             HotkeyManager.Current.AddOrReplace("Show/Hide", Key.Space, ModifierKeys.Alt, OnToggleVisibility);
         }
 
@@ -117,7 +115,7 @@ namespace Pinpoint.Win.Views
             };
         }
 
-        private void TxtQuery_KeyUp(object sender, KeyEventArgs e)
+        private async void TxtQuery_KeyUp(object sender, KeyEventArgs e)
         {
             switch (e.Key)
             {
@@ -134,18 +132,19 @@ namespace Pinpoint.Win.Views
 
                 case Key.Up:
                     break;
+
+                default:
+                    await UpdateResults();
+                    break;
             }
         }
 
-        private async void TxtQuery_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void TxtQuery_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(TxtQuery.Text))
             {
                 Model.Results.Clear();
-                return;
             }
-
-            await UpdateResults();
         }
 
         private async Task UpdateResults()
@@ -159,12 +158,12 @@ namespace Pinpoint.Win.Views
                 return;
             }
 
-            await foreach(var result in QueryEngine.Process(query))
+            await foreach(var result in _queryEngine.Process(query))
             {
                 Model.Results.Add(result);
             }
 
-            if (Model.Results.Count > 0)
+            if (Model.Results.Count > 0 && LstResults.SelectedIndex == -1)
             {
                 LstResults.SelectedIndex = 0;
             }
@@ -201,7 +200,7 @@ namespace Pinpoint.Win.Views
 
         private void OpenSelectedResult()
         {
-            var item = LstResults.SelectedItems[0] as ISource;
+            var item = LstResults.SelectedItems[0] as ISnippet;
 
             if (QueryHistory.Count == 3)
             {
@@ -209,7 +208,7 @@ namespace Pinpoint.Win.Views
             }
             QueryHistory.Push(item.Identifier);
 
-            Debug.WriteLine(item.Location);
+            Debug.WriteLine(item.FilePath);
         }
 
         private void LstResults_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -233,14 +232,14 @@ namespace Pinpoint.Win.Views
 
         private void ItmNewSimpleSnippet_OnClick(object sender, RoutedEventArgs e)
         {
-            var newSimpleSnippetWindow = new SimpleSnippetWindow();
+            var newSimpleSnippetWindow = new TextSnippetWindow();
             newSimpleSnippetWindow.Show();
             Hide();
         }
 
         private void ItmNewCustomSnippet_OnClick(object sender, RoutedEventArgs e)
         {
-            var screenCaptureOverlay = new ScrenCaptureOverlayWindow();
+            var screenCaptureOverlay = new ScreenCaptureOverlayWindow(_queryEngine);
             screenCaptureOverlay.Show();
             Hide();
         }

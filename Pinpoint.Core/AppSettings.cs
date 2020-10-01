@@ -18,7 +18,7 @@ namespace Pinpoint.Core
         {
             var json = GetAs<JsonElement>(key);
             return json.EnumerateArray()
-                .Select(element => JsonSerializer.Deserialize<T>(element.ToString()))
+                .Select(elem => JsonSerializer.Deserialize<T>(elem.ToString()))
                 .ToList();
         }
 

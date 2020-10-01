@@ -1,18 +1,18 @@
 ﻿using System.IO;
 
-namespace Pinpoint.Core.Sources
+namespace Pinpoint.Core.Snippets
 {
-    public class FileSource : ISource
+    public class FileSnippet : ISnippet
     {
         private string _rawContent;
 
-        public FileSource()
+        public FileSnippet()
         {
         }
 
-        public FileSource(string filePath)
+        public FileSnippet(string filePath)
         {
-            Location = filePath;
+            FilePath = filePath;
             Identifier = Path.GetFileName(filePath);
             RawContent = File.ReadAllText(filePath);
         }
@@ -23,7 +23,7 @@ namespace Pinpoint.Core.Sources
             {
                 if (string.IsNullOrEmpty(_rawContent))
                 {
-                    _rawContent = File.ReadAllText(Location);
+                    _rawContent = File.ReadAllText(FilePath);
                 }
 
                 return _rawContent;
@@ -33,11 +33,11 @@ namespace Pinpoint.Core.Sources
 
         public string Identifier { get; set; }
 
-        public string Location { get; set; }
+        public string FilePath { get; set; }
 
         public override bool Equals(object? obj)
         {
-            return obj is FileSource src && src.Location.Equals(Location);
+            return obj is FileSnippet src && src.FilePath.Equals(FilePath);
         }
     }
 }

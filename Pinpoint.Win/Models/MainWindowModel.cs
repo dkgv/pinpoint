@@ -1,10 +1,10 @@
 ﻿using System.Collections.ObjectModel;
-using Pinpoint.Core.Sources;
+using Pinpoint.Core.Snippets;
 
 namespace Pinpoint.Win.Models
 {
     internal class MainWindowModel : BasicWindowModel
     {
-        public ObservableCollection<ISource> Results { get; } = new ObservableCollection<ISource>();
+        public ObservableCollection<ISnippet> Results { get; } = new ObservableCollection<ISnippet>();
     }
 }

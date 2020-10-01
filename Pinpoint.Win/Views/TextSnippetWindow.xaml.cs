@@ -6,9 +6,9 @@ namespace Pinpoint.Win.Views
     /// <summary>
     /// Interaction logic for NewSimpleSnippetWindow.xaml
     /// </summary>
-    public partial class SimpleSnippetWindow : Window
+    public partial class TextSnippetWindow : Window
     {
-        public SimpleSnippetWindow()
+        public TextSnippetWindow()
         {
             InitializeComponent();
         }
@@ -16,6 +16,11 @@ namespace Pinpoint.Win.Views
         private void BtnSave_OnClick(object sender, RoutedEventArgs e)
         {
             throw new NotImplementedException();
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            TxtTitle.Focus();
         }
     }
 }

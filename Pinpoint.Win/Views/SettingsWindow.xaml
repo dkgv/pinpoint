@@ -53,32 +53,72 @@
             <TabItem Header="Snippets">
                 <Border Margin="5">
                     <StackPanel>
-                        <GroupBox Header="File Sources (Optional)">
+                        <GroupBox Header="Manual Snippets">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"></RowDefinition>
                                     <RowDefinition Height="Auto"></RowDefinition>
                                 </Grid.RowDefinitions>
 
-                                <ListBox Grid.Row="0" x:Name="LstFileSources" KeyDown="LstFileSources_KeyDown" MinHeight="100" ItemsSource="{Binding FileSources}">
+                                <ListBox Grid.Row="0" x:Name="LstManualSnippets" KeyDown="LstManualSnippets_OnKeyDown" MinHeight="100" ItemsSource="{Binding ManualSnippets}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
                                                 <Label Content="{Binding Identifier}"></Label>
-                                                <Label Content="{Binding Location}"></Label>
+                                                <Label Content="{Binding FilePath}"></Label>
                                             </StackPanel>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
 
                                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <xctk:IconButton x:Name="BtnDeleteSource" Click="BtnDeleteSource_Click">
+                                    <xctk:IconButton x:Name="BtnRemoveManualSnippet" Click="BtnRemoveManualSnippet_OnClick">
                                         <xctk:IconButton.Icon>
                                             <fa:ImageAwesome Height="16" Icon="Trash"></fa:ImageAwesome>
                                         </xctk:IconButton.Icon>
                                     </xctk:IconButton>
 
-                                    <xctk:IconButton x:Name="BtnAddSource" Click="BtnAddSource_Click">
+                                    <xctk:IconButton x:Name="BtnAddSimpleSnippet" Click="BtnAddManualSnippet_OnClick" Content=" Simple">
+                                        <xctk:IconButton.Icon>
+                                            <fa:ImageAwesome Height="16" Icon="Plus"></fa:ImageAwesome>
+                                        </xctk:IconButton.Icon>
+                                    </xctk:IconButton>
+
+                                    <xctk:IconButton x:Name="BtnAddCustomSnippet" Click="BtnAddCustomSnippet_OnClick"  Content=" OCR">
+                                        <xctk:IconButton.Icon>
+                                            <fa:ImageAwesome Height="16" Icon="Plus"></fa:ImageAwesome>
+                                        </xctk:IconButton.Icon>
+                                    </xctk:IconButton>
+                                </StackPanel>
+                            </Grid>
+                        </GroupBox>
+
+                        <GroupBox Header="File Snippets">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                </Grid.RowDefinitions>
+
+                                <ListBox Grid.Row="0" x:Name="LstFileSnippets" KeyDown="LstFileSnippets_KeyDown" MinHeight="100" ItemsSource="{Binding FileSnippets}">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Label Content="{Binding Identifier}"></Label>
+                                                <Label Content="{Binding FilePath}"></Label>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+
+                                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                                    <xctk:IconButton x:Name="BtnRemoveFileSnippet" Click="BtnRemoveFileSnippet_Click">
+                                        <xctk:IconButton.Icon>
+                                            <fa:ImageAwesome Height="16" Icon="Trash"></fa:ImageAwesome>
+                                        </xctk:IconButton.Icon>
+                                    </xctk:IconButton>
+
+                                    <xctk:IconButton x:Name="BtnAddFileSnippet" Click="BtnAddFileSnippet_Click">
                                         <xctk:IconButton.Icon>
                                             <fa:ImageAwesome Height="16" Icon="Plus"></fa:ImageAwesome>
                                         </xctk:IconButton.Icon>

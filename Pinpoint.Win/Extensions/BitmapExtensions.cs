@@ -2,44 +2,14 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using Pinpoint.Win.Converters;
 using Tesseract;
-using Color = System.Drawing.Color;
-using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Pinpoint.Win.Extensions
 {
     public static class BitmapExtensions
     {
         private static readonly TesseractEngine OcrEngine = new TesseractEngine("./tessdata", "eng", EngineMode.Default);
-
-        public static ImageSource ToImageSource(this Bitmap bitmap)
-        {
-            var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-            var bitmapData = bitmap.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-
-            try
-            {
-                var size = rect.Width * rect.Height * 4;
-
-                return BitmapSource.Create(
-                    bitmap.Width,
-                    bitmap.Height,
-                    bitmap.HorizontalResolution,
-                    bitmap.VerticalResolution,
-                    PixelFormats.Bgra32,
-                    null,
-                    bitmapData.Scan0,
-                    size,
-                    bitmapData.Stride);
-            }
-            finally
-            {
-                bitmap.UnlockBits(bitmapData);
-            }
-        }
 
         public static Bitmap Crop(this Bitmap bitmap, Rectangle region)
         {
@@ -71,7 +41,7 @@ namespace Pinpoint.Win.Extensions
             using var img = OcrEngine.Process(BitmapToPixConverter.ToPix(bitmap));
             var tessRect = img.RegionOfInterest;
             var rect = new Rectangle(tessRect.X1, tessRect.Y1, tessRect.Width, tessRect.Height);
-            return new Tuple<string, Rectangle>(img.GetText(), rect);
+            return new Tuple<string, Rectangle>(img.GetText().Trim(), rect);
         }
 
         public static Bitmap Scale(this Bitmap bitmap, double scalar)

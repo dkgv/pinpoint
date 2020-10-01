@@ -1,9 +1,9 @@
 ﻿using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace Pinpoint.Core.Sources
+namespace Pinpoint.Core.Snippets
 {
-    public interface ISource
+    public interface ISnippet
     {
         public async Task<bool> Applicable(Query query)
         {
@@ -16,6 +16,6 @@ namespace Pinpoint.Core.Sources
 
         public string Identifier { get; set; }
 
-        public string Location { get; set; }
+        public string FilePath { get; set; }
     }
 }

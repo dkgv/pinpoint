@@ -1,42 +1,65 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Pinpoint.Core.Sources;
+using Pinpoint.Core.Snippets;
 
 namespace Pinpoint.Core
 {
-    public static class QueryEngine
+    public class QueryEngine
     {
-        public static readonly List<ISource> Sources = new List<ISource>();
+        public List<ISnippetListener> Listeners { get; }= new List<ISnippetListener>();
+        public List<ISnippet> Snippets { get; }= new List<ISnippet>();
 
-        public static bool AddSources(IEnumerable<ISource> sources)
+        public void Initialize()
         {
-            return sources.All(AddSource);
+            void LoadSnippets<T>(string key) where T : ISnippet
+            {
+                if (AppSettings.Contains(key))
+                {
+                    var sources = AppSettings.GetListAs<T>(key);
+                    foreach (var snippet in sources)
+                    {
+                        AddSnippet(snippet);
+                    }
+                }
+            }
+
+            LoadSnippets<FileSnippet>(AppConstants.FileSnippetsKey);
+            LoadSnippets<ManualSnippet>(AppConstants.ManualSnippetsKey);
         }
 
-        public static bool AddSource(ISource source)
+        public bool AddSnippet(ISnippet snippet)
         {
             // Prevents duplicate sources
-            if (Sources.Contains(source))
+            if (Snippets.Contains(snippet))
             {
                 return false;
             }
 
-            Sources.Add(source);
-            AppSettings.PutAndSave("sources", Sources);
+            Snippets.Add(snippet);
+            AppSettings.PutAndSave(GetKey(snippet), Snippets);
+
+            // Notify listeners that a new snippet was added
+            Listeners.ForEach(listener => listener.SnippetAdded(this, snippet));
 
             return true;
         }
 
-        public static void RemoveSource(ISource source)
+        public void RemoveSnippet(ISnippet snippet)
         {
-            Sources.Remove(source);
-            AppSettings.PutAndSave("sources", Sources);
+            Snippets.Remove(snippet);
+            AppSettings.PutAndSave(GetKey(snippet), Snippets);
+
+            // Notify listeners that a snippet was removed
+            Listeners.ForEach(listener => listener.SnippetRemoved(this, snippet));
         }
 
-        public static async IAsyncEnumerable<ISource> Process(Query query)
+        private string GetKey(ISnippet snippet)
         {
-            foreach (var source in Sources)
+            return snippet is ManualSnippet ? AppConstants.ManualSnippetsKey : AppConstants.FileSnippetsKey;
+        }
+
+        public async IAsyncEnumerable<ISnippet> Process(Query query)
+        {
+            foreach (var source in Snippets)
             {
                 if (await source.Applicable(query))
                 {

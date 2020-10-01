@@ -1,26 +1,37 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Pinpoint.Core;
+using Pinpoint.Win.Converters;
 using Pinpoint.Win.Extensions;
+using Pinpoint.Win.Models;
 using Pranas;
 using Point = System.Windows.Point;
 
 namespace Pinpoint.Win.Views
 {
     /// <summary>
-    /// Interaction logic for ScrenCaptureOverlayWindow.xaml
+    /// Interaction logic for ScreenCaptureOverlayWindow.xaml
     /// </summary>
-    public partial class ScrenCaptureOverlayWindow : Window
+    public partial class ScreenCaptureOverlayWindow : Window
     {
         private bool _dragging;
         private Point _startDrag;
+        private readonly OCRSnippetWindow _ocrSnippetWindow;
 
-        public ScrenCaptureOverlayWindow()
+        public ScreenCaptureOverlayWindow(QueryEngine queryEngine)
         {
             InitializeComponent();
+            _ocrSnippetWindow = new OCRSnippetWindow(queryEngine);
+        }
+
+        public ScreenCaptureOverlayWindow(OCRSnippetWindow window)
+        {
+            InitializeComponent();
+            _ocrSnippetWindow = window;
         }
 
         private void ScreenshotOverlayWindow_OnLoaded(object sender, RoutedEventArgs e)
@@ -47,7 +58,7 @@ namespace Pinpoint.Win.Views
             _dragging = false;
         }
 
-        private void Window_MouseUp(object sender, MouseButtonEventArgs e)
+        private async void Window_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (_dragging)
             {
@@ -58,22 +69,28 @@ namespace Pinpoint.Win.Views
                 {
                     // Hide overlay before capturing screenshot
                     Hide();
+                    await Task.Delay(TimeSpan.FromMilliseconds(100));
 
-                    var screenshot = new Bitmap(ScreenshotCapture.TakeScreenshot())
-                        .Crop(selection)
-                        .Scale(2);
+                    // Capture screenshot of selected region
+                    var original = new Bitmap(ScreenshotCapture.TakeScreenshot()).Crop(selection);
 
-                    if (screenshot.IsDark(50))
+                    // Invert colors of screenshot if needed to ensure good OCR result
+                    var modified = original.Scale(2);
+                    if (modified.IsDark(50))
                     {
-                        Debug.WriteLine("inverting!");
-                        screenshot = screenshot.InvertColors();
+                        modified = modified.InvertColors();
                     }
 
-                    screenshot = screenshot.ToBlackAndWhite();
+                    var text = modified.ToBlackAndWhite().OCR().Item1;
+                    var pair = new BitmapTextPair(
+                        BitmapImageSourceConverter.ToImageSource(original),
+                        BitmapImageSourceConverter.ToImageSource(modified),
+                        text
+                    );
 
                     // Launch snippet manager
-                    var newCustomSnippetWindow = new CustomSnippetWindow(screenshot);
-                    newCustomSnippetWindow.Show();
+                    _ocrSnippetWindow.Model.BitmapPairs.Add(pair);
+                    _ocrSnippetWindow.Show();
 
                     Close();
                     return;
