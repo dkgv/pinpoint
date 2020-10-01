@@ -24,7 +24,7 @@
                     <ContextMenu>
                         <MenuItem x:Name="ItmNewSimpleSnippet" Header="_New Text Snippet" Click="ItmNewSimpleSnippet_OnClick">
                             <MenuItem.Icon>
-                                <fa:ImageAwesome Icon="Plus"></fa:ImageAwesome>
+                                <fa:ImageAwesome Icon="StickyNote"></fa:ImageAwesome>
                             </MenuItem.Icon>
                         </MenuItem>
 

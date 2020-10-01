@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Text.Json;
 using System.Windows;
 using Pinpoint.Core;
 using Pinpoint.Core.Snippets;
@@ -44,7 +41,7 @@ namespace Pinpoint.Win.Views
             }
 
             var snippet = new ManualSnippet(title, pairs);
-            if (_queryEngine.AddSnippet(snippet))
+            if (_queryEngine.AddSnippet(this, snippet))
             {
                 snippet.SaveAsJSON();
             }

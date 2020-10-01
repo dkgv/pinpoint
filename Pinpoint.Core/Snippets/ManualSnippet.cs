@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using Pinpoint.Core.Converters;
 
@@ -15,6 +16,13 @@ namespace Pinpoint.Core.Snippets
 
         public ManualSnippet()
         {
+        }
+
+        public ManualSnippet(string title, string content)
+        {
+            Identifier = title;
+            FilePath = title;
+            RawContent = content;
         }
 
         public ManualSnippet(string title, IEnumerable<Tuple<string, Bitmap>> transcriptions)
@@ -31,6 +39,7 @@ namespace Pinpoint.Core.Snippets
 
         public List<Tuple<string, string>> Transcriptions { get; set; } = new List<Tuple<string, string>>();
 
+        [JsonIgnore]
         public string RawContent
         {
             get
@@ -52,8 +61,15 @@ namespace Pinpoint.Core.Snippets
             get => _filePath;
             set
             {
-                var regex = new Regex("[<>:\"/\\|\\?\\*]");
-                _filePath = AppConstants.SnippetsDirectory + regex.Replace(value, "") + ".json";
+                if (!value.Contains(AppConstants.MainDirectory))
+                {
+                    var regex = new Regex("[<>:\"/\\|\\?\\*]");
+                    var path = AppConstants.SnippetsDirectory + regex.Replace(value, "");
+                    _filePath = path + ".json";
+                    return;
+                }
+
+                _filePath = value;
             }
         }
 

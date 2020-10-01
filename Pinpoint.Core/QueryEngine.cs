@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Pinpoint.Core.Snippets;
 
 namespace Pinpoint.Core
 {
     public class QueryEngine
     {
-        public List<ISnippetListener> Listeners { get; }= new List<ISnippetListener>();
-        public List<ISnippet> Snippets { get; }= new List<ISnippet>();
+        public List<ISnippetListener> Listeners { get; } = new List<ISnippetListener>();
+        
+        public List<ISnippet> Snippets { get; } = new List<ISnippet>();
 
         public void Initialize()
         {
@@ -17,7 +20,7 @@ namespace Pinpoint.Core
                     var sources = AppSettings.GetListAs<T>(key);
                     foreach (var snippet in sources)
                     {
-                        AddSnippet(snippet);
+                        AddSnippet(this, snippet);
                     }
                 }
             }
@@ -26,7 +29,7 @@ namespace Pinpoint.Core
             LoadSnippets<ManualSnippet>(AppConstants.ManualSnippetsKey);
         }
 
-        public bool AddSnippet(ISnippet snippet)
+        public bool AddSnippet(object sender, ISnippet snippet)
         {
             // Prevents duplicate sources
             if (Snippets.Contains(snippet))
@@ -35,21 +38,26 @@ namespace Pinpoint.Core
             }
 
             Snippets.Add(snippet);
-            AppSettings.PutAndSave(GetKey(snippet), Snippets);
+
+            // Update settings to include newly added snippet
+            var snippetsOfType = Snippets.Where(s => s.GetType() == snippet.GetType());
+            AppSettings.PutAndSave(GetKey(snippet), snippetsOfType);
 
             // Notify listeners that a new snippet was added
-            Listeners.ForEach(listener => listener.SnippetAdded(this, snippet));
+            Listeners.ForEach(listener => listener.SnippetAdded(sender, snippet));
 
             return true;
         }
 
-        public void RemoveSnippet(ISnippet snippet)
+        public void RemoveSnippet(object sender, ISnippet snippet)
         {
-            Snippets.Remove(snippet);
-            AppSettings.PutAndSave(GetKey(snippet), Snippets);
+            if (Snippets.Remove(snippet))
+            {
+                AppSettings.PutAndSave(GetKey(snippet), Snippets);
 
-            // Notify listeners that a snippet was removed
-            Listeners.ForEach(listener => listener.SnippetRemoved(this, snippet));
+                // Notify listeners that a snippet was removed
+                Listeners.ForEach(listener => listener.SnippetRemoved(sender, snippet));
+            }
         }
 
         private string GetKey(ISnippet snippet)

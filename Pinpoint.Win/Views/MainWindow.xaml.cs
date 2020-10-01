@@ -35,10 +35,10 @@ namespace Pinpoint.Win.Views
 
             // Load existing snippet sources
             _queryEngine = new QueryEngine();
-            _queryEngine.Initialize();
-            
-            // Initialize after loading settings
             _settingsWindow = new SettingsWindow(_queryEngine);
+
+            _queryEngine.Initialize();
+
             HotkeyManager.Current.AddOrReplace("Show/Hide", Key.Space, ModifierKeys.Alt, OnToggleVisibility);
         }
 
@@ -123,6 +123,7 @@ namespace Pinpoint.Win.Views
                     if (LstResults.SelectedIndex >= 0)
                     {
                         OpenSelectedResult();
+                        TxtQuery.Clear();
                     }
                     break;
 

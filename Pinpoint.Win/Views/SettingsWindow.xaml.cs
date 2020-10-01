@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using Pinpoint.Core;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -23,19 +24,6 @@ namespace Pinpoint.Win.Views
 
             InitializeComponent();
             Model = new SettingsWindowModel();
-
-            foreach (var snippet in queryEngine.Snippets)
-            {
-                if (snippet is FileSnippet fileSnippet)
-                {
-                    Model.FileSnippets.Add(fileSnippet);
-                }
-                else if (snippet is ManualSnippet manualSnippet)
-                {
-                    Model.ManualSnippets.Add(manualSnippet);
-                }
-            }
-
             queryEngine.Listeners.Add(this);
         }
 
@@ -54,7 +42,6 @@ namespace Pinpoint.Win.Views
 
         private void TxtHotkey_GotFocus(object sender, RoutedEventArgs e)
         {
-
         }
 
         private void BtnAddFileSnippet_Click(object sender, RoutedEventArgs e)
@@ -75,7 +62,7 @@ namespace Pinpoint.Win.Views
             foreach (var fileName in fileOpener.FileNames)
             {
                 var fileSource = new FileSnippet(fileName);
-                if (_queryEngine.AddSnippet(fileSource))
+                if (_queryEngine.AddSnippet(this, fileSource))
                 {
                     Model.FileSnippets.Add(fileSource);
                 }
@@ -130,7 +117,7 @@ namespace Pinpoint.Win.Views
             if (lst.SelectedIndex >= 0)
             {
                 var index = lst.SelectedIndex;
-                _queryEngine.RemoveSnippet(collection[index]);
+                _queryEngine.RemoveSnippet(this, collection[index]);
                 collection.RemoveAt(index);
             }
             else

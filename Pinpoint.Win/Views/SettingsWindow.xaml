@@ -7,7 +7,10 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:fa="http://schemas.fontawesome.io/icons/" 
         mc:Ignorable="d"
-        Title="Pinpoint Settings" Height="449" Width="469" WindowStartupLocation="CenterScreen">
+        Title="Pinpoint Settings" 
+        Height="450" MinHeight="450" 
+        Width="470" MinWidth="470" 
+        WindowStartupLocation="CenterScreen">
     <Border Margin="5">
         <TabControl>
             <!-- General settings -->
