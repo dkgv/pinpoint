@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Windows;
+using Pinpoint.Core;
+using Pinpoint.Core.Snippets;
+using Pinpoint.Win.Converters;
 
 namespace Pinpoint.Win.Views
 {
@@ -8,14 +13,25 @@ namespace Pinpoint.Win.Views
     /// </summary>
     public partial class TextSnippetWindow : Window
     {
-        public TextSnippetWindow()
+        private readonly QueryEngine _queryEngine;
+
+        public TextSnippetWindow(QueryEngine queryEngine)
         {
+            _queryEngine = queryEngine;
             InitializeComponent();
         }
 
         private void BtnSave_OnClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            var title = TxtTitle.Text;
+
+            var snippet = new ManualSnippet(title, TxtContent.Text);
+            if (_queryEngine.AddSnippet(this, snippet))
+            {
+                snippet.SaveAsJSON();
+            }
+
+            Close();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

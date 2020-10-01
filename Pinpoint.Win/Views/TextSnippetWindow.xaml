@@ -20,7 +20,7 @@
             <xctk:WatermarkTextBox Grid.Row="0" x:Name="TxtTitle" Watermark="Snippet Identifier (title, tags etc.)" KeepWatermarkOnGotFocus="True"></xctk:WatermarkTextBox>
 
             <GroupBox Grid.Row="1" Header="Content">
-                <TextBox AcceptsReturn="True" AcceptsTab="True" MinLines="10" MinHeight="100"></TextBox>
+                <TextBox x:Name="TxtContent" AcceptsReturn="True" AcceptsTab="True" MinLines="10" MinHeight="100"></TextBox>
             </GroupBox>
 
             <Button x:Name="BtnSave" Grid.Row="3" Click="BtnSave_OnClick" IsDefault="True">Save Snippet</Button>

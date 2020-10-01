@@ -84,7 +84,7 @@ namespace Pinpoint.Win.Views
 
         private void BtnAddManualSnippet_OnClick(object sender, RoutedEventArgs e)
         {
-            var newSimpleSnippetWindow = new TextSnippetWindow();
+            var newSimpleSnippetWindow = new TextSnippetWindow(_queryEngine);
             newSimpleSnippetWindow.Show();
             Hide();
         }

@@ -232,7 +232,7 @@ namespace Pinpoint.Win.Views
 
         private void ItmNewSimpleSnippet_OnClick(object sender, RoutedEventArgs e)
         {
-            var newSimpleSnippetWindow = new TextSnippetWindow();
+            var newSimpleSnippetWindow = new TextSnippetWindow(_queryEngine);
             newSimpleSnippetWindow.Show();
             Hide();
         }
