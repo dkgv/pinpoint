@@ -31,7 +31,7 @@ namespace Pinpoint.Core.Snippets
 
             foreach (var (content, bitmap) in transcriptions)
             {
-                Transcriptions.Add(new Tuple<string, string>(content, BitmapBase64Converter.ToBase64(bitmap)));
+                Transcriptions.Add(new Tuple<string, string>(content, BitmapToBase64Converter.Convert(bitmap)));
             }
 
             FilePath = title;

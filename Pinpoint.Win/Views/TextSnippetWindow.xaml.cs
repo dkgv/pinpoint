@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Windows;
+﻿using System.Windows;
 using Pinpoint.Core;
 using Pinpoint.Core.Snippets;
-using Pinpoint.Win.Converters;
 
 namespace Pinpoint.Win.Views
 {

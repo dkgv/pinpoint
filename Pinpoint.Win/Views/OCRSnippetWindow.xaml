@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:Pinpoint.Win.Views"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
         xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
         mc:Ignorable="d"
         Title="Custom Snippet" 
         MinWidth="550" MaxWidth="550" 
@@ -15,16 +16,22 @@
         SizeToContent="WidthAndHeight"
         Loaded="Window_Loaded">
     <Border Margin="5">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
 
-                <xctk:WatermarkTextBox Grid.Row="0" x:Name="TxtTitle" Watermark="Snippet Identifier (title, tags etc.)" KeepWatermarkOnGotFocus="True"></xctk:WatermarkTextBox>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
 
-            <GroupBox Grid.Row="1" Header="Content" MaxHeight="500">
+            <xctk:WatermarkTextBox Grid.Row="0" x:Name="TxtTitle" Watermark="Snippet Identifier (title, tags etc.)" KeepWatermarkOnGotFocus="True"></xctk:WatermarkTextBox>
+            <local:SnippetSyntaxControl x:Name="SnippetSyntax" Grid.Row="0" Grid.Column="1"></local:SnippetSyntaxControl>
+
+            <GroupBox Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" Header="Content" MaxHeight="500">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -51,15 +58,10 @@
                                                 <Image x:Name="ImgScreenshot" Source="{Binding Original}" HorizontalAlignment="Center" Stretch="None"></Image>
                                             </ScrollViewer>
 
-                                            <TextBox Grid.Row="1" Grid.Column="0"
+                                            <local:CodeEditor Grid.Row="1" Grid.Column="0"
                                                      VerticalScrollBarVisibility="Auto" 
-                                                     HorizontalScrollBarVisibility="Disabled" 
-                                                     MinLines="3" 
-                                                     MaxLines="5" 
+                                                     HorizontalScrollBarVisibility="Disabled"
                                                      x:Name="TxtContent"
-                                                     TextWrapping="Wrap"
-                                                     AcceptsReturn="True" 
-                                                     AcceptsTab="True" 
                                                      Text="{Binding Content}" />
 
                                             <Separator Grid.Row="2" />
@@ -78,7 +80,7 @@
                 </ScrollViewer>
             </GroupBox>
 
-            <Button x:Name="BtnSave" Grid.Row="2" Click="BtnSave_Click" IsDefault="True">Save Snippet</Button>
+            <Button Grid.Column="0" Grid.ColumnSpan="2" x:Name="BtnSave" Grid.Row="2" Click="BtnSave_Click" IsDefault="True">Save Snippet (Enter)</Button>
         </Grid>
     </Border>
 </Window>

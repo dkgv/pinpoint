@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows;
+using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Highlighting;
 using Pinpoint.Core;
 using Pinpoint.Core.Snippets;
 using Pinpoint.Win.Converters;
 using Pinpoint.Win.Models;
+using Xceed.Wpf.AvalonDock.Controls;
 
 namespace Pinpoint.Win.Views
 {
