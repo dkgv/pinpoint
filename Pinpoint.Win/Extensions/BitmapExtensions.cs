@@ -49,22 +49,58 @@ namespace Pinpoint.Win.Extensions
             return new Bitmap(bitmap, new Size((int)(bitmap.Width * scalar), (int)(bitmap.Height * scalar)));
         }
 
+        public static Bitmap CropToContent(this Bitmap bitmap, int padding = 5)
+        {
+            unsafe Rectangle ComputeContentArea(byte[] bytes, BitmapData data)
+            {
+                byte bgR = bytes[2], bgG = bytes[1], bgB = bytes[0];
+
+                int minX = int.MaxValue, minY = int.MaxValue;
+                int maxX = int.MinValue, maxY = int.MinValue;
+
+                var p = (byte*)data.Scan0;
+                var offset = data.Stride - bitmap.Width * 4;
+                for (var y = 0; y < data.Height; y++)
+                {
+                    for (var x = 0; x < data.Width; x++)
+                    {
+                        byte r = p[0], g = p[1], b = p[2];
+                        if (bgR != r && bgG != g && bgB != b)
+                        {
+                            minX = Math.Min(minX, x);
+                            minY = Math.Min(minY, y);
+                            maxX = Math.Max(maxX, x);
+                            maxY = Math.Max(maxY, y);
+                        }
+                        p += 4;
+                    }
+                    p += offset;
+                }
+
+                minX = Math.Max(0, minX - padding);
+                minY = Math.Max(0, minY - padding);
+                maxX = Math.Min(data.Width, maxX + padding);
+                maxY = Math.Min(data.Height, maxY + padding);
+                
+                return new Rectangle(minX, minY, maxX - minX, maxY - minY);
+            }
+            
+            var contentArea = FastBitmapOpDispatcher(bitmap, ComputeContentArea);
+            return Crop(bitmap, contentArea);
+        }
+
         public static Bitmap ToBlackAndWhite(this Bitmap bitmap)
         {
             unsafe Bitmap Convert(byte[] bytes, BitmapData data)
             {
-                byte* p = (byte*)data.Scan0;
-                var offset = data.Stride - bitmap.Width * 4;
-                for (var y = 0; y < bitmap.Height; y++)
+                var p = (byte*)data.Scan0;
+                for (var i = 0; i < bytes.Length; i += 4)
                 {
-                    for (var x = 0; x < bitmap.Width; x++)
-                    {
-                        p[0] = (byte)(0.3 * p[0]); // R
-                        p[1] = (byte)(0.59 * p[1]); // G
-                        p[2] = (byte)(0.11 * p[2]); // B
-                        p += 4;
-                    }
-                    p += offset;
+                    byte r = bytes[i + 2], g = bytes[i + 1], b = bytes[i];
+                    var avg = (byte) ((r + g + b) / 3);
+                    p[i + 2] = avg; // R
+                    p[i + 1] = avg; // G
+                    p[i] = avg; // B
                 }
                 return bitmap;
             }
@@ -77,17 +113,12 @@ namespace Pinpoint.Win.Extensions
             unsafe Bitmap Invert(byte[] bytes, BitmapData data)
             {
                 byte* p = (byte*) data.Scan0;
-                var offset = data.Stride - bitmap.Width * 4;
-                for (var y = 0; y < bitmap.Height; y++)
+                for (var i = 0; i < bytes.Length; i += 4)
                 {
-                    for (var x = 0; x < bitmap.Width; x++)
-                    {
-                        p[0] = (byte) (255 - p[0]); // R
-                        p[1] = (byte) (255 - p[1]); // G
-                        p[2] = (byte) (255 - p[2]); // B
-                        p += 4;
-                    }
-                    p += offset;
+                    byte r = bytes[i + 2], g = bytes[i + 1], b = bytes[i];
+                    p[i + 2] = (byte) (255 - r);
+                    p[i + 1] = (byte) (255 - g);
+                    p[i] = (byte) (255 - b);
                 }
                 return bitmap;
             }
@@ -126,8 +157,8 @@ namespace Pinpoint.Win.Extensions
             var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
             var data = bitmap.LockBits(rect, ImageLockMode.ReadOnly, bitmap.PixelFormat);
             var bytes = new byte[data.Height * data.Stride];
-            byte* pnt = (byte*)data.Scan0;
-            Marshal.Copy((IntPtr)pnt, bytes, 0, data.Height * data.Stride);
+            var pointer = (byte*)data.Scan0;
+            Marshal.Copy((IntPtr) pointer, bytes, 0, data.Height * data.Stride);
             var t = op(bytes, data);
             bitmap.UnlockBits(data);
             return t;

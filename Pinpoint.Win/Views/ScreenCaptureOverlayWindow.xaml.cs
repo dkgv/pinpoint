@@ -72,7 +72,9 @@ namespace Pinpoint.Win.Views
                     await Task.Delay(TimeSpan.FromMilliseconds(100));
 
                     // Capture screenshot of selected region
-                    var original = new Bitmap(ScreenshotCapture.TakeScreenshot()).Crop(selection);
+                    var original = new Bitmap(ScreenshotCapture.TakeScreenshot())
+                        .Crop(selection)
+                        .CropToContent();
 
                     // Invert colors of screenshot if needed to ensure good OCR result
                     var modified = original.Scale(2);
