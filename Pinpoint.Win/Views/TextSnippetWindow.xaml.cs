@@ -25,6 +25,13 @@ namespace Pinpoint.Win.Views
         {
             var title = TxtTitle.Text;
 
+            if (string.IsNullOrEmpty(title))
+            {
+                MessageBox.Show("Please specify a title for your snippet before saving it.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             var snippet = new ManualSnippet(title, TxtContent.Text);
             if (_queryEngine.AddSnippet(this, snippet))
             {

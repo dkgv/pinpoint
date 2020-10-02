@@ -32,7 +32,14 @@ namespace Pinpoint.Win.Views
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
             var title = TxtTitle.Text;
-            
+
+            if (string.IsNullOrEmpty(title))
+            {
+                MessageBox.Show("Please specify a title for your snippet before saving it.", "Error",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
             var pairs = new List<Tuple<string, Bitmap>>();
             foreach (var item in Model.BitmapPairs)
             {

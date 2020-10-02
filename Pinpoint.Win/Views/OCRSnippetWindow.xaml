@@ -5,38 +5,77 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pinpoint.Win.Views"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
-        Title="Custom Snippet" MinWidth="500" WindowStartupLocation="CenterScreen" ResizeMode="CanMinimize" SizeToContent="WidthAndHeight" Loaded="Window_Loaded">
+        Title="Custom Snippet" 
+        MinWidth="550" MaxWidth="550" 
+        MinHeight="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanMinimize"
+        SizeToContent="WidthAndHeight"
+        Loaded="Window_Loaded">
     <Border Margin="5">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-                <RowDefinition Height="Auto"></RowDefinition>
-            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                </Grid.RowDefinitions>
 
-            <xctk:WatermarkTextBox Grid.Row="0" x:Name="TxtTitle" Watermark="Snippet Identifier (title, tags etc.)" KeepWatermarkOnGotFocus="True"></xctk:WatermarkTextBox>
+                <xctk:WatermarkTextBox Grid.Row="0" x:Name="TxtTitle" Watermark="Snippet Identifier (title, tags etc.)" KeepWatermarkOnGotFocus="True"></xctk:WatermarkTextBox>
 
-            <GroupBox Grid.Row="1" Header="Content">
-                <StackPanel>
-                    <ListBox x:Name="LstBitmapPairs" ItemsSource="{Binding BitmapPairs}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"></RowDefinition>
-                                        <RowDefinition Height="Auto"></RowDefinition>
-                                    </Grid.RowDefinitions>
+            <GroupBox Grid.Row="1" Header="Content" MaxHeight="500">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                        </Grid.RowDefinitions>
 
-                                    <Image Grid.Row="0" x:Name="ImgScreenshot" Source="{Binding Original}"></Image>
-                                    <TextBox VerticalScrollBarVisibility="Auto" Grid.Row="1" x:Name="TxtContent" TextWrapping="Wrap" AcceptsReturn="True" AcceptsTab="True" Text="{Binding Content}" />
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
 
-                    <Button x:Name="BtnAddMore" HorizontalAlignment="Right" Click="BtnAddMore_Click">Add More</Button>
-                </StackPanel>
+                        <ItemsControl Grid.Row="0" x:Name="LstBitmapPairs" ItemsSource="{Binding BitmapPairs}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Margin="5">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                                <RowDefinition Height="Auto"></RowDefinition>
+                                            </Grid.RowDefinitions>
+
+                                            <ScrollViewer Grid.Row="0" HorizontalScrollBarVisibility="Auto">
+                                                <Image x:Name="ImgScreenshot" Source="{Binding Original}" HorizontalAlignment="Center" Stretch="None"></Image>
+                                            </ScrollViewer>
+
+                                            <TextBox Grid.Row="1" Grid.Column="0"
+                                                     VerticalScrollBarVisibility="Auto" 
+                                                     HorizontalScrollBarVisibility="Disabled" 
+                                                     MinLines="3" 
+                                                     MaxLines="5" 
+                                                     x:Name="TxtContent"
+                                                     TextWrapping="Wrap"
+                                                     AcceptsReturn="True" 
+                                                     AcceptsTab="True" 
+                                                     Text="{Binding Content}" />
+
+                                            <Separator Grid.Row="2" />
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <xctk:IconButton Grid.Row="1" x:Name="BtnAddMore" Content=" Add Screenshot" HorizontalAlignment="Right" Click="BtnAddMore_Click">
+                            <xctk:IconButton.Icon>
+                                <fa:ImageAwesome Height="14" Icon="Plus"></fa:ImageAwesome>
+                            </xctk:IconButton.Icon>
+                        </xctk:IconButton>
+                    </Grid>
+                </ScrollViewer>
             </GroupBox>
 
             <Button x:Name="BtnSave" Grid.Row="2" Click="BtnSave_Click" IsDefault="True">Save Snippet</Button>
