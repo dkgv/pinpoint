@@ -41,7 +41,7 @@ namespace Pinpoint.Win.Extensions
             using var img = OcrEngine.Process(BitmapToPixConverter.ToPix(bitmap));
             var tessRect = img.RegionOfInterest;
             var rect = new Rectangle(tessRect.X1, tessRect.Y1, tessRect.Width, tessRect.Height);
-            return new Tuple<string, Rectangle>(img.GetText().Trim(), rect);
+            return new Tuple<string, Rectangle>(img.GetText().Trim().Replace('”', '"'), rect);
         }
 
         public static Bitmap Scale(this Bitmap bitmap, double scalar)
