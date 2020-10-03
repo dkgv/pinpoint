@@ -15,7 +15,7 @@
         <Grid>
             <!-- Tray icon -->
             <tb:TaskbarIcon x:Name="NotifyIcon"
-                            IconSource="/Icons/Error.ico"
+                            IconSource="/Icons/Icon.ico"
                             ToolTipText="Pinpoint"
                             TrayContextMenuOpen="NotifyIcon_TrayContextMenuOpen"
                             PreviewTrayContextMenuOpen="NotifyIcon_PreviewTrayContextMenuOpen">

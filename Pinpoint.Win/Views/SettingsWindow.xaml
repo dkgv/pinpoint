@@ -10,7 +10,7 @@
         Title="Pinpoint Settings" 
         Height="450" MinHeight="450" 
         Width="470" MinWidth="470" 
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen" Icon="/Icons/Icon.ico">
     <Border Margin="5">
         <TabControl>
             <!-- General settings -->

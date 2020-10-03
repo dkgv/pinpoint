@@ -7,16 +7,11 @@
     <StartupObject>Pinpoint.Win.App</StartupObject>
     <AssemblyName>Pinpoint</AssemblyName>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationIcon>Icons\Icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Icons\Error.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Icons\Error.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
+    <None Remove="Icons\Icon.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,6 +26,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Pinpoint.Core\Pinpoint.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Icons\Icon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

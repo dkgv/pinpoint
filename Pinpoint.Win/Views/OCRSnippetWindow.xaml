@@ -14,7 +14,7 @@
         WindowStartupLocation="CenterScreen"
         ResizeMode="CanMinimize"
         SizeToContent="WidthAndHeight"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded" Icon="/Icons/Icon.ico">
     <Border Margin="5">
         <Grid>
             <Grid.RowDefinitions>
