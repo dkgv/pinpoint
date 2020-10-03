@@ -12,6 +12,7 @@ namespace Pinpoint.Core
         public static readonly string SettingsFilePath = MainDirectory + "settings.json";
 
         public static readonly string FileSnippetsKey = "file_snippets";
-        public static readonly string ManualSnippetsKey = "manual_snippets";
+        public static readonly string TextSnippetsKey = "text_snippets";
+        public static readonly string OcrSnippetsKey = "ocr_snippets";
     }
 }

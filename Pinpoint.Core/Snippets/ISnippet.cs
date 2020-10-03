@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace Pinpoint.Core.Snippets
 {
@@ -11,11 +10,14 @@ namespace Pinpoint.Core.Snippets
             return Identifier.ToLower().Contains(lowerQuery) || RawContent.ToLower().Contains(lowerQuery);
         }
 
-        [JsonIgnore]
         public string RawContent { get; set; }
 
         public string Identifier { get; set; }
 
         public string FilePath { get; set; }
+
+        void SaveAsJSON(bool overwrite = true);
+
+        void SaveAsMarkdown();
     }
 }

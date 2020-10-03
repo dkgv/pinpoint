@@ -35,6 +35,16 @@ namespace Pinpoint.Core.Snippets
 
         public string FilePath { get; set; }
 
+        public void SaveAsJSON(bool overwrite = true)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SaveAsMarkdown()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public override bool Equals(object? obj)
         {
             return obj is FileSnippet src && src.FilePath.Equals(FilePath);

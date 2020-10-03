@@ -5,7 +5,7 @@ namespace Pinpoint.Win.Models
 {
     internal class SettingsWindowModel : BasicWindowModel
     {
-        public ObservableCollection<ManualSnippet> ManualSnippets { get; } = new ObservableCollection<ManualSnippet>();
+        public ObservableCollection<TextSnippet> ManualSnippets { get; } = new ObservableCollection<TextSnippet>();
 
         public ObservableCollection<FileSnippet> FileSnippets { get; } = new ObservableCollection<FileSnippet>();
     }

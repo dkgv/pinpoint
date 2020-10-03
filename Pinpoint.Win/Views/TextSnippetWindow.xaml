@@ -28,7 +28,7 @@
                 <ColumnDefinition Width="Auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
-            <xctk:WatermarkTextBox Grid.Column="0" Grid.Row="0" x:Name="TxtTitle" Watermark="Snippet Identifier (title, tags etc.)" KeepWatermarkOnGotFocus="True"></xctk:WatermarkTextBox>
+            <xctk:WatermarkTextBox Grid.Column="0" Grid.Row="0" x:Name="TxtTitle" Watermark="Snippet Identifier (title, #tags etc.)" KeepWatermarkOnGotFocus="True"></xctk:WatermarkTextBox>
             <local:SnippetSyntaxControl x:Name="SnippetSyntax" Grid.Column="1" Grid.Row="0" />
 
             <GroupBox Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="1" Header="Content">

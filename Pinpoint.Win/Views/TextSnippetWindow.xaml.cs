@@ -28,7 +28,7 @@ namespace Pinpoint.Win.Views
                 return;
             }
 
-            var snippet = new ManualSnippet(title, TxtContent.Text);
+            var snippet = new TextSnippet(title, TxtContent.Text);
             if (_queryEngine.AddSnippet(this, snippet))
             {
                 snippet.SaveAsJSON();

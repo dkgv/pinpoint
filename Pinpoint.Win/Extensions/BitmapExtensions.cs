@@ -36,7 +36,7 @@ namespace Pinpoint.Win.Extensions
             return cropped;
         }
 
-        public static Tuple<string, Rectangle> OCR(this Bitmap bitmap)
+        public static Tuple<string, Rectangle> Ocr(this Bitmap bitmap)
         {
             using var img = OcrEngine.Process(BitmapToPixConverter.ToPix(bitmap));
             var tessRect = img.RegionOfInterest;
@@ -98,9 +98,7 @@ namespace Pinpoint.Win.Extensions
                 {
                     byte r = bytes[i + 2], g = bytes[i + 1], b = bytes[i];
                     var avg = (byte) ((r + g + b) / 3);
-                    p[i + 2] = avg; // R
-                    p[i + 1] = avg; // G
-                    p[i] = avg; // B
+                    p[i + 2] = p[i + 1] = p[i] = avg;
                 }
                 return bitmap;
             }

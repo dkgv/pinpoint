@@ -26,7 +26,8 @@ namespace Pinpoint.Core
             }
 
             LoadSnippets<FileSnippet>(AppConstants.FileSnippetsKey);
-            LoadSnippets<ManualSnippet>(AppConstants.ManualSnippetsKey);
+            LoadSnippets<OcrTextSnippet>(AppConstants.OcrSnippetsKey);
+            LoadSnippets<TextSnippet>(AppConstants.TextSnippetsKey);
         }
 
         public bool AddSnippet(object sender, ISnippet snippet)
@@ -62,7 +63,13 @@ namespace Pinpoint.Core
 
         private string GetKey(ISnippet snippet)
         {
-            return snippet is ManualSnippet ? AppConstants.ManualSnippetsKey : AppConstants.FileSnippetsKey;
+            return snippet switch
+            {
+                OcrTextSnippet _ => AppConstants.OcrSnippetsKey,
+                TextSnippet _ => AppConstants.TextSnippetsKey,
+                FileSnippet _ => AppConstants.FileSnippetsKey,
+                _ => ""
+            };
         }
 
         public async IAsyncEnumerable<ISnippet> Process(Query query)

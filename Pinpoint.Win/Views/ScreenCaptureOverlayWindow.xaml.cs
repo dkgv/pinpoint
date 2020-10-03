@@ -20,15 +20,15 @@ namespace Pinpoint.Win.Views
     {
         private bool _dragging;
         private Point _startDrag;
-        private readonly OCRSnippetWindow _ocrSnippetWindow;
+        private readonly OcrSnippetWindow _ocrSnippetWindow;
 
         public ScreenCaptureOverlayWindow(QueryEngine queryEngine)
         {
             InitializeComponent();
-            _ocrSnippetWindow = new OCRSnippetWindow(queryEngine);
+            _ocrSnippetWindow = new OcrSnippetWindow(queryEngine);
         }
 
-        public ScreenCaptureOverlayWindow(OCRSnippetWindow window)
+        public ScreenCaptureOverlayWindow(OcrSnippetWindow window)
         {
             InitializeComponent();
             _ocrSnippetWindow = window;
@@ -83,7 +83,7 @@ namespace Pinpoint.Win.Views
                         modified = modified.InvertColors();
                     }
 
-                    var text = modified.ToBlackAndWhite().OCR().Item1;
+                    var text = modified.ToBlackAndWhite().Ocr().Item1;
                     var pair = new BitmapTextPair(
                         BitmapImageSourceConverter.ToImageSource(original),
                         BitmapImageSourceConverter.ToImageSource(modified),

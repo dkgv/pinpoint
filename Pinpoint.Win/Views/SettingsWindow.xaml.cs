@@ -140,7 +140,7 @@ namespace Pinpoint.Win.Views
                     Model.FileSnippets.Add(fileSnippet);
                     break;
 
-                case ManualSnippet manualSnippet:
+                case TextSnippet manualSnippet:
                     Model.ManualSnippets.Add(manualSnippet);
                     break;
             }
@@ -160,7 +160,7 @@ namespace Pinpoint.Win.Views
                     Model.FileSnippets.Remove(fileSnippet);
                     break;
 
-                case ManualSnippet manualSnippet:
+                case TextSnippet manualSnippet:
                     Model.ManualSnippets.Remove(manualSnippet);
                     break;
             }

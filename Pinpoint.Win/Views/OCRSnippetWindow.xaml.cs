@@ -15,11 +15,11 @@ namespace Pinpoint.Win.Views
     /// <summary>
     /// Interaction logic for OCRSnippetWindow.xaml
     /// </summary>
-    public partial class OCRSnippetWindow : Window
+    public partial class OcrSnippetWindow : Window
     {
         private readonly QueryEngine _queryEngine;
 
-        public OCRSnippetWindow(QueryEngine queryEngine)
+        public OcrSnippetWindow(QueryEngine queryEngine)
         {
             _queryEngine = queryEngine;
             InitializeComponent();
@@ -50,7 +50,7 @@ namespace Pinpoint.Win.Views
                 pairs.Add(new Tuple<string, Bitmap>(item.Content, bitmap));
             }
 
-            var snippet = new ManualSnippet(title, pairs);
+            var snippet = new OcrTextSnippet(title, pairs);
             if (_queryEngine.AddSnippet(this, snippet))
             {
                 snippet.SaveAsJSON();
