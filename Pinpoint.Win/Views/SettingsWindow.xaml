@@ -42,12 +42,15 @@
                                 <ColumnDefinition Width="Auto"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
 
-                            <TextBox Grid.Column="0" x:Name="TxtHotkey" GotFocus="TxtHotkey_GotFocus" IsReadOnly="True">CTRL + SPACE</TextBox>
-                            <Button x:Name="BtnChangeHotkey" Grid.Column="1">Change</Button>
+                            <TextBox Grid.Column="0" x:Name="TxtHotkey"
+                                     IsReadOnly="True"
+                                     PreviewKeyDown="TxtHotkey_PreviewKeyDown"
+                                     HorizontalContentAlignment="Center"
+                                     VerticalContentAlignment="Center"
+                                     IsReadOnlyCaretVisible="False"
+                                     IsUndoEnabled="False"
+                                     Text="{Binding Hotkey, Mode=OneWay}"></TextBox>
                         </Grid>
-
-                        <Label Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right">Search History:</Label>
-                        <CheckBox Grid.Row="2" Grid.Column="2" VerticalContentAlignment="Center" VerticalAlignment="Center">Save for search suggestions</CheckBox>
                     </Grid>
                 </Border>
             </TabItem>

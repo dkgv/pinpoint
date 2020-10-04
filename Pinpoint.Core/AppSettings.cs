@@ -11,7 +11,9 @@ namespace Pinpoint.Core
 
         public static T GetAs<T>(string key)
         {
-            return !(Get(key) is Setting item) ? default : (T) item.Value;
+            var obj = Get(key) as Setting;
+            var e = (JsonElement) obj.Value;
+            return JsonSerializer.Deserialize<T>(e.GetRawText());
         }
 
         public static List<T> GetListAs<T>(string key)
@@ -20,6 +22,11 @@ namespace Pinpoint.Core
             return json.EnumerateArray()
                 .Select(elem => JsonSerializer.Deserialize<T>(elem.ToString()))
                 .ToList();
+        }
+
+        public static string GetStrOrDefault(string key, string fallback)
+        {
+            return !Contains(key) ? fallback : GetStr(key);
         }
 
         public static string GetStr(string key)

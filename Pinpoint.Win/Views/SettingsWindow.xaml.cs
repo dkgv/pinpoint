@@ -1,11 +1,12 @@
 ﻿using System.Collections.ObjectModel;
 using Pinpoint.Core;
 using System.ComponentModel;
-using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
+using NHotkey.Wpf;
 using Pinpoint.Core.Snippets;
 using Pinpoint.Win.Models;
 
@@ -16,10 +17,12 @@ namespace Pinpoint.Win.Views
     /// </summary>
     public partial class SettingsWindow : Window, ISnippetListener
     {
+        private readonly MainWindow _mainWindow;
         private readonly QueryEngine _queryEngine;
 
-        public SettingsWindow(QueryEngine queryEngine)
+        public SettingsWindow(MainWindow mainWindow, QueryEngine queryEngine)
         {
+            _mainWindow = mainWindow;
             _queryEngine = queryEngine;
 
             InitializeComponent();
@@ -38,10 +41,6 @@ namespace Pinpoint.Win.Views
             e.Cancel = true;
             AppSettings.Save();
             Hide();
-        }
-
-        private void TxtHotkey_GotFocus(object sender, RoutedEventArgs e)
-        {
         }
 
         private void BtnAddFileSnippet_Click(object sender, RoutedEventArgs e)
@@ -164,6 +163,42 @@ namespace Pinpoint.Win.Views
                     Model.ManualSnippets.Remove(manualSnippet);
                     break;
             }
+        }
+
+        private void TxtHotkey_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+
+            // Get modifiers and key data
+            var modifiers = Keyboard.Modifiers;
+            var key = e.Key;
+
+            // When Alt is pressed, SystemKey is used instead
+            if (key == Key.System)
+            {
+                key = e.SystemKey;
+            }
+
+            if (modifiers == ModifierKeys.None && (key == Key.Delete || key == Key.Back || key == Key.Escape))
+            {
+                Model.Hotkey = new HotkeyModel(Key.Space, ModifierKeys.Alt);
+                return;
+            }
+
+            var invalidKeys = new[]
+            {
+                Key.LeftCtrl, Key.RightCtrl, Key.LeftAlt, Key.RightAlt, Key.LeftShift, Key.RightShift, Key.LWin,
+                Key.RWin, Key.Clear, Key.OemClear, Key.Apps
+            };
+
+            if (invalidKeys.Contains(key))
+            {
+                return;
+            }
+
+            Model.Hotkey = new HotkeyModel(key, modifiers);
+            HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyIdentifier, Model.Hotkey.Key, Model.Hotkey.Modifiers, _mainWindow.OnToggleVisibility);
+            AppSettings.PutAndSave("hotkey", Model.Hotkey.ToString());
         }
     }
 }

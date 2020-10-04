@@ -35,11 +35,11 @@ namespace Pinpoint.Win.Views
 
             // Load existing snippet sources
             _queryEngine = new QueryEngine();
-            _settingsWindow = new SettingsWindow(_queryEngine);
+            _settingsWindow = new SettingsWindow(this, _queryEngine);
 
             _queryEngine.Initialize();
 
-            HotkeyManager.Current.AddOrReplace("Show/Hide", Key.Space, ModifierKeys.Alt, OnToggleVisibility);
+            HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyIdentifier, Key.Space, ModifierKeys.Alt, OnToggleVisibility);
         }
 
         internal MainWindowModel Model
@@ -48,8 +48,13 @@ namespace Pinpoint.Win.Views
             set => DataContext = value;
         }
 
-        private void OnToggleVisibility(object? sender, HotkeyEventArgs e)
+        public void OnToggleVisibility(object? sender, HotkeyEventArgs e)
         {
+            if (_settingsWindow.Visibility == Visibility.Visible)
+            {
+                return;
+            }
+
             if (Visibility == Visibility.Visible)
             {
                 Hide();
