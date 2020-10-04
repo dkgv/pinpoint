@@ -24,8 +24,8 @@ namespace Pinpoint.Win.Views
 
         public ScreenCaptureOverlayWindow(QueryEngine queryEngine)
         {
-            InitializeComponent();
             _ocrSnippetWindow = new OcrSnippetWindow(queryEngine);
+            InitializeComponent();
         }
 
         public ScreenCaptureOverlayWindow(OcrSnippetWindow window)
@@ -51,10 +51,12 @@ namespace Pinpoint.Win.Views
 
             if (!_dragging)
             {
+                _ocrSnippetWindow?.Show();
                 Close();
                 return;
             }
 
+            BrdWrapper.Width = BrdWrapper.Height = 0;
             _dragging = false;
         }
 

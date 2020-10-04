@@ -2,18 +2,15 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows;
-using ICSharpCode.AvalonEdit;
-using ICSharpCode.AvalonEdit.Highlighting;
 using Pinpoint.Core;
 using Pinpoint.Core.Snippets;
 using Pinpoint.Win.Converters;
 using Pinpoint.Win.Models;
-using Xceed.Wpf.AvalonDock.Controls;
 
 namespace Pinpoint.Win.Views
 {
     /// <summary>
-    /// Interaction logic for OCRSnippetWindow.xaml
+    /// Interaction logic for OcrSnippetWindow.xaml
     /// </summary>
     public partial class OcrSnippetWindow : Window
     {
@@ -23,12 +20,12 @@ namespace Pinpoint.Win.Views
         {
             _queryEngine = queryEngine;
             InitializeComponent();
-            Model = new CustomSnippetWindowModel();
+            Model = new OcrSnippetWindowModel();
         }
 
-        internal CustomSnippetWindowModel Model
+        internal OcrSnippetWindowModel Model
         {
-            get => (CustomSnippetWindowModel) DataContext;
+            get => (OcrSnippetWindowModel) DataContext;
             set => DataContext = value;
         }
 
