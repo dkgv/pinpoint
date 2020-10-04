@@ -14,7 +14,7 @@ namespace Pinpoint.Win.Models
         public ImageSource Original { get; }
 
         /// <summary>
-        /// The scaled, potentially inverted bitmap.
+        /// The scaled, potentially color inverted bitmap.
         /// </summary>
         public ImageSource Modified { get; }
 

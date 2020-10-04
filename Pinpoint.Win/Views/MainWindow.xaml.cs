@@ -23,7 +23,6 @@ namespace Pinpoint.Win.Views
     {
         private readonly SettingsWindow _settingsWindow;
         private readonly QueryEngine _queryEngine;
-        private static readonly Stack<string> QueryHistory = new Stack<string>();
 
         public MainWindow()
         {
@@ -206,15 +205,24 @@ namespace Pinpoint.Win.Views
 
         private void OpenSelectedResult()
         {
-            var item = LstResults.SelectedItems[0] as ISnippet;
-
-            if (QueryHistory.Count == 3)
+            switch (LstResults.SelectedItems[0])
             {
-                QueryHistory.Pop();
-            }
-            QueryHistory.Push(item.Identifier);
+                case OcrTextSnippet s:
+                    var ocrSnippetWindow = new OcrSnippetWindow(_queryEngine, s);
+                    ocrSnippetWindow.Show();
+                    break;
 
-            Debug.WriteLine(item.FilePath);
+                case TextSnippet s:
+                    var textSnippetWindow = new TextSnippetWindow(_queryEngine, s);
+                    textSnippetWindow.Show();
+                    break;
+
+                case FileSnippet s:
+                    Process.Start(s.FilePath);
+                    break;
+            }
+
+            Hide();
         }
 
         private void LstResults_MouseDoubleClick(object sender, MouseButtonEventArgs e)

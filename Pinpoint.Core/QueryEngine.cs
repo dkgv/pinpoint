@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Pinpoint.Core.Snippets;
 
@@ -9,11 +8,11 @@ namespace Pinpoint.Core
     {
         public List<ISnippetListener> Listeners { get; } = new List<ISnippetListener>();
         
-        public List<ISnippet> Snippets { get; } = new List<ISnippet>();
+        public List<AbstractSnippet> Snippets { get; } = new List<AbstractSnippet>();
 
         public void Initialize()
         {
-            void LoadSnippets<T>(string key) where T : ISnippet
+            void LoadSnippets<T>(string key) where T : AbstractSnippet
             {
                 if (AppSettings.Contains(key))
                 {
@@ -26,42 +25,42 @@ namespace Pinpoint.Core
             }
 
             LoadSnippets<FileSnippet>(AppConstants.FileSnippetsKey);
-            LoadSnippets<OcrTextSnippet>(AppConstants.OcrSnippetsKey);
             LoadSnippets<TextSnippet>(AppConstants.TextSnippetsKey);
+            LoadSnippets<OcrTextSnippet>(AppConstants.OcrSnippetsKey);
         }
 
-        public bool AddSnippet(object sender, ISnippet snippet)
+        public bool AddSnippet(object sender, AbstractSnippet abstractSnippet)
         {
             // Prevents duplicate sources
-            if (Snippets.Contains(snippet))
+            if (Snippets.Contains(abstractSnippet))
             {
                 return false;
             }
 
-            Snippets.Add(snippet);
+            Snippets.Add(abstractSnippet);
 
             // Update settings to include newly added snippet
-            var snippetsOfType = Snippets.Where(s => s.GetType() == snippet.GetType());
-            AppSettings.PutAndSave(GetKey(snippet), snippetsOfType);
+            var snippetsOfType = Snippets.Where(s => s.GetType() == abstractSnippet.GetType());
+            AppSettings.PutAndSave(GetKey(abstractSnippet), snippetsOfType);
 
             // Notify listeners that a new snippet was added
-            Listeners.ForEach(listener => listener.SnippetAdded(sender, snippet));
+            Listeners.ForEach(listener => listener.SnippetAdded(sender, abstractSnippet));
 
             return true;
         }
 
-        public void RemoveSnippet(object sender, ISnippet snippet)
+        public void RemoveSnippet(object sender, AbstractSnippet abstractSnippet)
         {
-            if (Snippets.Remove(snippet))
+            if (Snippets.Remove(abstractSnippet))
             {
-                AppSettings.PutAndSave(GetKey(snippet), Snippets);
+                AppSettings.PutAndSave(GetKey(abstractSnippet), Snippets);
 
                 // Notify listeners that a snippet was removed
-                Listeners.ForEach(listener => listener.SnippetRemoved(sender, snippet));
+                Listeners.ForEach(listener => listener.SnippetRemoved(sender, abstractSnippet));
             }
         }
 
-        private string GetKey(ISnippet snippet)
+        private string GetKey(AbstractSnippet snippet)
         {
             return snippet switch
             {
@@ -72,7 +71,7 @@ namespace Pinpoint.Core
             };
         }
 
-        public async IAsyncEnumerable<ISnippet> Process(Query query)
+        public async IAsyncEnumerable<AbstractSnippet> Process(Query query)
         {
             foreach (var source in Snippets)
             {

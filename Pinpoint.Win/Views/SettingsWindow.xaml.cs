@@ -92,7 +92,7 @@ namespace Pinpoint.Win.Views
             HandleLstSnippetKeyDown(sender, Model.ManualSnippets, e);
         }
 
-        private void HandleLstSnippetKeyDown<T>(object sender, ObservableCollection<T> collection, KeyEventArgs e) where T : ISnippet
+        private void HandleLstSnippetKeyDown<T>(object sender, ObservableCollection<T> collection, KeyEventArgs e) where T : AbstractSnippet
         {
             if (e.Key == Key.Delete || e.Key == Key.Back)
             {
@@ -110,7 +110,7 @@ namespace Pinpoint.Win.Views
             RemoveSelectedSnippet(LstManualSnippets, Model.ManualSnippets);
         }
 
-        private void RemoveSelectedSnippet<T>(object sender, ObservableCollection<T> collection) where T : ISnippet
+        private void RemoveSelectedSnippet<T>(object sender, ObservableCollection<T> collection) where T : AbstractSnippet
         {
             var lst = sender as ListBox;
             if (lst.SelectedIndex >= 0)
@@ -126,14 +126,14 @@ namespace Pinpoint.Win.Views
             }
         }
 
-        public void SnippetAdded(object sender, ISnippet snippet)
+        public void SnippetAdded(object sender, AbstractSnippet abstractSnippet)
         {
             if (Equals(sender, this))
             {
                 return;
             }
 
-            switch (snippet)
+            switch (abstractSnippet)
             {
                 case FileSnippet fileSnippet:
                     Model.FileSnippets.Add(fileSnippet);
@@ -145,7 +145,7 @@ namespace Pinpoint.Win.Views
             }
         }
 
-        public void SnippetRemoved(object sender, ISnippet snippet)
+        public void SnippetRemoved(object sender, AbstractSnippet abstractSnippet)
         {
             if (Equals(sender, this))
             {
@@ -153,7 +153,7 @@ namespace Pinpoint.Win.Views
             }
 
 
-            switch (snippet)
+            switch (abstractSnippet)
             {
                 case FileSnippet fileSnippet:
                     Model.FileSnippets.Remove(fileSnippet);

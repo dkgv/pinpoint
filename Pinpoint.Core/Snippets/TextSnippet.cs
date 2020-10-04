@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace Pinpoint.Core.Snippets
 {
-    public class TextSnippet : ISnippet
+    public class TextSnippet : AbstractSnippet
     {
         private string _filePath;
 
@@ -13,26 +13,16 @@ namespace Pinpoint.Core.Snippets
         {
         }
 
-        public TextSnippet(string title, string content)
+        public TextSnippet(string title, string content) : base(title, content)
         {
-            Identifier = title;
-            FilePath = title;
-            RawContent = content;
-            Tags = new Regex(@"#\w+").Matches(title).Select(match => match.Value).ToArray();
         }
 
-        public string RawContent { get; set; }
-
-        public string Identifier { get; set; }
-
-        public string[] Tags { get; set; }
-
-        public string FilePath
+        public override string FilePath
         {
             get => _filePath;
             set
             {
-                if (!value.Contains(AppConstants.MainDirectory))
+                if (value != null && !value.Contains(AppConstants.MainDirectory))
                 {
                     var regex = new Regex("[<>:\"/\\|\\?\\*]");
                     var path = AppConstants.SnippetsDirectory + regex.Replace(value, "");
@@ -44,7 +34,7 @@ namespace Pinpoint.Core.Snippets
             }
         }
 
-        public void SaveAsJSON(bool overwrite = true)
+        public override void SaveAsJson(bool overwrite = true)
         {
             // Ensure folder exists
             if (!Directory.Exists(AppConstants.SnippetsDirectory))
@@ -67,11 +57,6 @@ namespace Pinpoint.Core.Snippets
 
             File.WriteAllText(FilePath, JsonConvert.SerializeObject(this));
             GC.Collect();
-        }
-
-        public void SaveAsMarkdown()
-        {
-            throw new System.NotImplementedException();
         }
     }
 }

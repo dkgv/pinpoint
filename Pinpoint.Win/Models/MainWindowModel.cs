@@ -5,6 +5,6 @@ namespace Pinpoint.Win.Models
 {
     internal class MainWindowModel : BasicWindowModel
     {
-        public ObservableCollection<ISnippet> Results { get; } = new ObservableCollection<ISnippet>();
+        public ObservableCollection<AbstractSnippet> Results { get; } = new ObservableCollection<AbstractSnippet>();
     }
 }

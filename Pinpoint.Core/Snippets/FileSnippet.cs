@@ -2,7 +2,7 @@
 
 namespace Pinpoint.Core.Snippets
 {
-    public class FileSnippet : ISnippet
+    public sealed class FileSnippet : AbstractSnippet
     {
         private string _rawContent;
 
@@ -17,7 +17,7 @@ namespace Pinpoint.Core.Snippets
             RawContent = File.ReadAllText(filePath);
         }
 
-        public string RawContent
+        public new string RawContent
         {
             get
             {
@@ -31,16 +31,9 @@ namespace Pinpoint.Core.Snippets
             set => _rawContent = value;
         }
 
-        public string Identifier { get; set; }
+        public override string FilePath { get; set; }
 
-        public string FilePath { get; set; }
-
-        public void SaveAsJSON(bool overwrite = true)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void SaveAsMarkdown()
+        public override void SaveAsJson(bool overwrite = true)
         {
             throw new System.NotImplementedException();
         }

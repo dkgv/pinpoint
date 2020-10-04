@@ -4,8 +4,8 @@ namespace Pinpoint.Core.Snippets
 {
     public interface ISnippetListener
     {
-        void SnippetAdded(object sender, ISnippet snippet);
+        void SnippetAdded(object sender, AbstractSnippet abstractSnippet);
 
-        void SnippetRemoved(object sender, ISnippet snippet);
+        void SnippetRemoved(object sender, AbstractSnippet abstractSnippet);
     }
 }

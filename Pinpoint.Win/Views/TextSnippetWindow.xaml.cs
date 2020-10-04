@@ -11,10 +11,16 @@ namespace Pinpoint.Win.Views
     {
         private readonly QueryEngine _queryEngine;
 
-        public TextSnippetWindow(QueryEngine queryEngine)
+        public TextSnippetWindow(QueryEngine queryEngine, TextSnippet snippet = null)
         {
             _queryEngine = queryEngine;
             InitializeComponent();
+
+            if (snippet != null)
+            {
+                TxtTitle.Text = snippet.Identifier;
+                TxtContent.Text = snippet.RawContent;
+            }
         }
 
         private void BtnSave_OnClick(object sender, RoutedEventArgs e)
@@ -31,7 +37,7 @@ namespace Pinpoint.Win.Views
             var snippet = new TextSnippet(title, TxtContent.Text);
             if (_queryEngine.AddSnippet(this, snippet))
             {
-                snippet.SaveAsJSON();
+                snippet.SaveAsJson();
             }
 
             Close();

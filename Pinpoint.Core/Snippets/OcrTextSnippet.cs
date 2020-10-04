@@ -10,7 +10,7 @@ namespace Pinpoint.Core.Snippets
 {
     public class OcrTextSnippet : TextSnippet
     {
-        public OcrTextSnippet() : base("", "")
+        public OcrTextSnippet()
         {
         }
 
@@ -44,26 +44,6 @@ namespace Pinpoint.Core.Snippets
             // Ensure file exists before overwriting
             base.SaveAsJson(overwrite);
             File.WriteAllText(FilePath, JsonConvert.SerializeObject(this));
-
-        public new void SaveAsMarkdown()
-        {
-            var sb = new StringBuilder();
-
-            sb.Append("#").Append(Identifier).Append('\n');
-
-            foreach (var (content, base64) in Transcriptions)
-            {
-                sb.Append(content)
-                    .Append('\n')
-                    .Append("<center>")
-                    .Append("![](data:image/*:base64,")
-                    .Append(base64)
-                    .Append("</center>")
-                    .Append('\n')
-                    .Append("<hr />");
-            }
-
-            // TODO write
         }
     }
 }
