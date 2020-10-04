@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text.Json;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace Pinpoint.Core.Snippets
 {
@@ -66,7 +65,7 @@ namespace Pinpoint.Core.Snippets
                 File.Create(FilePath).Close();
             }
 
-            File.WriteAllText(FilePath, JsonSerializer.Serialize(this));
+            File.WriteAllText(FilePath, JsonConvert.SerializeObject(this));
             GC.Collect();
         }
 

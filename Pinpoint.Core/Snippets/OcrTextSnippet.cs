@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 using Pinpoint.Core.Converters;
 
 namespace Pinpoint.Core.Snippets
@@ -40,12 +39,11 @@ namespace Pinpoint.Core.Snippets
             set { }
         }
 
-        public new void SaveAsJSON(bool overwrite = true)
+        public override void SaveAsJson(bool overwrite = true)
         {
             // Ensure file exists before overwriting
-            base.SaveAsJSON();
-            File.WriteAllText(FilePath, JsonSerializer.Serialize(this));
-        }
+            base.SaveAsJson(overwrite);
+            File.WriteAllText(FilePath, JsonConvert.SerializeObject(this));
 
         public new void SaveAsMarkdown()
         {

@@ -1,7 +1,8 @@
-﻿using System.Text.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Pinpoint.Core
 {
@@ -12,15 +13,14 @@ namespace Pinpoint.Core
         public static T GetAs<T>(string key)
         {
             var obj = Get(key) as Setting;
-            var e = (JsonElement) obj.Value;
-            return JsonSerializer.Deserialize<T>(e.GetRawText());
+            return (T) obj.Value;
         }
 
         public static List<T> GetListAs<T>(string key)
         {
-            var json = GetAs<JsonElement>(key);
-            return json.EnumerateArray()
-                .Select(elem => JsonSerializer.Deserialize<T>(elem.ToString()))
+            var json = GetAs<JArray>(key);
+            return json.AsEnumerable()
+                .Select(elem => JsonConvert.DeserializeObject<T>(elem.ToString()))
                 .ToList();
         }
 
@@ -77,7 +77,7 @@ namespace Pinpoint.Core
                 File.Create(AppConstants.SettingsFilePath).Close();
             }
 
-            var json = JsonSerializer.Serialize(Settings);
+            var json = JsonConvert.SerializeObject(Settings);
             File.WriteAllText(AppConstants.SettingsFilePath, json);
         }
 
@@ -94,7 +94,7 @@ namespace Pinpoint.Core
                 return false;
             }
 
-            var container = JsonSerializer.Deserialize<List<Setting>>(json);
+            var container = JsonConvert.DeserializeObject<List<Setting>>(json);
             foreach (var setting in container)
             {
                 Put(setting.Key, setting.Value);
