@@ -87,8 +87,8 @@ namespace Pinpoint.Win.Views
 
                     var text = modified.ToBlackAndWhite().Ocr().Item1;
                     var pair = new BitmapTextPair(
-                        BitmapImageSourceConverter.ToImageSource(original),
-                        BitmapImageSourceConverter.ToImageSource(modified),
+                        BitmapToImageSourceConverter.Convert(original),
+                        BitmapToImageSourceConverter.Convert(modified),
                         text
                     );
 
