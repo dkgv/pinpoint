@@ -26,6 +26,8 @@ namespace Pinpoint.Win.Views
 
             if (abstractSnippet != null)
             {
+                TxtTitle.Text = abstractSnippet.Identifier;
+
                 foreach (var (content, base64) in abstractSnippet.Transcriptions)
                 {
                     var bitmap = BitmapToBase64Converter.ConvertBack(base64);

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -132,7 +131,10 @@ namespace Pinpoint.Win.Views
                     break;
 
                 case Key.Down:
-                    LstResults.Focus();
+                    if (Model.Results.Count > 0)
+                    {
+                        LstResults.Focus();
+                    }
                     break;
 
                 case Key.Up:
@@ -188,10 +190,17 @@ namespace Pinpoint.Win.Views
                     {
                         TxtQuery.Focus();
                     }
+                    else
+                    {
+                        LstResults.SelectedIndex = Math.Max(LstResults.SelectedIndex - 1, 0);
+                    }
                     break;
 
                 case Key.Back:
-                    TxtQuery.Text = TxtQuery.Text[..^1];
+                    if (TxtQuery.Text.Length > 0)
+                    {
+                        TxtQuery.Text = TxtQuery.Text[..^1];
+                    }
                     TxtQuery.CaretIndex = TxtQuery.Text.Length;
                     TxtQuery.Focus();
                     break;
@@ -200,7 +209,13 @@ namespace Pinpoint.Win.Views
                     TxtQuery.CaretIndex = TxtQuery.Text.Length - 1;
                     TxtQuery.Focus();
                     break;
+
+                case Key.Down:
+                    LstResults.SelectedIndex = Math.Min(LstResults.SelectedIndex + 1, Model.Results.Count - 1);
+                    break;
             }
+
+            e.Handled = true;
         }
 
         private void OpenSelectedResult()

@@ -11,6 +11,19 @@
         AllowsTransparency="True"
         SizeToContent="WidthAndHeight" Topmost="True" Loaded="Window_Loaded" Background="{x:Null}">
 
+    <Window.Resources>
+        <Style TargetType="ListBoxItem">
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+            </Style.Triggers>
+
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        </Style>
+    </Window.Resources>
+
     <Border CornerRadius="5" Background="#F2343434">
         <Grid>
             <!-- Tray icon -->
@@ -73,24 +86,22 @@
                 </Border>
 
                 <!-- Results -->
-                <ListBox x:Name="LstResults" Grid.Row="1" ItemsSource="{Binding Results}" ScrollViewer.VerticalScrollBarVisibility="Auto" KeyDown="LstResults_KeyDown" SelectionMode="Single" Background="{x:Null}" BorderBrush="{x:Null}" BorderThickness="0" MouseDoubleClick="LstResults_MouseDoubleClick">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="ListBoxItem">
-                            <Setter Property="Background" Value="{x:Null}"></Setter>
-                            <Setter Property="BorderBrush" Value="{x:Null}"></Setter>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
+                <ListBox x:Name="LstResults" Grid.Row="1"
+                         ItemsSource="{Binding Results}" 
+                         ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                         KeyDown="LstResults_KeyDown" 
+                         SelectionMode="Single" 
+                         Background="{x:Null}" 
+                         BorderBrush="{x:Null}" 
+                         BorderThickness="0" 
+                         MouseDoubleClick="LstResults_MouseDoubleClick">
+
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                </Grid.RowDefinitions>
-                                <StackPanel>
-                                    <Label Foreground="#FFD8D8D8" Content="{Binding Identifier}"></Label>
-                                    <Label Foreground="#FF9E9E9E" Content="{Binding FilePath}"></Label>
-                                </StackPanel>
-                            </Grid>
+                            <StackPanel>
+                                <Label Foreground="#FFD8D8D8" Content="{Binding Identifier}"></Label>
+                                <Label Foreground="#FF9E9E9E" Content="{Binding FilePath}"></Label>
+                            </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
