@@ -3,11 +3,13 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
-namespace Pinpoint.Core.Snippets
+namespace Pinpoint.Plugin.Snippets
 {
     public class TextSnippet : AbstractSnippet
     {
         private string _filePath;
+
+        public static readonly string SnippetsDirectory = AppConstants.MainDirectory + "Snippets" + Path.DirectorySeparatorChar;
 
         public TextSnippet()
         {
@@ -25,7 +27,7 @@ namespace Pinpoint.Core.Snippets
                 if (value != null && !value.Contains(AppConstants.MainDirectory))
                 {
                     var regex = new Regex("[<>:\"/\\|\\?\\*]");
-                    var path = AppConstants.SnippetsDirectory + regex.Replace(value, "");
+                    var path = SnippetsDirectory + regex.Replace(value, "");
                     _filePath = path + ".json";
                     return;
                 }
@@ -37,9 +39,9 @@ namespace Pinpoint.Core.Snippets
         public override void SaveAsJson(bool overwrite = true)
         {
             // Ensure folder exists
-            if (!Directory.Exists(AppConstants.SnippetsDirectory))
+            if (!Directory.Exists(SnippetsDirectory))
             {
-                Directory.CreateDirectory(AppConstants.SnippetsDirectory);
+                Directory.CreateDirectory(SnippetsDirectory);
             }
 
             // Create file if non-existent

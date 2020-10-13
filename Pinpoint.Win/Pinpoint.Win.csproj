@@ -25,7 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pinpoint.Core\Pinpoint.Core.csproj" />
+    <ProjectReference Include="..\Pinpoint.Core\Pinpoint.Plugin.Snippets.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.Snippets\Pinpoint.Plugin.Snippets.csproj" />
   </ItemGroup>
 
   <ItemGroup>

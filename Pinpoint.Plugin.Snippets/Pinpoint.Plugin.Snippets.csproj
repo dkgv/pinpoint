@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>Pinpoint.Plugin.Snippets</AssemblyName>
+    <RootNamespace>Pinpoint.Plugin.Snippets</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,4 +11,7 @@
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Pinpoint.Plugin\Pinpoint.Plugin.csproj" />
+  </ItemGroup>
 </Project>

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows;
-using Pinpoint.Core;
-using Pinpoint.Core.Converters;
-using Pinpoint.Core.Snippets;
+using Pinpoint.Plugin.Snippets;
+using Pinpoint.Plugin;
+using Pinpoint.Plugin.Snippets.Converters;
 using Pinpoint.Win.Converters;
 using Pinpoint.Win.Models;
 
@@ -15,11 +15,11 @@ namespace Pinpoint.Win.Views
     /// </summary>
     public partial class OcrSnippetWindow : Window
     {
-        private readonly QueryEngine _queryEngine;
+        private readonly PluginEngine _pluginEngine;
 
-        public OcrSnippetWindow(QueryEngine queryEngine, OcrTextSnippet abstractSnippet = null)
+        public OcrSnippetWindow(PluginEngine pluginEngine, OcrTextSnippet abstractSnippet = null)
         {
-            _queryEngine = queryEngine;
+            _pluginEngine = pluginEngine;
 
             InitializeComponent();
             Model = new OcrSnippetWindowModel();
@@ -37,7 +37,7 @@ namespace Pinpoint.Win.Views
             }
         }
 
-        public OcrSnippetWindow(QueryEngine queryEngine) : this(queryEngine, null)
+        public OcrSnippetWindow(PluginEngine pluginEngine) : this(pluginEngine, null)
         {
         }
 
@@ -66,7 +66,7 @@ namespace Pinpoint.Win.Views
             }
 
             var snippet = new OcrTextSnippet(title, pairs);
-            if (_queryEngine.AddSnippet(this, snippet))
+            if (_pluginEngine.Plugin<SnippetsPlugin>().AddSnippet(this, snippet))
             {
                 snippet.SaveAsJson();
             }

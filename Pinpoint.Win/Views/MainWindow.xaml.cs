@@ -7,8 +7,8 @@ using System.Windows.Media;
 using FontAwesome.WPF;
 using NHotkey;
 using NHotkey.Wpf;
-using Pinpoint.Core;
-using Pinpoint.Core.Snippets;
+using Pinpoint.Plugin.Snippets;
+using Pinpoint.Plugin;
 using Pinpoint.Win.Models;
 using Xceed.Wpf.Toolkit;
 using Color = System.Windows.Media.Color;
@@ -21,7 +21,7 @@ namespace Pinpoint.Win.Views
     public partial class MainWindow : Window
     {
         private readonly SettingsWindow _settingsWindow;
-        private readonly QueryEngine _queryEngine;
+        private readonly PluginEngine _pluginEngine;
 
         public MainWindow()
         {
@@ -32,12 +32,15 @@ namespace Pinpoint.Win.Views
             AppSettings.Load();
 
             // Load existing snippet sources
-            _queryEngine = new QueryEngine();
-            _settingsWindow = new SettingsWindow(this, _queryEngine);
+            _pluginEngine = new PluginEngine();
+            _settingsWindow = new SettingsWindow(this, _pluginEngine);
 
-            _queryEngine.Initialize();
+            var snippetsPlugin = new SnippetsPlugin();
+            snippetsPlugin.Listeners.Add(_settingsWindow);
+            _pluginEngine.AddPlugin(snippetsPlugin);
 
-            HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyIdentifier, Key.Space, ModifierKeys.Alt, OnToggleVisibility);
+            var hotkey = _settingsWindow.Model.Hotkey;
+            HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyIdentifier, hotkey.Key, hotkey.Modifiers, OnToggleVisibility);
         }
 
         internal MainWindowModel Model
@@ -165,7 +168,7 @@ namespace Pinpoint.Win.Views
                 return;
             }
 
-            await foreach(var result in _queryEngine.Process(query))
+            await foreach(var result in _pluginEngine.Process(query))
             {
                 Model.Results.Add(result);
             }
@@ -220,21 +223,30 @@ namespace Pinpoint.Win.Views
 
         private void OpenSelectedResult()
         {
-            switch (LstResults.SelectedItems[0])
+            var selection = LstResults.SelectedItems[0];
+
+            if (selection is SnippetQueryResult result)
             {
-                case OcrTextSnippet s:
-                    var ocrSnippetWindow = new OcrSnippetWindow(_queryEngine, s);
-                    ocrSnippetWindow.Show();
-                    break;
+                switch (result.Instance)
+                {
+                    case OcrTextSnippet s:
+                        var ocrSnippetWindow = new OcrSnippetWindow(_pluginEngine, s);
+                        ocrSnippetWindow.Show();
+                        break;
 
-                case TextSnippet s:
-                    var textSnippetWindow = new TextSnippetWindow(_queryEngine, s);
-                    textSnippetWindow.Show();
-                    break;
+                    case TextSnippet s:
+                        var textSnippetWindow = new TextSnippetWindow(_pluginEngine, s);
+                        textSnippetWindow.Show();
+                        break;
 
-                case FileSnippet s:
-                    Process.Start(s.FilePath);
-                    break;
+                    case FileSnippet s:
+                        Process.Start(s.FilePath);
+                        break;
+                }
+            }
+            else
+            {
+                (selection as IQueryResult).OnSelect();
             }
 
             Hide();
@@ -261,14 +273,14 @@ namespace Pinpoint.Win.Views
 
         private void ItmNewSimpleSnippet_OnClick(object sender, RoutedEventArgs e)
         {
-            var newSimpleSnippetWindow = new TextSnippetWindow(_queryEngine);
+            var newSimpleSnippetWindow = new TextSnippetWindow(_pluginEngine);
             newSimpleSnippetWindow.Show();
             Hide();
         }
 
         private void ItmNewCustomSnippet_OnClick(object sender, RoutedEventArgs e)
         {
-            var screenCaptureOverlay = new ScreenCaptureOverlayWindow(_queryEngine);
+            var screenCaptureOverlay = new ScreenCaptureOverlayWindow(_pluginEngine);
             screenCaptureOverlay.Show();
             Hide();
         }

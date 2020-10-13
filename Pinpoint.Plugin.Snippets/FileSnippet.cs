@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Pinpoint.Core.Snippets
+namespace Pinpoint.Plugin.Snippets
 {
     public sealed class FileSnippet : AbstractSnippet
     {

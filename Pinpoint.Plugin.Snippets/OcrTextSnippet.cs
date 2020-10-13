@@ -4,9 +4,9 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using Newtonsoft.Json;
-using Pinpoint.Core.Converters;
+using Pinpoint.Plugin.Snippets.Converters;
 
-namespace Pinpoint.Core.Snippets
+namespace Pinpoint.Plugin.Snippets
 {
     public class OcrTextSnippet : TextSnippet
     {

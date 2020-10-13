@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Highlighting;
-using Pinpoint.Core;
+using Pinpoint.Plugin.Snippets;
 using Xceed.Wpf.AvalonDock.Controls;
 
 namespace Pinpoint.Win.Views

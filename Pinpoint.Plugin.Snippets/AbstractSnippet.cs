@@ -1,8 +1,9 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Pinpoint.Plugin;
 
-namespace Pinpoint.Core.Snippets
+namespace Pinpoint.Plugin.Snippets
 {
     public abstract class AbstractSnippet
     {
@@ -18,7 +19,7 @@ namespace Pinpoint.Core.Snippets
             Tags = ExtractTags(title);
         }
 
-        public async Task<bool> Applicable(Query query)
+        public async Task<bool> Matches(Query query)
         {
             var lowerQuery = query.RawQuery.ToLower();
             return Identifier.ToLower().Contains(lowerQuery) || RawContent.ToLower().Contains(lowerQuery);

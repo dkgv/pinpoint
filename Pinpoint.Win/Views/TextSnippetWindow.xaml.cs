@@ -1,6 +1,6 @@
 ﻿using System.Windows;
-using Pinpoint.Core;
-using Pinpoint.Core.Snippets;
+using Pinpoint.Plugin;
+using Pinpoint.Plugin.Snippets;
 
 namespace Pinpoint.Win.Views
 {
@@ -9,11 +9,11 @@ namespace Pinpoint.Win.Views
     /// </summary>
     public partial class TextSnippetWindow : Window
     {
-        private readonly QueryEngine _queryEngine;
+        private readonly PluginEngine _pluginEngine;
 
-        public TextSnippetWindow(QueryEngine queryEngine, TextSnippet snippet = null)
+        public TextSnippetWindow(PluginEngine pluginEngine, TextSnippet snippet = null)
         {
-            _queryEngine = queryEngine;
+            _pluginEngine = pluginEngine;
             InitializeComponent();
 
             if (snippet != null)
@@ -35,7 +35,7 @@ namespace Pinpoint.Win.Views
             }
 
             var snippet = new TextSnippet(title, TxtContent.Text);
-            if (_queryEngine.AddSnippet(this, snippet))
+            if (_pluginEngine.Plugin<SnippetsPlugin>().AddSnippet(this, snippet))
             {
                 snippet.SaveAsJson();
             }

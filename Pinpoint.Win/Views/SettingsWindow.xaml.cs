@@ -1,5 +1,4 @@
 ﻿using System.Collections.ObjectModel;
-using Pinpoint.Core;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -7,7 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
 using NHotkey.Wpf;
-using Pinpoint.Core.Snippets;
+using Pinpoint.Plugin.Snippets;
+using Pinpoint.Plugin;
 using Pinpoint.Win.Models;
 
 namespace Pinpoint.Win.Views
@@ -15,19 +15,18 @@ namespace Pinpoint.Win.Views
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class SettingsWindow : Window, ISnippetListener
+    public partial class SettingsWindow : Window, ISnippetListener, IPluginListener<IPlugin, object>
     {
         private readonly MainWindow _mainWindow;
-        private readonly QueryEngine _queryEngine;
+        private readonly PluginEngine _pluginEngine;
 
-        public SettingsWindow(MainWindow mainWindow, QueryEngine queryEngine)
+        public SettingsWindow(MainWindow mainWindow, PluginEngine pluginEngine)
         {
             _mainWindow = mainWindow;
-            _queryEngine = queryEngine;
+            _pluginEngine = pluginEngine;
 
             InitializeComponent();
             Model = new SettingsWindowModel();
-            queryEngine.Listeners.Add(this);
         }
 
         internal SettingsWindowModel Model
@@ -39,7 +38,13 @@ namespace Pinpoint.Win.Views
         protected override void OnClosing(CancelEventArgs e)
         {
             e.Cancel = true;
+
+            // Store plugin settings
+            AppSettings.Put("plugins", Model.Plugins.Select(plugin => plugin.Meta).ToArray());
+
+            // Ensure settings get saved
             AppSettings.Save();
+
             Hide();
         }
 
@@ -61,7 +66,7 @@ namespace Pinpoint.Win.Views
             foreach (var fileName in fileOpener.FileNames)
             {
                 var fileSource = new FileSnippet(fileName);
-                if (_queryEngine.AddSnippet(this, fileSource))
+                if (_pluginEngine.Plugin<SnippetsPlugin>().AddSnippet(this, fileSource))
                 {
                     Model.FileSnippets.Add(fileSource);
                 }
@@ -70,14 +75,14 @@ namespace Pinpoint.Win.Views
 
         private void BtnAddManualSnippet_OnClick(object sender, RoutedEventArgs e)
         {
-            var newSimpleSnippetWindow = new TextSnippetWindow(_queryEngine);
+            var newSimpleSnippetWindow = new TextSnippetWindow(_pluginEngine);
             newSimpleSnippetWindow.Show();
             Hide();
         }
 
         private void BtnAddCustomSnippet_OnClick(object sender, RoutedEventArgs e)
         {
-            var screenCaptureOverlay = new ScreenCaptureOverlayWindow(_queryEngine);
+            var screenCaptureOverlay = new ScreenCaptureOverlayWindow(_pluginEngine);
             screenCaptureOverlay.Show();
             Hide();
         }
@@ -116,52 +121,13 @@ namespace Pinpoint.Win.Views
             if (lst.SelectedIndex >= 0)
             {
                 var index = lst.SelectedIndex;
-                _queryEngine.RemoveSnippet(this, collection[index]);
+                _pluginEngine.Plugin<SnippetsPlugin>().RemoveSnippet(this, collection[index]);
                 collection.RemoveAt(index);
             }
             else
             {
                 MessageBox.Show("Please select a snippet to delete.", "Error", MessageBoxButton.OK,
                     MessageBoxImage.Error);
-            }
-        }
-
-        public void SnippetAdded(object sender, AbstractSnippet abstractSnippet)
-        {
-            if (Equals(sender, this))
-            {
-                return;
-            }
-
-            switch (abstractSnippet)
-            {
-                case FileSnippet fileSnippet:
-                    Model.FileSnippets.Add(fileSnippet);
-                    break;
-
-                case TextSnippet manualSnippet:
-                    Model.ManualSnippets.Add(manualSnippet);
-                    break;
-            }
-        }
-
-        public void SnippetRemoved(object sender, AbstractSnippet abstractSnippet)
-        {
-            if (Equals(sender, this))
-            {
-                return;
-            }
-
-
-            switch (abstractSnippet)
-            {
-                case FileSnippet fileSnippet:
-                    Model.FileSnippets.Remove(fileSnippet);
-                    break;
-
-                case TextSnippet manualSnippet:
-                    Model.ManualSnippets.Remove(manualSnippet);
-                    break;
             }
         }
 
@@ -199,6 +165,54 @@ namespace Pinpoint.Win.Views
             Model.Hotkey = new HotkeyModel(key, modifiers);
             HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyIdentifier, Model.Hotkey.Key, Model.Hotkey.Modifiers, _mainWindow.OnToggleVisibility);
             AppSettings.PutAndSave("hotkey", Model.Hotkey.ToString());
+        }
+
+        public void SnippetAdded(object sender, SnippetsPlugin plugin, AbstractSnippet target)
+        {
+            if (Equals(sender, this))
+            {
+                return;
+            }
+
+            switch (target)
+            {
+                case FileSnippet fileSnippet:
+                    Model.FileSnippets.Add(fileSnippet);
+                    break;
+
+                case TextSnippet manualSnippet:
+                    Model.ManualSnippets.Add(manualSnippet);
+                    break;
+            }
+        }
+
+        public void SnippetRemoved(object sender, SnippetsPlugin plugin, AbstractSnippet target)
+        {
+            if (Equals(sender, this))
+            {
+                return;
+            }
+
+            switch (target)
+            {
+                case FileSnippet fileSnippet:
+                    Model.FileSnippets.Remove(fileSnippet);
+                    break;
+
+                case TextSnippet manualSnippet:
+                    Model.ManualSnippets.Remove(manualSnippet);
+                    break;
+            }
+        }
+
+        public void PluginChange_Added(object sender, IPlugin plugin, object target)
+        {
+            Model.Plugins.Add(plugin);
+        }
+
+        public void PluginChange_Removed(object sender, IPlugin plugin, object target)
+        {
+            Model.Plugins.Remove(plugin);
         }
     }
 }

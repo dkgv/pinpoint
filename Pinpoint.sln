@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Win", "Pinpoint.Win\Pinpoint.Win.csproj", "{81559AE7-3A5C-4953-B02E-EE2CD32EED9B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Win", "Pinpoint.Win\Pinpoint.Win.csproj", "{81559AE7-3A5C-4953-B02E-EE2CD32EED9B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Core", "Pinpoint.Core\Pinpoint.Core.csproj", "{10B15234-FF11-4294-B1DF-780691454A9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Snippets", "Pinpoint.Plugin.Snippets\Pinpoint.Plugin.Snippets.csproj", "{10B15234-FF11-4294-B1DF-780691454A9F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin", "Pinpoint.Plugin\Pinpoint.Plugin.csproj", "{F78E1679-338A-431E-AB89-13D5F47C5888}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,18 @@ Global
 		{10B15234-FF11-4294-B1DF-780691454A9F}.Release|x64.Build.0 = Release|Any CPU
 		{10B15234-FF11-4294-B1DF-780691454A9F}.Release|x86.ActiveCfg = Release|Any CPU
 		{10B15234-FF11-4294-B1DF-780691454A9F}.Release|x86.Build.0 = Release|Any CPU
+		{F78E1679-338A-431E-AB89-13D5F47C5888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F78E1679-338A-431E-AB89-13D5F47C5888}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F78E1679-338A-431E-AB89-13D5F47C5888}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F78E1679-338A-431E-AB89-13D5F47C5888}.Debug|x64.Build.0 = Debug|Any CPU
+		{F78E1679-338A-431E-AB89-13D5F47C5888}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F78E1679-338A-431E-AB89-13D5F47C5888}.Debug|x86.Build.0 = Debug|Any CPU
+		{F78E1679-338A-431E-AB89-13D5F47C5888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F78E1679-338A-431E-AB89-13D5F47C5888}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F78E1679-338A-431E-AB89-13D5F47C5888}.Release|x64.ActiveCfg = Release|Any CPU
+		{F78E1679-338A-431E-AB89-13D5F47C5888}.Release|x64.Build.0 = Release|Any CPU
+		{F78E1679-338A-431E-AB89-13D5F47C5888}.Release|x86.ActiveCfg = Release|Any CPU
+		{F78E1679-338A-431E-AB89-13D5F47C5888}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

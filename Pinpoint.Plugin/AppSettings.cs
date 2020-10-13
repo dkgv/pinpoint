@@ -4,7 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Pinpoint.Core
+namespace Pinpoint.Plugin
 {
     public static class AppSettings
     {
@@ -39,7 +39,7 @@ namespace Pinpoint.Core
             return Settings.FirstOrDefault(s => s.Key.Equals(key));
         }
 
-        public static void Put(string key, object value)
+        public static void Put(string key, object value, bool overwrite = true)
         {
             var index = IndexOf(key);
 
@@ -47,7 +47,7 @@ namespace Pinpoint.Core
             {
                 Settings.Add(new Setting(key, value));
             }
-            else
+            else if (overwrite)
             {
                 Settings[index] = new Setting(key, value);
             }

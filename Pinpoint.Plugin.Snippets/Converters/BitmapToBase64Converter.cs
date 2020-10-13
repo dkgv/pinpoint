@@ -2,7 +2,7 @@
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace Pinpoint.Core.Converters
+namespace Pinpoint.Plugin.Snippets.Converters
 {
     public static class BitmapToBase64Converter
     {

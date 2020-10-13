@@ -55,6 +55,30 @@
                 </Border>
             </TabItem>
 
+            <!-- Plugins -->
+            <TabItem Header="Plugins">
+                <Border Margin="5">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                       <ItemsControl Grid.Column="1" x:Name="LstPlugins" ItemsSource="{Binding Plugins}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="{Binding Meta.Name, Mode=OneWay}"></Label>
+                                        <CheckBox VerticalContentAlignment="Center" IsChecked="{Binding Meta.Enabled, Mode=TwoWay}"></CheckBox>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                       </ItemsControl>
+                    </Grid>
+                </Border>
+            </TabItem>
+
             <!-- Snippet settings -->
             <TabItem Header="Snippets">
                 <Border Margin="5">

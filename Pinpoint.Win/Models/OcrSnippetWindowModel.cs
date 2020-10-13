@@ -2,7 +2,7 @@
 
 namespace Pinpoint.Win.Models
 {
-    internal class OcrSnippetWindowModel : BasicWindowModel
+    internal class OcrSnippetWindowModel : BaseWindowModel
     {
         public ObservableCollection<BitmapTextPair> BitmapPairs { get; } = new ObservableCollection<BitmapTextPair>();
     }

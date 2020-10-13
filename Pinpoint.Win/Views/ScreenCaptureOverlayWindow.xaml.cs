@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Pinpoint.Core;
+using Pinpoint.Plugin;
 using Pinpoint.Win.Converters;
 using Pinpoint.Win.Extensions;
 using Pinpoint.Win.Models;
@@ -22,9 +22,9 @@ namespace Pinpoint.Win.Views
         private Point _startDrag;
         private readonly OcrSnippetWindow _ocrSnippetWindow;
 
-        public ScreenCaptureOverlayWindow(QueryEngine queryEngine)
+        public ScreenCaptureOverlayWindow(PluginEngine pluginEngine)
         {
-            _ocrSnippetWindow = new OcrSnippetWindow(queryEngine);
+            _ocrSnippetWindow = new OcrSnippetWindow(pluginEngine);
             InitializeComponent();
         }
 

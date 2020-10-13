@@ -1,10 +1,10 @@
 ﻿using System.Collections.ObjectModel;
-using Pinpoint.Core;
-using Pinpoint.Core.Snippets;
+using Pinpoint.Plugin.Snippets;
+using Pinpoint.Plugin;
 
 namespace Pinpoint.Win.Models
 {
-    internal class SettingsWindowModel : BasicWindowModel
+    internal class SettingsWindowModel : BaseWindowModel
     {
         private HotkeyModel _hotkey = new HotkeyModel(AppSettings.GetStrOrDefault("hotkey", "ALT + SPACE"));
 
@@ -17,5 +17,7 @@ namespace Pinpoint.Win.Models
         public ObservableCollection<TextSnippet> ManualSnippets { get; } = new ObservableCollection<TextSnippet>();
 
         public ObservableCollection<FileSnippet> FileSnippets { get; } = new ObservableCollection<FileSnippet>();
+
+        public ObservableCollection<IPlugin> Plugins { get; } = new ObservableCollection<IPlugin>();
     }
 }

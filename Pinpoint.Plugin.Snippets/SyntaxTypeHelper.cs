@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Pinpoint.Core
+namespace Pinpoint.Plugin.Snippets
 {
     public static class SyntaxTypeHelper
     {
