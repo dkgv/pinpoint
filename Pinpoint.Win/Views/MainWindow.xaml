@@ -99,7 +99,7 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <Label Foreground="#FFD8D8D8" Content="{Binding Title}"></Label>
+                                <Label Foreground="#FFD8D8D8" Content="{Binding Title}" FontSize="18"></Label>
                                 <Label Foreground="#FF9E9E9E" Content="{Binding Subtitle}"></Label>
                             </StackPanel>
                         </DataTemplate>

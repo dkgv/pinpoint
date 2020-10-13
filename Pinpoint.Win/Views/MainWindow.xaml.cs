@@ -9,6 +9,7 @@ using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Plugin.Snippets;
 using Pinpoint.Plugin;
+using Pinpoint.Plugin.Calculator;
 using Pinpoint.Win.Models;
 using Xceed.Wpf.Toolkit;
 using Color = System.Windows.Media.Color;
@@ -35,12 +36,19 @@ namespace Pinpoint.Win.Views
             _pluginEngine = new PluginEngine();
             _settingsWindow = new SettingsWindow(this, _pluginEngine);
 
-            var snippetsPlugin = new SnippetsPlugin();
-            snippetsPlugin.Listeners.Add(_settingsWindow);
-            _pluginEngine.AddPlugin(snippetsPlugin);
+            LoadPlugins();
 
             var hotkey = _settingsWindow.Model.Hotkey;
             HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyIdentifier, hotkey.Key, hotkey.Modifiers, OnToggleVisibility);
+        }
+
+        private void LoadPlugins()
+        {
+            _pluginEngine.AddPlugin(new CalculatorPlugin());
+
+            var snippetsPlugin = new SnippetsPlugin();
+            snippetsPlugin.Listeners.Add(_settingsWindow);
+            _pluginEngine.AddPlugin(snippetsPlugin);
         }
 
         internal MainWindowModel Model

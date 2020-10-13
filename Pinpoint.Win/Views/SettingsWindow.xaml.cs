@@ -15,18 +15,18 @@ namespace Pinpoint.Win.Views
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class SettingsWindow : Window, ISnippetListener, IPluginListener<IPlugin, object>
+    public partial class SettingsWindow : Window, ISnippetListener
     {
         private readonly MainWindow _mainWindow;
         private readonly PluginEngine _pluginEngine;
 
         public SettingsWindow(MainWindow mainWindow, PluginEngine pluginEngine)
         {
-            _mainWindow = mainWindow;
-            _pluginEngine = pluginEngine;
-
             InitializeComponent();
             Model = new SettingsWindowModel();
+
+            _mainWindow = mainWindow;
+            _pluginEngine = pluginEngine;
         }
 
         internal SettingsWindowModel Model
@@ -203,16 +203,6 @@ namespace Pinpoint.Win.Views
                     Model.ManualSnippets.Remove(manualSnippet);
                     break;
             }
-        }
-
-        public void PluginChange_Added(object sender, IPlugin plugin, object target)
-        {
-            Model.Plugins.Add(plugin);
-        }
-
-        public void PluginChange_Removed(object sender, IPlugin plugin, object target)
-        {
-            Model.Plugins.Remove(plugin);
         }
     }
 }

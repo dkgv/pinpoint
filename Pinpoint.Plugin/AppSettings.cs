@@ -18,6 +18,10 @@ namespace Pinpoint.Plugin
 
         public static List<T> GetListAs<T>(string key)
         {
+            if (!Contains(key))
+            {
+                return new List<T>();
+            }
             var json = GetAs<JArray>(key);
             return json.AsEnumerable()
                 .Select(elem => JsonConvert.DeserializeObject<T>(elem.ToString()))

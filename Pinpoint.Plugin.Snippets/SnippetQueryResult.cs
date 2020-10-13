@@ -1,6 +1,4 @@
-﻿using Pinpoint.Plugin;
-
-namespace Pinpoint.Plugin.Snippets
+﻿namespace Pinpoint.Plugin.Snippets
 {
     public class SnippetQueryResult : IQueryResult
     {

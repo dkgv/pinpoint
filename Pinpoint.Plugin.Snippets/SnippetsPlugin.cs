@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Pinpoint.Plugin;
 
 namespace Pinpoint.Plugin.Snippets
 {
@@ -14,7 +12,7 @@ namespace Pinpoint.Plugin.Snippets
 
         public List<AbstractSnippet> Snippets { get; } = new List<AbstractSnippet>();
 
-        public List<IPluginListener<SnippetsPlugin, AbstractSnippet>> Listeners { get; } = new List<IPluginListener<SnippetsPlugin, AbstractSnippet>>();
+        public List<ISnippetListener> Listeners { get; } = new List<ISnippetListener>();
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Snippets", true);
 
@@ -52,7 +50,7 @@ namespace Pinpoint.Plugin.Snippets
             AppSettings.PutAndSave(GetKey(snippet), snippetsOfType);
 
             // Notify listeners that a new snippet was added
-            Listeners.ForEach(listener => listener.PluginChange_Added(sender, this, snippet));
+            Listeners.ForEach(listener => listener.SnippetAdded(sender, this, snippet));
 
             return true;
         }
@@ -64,7 +62,7 @@ namespace Pinpoint.Plugin.Snippets
                 AppSettings.PutAndSave(GetKey(snippet), Snippets);
 
                 // Notify listeners that a snippet was removed
-                Listeners.ForEach(listener => listener.PluginChange_Removed(sender, this, snippet));
+                Listeners.ForEach(listener => listener.SnippetRemoved(sender, this, snippet));
             }
         }
 
