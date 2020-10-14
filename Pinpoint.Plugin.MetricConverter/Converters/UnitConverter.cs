@@ -2,7 +2,6 @@
 {
     public class UnitConverter
     {
-        //A map containing factors to convert to cm.
         public double Amount;
         public readonly string Unit;
         
