@@ -10,6 +10,7 @@ using NHotkey.Wpf;
 using Pinpoint.Plugin.Snippets;
 using Pinpoint.Plugin;
 using Pinpoint.Plugin.Calculator;
+using Pinpoint.Plugin.Currency;
 using Pinpoint.Win.Models;
 using Xceed.Wpf.Toolkit;
 using Color = System.Windows.Media.Color;
@@ -45,6 +46,7 @@ namespace Pinpoint.Win.Views
         private void LoadPlugins()
         {
             _pluginEngine.AddPlugin(new CalculatorPlugin());
+            _pluginEngine.AddPlugin(new CurrencyPlugin());
 
             var snippetsPlugin = new SnippetsPlugin();
             snippetsPlugin.Listeners.Add(_settingsWindow);
