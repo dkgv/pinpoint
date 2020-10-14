@@ -17,9 +17,10 @@ namespace Pinpoint.Plugin
             {
                 plugin.Load();
 
-                if (prevSettings.Any())
+                var pluginName = plugin.Meta.Name;
+                if (prevSettings.Any(m => m.Name.Equals(pluginName)))
                 {
-                    plugin.Meta = prevSettings.First(meta => meta.Name.Equals(plugin.Meta.Name));
+                    plugin.Meta = prevSettings.First(m => m.Name.Equals(pluginName));
                 }
 
                 Plugins.Add(plugin);
