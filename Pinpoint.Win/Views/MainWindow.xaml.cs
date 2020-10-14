@@ -11,7 +11,6 @@ using Pinpoint.Plugin.Snippets;
 using Pinpoint.Plugin;
 using Pinpoint.Plugin.Calculator;
 using Pinpoint.Plugin.Currency;
-using Pinpoint.Plugin.MetricConverter;
 using Pinpoint.Win.Models;
 using Xceed.Wpf.Toolkit;
 using Color = System.Windows.Media.Color;
@@ -48,7 +47,6 @@ namespace Pinpoint.Win.Views
         {
             _pluginEngine.AddPlugin(new CalculatorPlugin());
             _pluginEngine.AddPlugin(new CurrencyPlugin());
-            _pluginEngine.AddPlugin(new MetricConverterPlugin());
 
             var snippetsPlugin = new SnippetsPlugin();
             snippetsPlugin.Listeners.Add(_settingsWindow);
