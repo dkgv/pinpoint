@@ -3,9 +3,11 @@ using System.Linq;
 
 namespace Pinpoint.Plugin
 {
-    public class PluginEngine : IPluginListener<IPlugin, object>
+    public class PluginEngine
     {
-        public static readonly List<IPlugin> Plugins = new List<IPlugin>();
+        public List<IPlugin> Plugins { get; } = new List<IPlugin>();
+
+        public List<IPluginListener<IPlugin, object>> Listeners { get; } = new List<IPluginListener<IPlugin, object>>();
 
         public void AddPlugin(IPlugin plugin)
         {
@@ -21,13 +23,18 @@ namespace Pinpoint.Plugin
                 }
 
                 Plugins.Add(plugin);
+                Listeners.ForEach(listener => listener.PluginChange_Added(this, plugin, null));
             }
         }
 
         public void RemovePlugin(IPlugin plugin)
         {
-            plugin.Unload();
-            Plugins.Remove(plugin);
+            if (Plugins.Contains(plugin))
+            {
+                plugin.Unload();
+                Plugins.Remove(plugin);
+                Listeners.ForEach(listener => listener.PluginChange_Removed(this, plugin, null));
+            }
         }
 
         public T Plugin<T>() where T : IPlugin
@@ -47,16 +54,6 @@ namespace Pinpoint.Plugin
                     }
                 }
             }
-        }
-
-        public void PluginChange_Added(object sender, IPlugin plugin, object target)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void PluginChange_Removed(object sender, IPlugin plugin, object target)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }
