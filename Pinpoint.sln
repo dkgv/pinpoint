@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.Currency", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.MetricConverter", "Pinpoint.Plugin.MetricConverter\Pinpoint.Plugin.MetricConverter.csproj", "{BE1B125B-83C8-46D8-98D1-BFC90A5C90A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.Bangs", "Pinpoint.Plugin.Bangs\Pinpoint.Plugin.Bangs.csproj", "{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -97,6 +99,18 @@ Global
 		{BE1B125B-83C8-46D8-98D1-BFC90A5C90A7}.Release|x64.Build.0 = Release|Any CPU
 		{BE1B125B-83C8-46D8-98D1-BFC90A5C90A7}.Release|x86.ActiveCfg = Release|Any CPU
 		{BE1B125B-83C8-46D8-98D1-BFC90A5C90A7}.Release|x86.Build.0 = Release|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Debug|x64.Build.0 = Debug|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Debug|x86.Build.0 = Debug|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Release|x64.ActiveCfg = Release|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Release|x64.Build.0 = Release|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Release|x86.ActiveCfg = Release|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

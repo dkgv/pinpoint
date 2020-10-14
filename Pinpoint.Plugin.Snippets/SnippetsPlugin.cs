@@ -10,6 +10,11 @@ namespace Pinpoint.Plugin.Snippets
         public static readonly string TextSnippetsKey = "text_snippets";
         public static readonly string OcrSnippetsKey = "ocr_snippets";
 
+        public SnippetsPlugin(ISnippetListener settingsWindow)
+        {
+            Listeners.Add(settingsWindow);
+        }
+
         public List<AbstractSnippet> Snippets { get; } = new List<AbstractSnippet>();
 
         public List<ISnippetListener> Listeners { get; } = new List<ISnippetListener>();

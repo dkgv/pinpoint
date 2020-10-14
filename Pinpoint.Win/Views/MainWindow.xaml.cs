@@ -9,6 +9,7 @@ using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Plugin.Snippets;
 using Pinpoint.Plugin;
+using Pinpoint.Plugin.Bangs;
 using Pinpoint.Plugin.Calculator;
 using Pinpoint.Plugin.Currency;
 using Pinpoint.Plugin.MetricConverter;
@@ -34,9 +35,9 @@ namespace Pinpoint.Win.Views
             // Load old settings
             AppSettings.Load();
 
-            // Load existing snippet sources
             _pluginEngine = new PluginEngine();
             _settingsWindow = new SettingsWindow(this, _pluginEngine);
+            _pluginEngine.Listeners.Add(_settingsWindow);
 
             LoadPlugins();
 
@@ -49,10 +50,8 @@ namespace Pinpoint.Win.Views
             _pluginEngine.AddPlugin(new CalculatorPlugin());
             _pluginEngine.AddPlugin(new CurrencyPlugin());
             _pluginEngine.AddPlugin(new MetricConverterPlugin());
-
-            var snippetsPlugin = new SnippetsPlugin();
-            snippetsPlugin.Listeners.Add(_settingsWindow);
-            _pluginEngine.AddPlugin(snippetsPlugin);
+            _pluginEngine.AddPlugin(new BangsPlugin());
+            _pluginEngine.AddPlugin(new SnippetsPlugin(_settingsWindow));
         }
 
         internal MainWindowModel Model

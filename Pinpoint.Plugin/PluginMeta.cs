@@ -2,7 +2,7 @@
 {
     public class PluginMeta
     {
-        public PluginMeta(string name, bool enabled)
+        public PluginMeta(string name, bool enabled = true)
         {
             Name = name;
             Enabled = enabled;
