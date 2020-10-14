@@ -42,7 +42,7 @@ namespace Pinpoint.Plugin.Calculator
             var table = new System.Data.DataTable();
             var result = Convert.ToDouble(table.Compute(query.RawQuery, string.Empty));
             result = Math.Round(result, 5);
-            yield return new CalculatorResult(query.RawQuery, result.ToString());
+            yield return new CalculatorResult(result.ToString());
         }
     }
 }

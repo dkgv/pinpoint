@@ -4,7 +4,7 @@ namespace Pinpoint.Plugin.Calculator
 {
     public class CalculatorResult : IQueryResult
     {
-        public CalculatorResult(string expression, string result)
+        public CalculatorResult(string result)
         {
             Title = "= " + result;
         }

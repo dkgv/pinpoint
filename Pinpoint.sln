@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Calculator"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.Currency", "Pinpoint.Plugin.Currency\Pinpoint.Plugin.Currency.csproj", "{EA507851-1DC7-42DD-90EA-5AA68706D85A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.Bangs", "Pinpoint.Plugin.Bangs\Pinpoint.Plugin.Bangs.csproj", "{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{EA507851-1DC7-42DD-90EA-5AA68706D85A}.Release|x64.Build.0 = Release|Any CPU
 		{EA507851-1DC7-42DD-90EA-5AA68706D85A}.Release|x86.ActiveCfg = Release|Any CPU
 		{EA507851-1DC7-42DD-90EA-5AA68706D85A}.Release|x86.Build.0 = Release|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Debug|x64.Build.0 = Debug|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Debug|x86.Build.0 = Debug|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Release|x64.ActiveCfg = Release|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Release|x64.Build.0 = Release|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Release|x86.ActiveCfg = Release|Any CPU
+		{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
