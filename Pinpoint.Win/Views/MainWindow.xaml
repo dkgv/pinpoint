@@ -4,7 +4,7 @@
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
         xmlns:fa="http://schemas.fontawesome.io/icons/"
-        MinWidth="550" 
+        MinWidth="600" MaxWidth="600"
         WindowStyle="None"
         ResizeMode="NoResize" 
         ShowInTaskbar="False" 
@@ -12,9 +12,22 @@
         SizeToContent="WidthAndHeight" Topmost="True" Loaded="Window_Loaded" Background="{x:Null}">
 
     <Window.Resources>
+        <Style TargetType="ListBox">
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="ListBoxItem">
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+                <Trigger Property="IsFocused" Value="True">
                     <Setter Property="BorderThickness" Value="0"/>
                 </Trigger>
             </Style.Triggers>
@@ -87,13 +100,14 @@
 
                 <!-- Results -->
                 <ListBox x:Name="LstResults" Grid.Row="1"
+                         MaxHeight="250"
                          ItemsSource="{Binding Results}" 
-                         ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                         ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                          KeyDown="LstResults_KeyDown" 
                          SelectionMode="Single" 
                          Background="{x:Null}" 
                          BorderBrush="{x:Null}" 
-                         BorderThickness="0" 
+                         BorderThickness="0"
                          MouseDoubleClick="LstResults_MouseDoubleClick">
 
                     <ListBox.ItemTemplate>

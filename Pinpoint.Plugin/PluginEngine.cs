@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Pinpoint.Plugin
 {
@@ -43,14 +45,22 @@ namespace Pinpoint.Plugin
             return Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
         }
 
-        public async IAsyncEnumerable<IQueryResult> Process(Query query)
+        public async IAsyncEnumerable<IQueryResult> Process(Query query, CancellationToken ct)
         {
+            var results = 0;
+
             foreach (var plugin in Plugins.Where(p => p.Meta.Enabled))
             {
+                if (results >= 30)
+                {
+                    yield break;
+                }
+
                 if (await plugin.Activate(query))
                 {
-                    await foreach (var result in plugin.Process(query))
+                    await foreach (var result in plugin.Process(query).WithCancellation(ct))
                     {
+                        results++;
                         yield return result;
                     }
                 }
