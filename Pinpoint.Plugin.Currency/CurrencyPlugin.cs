@@ -92,7 +92,13 @@ namespace Pinpoint.Plugin.Currency
                 CacheRates(from);
             }
 
-            return CurrencyModels[from].Rates[to] * value;
+            var model = CurrencyModels[from];
+            if (model.Rates.ContainsKey(to))
+            {
+                return model.Rates[to] * value;
+            }
+
+            return 1;
         }
 
         private double IdentifyValue(Query query)

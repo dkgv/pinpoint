@@ -19,6 +19,8 @@ namespace Pinpoint.Plugin.Snippets
         {
         }
 
+        public override string RawContent { get; set; }
+
         public override string FilePath
         {
             get => _filePath;
