@@ -16,7 +16,7 @@ namespace Pinpoint.Plugin.Currency
         private const string Symbols = "$£€¥";
         private static readonly Dictionary<string, CurrencyModel> CurrencyModels = new Dictionary<string, CurrencyModel>();
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Currency Converter", true);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Currency Converter", PluginPriority.Highest);
 
         public void Load()
         {

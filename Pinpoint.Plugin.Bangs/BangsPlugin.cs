@@ -5,7 +5,7 @@ namespace Pinpoint.Plugin.Bangs
 {
     public class BangsPlugin : IPlugin
     {
-        public PluginMeta Meta { get; set; } = new PluginMeta("DuckDuckGo !Bangs");
+        public PluginMeta Meta { get; set; } = new PluginMeta("DuckDuckGo !Bangs", PluginPriority.Highest);
 
         public void Load()
         {

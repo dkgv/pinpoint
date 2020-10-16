@@ -10,9 +10,9 @@ namespace Pinpoint.Plugin.MetricConverter
     public class MetricConverterPlugin : IPlugin
     {
         //Example of match: 100cm to m | 100cm
-        private const string Pattern = @"^(\d+)(mm|cm|km|m|micrometer|nm|mi|yd|ft|in){1}( to )?(mm|cm|km|m|micrometer|nm|mi|yd|ft|in)?$";
+        private const string Pattern = @"^(\d+) ?(mm|cm|km|m|micrometer|nm|mi|yd|ft|in){1}( (to|in) )?(mm|cm|km|m|micrometer|nm|mi|yd|ft|in)?$";
         
-        public PluginMeta Meta { get; set; } = new PluginMeta("MetricConverter", true);
+        public PluginMeta Meta { get; set; } = new PluginMeta("MetricConverter", PluginPriority.Highest);
         public void Load()
         {
         }
@@ -50,7 +50,7 @@ namespace Pinpoint.Plugin.MetricConverter
 
         public async IAsyncEnumerable<IQueryResult> Process(Query query)
         {
-            yield return new ConversionResult(query.RawQuery, ConvertQuery(query));
+            yield return new ConversionResult(ConvertQuery(query));
         }
     }
 }
