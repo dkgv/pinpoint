@@ -7,7 +7,7 @@ namespace Pinpoint.Plugin.Currency
     {
         public CurrencyResult(double value, string to)
         {
-            Title = "=" + value.ToString(CultureInfo.InvariantCulture) + " " + to.ToUpper();
+            Title = "= " + value.ToString(CultureInfo.InvariantCulture) + " " + to.ToUpper();
         }
 
         public string Title { get; }

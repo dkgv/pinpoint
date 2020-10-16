@@ -2,15 +2,17 @@
 {
     public class ConversionResult : IQueryResult
     {
-        public ConversionResult(string expression, string result)
+        public ConversionResult(string result)
         {
-            Title = " = " + result;
+            Title = "= " + result;
         }
+
         public string Title { get; }
         
         public string Subtitle { get; }
         
         public object Instance { get; }
+
         public void OnSelect()
         {
         }

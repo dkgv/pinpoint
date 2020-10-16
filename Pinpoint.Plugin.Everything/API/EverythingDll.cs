@@ -52,10 +52,7 @@ namespace Pinpoint.Plugin.Everything.API
 
         [DllImport(Dll, CharSet = CharSet.Unicode)]
         public static extern string Everything_GetSearchW();
-
-        [DllImport(Dll)]
-        public static extern StatusCode Everything_GetLastError();
-
+        
         [DllImport(Dll, CharSet = CharSet.Unicode)]
         public static extern bool Everything_QueryW(bool bWait);
 

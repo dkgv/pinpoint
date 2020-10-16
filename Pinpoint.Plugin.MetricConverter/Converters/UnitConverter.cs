@@ -7,8 +7,8 @@
         
         public UnitConverter(double amount, string unit)
         {
-            this.Amount = amount; 
-            this.Unit = unit;
+            Amount = amount; 
+            Unit = unit;
         }
 
         private UnitConverter ConvertToCm()
@@ -50,7 +50,7 @@
 
         public override string ToString()
         {
-            return Amount + Unit;
+            return Amount + " " + Unit;
         }
     }
 }

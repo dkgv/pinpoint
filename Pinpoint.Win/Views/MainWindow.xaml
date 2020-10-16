@@ -88,7 +88,7 @@
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
-                        <xctk:WatermarkTextBox Grid.Column="0" x:Name="TxtQuery" Watermark="Find a snippet..." BorderThickness="0" KeepWatermarkOnGotFocus="True" FontSize="26" BorderBrush="{x:Null}" SelectionTextBrush="#FFD8D8D8" Foreground="#FFD8D8D8" Background="{x:Null}" CaretBrush="#FFD8D8D8" KeyUp="TxtQuery_KeyUp" TextChanged="TxtQuery_TextChanged"/>
+                        <xctk:WatermarkTextBox Grid.Column="0" x:Name="TxtQuery" Watermark="Type here..." BorderThickness="0" KeepWatermarkOnGotFocus="True" FontSize="26" BorderBrush="{x:Null}" SelectionTextBrush="#FFD8D8D8" Foreground="#FFD8D8D8" Background="{x:Null}" CaretBrush="#FFD8D8D8" KeyUp="TxtQuery_KeyUp" TextChanged="TxtQuery_TextChanged"/>
 
                         <xctk:IconButton Grid.Column="1" x:Name="BtnSettings" Cursor="Hand" HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}" MouseOverBackground="{x:Null}" MouseOverBorderBrush="{x:Null}" MousePressedBorderBrush="{x:Null}" MousePressedBackground="{x:Null}" Click="BtnSettings_Click" MouseEnter="BtnSettings_MouseEnter" MouseLeave="BtnSettings_MouseLeave">
                             <xctk:IconButton.Icon>
