@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using System.IO;
+using FontAwesome5;
 using Pinpoint.Plugin.Everything.API;
 
 namespace Pinpoint.Plugin.Everything
@@ -8,11 +8,12 @@ namespace Pinpoint.Plugin.Everything
     {
         private readonly QueryResultItem _item;
 
-        public EverythingResult(QueryResultItem item)
+        public EverythingResult(QueryResultItem item, EFontAwesomeIcon icon)
         {
             _item = item;
             Title = item.Name;
             Subtitle = item.FullPath;
+            Icon = icon;
         }
 
         public string Title { get; }
@@ -20,6 +21,8 @@ namespace Pinpoint.Plugin.Everything
         public string Subtitle { get; }
 
         public object Instance { get; }
+
+        public EFontAwesomeIcon Icon { get; }
 
         public void OnSelect()
         {

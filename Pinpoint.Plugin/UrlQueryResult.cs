@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using FontAwesome5;
 
 namespace Pinpoint.Plugin
 {
@@ -18,6 +19,8 @@ namespace Pinpoint.Plugin
         public string Subtitle { get; }
 
         public object Instance { get; }
+
+        public EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_ExternalLinkAlt;
 
         public void OnSelect()
         {

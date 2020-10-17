@@ -1,4 +1,6 @@
-﻿namespace Pinpoint.Plugin.Snippets
+﻿using FontAwesome5;
+
+namespace Pinpoint.Plugin.Snippets
 {
     public class SnippetQueryResult : IQueryResult
     {
@@ -16,6 +18,8 @@
         public string Subtitle { get; }
 
         public object Instance => _snippet;
+
+        public EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Code;
 
         public void OnSelect()
         {

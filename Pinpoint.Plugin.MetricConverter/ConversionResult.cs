@@ -1,4 +1,6 @@
-﻿namespace Pinpoint.Plugin.MetricConverter
+﻿using FontAwesome5;
+
+namespace Pinpoint.Plugin.MetricConverter
 {
     public class ConversionResult : IQueryResult
     {
@@ -12,6 +14,8 @@
         public string Subtitle { get; }
         
         public object Instance { get; }
+
+        public EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Ruler;
 
         public void OnSelect()
         {

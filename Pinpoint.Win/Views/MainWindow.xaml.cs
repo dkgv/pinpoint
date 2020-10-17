@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using FontAwesome.WPF;
+using FontAwesome5;
 using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Plugin.Snippets;
@@ -130,7 +130,7 @@ namespace Pinpoint.Win.Views
             var source = (IconButton)sender;
             source.Icon = new ImageAwesome
             {
-                Icon = FontAwesomeIcon.Cogs,
+                Icon = EFontAwesomeIcon.Solid_Cogs,
                 Height = source.Icon.Height,
                 Foreground = new SolidColorBrush(Color.FromRgb(r, g, b)),
             };

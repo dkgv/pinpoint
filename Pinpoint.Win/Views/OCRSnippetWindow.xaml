@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pinpoint.Win.Views"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
         mc:Ignorable="d"
         Title="Custom Snippet" 
         MinWidth="550" MaxWidth="550" 
@@ -73,7 +73,7 @@
 
                         <xctk:IconButton Grid.Row="1" x:Name="BtnAddMore" Content=" Add Screenshot" HorizontalAlignment="Right" Click="BtnAddMore_Click">
                             <xctk:IconButton.Icon>
-                                <fa:ImageAwesome Height="14" Icon="Plus"></fa:ImageAwesome>
+                                <fa5:ImageAwesome Height="14" Icon="Solid_Plus" />
                             </xctk:IconButton.Icon>
                         </xctk:IconButton>
                     </Grid>
