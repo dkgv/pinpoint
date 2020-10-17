@@ -16,6 +16,10 @@ Calculates mathematical expressions instantly: "(5 + 5) * 10".
 
 Converts between currencies using familiar syntax: "1 USD to EUR". Alternatively, your local currency will be used if you don't specify which currency to convert to: "€1".
 
+### Everything (File Search)
+
+Uses [Everything](https://www.voidtools.com/) to allow blazingly fast file search across the entire file system.
+
 ### Metric Converter
 
 Easily convert between all the common imperial and metric units: "1m to ft".
