@@ -63,8 +63,15 @@ namespace Pinpoint.Plugin.Everything
 
         private EFontAwesomeIcon BestFileIcon(QueryResultItem result)
         {
-            var extension = Path.GetExtension(result.FullPath).Substring(1);
-            
+            var extension = Path.GetExtension(result.FullPath);
+
+            if (string.IsNullOrEmpty(extension))
+            {
+                return EFontAwesomeIcon.Regular_File;
+            }
+
+            extension = extension.Substring(1);
+
             if (ImageRegex.IsMatch(extension))
             {
                 return EFontAwesomeIcon.Regular_FileImage;
