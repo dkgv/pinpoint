@@ -8,12 +8,11 @@ namespace Pinpoint.Plugin
 {
     public static class AppSettings
     {
-        private static readonly List<Setting> Settings = new List<Setting>();
+        private static readonly Dictionary<string, object> Settings = new Dictionary<string, object>();
 
         public static T GetAs<T>(string key)
         {
-            var obj = Get(key) as Setting;
-            return (T) obj.Value;
+            return JsonConvert.DeserializeObject<T>(Get(key).ToString());
         }
 
         public static List<T> GetListAs<T>(string key)
@@ -33,6 +32,11 @@ namespace Pinpoint.Plugin
             return !Contains(key) ? fallback : GetStr(key);
         }
 
+        public static T GetAsOrDefault<T>(string key, T fallback)
+        {
+            return !Contains(key) ? fallback : GetAs<T>(key);
+        }
+
         public static string GetStr(string key)
         {
             return GetAs<string>(key);
@@ -40,20 +44,14 @@ namespace Pinpoint.Plugin
 
         public static object Get(string key)
         {
-            return Settings.FirstOrDefault(s => s.Key.Equals(key));
+            return Settings[key];
         }
 
         public static void Put(string key, object value, bool overwrite = true)
         {
-            var index = IndexOf(key);
-
-            if (index == -1)
+            if (!Contains(key) || overwrite)
             {
-                Settings.Add(new Setting(key, value));
-            }
-            else if (overwrite)
-            {
-                Settings[index] = new Setting(key, value);
+                Settings[key] = value;
             }
         }
 
@@ -65,12 +63,7 @@ namespace Pinpoint.Plugin
 
         public static bool Contains(string key)
         {
-            return IndexOf(key) >= 0;
-        }
-
-        public static int IndexOf(string key)
-        {
-            return Settings.FindIndex(s => s.Key.Equals(key));
+            return Settings.ContainsKey(key);
         }
 
         public static void Save()
@@ -81,8 +74,12 @@ namespace Pinpoint.Plugin
                 File.Create(AppConstants.SettingsFilePath).Close();
             }
 
-            var json = JsonConvert.SerializeObject(Settings);
-            File.WriteAllText(AppConstants.SettingsFilePath, json);
+            var pairs = new Dictionary<string, object>();
+            foreach (var setting in Settings)
+            {
+                pairs[setting.Key] = setting.Value;
+            }
+            File.WriteAllText(AppConstants.SettingsFilePath, JsonConvert.SerializeObject(pairs));
         }
 
         public static bool Load()
@@ -98,30 +95,13 @@ namespace Pinpoint.Plugin
                 return false;
             }
 
-            var container = JsonConvert.DeserializeObject<List<Setting>>(json);
+            var container = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
             foreach (var setting in container)
             {
                 Put(setting.Key, setting.Value);
             }
 
             return true;
-        }
-
-        private class Setting
-        {
-            public Setting()
-            {
-            }
-
-            public Setting(string key, object value)
-            {
-                Key = key;
-                Value = value;
-            }
-
-            public string Key { get; set; }
-
-            public object Value { get; set; }
         }
     }
 }

@@ -7,23 +7,19 @@ namespace Pinpoint.Win.Models
     internal class SettingsWindowModel : BaseWindowModel
     {
         private HotkeyModel _hotkey = new HotkeyModel(AppSettings.GetStrOrDefault("hotkey", "Alt + Space"));
-        private ThemeModel _theme = AppSettings.GetStrOrDefault("theme", "dark").Equals("light") 
-            ? ThemeModel.LightTheme 
-            : ThemeModel.DarkTheme;
+
+        public ObservableCollection<ThemeModel> Themes { get; } = new ObservableCollection<ThemeModel>(new []
+        {
+            ThemeModel.LightTheme, 
+            ThemeModel.DarkTheme, 
+        });
 
         public HotkeyModel Hotkey
         {
             get => _hotkey;
             set => SetProperty(ref _hotkey, value);
         }
-
-        public ThemeModel Theme
-        {
-            get => _theme;
-            set => SetProperty(ref _theme, value);
-        }
         
-
         public ObservableCollection<TextSnippet> ManualSnippets { get; } = new ObservableCollection<TextSnippet>();
 
         public ObservableCollection<FileSnippet> FileSnippets { get; } = new ObservableCollection<FileSnippet>();

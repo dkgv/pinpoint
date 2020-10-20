@@ -52,9 +52,12 @@
                                      Text="{Binding Hotkey, Mode=OneWay}"></TextBox>
                         </Grid>
                         
-                        <Label Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right">Light Mode:</Label>
-                        <CheckBox x:Name="ChbThemeChange" IsChecked="{Binding Theme.IsLight, Mode=TwoWay}" Grid.Row="2" Grid.Column="2" VerticalAlignment="Center"
-                                  Checked="ChbThemeChanged_OnThemeChange" Unchecked="ChbThemeChanged_OnThemeChange"></CheckBox>
+                        <Label Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right">Theme:</Label>
+
+                        <ComboBox Grid.Row="2" Grid.Column="2" x:Name="CbTheme"
+                            ItemsSource="{Binding Themes}"
+                            SelectionChanged="CbTheme_SelectionChanged">
+                        </ComboBox>
                     </Grid>
                 </Border>
             </TabItem>

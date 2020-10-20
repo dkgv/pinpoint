@@ -34,7 +34,7 @@ namespace Pinpoint.Plugin.Currency
             var url = $"https://api.exchangeratesapi.io/latest?base={from}";
             using var client = new WebClient();
             var json = client.DownloadString(url);
-            CurrencyModels.Add(from, JsonConvert.DeserializeObject<CurrencyModel>(json));
+            CurrencyModels[from] = JsonConvert.DeserializeObject<CurrencyModel>(json);
         }
 
         public void Unload()

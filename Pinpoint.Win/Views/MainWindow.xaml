@@ -17,6 +17,12 @@
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="BorderThickness" Value="0"/>
                 </Trigger>
+                <Trigger Property="Name" Value="LblResultTitle">
+                    <Setter Property="Foreground" Value="{Binding Theme.TxtQueryForeground, UpdateSourceTrigger=PropertyChanged}"/>
+                </Trigger>
+                <Trigger Property="Name" Value="LblResultSubtitle">
+                    <Setter Property="Foreground" Value="{Binding Theme.TxtResultSubtitleForeground, UpdateSourceTrigger=PropertyChanged}"/>
+                </Trigger>
             </Style.Triggers>
 
             <Setter Property="Padding" Value="0"/>
@@ -24,7 +30,7 @@
         </Style>
     </Window.Resources>
 
-    <Border CornerRadius="5" Background="{Binding Theme.BorderBackground}">
+    <Border CornerRadius="5" Background="{Binding Theme.Background, UpdateSourceTrigger=PropertyChanged}">
         <Grid>
             <!-- Tray icon -->
             <tb:TaskbarIcon x:Name="NotifyIcon"
@@ -81,7 +87,21 @@
                             </xctk:IconButton.Icon>
                         </xctk:IconButton>
 
-                        <xctk:WatermarkTextBox Grid.Column="0" Margin="40 0 0 0" x:Name="TxtQuery" HorizontalAlignment="Left" Watermark="Pinpoint Search" BorderThickness="0" KeepWatermarkOnGotFocus="True" FontSize="26" BorderBrush="{x:Null}" SelectionTextBrush="#FFD8D8D8" Foreground="{Binding Theme.TxtQueryForeground}" Background="{x:Null}" CaretBrush="{Binding Theme.TxtQueryCaretBrush}" KeyUp="TxtQuery_KeyUp" TextChanged="TxtQuery_TextChanged"/>
+                        <xctk:WatermarkTextBox Grid.Column="0" 
+                                               Margin="40 0 0 0" 
+                                               x:Name="TxtQuery" 
+                                               HorizontalAlignment="Left" 
+                                               Watermark="Pinpoint Search" 
+                                               BorderThickness="0" 
+                                               KeepWatermarkOnGotFocus="True" 
+                                               FontSize="26" 
+                                               BorderBrush="{x:Null}" 
+                                               SelectionTextBrush="#FFD8D8D8"
+                                               Foreground="{Binding Theme.TxtQueryForeground}"
+                                               Background="{x:Null}" 
+                                               CaretBrush="{Binding Theme.TxtQueryCaretBrush}" 
+                                               KeyUp="TxtQuery_KeyUp" 
+                                               TextChanged="TxtQuery_TextChanged"/>
 
                         <xctk:IconButton Grid.Column="1" x:Name="BtnSettings" Cursor="Hand" HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}" MouseOverBackground="{x:Null}" MouseOverBorderBrush="{x:Null}" MousePressedBorderBrush="{x:Null}" MousePressedBackground="{x:Null}" Click="BtnSettings_Click" MouseEnter="BtnSettings_MouseEnter" MouseLeave="BtnSettings_MouseLeave">
                             <xctk:IconButton.Icon>
@@ -105,8 +125,8 @@
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <StackPanel>
-                                <Label Foreground="#FFD8D8D8" Content="{Binding Title}" FontSize="18"></Label>
-                                <Label Foreground="#FF9E9E9E" Content="{Binding Subtitle}"></Label>
+                                <Label x:Name="LblResultTitle" Content="{Binding Title}" FontSize="18"></Label>
+                                <Label x:Name="LblResultSubtitle" Content="{Binding Subtitle}"></Label>
                             </StackPanel>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

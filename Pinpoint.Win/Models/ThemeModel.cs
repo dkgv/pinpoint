@@ -2,36 +2,48 @@ using System.Windows.Media;
 
 namespace Pinpoint.Win.Models
 {
-    public class ThemeModel
+    internal class ThemeModel : BaseWindowModel
     {
-        public SolidColorBrush BorderBackground { get; set; }
+        public string Name { get; set; }
+
+        public SolidColorBrush Background { get; set; }
         
         public SolidColorBrush TxtQueryForeground { get; set; }
         
         public SolidColorBrush TxtQueryCaretBrush { get; set; }
         
+        public SolidColorBrush TxtResultSubtitleForeground { get; set; }
+
         public bool IsLight { get; set; }
         
-
         public static readonly ThemeModel DarkTheme = new ThemeModel
         {
-            BorderBackground = (SolidColorBrush)new BrushConverter().ConvertFromString("#F2343434"),
-            TxtQueryForeground = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFD8D8D8"),
-            TxtQueryCaretBrush = (SolidColorBrush)new BrushConverter().ConvertFromString("#FFD8D8D8"),
+            Name = "Dark",
+            Background = ToBrush("#F2343434"),
+            TxtQueryForeground = ToBrush("#FFD8D8D8"),
+            TxtQueryCaretBrush = ToBrush("#FFD8D8D8"),
+            TxtResultSubtitleForeground = ToBrush("#FF9E9E9E"),
             IsLight = false
         };
         
         public static readonly ThemeModel LightTheme = new ThemeModel
         {
-            BorderBackground = (SolidColorBrush)new BrushConverter().ConvertFromString("#EEEEEEF0"),
-            TxtQueryForeground = (SolidColorBrush)new BrushConverter().ConvertFromString("#000000"),
-            TxtQueryCaretBrush = (SolidColorBrush)new BrushConverter().ConvertFromString("#000000"),
+            Name = "Light",
+            Background = ToBrush("#EEEEEEF0"),
+            TxtQueryForeground = ToBrush("#000000"),
+            TxtQueryCaretBrush = ToBrush("#000000"),
+            TxtResultSubtitleForeground = ToBrush("#000000"),
             IsLight = true
         };
 
+        private static SolidColorBrush ToBrush(string value)
+        {
+            return (SolidColorBrush) new BrushConverter().ConvertFromString(value);
+        }
+
         public override string ToString()
         {
-            return this == LightTheme ? "light" : "dark";
+            return Name;
         }
     }
 }

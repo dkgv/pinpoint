@@ -39,13 +39,8 @@ namespace Pinpoint.Win.Views
         {
             e.Cancel = true;
 
-            // Store plugin settings
             AppSettings.Put("plugins", Model.Plugins.Select(plugin => plugin.Meta).ToArray());
-            
-            // Store theme settings
-            AppSettings.Put("theme", Model.Theme.ToString());
-
-            // Ensure settings get saved
+            AppSettings.Put("theme", _mainWindow.Model.Theme);
             AppSettings.Save();
 
             Hide();
@@ -218,11 +213,10 @@ namespace Pinpoint.Win.Views
             Model.Plugins.Remove(plugin);
         }
 
-        private void ChbThemeChanged_OnThemeChange(object sender, RoutedEventArgs e)
+        private void CbTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            e.Handled = true;
-            var isCheckedAndNotNull = ChbThemeChange.IsChecked != null && (bool)ChbThemeChange.IsChecked;
-            Model.Theme = isCheckedAndNotNull ? ThemeModel.LightTheme : ThemeModel.DarkTheme;
+            var selected = (ThemeModel) CbTheme.SelectedItem;
+            _mainWindow.Model.Theme = selected;
         }
     }
 }
