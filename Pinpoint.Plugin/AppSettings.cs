@@ -10,6 +10,11 @@ namespace Pinpoint.Plugin
     {
         private static readonly Dictionary<string, object> Settings = new Dictionary<string, object>();
 
+        public static Dictionary<string, dynamic> GetObject(string key)
+        {
+            return JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(Get(key).ToString());
+        }
+
         public static T GetAs<T>(string key)
         {
             return JsonConvert.DeserializeObject<T>(Get(key).ToString());
@@ -35,21 +40,11 @@ namespace Pinpoint.Plugin
             }
         }
 
-        public static string GetStrOrDefault(string key, string fallback)
-        {
-            return !Contains(key) ? fallback : GetStr(key);
-        }
-
         public static T GetAsOrDefault<T>(string key, T fallback)
         {
             return !Contains(key) ? fallback : GetAs<T>(key);
         }
-
-        public static string GetStr(string key)
-        {
-            return GetAs<string>(key);
-        }
-
+        
         public static object Get(string key)
         {
             return Settings[key];

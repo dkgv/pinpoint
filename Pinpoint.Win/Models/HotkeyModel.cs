@@ -6,6 +6,10 @@ namespace Pinpoint.Win.Models
 {
     public class HotkeyModel
     {
+        public HotkeyModel()
+        {
+        }
+
         public HotkeyModel(string text)
         {
             Text = text;

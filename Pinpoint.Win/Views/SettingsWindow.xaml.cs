@@ -162,7 +162,7 @@ namespace Pinpoint.Win.Views
 
             Model.Hotkey = new HotkeyModel(key, modifiers);
             HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyIdentifier, Model.Hotkey.Key, Model.Hotkey.Modifiers, _mainWindow.OnToggleVisibility);
-            AppSettings.PutAndSave("hotkey", Model.Hotkey.ToString());
+            AppSettings.PutAndSave("hotkey", Model.Hotkey);
         }
 
         public void SnippetAdded(object sender, SnippetsPlugin plugin, AbstractSnippet target)
