@@ -1,4 +1,4 @@
-﻿using FontAwesome5;
+using FontAwesome5;
 
 namespace Pinpoint.Plugin.MetricConverter
 {

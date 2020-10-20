@@ -13,6 +13,7 @@ namespace Pinpoint.Plugin.MetricConverter
         private const string Pattern = @"^(\d+) ?(mm|cm|km|m|micrometer|nm|mi|yd|ft|in){1}( (to|in) )?(mm|cm|km|m|micrometer|nm|mi|yd|ft|in)?$";
         
         public PluginMeta Meta { get; set; } = new PluginMeta("MetricConverter", PluginPriority.Highest);
+
         public void Load()
         {
         }

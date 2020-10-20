@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,11 +33,12 @@ namespace Pinpoint.Win.Views
         public MainWindow()
         {
             InitializeComponent();
-            Model = new MainWindowModel();
-
+            
             // Load old settings
             AppSettings.Load();
 
+            Model = new MainWindowModel();
+            
             _pluginEngine = new PluginEngine();
             _settingsWindow = new SettingsWindow(this, _pluginEngine);
             _pluginEngine.Listeners.Add(_settingsWindow);
