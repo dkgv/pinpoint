@@ -24,7 +24,7 @@
         </Style>
     </Window.Resources>
 
-    <Border CornerRadius="5" Background="#F2343434">
+    <Border CornerRadius="5" Background="{Binding Theme.BorderBackground}">
         <Grid>
             <!-- Tray icon -->
             <tb:TaskbarIcon x:Name="NotifyIcon"
@@ -74,8 +74,14 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
+                        
+                        <xctk:IconButton Grid.Column="0" Margin="5 0 0 0" x:Name="SearchLogo" HorizontalAlignment="Left" Background="{x:Null}" BorderBrush="{x:Null}" MouseOverBackground="{x:Null}" MouseOverBorderBrush="{x:Null}" MousePressedBorderBrush="{x:Null}" MousePressedBackground="{x:Null}">
+                            <xctk:IconButton.Icon>
+                                <fa:ImageAwesome Height="26" Icon="Search" Foreground="#FF575757"></fa:ImageAwesome>
+                            </xctk:IconButton.Icon>
+                        </xctk:IconButton>
 
-                        <xctk:WatermarkTextBox Grid.Column="0" x:Name="TxtQuery" Watermark="Find a snippet..." BorderThickness="0" KeepWatermarkOnGotFocus="True" FontSize="26" BorderBrush="{x:Null}" SelectionTextBrush="#FFD8D8D8" Foreground="#FFD8D8D8" Background="{x:Null}" CaretBrush="#FFD8D8D8" KeyUp="TxtQuery_KeyUp" TextChanged="TxtQuery_TextChanged"/>
+                        <xctk:WatermarkTextBox Grid.Column="0" Margin="40 0 0 0" x:Name="TxtQuery" HorizontalAlignment="Left" Watermark="Pinpoint Search" BorderThickness="0" KeepWatermarkOnGotFocus="True" FontSize="26" BorderBrush="{x:Null}" SelectionTextBrush="#FFD8D8D8" Foreground="{Binding Theme.TxtQueryForeground}" Background="{x:Null}" CaretBrush="{Binding Theme.TxtQueryCaretBrush}" KeyUp="TxtQuery_KeyUp" TextChanged="TxtQuery_TextChanged"/>
 
                         <xctk:IconButton Grid.Column="1" x:Name="BtnSettings" Cursor="Hand" HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}" MouseOverBackground="{x:Null}" MouseOverBorderBrush="{x:Null}" MousePressedBorderBrush="{x:Null}" MousePressedBackground="{x:Null}" Click="BtnSettings_Click" MouseEnter="BtnSettings_MouseEnter" MouseLeave="BtnSettings_MouseLeave">
                             <xctk:IconButton.Icon>

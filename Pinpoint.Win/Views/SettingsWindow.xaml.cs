@@ -19,7 +19,7 @@ namespace Pinpoint.Win.Views
     {
         private readonly MainWindow _mainWindow;
         private readonly PluginEngine _pluginEngine;
-
+        
         public SettingsWindow(MainWindow mainWindow, PluginEngine pluginEngine)
         {
             InitializeComponent();
@@ -41,6 +41,9 @@ namespace Pinpoint.Win.Views
 
             // Store plugin settings
             AppSettings.Put("plugins", Model.Plugins.Select(plugin => plugin.Meta).ToArray());
+            
+            // Store theme settings
+            AppSettings.Put("theme", Model.Theme.ToString());
 
             // Ensure settings get saved
             AppSettings.Save();
@@ -111,7 +114,7 @@ namespace Pinpoint.Win.Views
         }
 
         private void BtnRemoveManualSnippet_OnClick(object sender, RoutedEventArgs e)
-        {
+        {        
             RemoveSelectedSnippet(LstManualSnippets, Model.ManualSnippets);
         }
 
@@ -213,6 +216,13 @@ namespace Pinpoint.Win.Views
         public void PluginChange_Removed(object sender, IPlugin plugin, object target)
         {
             Model.Plugins.Remove(plugin);
+        }
+
+        private void ChbThemeChanged_OnThemeChange(object sender, RoutedEventArgs e)
+        {
+            e.Handled = true;
+            var isCheckedAndNotNull = ChbThemeChange.IsChecked != null && (bool)ChbThemeChange.IsChecked;
+            Model.Theme = isCheckedAndNotNull ? ThemeModel.LightTheme : ThemeModel.DarkTheme;
         }
     }
 }
