@@ -29,7 +29,7 @@ namespace Pinpoint.Plugin.Snippets
             return new Regex(@"#\w+").Matches(str).Select(match => match.Value).ToArray();
         }
 
-        public string RawContent { get; set; }
+        public abstract string RawContent { get; set; }
 
         public string Identifier { get; set; }
 

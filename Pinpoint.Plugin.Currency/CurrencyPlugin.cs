@@ -16,7 +16,7 @@ namespace Pinpoint.Plugin.Currency
         private const string Symbols = "$£€¥";
         private static readonly Dictionary<string, CurrencyModel> CurrencyModels = new Dictionary<string, CurrencyModel>();
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Currency Converter", true);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Currency Converter", PluginPriority.Highest);
 
         public void Load()
         {
@@ -92,7 +92,13 @@ namespace Pinpoint.Plugin.Currency
                 CacheRates(from);
             }
 
-            return CurrencyModels[from].Rates[to] * value;
+            var model = CurrencyModels[from];
+            if (model.Rates.ContainsKey(to))
+            {
+                return model.Rates[to] * value;
+            }
+
+            return 1;
         }
 
         private double IdentifyValue(Query query)

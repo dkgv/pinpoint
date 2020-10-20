@@ -1,4 +1,4 @@
-﻿using System;
+﻿using FontAwesome5;
 
 namespace Pinpoint.Plugin.Calculator
 {
@@ -14,6 +14,8 @@ namespace Pinpoint.Plugin.Calculator
         public string Subtitle { get; }
 
         public object Instance { get; }
+
+        public EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Calculator;
 
         public void OnSelect()
         {

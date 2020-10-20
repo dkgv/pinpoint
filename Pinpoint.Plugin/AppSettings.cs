@@ -21,10 +21,18 @@ namespace Pinpoint.Plugin
             {
                 return new List<T>();
             }
-            var json = GetAs<JArray>(key);
-            return json.AsEnumerable()
-                .Select(elem => JsonConvert.DeserializeObject<T>(elem.ToString()))
-                .ToList();
+
+            try
+            {
+                var json = GetAs<JArray>(key);
+                return json.AsEnumerable()
+                    .Select(elem => JsonConvert.DeserializeObject<T>(elem.ToString()))
+                    .ToList();
+            }
+            catch (JsonSerializationException)
+            {
+                return new List<T>();
+            }
         }
 
         public static string GetStrOrDefault(string key, string fallback)

@@ -19,7 +19,7 @@ namespace Pinpoint.Plugin.Snippets
 
         public List<ISnippetListener> Listeners { get; } = new List<ISnippetListener>();
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Snippets", true);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Snippets", PluginPriority.Highest);
 
         public void Load()
         {

@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using FontAwesome.WPF;
+using FontAwesome5;
 using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Plugin.Snippets;
@@ -12,6 +13,7 @@ using Pinpoint.Plugin;
 using Pinpoint.Plugin.Bangs;
 using Pinpoint.Plugin.Calculator;
 using Pinpoint.Plugin.Currency;
+using Pinpoint.Plugin.Everything;
 using Pinpoint.Plugin.MetricConverter;
 using Pinpoint.Win.Models;
 using Xceed.Wpf.Toolkit;
@@ -24,6 +26,7 @@ namespace Pinpoint.Win.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        private CancellationTokenSource _cts;
         private readonly SettingsWindow _settingsWindow;
         private readonly PluginEngine _pluginEngine;
 
@@ -48,6 +51,7 @@ namespace Pinpoint.Win.Views
 
         private void LoadPlugins()
         {
+            _pluginEngine.AddPlugin(new EverythingPlugin());
             _pluginEngine.AddPlugin(new CalculatorPlugin());
             _pluginEngine.AddPlugin(new CurrencyPlugin());
             _pluginEngine.AddPlugin(new MetricConverterPlugin());
@@ -127,7 +131,7 @@ namespace Pinpoint.Win.Views
             var source = (IconButton)sender;
             source.Icon = new ImageAwesome
             {
-                Icon = FontAwesomeIcon.Cogs,
+                Icon = EFontAwesomeIcon.Solid_Cogs,
                 Height = source.Icon.Height,
                 Foreground = new SolidColorBrush(Color.FromRgb(r, g, b)),
             };
@@ -163,6 +167,8 @@ namespace Pinpoint.Win.Views
 
         private void TxtQuery_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
+            StopSearching();
+
             if (string.IsNullOrWhiteSpace(TxtQuery.Text))
             {
                 Model.Results.Clear();
@@ -180,7 +186,9 @@ namespace Pinpoint.Win.Views
                 return;
             }
 
-            await foreach(var result in _pluginEngine.Process(query))
+            _cts = new CancellationTokenSource();
+
+            await foreach(var result in _pluginEngine.Process(query, _cts.Token))
             {
                 Model.Results.Add(result);
             }
@@ -233,8 +241,15 @@ namespace Pinpoint.Win.Views
             e.Handled = true;
         }
 
+        private void StopSearching()
+        {
+            _cts?.Cancel();
+        }
+
         private void OpenSelectedResult()
         {
+            StopSearching();
+
             var selection = LstResults.SelectedItems[0];
 
             if (selection is SnippetQueryResult result)

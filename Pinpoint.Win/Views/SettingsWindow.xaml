@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Pinpoint.Win.Views"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:fa="http://schemas.fontawesome.io/icons/" 
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
         mc:Ignorable="d"
         Title="Pinpoint Settings" 
         Height="450" MinHeight="450" 
@@ -111,19 +112,19 @@
                                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                     <xctk:IconButton x:Name="BtnRemoveManualSnippet" Click="BtnRemoveManualSnippet_OnClick">
                                         <xctk:IconButton.Icon>
-                                            <fa:ImageAwesome Height="16" Icon="Trash"></fa:ImageAwesome>
+                                            <fa5:ImageAwesome Height="16" Icon="Regular_TrashAlt"></fa5:ImageAwesome>
                                         </xctk:IconButton.Icon>
                                     </xctk:IconButton>
 
                                     <xctk:IconButton x:Name="BtnAddSimpleSnippet" Click="BtnAddManualSnippet_OnClick" Content=" Simple">
                                         <xctk:IconButton.Icon>
-                                            <fa:ImageAwesome Height="16" Icon="Plus"></fa:ImageAwesome>
+                                            <fa5:ImageAwesome Height="16" Icon="Solid_Plus"></fa5:ImageAwesome>
                                         </xctk:IconButton.Icon>
                                     </xctk:IconButton>
 
                                     <xctk:IconButton x:Name="BtnAddCustomSnippet" Click="BtnAddCustomSnippet_OnClick"  Content=" OCR">
                                         <xctk:IconButton.Icon>
-                                            <fa:ImageAwesome Height="16" Icon="Plus"></fa:ImageAwesome>
+                                            <fa5:ImageAwesome Height="16" Icon="Solid_Plus"></fa5:ImageAwesome>
                                         </xctk:IconButton.Icon>
                                     </xctk:IconButton>
                                 </StackPanel>
@@ -151,13 +152,13 @@
                                 <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
                                     <xctk:IconButton x:Name="BtnRemoveFileSnippet" Click="BtnRemoveFileSnippet_Click">
                                         <xctk:IconButton.Icon>
-                                            <fa:ImageAwesome Height="16" Icon="Trash"></fa:ImageAwesome>
+                                            <fa5:ImageAwesome Height="16" Icon="Regular_TrashAlt"></fa5:ImageAwesome>
                                         </xctk:IconButton.Icon>
                                     </xctk:IconButton>
 
                                     <xctk:IconButton x:Name="BtnAddFileSnippet" Click="BtnAddFileSnippet_Click">
                                         <xctk:IconButton.Icon>
-                                            <fa:ImageAwesome Height="16" Icon="Plus"></fa:ImageAwesome>
+                                            <fa5:ImageAwesome Height="16" Icon="Solid_Plus"></fa5:ImageAwesome>
                                         </xctk:IconButton.Icon>
                                     </xctk:IconButton>
                                 </StackPanel>

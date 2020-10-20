@@ -17,7 +17,7 @@ namespace Pinpoint.Plugin.Snippets
             RawContent = File.ReadAllText(filePath);
         }
 
-        public new string RawContent
+        public override string RawContent
         {
             get
             {

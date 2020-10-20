@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Pinpoint.Plugin
 {
-    public interface IPlugin
+    public interface IPlugin : IComparable<IPlugin>
     {
         public PluginMeta Meta { get; set; }
 
@@ -14,5 +15,10 @@ namespace Pinpoint.Plugin
         public Task<bool> Activate(Query query);
 
         public IAsyncEnumerable<IQueryResult> Process(Query query);
+
+        int IComparable<IPlugin>.CompareTo(IPlugin other)
+        {
+            return other.Meta.Priority.CompareTo(Meta.Priority);
+        }
     }
 }

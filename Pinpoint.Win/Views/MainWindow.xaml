@@ -1,10 +1,10 @@
-﻿<Window x:Class="Pinpoint.Win.Views.MainWindow"
+<Window x:Class="Pinpoint.Win.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
-        xmlns:fa="http://schemas.fontawesome.io/icons/"
-        MinWidth="550" 
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        MinWidth="600" MaxWidth="600"
         WindowStyle="None"
         ResizeMode="NoResize" 
         ShowInTaskbar="False" 
@@ -12,6 +12,13 @@
         SizeToContent="WidthAndHeight" Topmost="True" Loaded="Window_Loaded" Background="{x:Null}">
 
     <Window.Resources>
+        <Style TargetType="ListBox">
+            <Style.Triggers>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
         <Style TargetType="ListBoxItem">
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
@@ -22,6 +29,12 @@
                 </Trigger>
                 <Trigger Property="Name" Value="LblResultSubtitle">
                     <Setter Property="Foreground" Value="{Binding Theme.TxtResultSubtitleForeground, UpdateSourceTrigger=PropertyChanged}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+                <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderThickness" Value="0"/>
                 </Trigger>
             </Style.Triggers>
 
@@ -43,19 +56,19 @@
                     <ContextMenu>
                         <MenuItem x:Name="ItmNewSimpleSnippet" Header="_New Text Snippet" Click="ItmNewSimpleSnippet_OnClick">
                             <MenuItem.Icon>
-                                <fa:ImageAwesome Icon="StickyNote"></fa:ImageAwesome>
+                                <fa5:ImageAwesome Icon="Solid_StickyNote"></fa5:ImageAwesome>
                             </MenuItem.Icon>
                         </MenuItem>
 
                         <MenuItem x:Name="ItmNewCustomSnippet" Header="_New OCR Snippet" Click="ItmNewCustomSnippet_OnClick">
                             <MenuItem.Icon>
-                                <fa:ImageAwesome Icon="Camera"></fa:ImageAwesome>
+                                <fa5:ImageAwesome Icon="Solid_Camera"></fa5:ImageAwesome>
                             </MenuItem.Icon>
                         </MenuItem>
 
                         <MenuItem x:Name="ItmSettings" Header="_Settings" Click="ItmSettings_Click">
                             <MenuItem.Icon>
-                                <fa:ImageAwesome Icon="Cogs"></fa:ImageAwesome>
+                                <fa5:ImageAwesome Icon="Solid_Cogs"></fa5:ImageAwesome>
                             </MenuItem.Icon>
                         </MenuItem>
 
@@ -70,7 +83,7 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto" MaxHeight="200"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
 
                 <!-- Header -->
@@ -105,7 +118,7 @@
 
                         <xctk:IconButton Grid.Column="1" x:Name="BtnSettings" Cursor="Hand" HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}" MouseOverBackground="{x:Null}" MouseOverBorderBrush="{x:Null}" MousePressedBorderBrush="{x:Null}" MousePressedBackground="{x:Null}" Click="BtnSettings_Click" MouseEnter="BtnSettings_MouseEnter" MouseLeave="BtnSettings_MouseLeave">
                             <xctk:IconButton.Icon>
-                                <fa:ImageAwesome Height="26" Icon="Cogs" Foreground="#FF575757"></fa:ImageAwesome>
+                                <fa5:ImageAwesome Height="26" Icon="Solid_Cogs" Foreground="#FF575757"></fa5:ImageAwesome>
                             </xctk:IconButton.Icon>
                         </xctk:IconButton>
                     </Grid>
@@ -113,21 +126,35 @@
 
                 <!-- Results -->
                 <ListBox x:Name="LstResults" Grid.Row="1"
+                         MaxHeight="250"
                          ItemsSource="{Binding Results}" 
-                         ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                         ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                          KeyDown="LstResults_KeyDown" 
                          SelectionMode="Single" 
                          Background="{x:Null}" 
                          BorderBrush="{x:Null}" 
-                         BorderThickness="0" 
+                         BorderThickness="0"
                          MouseDoubleClick="LstResults_MouseDoubleClick">
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel>
-                                <Label x:Name="LblResultTitle" Content="{Binding Title}" FontSize="18"></Label>
-                                <Label x:Name="LblResultSubtitle" Content="{Binding Subtitle}"></Label>
-                            </StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                </Grid.RowDefinitions>
+
+                                <Border Margin="5" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
+                                    <fa5:ImageAwesome Foreground="#FF575757" HorizontalAlignment="Center" VerticalAlignment="Center" Height="24" Icon="{Binding Icon}"></fa5:ImageAwesome>
+                                </Border>
+                                <Label x:Name="LblResultTitle" Grid.Row="0" Grid.Column="1" Foreground="#FFD8D8D8" Content="{Binding Title}" FontSize="18"></Label>
+                                <Label x:Name="LblResultSubtitle" Grid.Row="1" Grid.Column="1" Foreground="#FF9E9E9E" Content="{Binding Subtitle}"></Label>
+                            </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

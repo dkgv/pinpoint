@@ -8,7 +8,7 @@ namespace Pinpoint.Plugin.Calculator
 {
     public class CalculatorPlugin : IPlugin
     {
-        public PluginMeta Meta { get; set; } = new PluginMeta("Calculator", true);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Calculator", PluginPriority.Highest);
 
         public void Load()
         {
