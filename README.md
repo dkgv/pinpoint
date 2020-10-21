@@ -4,6 +4,10 @@ Pinpoint is an extensible keystroke launcher and snippet manager written in C# (
 
 ## Plugins
 
+### App Search
+
+Searches for applications installed on your computer.
+
 ### Bangs
 
 Enables you to use the 10.000+ [DuckDuckGo !Bang](https://duckduckgo.com/bang) operators. Simply type your query, add the relevant bang operator as a prefix or suffix (e.g. "breaking bad !imdb"), and hit enter.
@@ -18,7 +22,7 @@ Converts between currencies using familiar syntax: "1 USD to EUR". Alternatively
 
 ### Everything (File Search)
 
-Uses [Everything](https://www.voidtools.com/) to allow blazingly fast file search across the entire file system.
+Uses [Everything](https://www.voidtools.com/) to offer blazingly fast file search across the entire file system.
 
 ### Metric Converter
 
