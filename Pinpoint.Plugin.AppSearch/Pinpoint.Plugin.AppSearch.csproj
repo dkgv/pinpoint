@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="TrieNet" Version="1.0.3.26316" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Pinpoint.Plugin\Pinpoint.Plugin.csproj" />
+  </ItemGroup>
+
+</Project>

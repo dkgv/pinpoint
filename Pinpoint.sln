@@ -16,7 +16,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.MetricConve
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Bangs", "Pinpoint.Plugin.Bangs\Pinpoint.Plugin.Bangs.csproj", "{E6E43586-CA92-4730-BDE3-FE5CDEDBE04A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.Everything", "Pinpoint.Plugin.Everything\Pinpoint.Plugin.Everything.csproj", "{64D7C695-163C-4022-A67A-D937907F9300}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Everything", "Pinpoint.Plugin.Everything\Pinpoint.Plugin.Everything.csproj", "{64D7C695-163C-4022-A67A-D937907F9300}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.AppSearch", "Pinpoint.Plugin.AppSearch\Pinpoint.Plugin.AppSearch.csproj", "{D817C3C1-1222-498C-82BB-CFE3DDBD8646}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -124,6 +126,18 @@ Global
 		{64D7C695-163C-4022-A67A-D937907F9300}.Release|x64.Build.0 = Release|Any CPU
 		{64D7C695-163C-4022-A67A-D937907F9300}.Release|x86.ActiveCfg = Release|Any CPU
 		{64D7C695-163C-4022-A67A-D937907F9300}.Release|x86.Build.0 = Release|Any CPU
+		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Debug|x64.Build.0 = Debug|Any CPU
+		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Debug|x86.Build.0 = Debug|Any CPU
+		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Release|x64.ActiveCfg = Release|Any CPU
+		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Release|x64.Build.0 = Release|Any CPU
+		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Release|x86.ActiveCfg = Release|Any CPU
+		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

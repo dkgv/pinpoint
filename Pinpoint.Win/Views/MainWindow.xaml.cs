@@ -10,6 +10,7 @@ using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Plugin.Snippets;
 using Pinpoint.Plugin;
+using Pinpoint.Plugin.AppSearch;
 using Pinpoint.Plugin.Bangs;
 using Pinpoint.Plugin.Calculator;
 using Pinpoint.Plugin.Currency;
@@ -56,6 +57,7 @@ namespace Pinpoint.Win.Views
             _pluginEngine.AddPlugin(new CurrencyPlugin());
             _pluginEngine.AddPlugin(new MetricConverterPlugin());
             _pluginEngine.AddPlugin(new BangsPlugin());
+            _pluginEngine.AddPlugin(new AppSearchPlugin());
             _pluginEngine.AddPlugin(new SnippetsPlugin(_settingsWindow));
         }
 
