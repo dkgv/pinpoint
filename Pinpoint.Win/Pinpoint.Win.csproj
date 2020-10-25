@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Pinpoint.Plugin.AppSearch\Pinpoint.Plugin.AppSearch.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Bangs\Pinpoint.Plugin.Bangs.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.CommandLine\Pinpoint.Plugin.CommandLine.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Currency\Pinpoint.Plugin.Currency.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Everything\Pinpoint.Plugin.Everything.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.MetricConverter\Pinpoint.Plugin.MetricConverter.csproj" />

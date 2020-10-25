@@ -18,7 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Bangs", "Pi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Everything", "Pinpoint.Plugin.Everything\Pinpoint.Plugin.Everything.csproj", "{64D7C695-163C-4022-A67A-D937907F9300}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.AppSearch", "Pinpoint.Plugin.AppSearch\Pinpoint.Plugin.AppSearch.csproj", "{D817C3C1-1222-498C-82BB-CFE3DDBD8646}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.AppSearch", "Pinpoint.Plugin.AppSearch\Pinpoint.Plugin.AppSearch.csproj", "{D817C3C1-1222-498C-82BB-CFE3DDBD8646}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.CommandLine", "Pinpoint.Plugin.CommandLine\Pinpoint.Plugin.CommandLine.csproj", "{EE1F0F7D-F303-4408-B059-66C7F0210BA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -138,6 +140,18 @@ Global
 		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Release|x64.Build.0 = Release|Any CPU
 		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Release|x86.ActiveCfg = Release|Any CPU
 		{D817C3C1-1222-498C-82BB-CFE3DDBD8646}.Release|x86.Build.0 = Release|Any CPU
+		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Debug|x64.Build.0 = Debug|Any CPU
+		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Debug|x86.Build.0 = Debug|Any CPU
+		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Release|x64.ActiveCfg = Release|Any CPU
+		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Release|x64.Build.0 = Release|Any CPU
+		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Release|x86.ActiveCfg = Release|Any CPU
+		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
