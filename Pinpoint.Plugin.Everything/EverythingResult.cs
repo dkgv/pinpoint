@@ -26,14 +26,7 @@ namespace Pinpoint.Plugin.Everything
 
         public void OnSelect()
         {
-            if (_item.ResultType == ResultType.Directory)
-            {
-                Process.Start("explorer.exe", _item.FullPath);
-            }
-            else
-            {
-                Process.Start(_item.FullPath);
-            }
+            Process.Start("explorer.exe", _item.FullPath);
         }
     }
 }
