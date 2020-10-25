@@ -9,7 +9,11 @@
         ResizeMode="NoResize" 
         ShowInTaskbar="False" 
         AllowsTransparency="True"
-        SizeToContent="WidthAndHeight" Topmost="True" Loaded="Window_Loaded" Background="{x:Null}">
+        SizeToContent="WidthAndHeight" 
+        Topmost="True" 
+        Loaded="Window_Loaded" 
+        Background="{x:Null}"
+        Name="MainWindowName">
 
     <Window.Resources>
         <Style TargetType="ListBox">
@@ -24,21 +28,18 @@
                 <Trigger Property="IsSelected" Value="True">
                     <Setter Property="BorderThickness" Value="0"/>
                 </Trigger>
-                <Trigger Property="Name" Value="LblResultTitle">
-                    <Setter Property="Foreground" Value="{Binding Theme.TxtQueryForeground, UpdateSourceTrigger=PropertyChanged}"/>
-                </Trigger>
-                <Trigger Property="Name" Value="LblResultSubtitle">
-                    <Setter Property="Foreground" Value="{Binding Theme.TxtResultSubtitleForeground, UpdateSourceTrigger=PropertyChanged}"/>
-                </Trigger>
+
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="BorderThickness" Value="0"/>
                 </Trigger>
+
                 <Trigger Property="IsFocused" Value="True">
                     <Setter Property="BorderThickness" Value="0"/>
                 </Trigger>
             </Style.Triggers>
 
             <Setter Property="Padding" Value="0"/>
+
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         </Style>
     </Window.Resources>
@@ -150,10 +151,25 @@
                                 </Grid.RowDefinitions>
 
                                 <Border Margin="5" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
-                                    <fa5:ImageAwesome Foreground="#FF575757" HorizontalAlignment="Center" VerticalAlignment="Center" Height="24" Icon="{Binding Icon}"></fa5:ImageAwesome>
+                                    <fa5:ImageAwesome x:Name="ResultIcon" 
+                                                      Foreground="{Binding DataContext.Theme.TxtQueryForeground, ElementName=MainWindowName}"
+                                                      HorizontalAlignment="Center"
+                                                      VerticalAlignment="Center" 
+                                                      Height="24" 
+                                                      Icon="{Binding Icon}"></fa5:ImageAwesome>
                                 </Border>
-                                <Label x:Name="LblResultTitle" Grid.Row="0" Grid.Column="1" Foreground="#FFD8D8D8" Content="{Binding Title}" FontSize="18"></Label>
-                                <Label x:Name="LblResultSubtitle" Grid.Row="1" Grid.Column="1" Foreground="#FF9E9E9E" Content="{Binding Subtitle}"></Label>
+
+                                <Label x:Name="LblResultTitle" 
+                                       Foreground="{Binding DataContext.Theme.TxtQueryForeground, ElementName=MainWindowName}"
+                                       Grid.Row="0" Grid.Column="1"
+                                       Content="{Binding Title}" 
+                                       FontSize="18"></Label>
+
+                                <Label x:Name="LblResultSubtitle"
+                                       Foreground="{Binding DataContext.Theme.TxtResultSubtitleForeground, ElementName=MainWindowName}"
+                                       Grid.Row="1"
+                                       Grid.Column="1"
+                                       Content="{Binding Subtitle}"></Label>
                             </Grid>
                         </DataTemplate>
                     </ListBox.ItemTemplate>

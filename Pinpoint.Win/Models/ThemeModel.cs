@@ -2,7 +2,7 @@ using System.Windows.Media;
 
 namespace Pinpoint.Win.Models
 {
-    internal class ThemeModel : BaseWindowModel
+    internal class ThemeModel
     {
         public string Name { get; set; }
 
