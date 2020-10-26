@@ -40,7 +40,7 @@ namespace Pinpoint.Plugin.AppSearch
             return true;
         }
 
-        public async IAsyncEnumerable<IQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
             foreach (var result in _trie.Retrieve(query.RawQuery.ToLower()))
             {

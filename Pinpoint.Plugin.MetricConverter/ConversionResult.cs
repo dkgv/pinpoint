@@ -2,22 +2,15 @@ using FontAwesome5;
 
 namespace Pinpoint.Plugin.MetricConverter
 {
-    public class ConversionResult : IQueryResult
+    public class ConversionResult : AbstractQueryResult
     {
-        public ConversionResult(string result)
+        public ConversionResult(string result) : base("= " + result)
         {
-            Title = "= " + result;
         }
 
-        public string Title { get; }
-        
-        public string Subtitle { get; }
-        
-        public object Instance { get; }
+        public override EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Ruler;
 
-        public EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Ruler;
-
-        public void OnSelect()
+        public override void OnSelect()
         {
         }
     }

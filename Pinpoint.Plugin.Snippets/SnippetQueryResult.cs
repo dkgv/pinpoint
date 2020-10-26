@@ -2,26 +2,20 @@
 
 namespace Pinpoint.Plugin.Snippets
 {
-    public class SnippetQueryResult : IQueryResult
+    public class SnippetQueryResult : AbstractQueryResult
     {
         private readonly AbstractSnippet _snippet;
 
-        public SnippetQueryResult(AbstractSnippet snippet)
+        public SnippetQueryResult(AbstractSnippet snippet) : base(snippet.Identifier, snippet.FilePath)
         {
             _snippet = snippet;
-            Title = snippet.Identifier;
-            Subtitle = snippet.FilePath;
         }
 
-        public string Title { get; }
+        public new object Instance => _snippet;
 
-        public string Subtitle { get; }
+        public override EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Code;
 
-        public object Instance => _snippet;
-
-        public EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Code;
-
-        public void OnSelect()
+        public override void OnSelect()
         {
         }
     }

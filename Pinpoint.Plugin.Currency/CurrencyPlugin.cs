@@ -72,7 +72,7 @@ namespace Pinpoint.Plugin.Currency
             return hasNumber && isConverting && correctParts;
         }
 
-        public async IAsyncEnumerable<IQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
             var from = IdentifyFrom(query);
             var value = IdentifyValue(query);

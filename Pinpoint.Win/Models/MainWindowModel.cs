@@ -7,7 +7,7 @@ namespace Pinpoint.Win.Models
     {
         private ThemeModel _theme = AppSettings.GetAsOrDefault("theme", ThemeModel.DarkTheme);
 
-        public ObservableCollection<IQueryResult> Results { get; } = new ObservableCollection<IQueryResult>();
+        public ObservableCollection<AbstractQueryResult> Results { get; } = new ObservableCollection<AbstractQueryResult>();
 
         public ThemeModel Theme
         {

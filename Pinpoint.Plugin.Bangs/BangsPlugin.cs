@@ -26,7 +26,7 @@ namespace Pinpoint.Plugin.Bangs
             return query.Parts[0].StartsWith("!") || query.Parts[^1].StartsWith("!");
         }
 
-        public async IAsyncEnumerable<IQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
             yield return new BangResult($"https://duckduckgo.com/?q={query.RawQuery.Replace(' ', '+')}");
         }

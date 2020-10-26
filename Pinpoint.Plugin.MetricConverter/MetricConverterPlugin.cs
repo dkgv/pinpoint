@@ -49,7 +49,7 @@ namespace Pinpoint.Plugin.MetricConverter
             return Regex.IsMatch(query.RawQuery, Pattern);
         }
 
-        public async IAsyncEnumerable<IQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
             yield return new ConversionResult(ConvertQuery(query));
         }

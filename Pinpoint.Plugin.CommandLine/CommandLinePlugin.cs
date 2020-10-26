@@ -20,7 +20,7 @@ namespace Pinpoint.Plugin.CommandLine
             return query.Prefix().Equals(">") && query.RawQuery.Length > 1;
         }
 
-        public async IAsyncEnumerable<IQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
             yield return new CommandLineResult(query.RawQuery);
         }

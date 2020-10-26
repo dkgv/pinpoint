@@ -14,7 +14,7 @@ namespace Pinpoint.Plugin
 
         public Task<bool> Activate(Query query);
 
-        public IAsyncEnumerable<IQueryResult> Process(Query query);
+        public IAsyncEnumerable<AbstractQueryResult> Process(Query query);
 
         int IComparable<IPlugin>.CompareTo(IPlugin other)
         {

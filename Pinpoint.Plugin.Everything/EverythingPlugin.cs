@@ -37,7 +37,7 @@ namespace Pinpoint.Plugin.Everything
             return query.RawQuery.Length >= 3;
         }
 
-        public async IAsyncEnumerable<IQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
             await foreach (var result in _everything.SearchAsync(query.RawQuery, new CancellationToken()))
             {

@@ -4,23 +4,15 @@ using FontAwesome5;
 
 namespace Pinpoint.Plugin.AppSearch
 {
-    public class AppResult : IQueryResult
+    public class AppResult : AbstractQueryResult
     {
-        public AppResult(string path)
+        public AppResult(string path) : base(Path.GetFileName(path).Split(".")[0], path)
         {
-            Title = Path.GetFileName(path);
-            Subtitle = path;
         }
 
-        public string Title { get; }
+        public override EFontAwesomeIcon Icon { get; }
 
-        public string Subtitle { get; }
-
-        public object Instance { get; }
-
-        public EFontAwesomeIcon Icon { get; }
-
-        public void OnSelect()
+        public override void OnSelect()
         {
             Process.Start(GetShortcutTarget(Subtitle));
         }

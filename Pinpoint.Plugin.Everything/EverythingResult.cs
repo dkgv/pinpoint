@@ -1,30 +1,26 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using FontAwesome5;
 using Pinpoint.Plugin.Everything.API;
 
 namespace Pinpoint.Plugin.Everything
 {
-    public class EverythingResult : IQueryResult
+    public class EverythingResult : AbstractQueryResult
     {
         private readonly QueryResultItem _item;
 
-        public EverythingResult(QueryResultItem item, EFontAwesomeIcon icon)
+        public EverythingResult(QueryResultItem item, EFontAwesomeIcon icon) : base(
+            item.ResultType != ResultType.Directory ? item.Name : Path.GetFileName(item.FullPath),
+            item.FullPath
+            )
         {
             _item = item;
-            Title = item.Name;
-            Subtitle = item.FullPath;
             Icon = icon;
         }
 
-        public string Title { get; }
+        public override EFontAwesomeIcon Icon { get; }
 
-        public string Subtitle { get; }
-
-        public object Instance { get; }
-
-        public EFontAwesomeIcon Icon { get; }
-
-        public void OnSelect()
+        public override void OnSelect()
         {
             Process.Start("explorer.exe", _item.FullPath);
         }

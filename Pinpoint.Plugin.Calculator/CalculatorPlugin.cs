@@ -37,7 +37,7 @@ namespace Pinpoint.Plugin.Calculator
             return Regex.IsMatch(query.RawQuery, pattern);
         }
 
-        public async IAsyncEnumerable<IQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
             var table = new System.Data.DataTable();
             var result = Convert.ToDouble(table.Compute(query.RawQuery, string.Empty));

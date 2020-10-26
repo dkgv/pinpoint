@@ -1,25 +1,17 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using FontAwesome5;
 
 namespace Pinpoint.Plugin.Currency
 {
-    public class CurrencyResult : IQueryResult
+    public class CurrencyResult : AbstractQueryResult
     {
-        public CurrencyResult(double value, string to)
+        public CurrencyResult(double value, string to) : base("= " + value.ToString(CultureInfo.InvariantCulture) + " " + to.ToUpper())
         {
-            Title = "= " + value.ToString(CultureInfo.InvariantCulture) + " " + to.ToUpper();
         }
 
-        public string Title { get; }
+        public override EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Coins;
 
-        public string Subtitle { get; }
-
-        public object Instance { get; }
-
-        public EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Coins;
-
-        public void OnSelect()
+        public override void OnSelect()
         {
         }
     }

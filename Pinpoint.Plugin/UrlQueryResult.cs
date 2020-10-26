@@ -4,7 +4,7 @@ using FontAwesome5;
 
 namespace Pinpoint.Plugin
 {
-    public class UrlQueryResult : IQueryResult
+    public class UrlQueryResult : AbstractQueryResult
     {
         private readonly string _url;
 
@@ -14,15 +14,9 @@ namespace Pinpoint.Plugin
             Subtitle = url;
         }
 
-        public string Title { get; set; }
+        public override EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_ExternalLinkAlt;
 
-        public string Subtitle { get; }
-
-        public object Instance { get; }
-
-        public EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_ExternalLinkAlt;
-
-        public void OnSelect()
+        public override void OnSelect()
         {
             try
             {

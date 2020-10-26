@@ -50,7 +50,7 @@ namespace Pinpoint.Plugin
             return Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
         }
 
-        public async IAsyncEnumerable<IQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var numResults = 0;
 

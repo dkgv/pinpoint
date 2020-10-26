@@ -3,23 +3,15 @@ using FontAwesome5;
 
 namespace Pinpoint.Plugin.CommandLine
 {
-    public class CommandLineResult : IQueryResult
+    public class CommandLineResult : AbstractQueryResult
     {
-        public CommandLineResult(string cmd)
+        public CommandLineResult(string cmd) : base(cmd.Substring(1), "Execute in command prompt.")
         {
-            Title = cmd.Substring(1);
-            Subtitle = "Execute in command prompt.";
         }
 
-        public string Title { get; }
+        public override EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Terminal;
 
-        public string Subtitle { get; }
-
-        public object Instance { get; }
-
-        public EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Terminal;
-
-        public void OnSelect()
+        public override void OnSelect()
         {
             Process.Start("cmd.exe", "/k" + Title);
         }

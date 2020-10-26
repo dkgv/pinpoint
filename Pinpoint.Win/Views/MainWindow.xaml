@@ -115,6 +115,7 @@
                                                Background="{x:Null}" 
                                                CaretBrush="{Binding Theme.TxtQueryCaretBrush}" 
                                                KeyUp="TxtQuery_KeyUp" 
+                                               KeyDown="TxtQuery_KeyDown" 
                                                TextChanged="TxtQuery_TextChanged"/>
 
                         <xctk:IconButton Grid.Column="1" x:Name="BtnSettings" Cursor="Hand" HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}" MouseOverBackground="{x:Null}" MouseOverBorderBrush="{x:Null}" MousePressedBorderBrush="{x:Null}" MousePressedBackground="{x:Null}" Click="BtnSettings_Click" MouseEnter="BtnSettings_MouseEnter" MouseLeave="BtnSettings_MouseLeave">
@@ -171,6 +172,16 @@
                                        Grid.Column="1"
                                        Content="{Binding Subtitle}"></Label>
                             </Grid>
+
+                                    <!-- Result shortcut if applicable -->
+                                    <Label x:Name="LblShortcut"
+                                       Foreground="{Binding DataContext.Theme.TxtResultSubtitleForeground, ElementName=MainWindowName}"
+                                       Grid.Row="0"
+                                       Grid.RowSpan="2"
+                                       Grid.Column="2"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Right"
+                                       Content="{Binding Shortcut}"/>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>

@@ -28,6 +28,7 @@ namespace Pinpoint.Win.Views
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool _wasModifierKeyDown = false;
         private CancellationTokenSource _cts;
         private readonly SettingsWindow _settingsWindow;
         private readonly PluginEngine _pluginEngine;
@@ -141,8 +142,32 @@ namespace Pinpoint.Win.Views
             };
         }
 
+        private void TxtQuery_KeyDown(object sender, KeyEventArgs e)
+        {
+            _wasModifierKeyDown = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
+
+            if (!_wasModifierKeyDown)
+            {
+                return;
+            }
+
+            // Check if 0-9 was pressed
+            var isDigitPressed = (int) e.Key >= 35 && (int) e.Key <= 43;
+            if (isDigitPressed)
+            {
+                var index = (int) e.Key - 35;
+                LstResults.SelectedIndex = index;
+                OpenSelectedResult();
+            }
+        }
+
         private async void TxtQuery_KeyUp(object sender, KeyEventArgs e)
         {
+            if (_wasModifierKeyDown)
+            {
+                return;
+            }
+
             switch (e.Key)
             {
                 case Key.Enter:
@@ -192,8 +217,15 @@ namespace Pinpoint.Win.Views
 
             _cts = new CancellationTokenSource();
 
+            var shortcutIndex = 0;
+
             await foreach(var result in _pluginEngine.Process(query, _cts.Token))
             {
+                if (shortcutIndex < 9)
+                {
+                    result.Shortcut = "CTRL+" + ++shortcutIndex;
+                }
+
                 Model.Results.Add(result);
             }
 
@@ -277,7 +309,7 @@ namespace Pinpoint.Win.Views
             }
             else
             {
-                (selection as IQueryResult).OnSelect();
+                (selection as AbstractQueryResult).OnSelect();
             }
 
             Hide();

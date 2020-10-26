@@ -2,22 +2,15 @@
 
 namespace Pinpoint.Plugin.Calculator
 {
-    public class CalculatorResult : IQueryResult
+    public class CalculatorResult : AbstractQueryResult
     {
-        public CalculatorResult(string result)
+        public CalculatorResult(string result) : base("= " + result)
         {
-            Title = "= " + result;
         }
 
-        public string Title { get; }
+        public override EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Calculator;
 
-        public string Subtitle { get; }
-
-        public object Instance { get; }
-
-        public EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Calculator;
-
-        public void OnSelect()
+        public override void OnSelect()
         {
         }
     }
