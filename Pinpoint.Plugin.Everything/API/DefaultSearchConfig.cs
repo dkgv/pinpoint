@@ -10,6 +10,6 @@
 
         public RequestFlag RequestFlag { get; set; } = RequestFlag.FileName | RequestFlag.Path | RequestFlag.Extension;
         
-        public SortMethod SortMethod { get; set; } = SortMethod.ByDateModifiedAscending;
+        public SortMethod SortMethod { get; set; } = SortMethod.ByDateModifiedDescending;
     }
 }
