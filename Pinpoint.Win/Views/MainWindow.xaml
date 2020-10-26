@@ -39,7 +39,6 @@
             </Style.Triggers>
 
             <Setter Property="Padding" Value="0"/>
-
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         </Style>
     </Window.Resources>
@@ -83,16 +82,16 @@
             <!-- Main content -->
             <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"></RowDefinition>
-                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <!-- Header -->
                 <Border Margin="5" Grid.Row="0" Grid.Column="0">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         
                         <xctk:IconButton Grid.Column="0" Margin="5 0 0 0" x:Name="SearchLogo" HorizontalAlignment="Left" Background="{x:Null}" BorderBrush="{x:Null}" MouseOverBackground="{x:Null}" MouseOverBorderBrush="{x:Null}" MousePressedBorderBrush="{x:Null}" MousePressedBackground="{x:Null}">
@@ -130,6 +129,7 @@
                 <ListBox x:Name="LstResults" Grid.Row="1"
                          MaxHeight="250"
                          ItemsSource="{Binding Results}" 
+                         HorizontalContentAlignment="Stretch"
                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                          KeyDown="LstResults_KeyDown" 
                          SelectionMode="Single" 
@@ -140,38 +140,45 @@
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                                    <ColumnDefinition Width="*"></ColumnDefinition>
-                                </Grid.ColumnDefinitions>
+                            <Border Margin="5">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
 
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                </Grid.RowDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
 
-                                <Border Margin="5" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2">
-                                    <fa5:ImageAwesome x:Name="ResultIcon" 
+                                    <!-- Result icon -->
+                                    <Border Margin="0 0 10 0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" MinWidth="30">
+                                        <fa5:ImageAwesome x:Name="ResultIcon" 
                                                       Foreground="{Binding DataContext.Theme.TxtQueryForeground, ElementName=MainWindowName}"
                                                       HorizontalAlignment="Center"
                                                       VerticalAlignment="Center" 
                                                       Height="24" 
-                                                      Icon="{Binding Icon}"></fa5:ImageAwesome>
-                                </Border>
+                                                      Icon="{Binding Icon}" />
+                                    </Border>
 
-                                <Label x:Name="LblResultTitle" 
-                                       Foreground="{Binding DataContext.Theme.TxtQueryForeground, ElementName=MainWindowName}"
-                                       Grid.Row="0" Grid.Column="1"
-                                       Content="{Binding Title}" 
-                                       FontSize="18"></Label>
+                                    <!-- Result title -->
+                                    <TextBlock Foreground="{Binding DataContext.Theme.TxtQueryForeground, ElementName=MainWindowName}"
+                                       Grid.Row="0" 
+                                       Grid.Column="1"
+                                       Text="{Binding Title}" 
+                                       FontSize="15" FontWeight="SemiBold"/>
 
-                                <Label x:Name="LblResultSubtitle"
-                                       Foreground="{Binding DataContext.Theme.TxtResultSubtitleForeground, ElementName=MainWindowName}"
+                                    <!-- Result subtitle -->
+                                    <TextBlock Foreground="{Binding DataContext.Theme.TxtResultSubtitleForeground, ElementName=MainWindowName}"
                                        Grid.Row="1"
                                        Grid.Column="1"
-                                       Content="{Binding Subtitle}"></Label>
-                            </Grid>
+                                       MaxWidth="450"
+                                       HorizontalAlignment="Left"
+                                       TextTrimming="WordEllipsis"
+                                       ToolTip="{Binding Subtitle}"
+                                       Text="{Binding Subtitle}"/>
 
                                     <!-- Result shortcut if applicable -->
                                     <Label x:Name="LblShortcut"
@@ -182,6 +189,8 @@
                                        VerticalAlignment="Center"
                                        HorizontalAlignment="Right"
                                        Content="{Binding Shortcut}"/>
+                                </Grid>
+                            </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
