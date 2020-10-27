@@ -236,12 +236,13 @@ namespace Pinpoint.Win.Views
 
             await foreach(var result in _pluginEngine.Process(query, _cts.Token))
             {
-                if (shortcutIndex < 9)
+                var didAdd = Model.Results.TryAdd(result);
+
+                // If one of first 9 results, set keyboard shortcut for result
+                if (didAdd && shortcutIndex < 9)
                 {
                     result.Shortcut = "CTRL+" + ++shortcutIndex;
                 }
-
-                Model.Results.Add(result);
             }
 
             if (Model.Results.Count > 0 && LstResults.SelectedIndex == -1)

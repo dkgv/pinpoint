@@ -108,7 +108,7 @@
                                                Margin="40 0 0 0" 
                                                x:Name="TxtQuery" 
                                                HorizontalAlignment="Left" 
-                                               Watermark="Pinpoint Search" 
+                                               Watermark="Pinpoint" 
                                                BorderThickness="0" 
                                                KeepWatermarkOnGotFocus="True" 
                                                FontSize="26" 
@@ -171,6 +171,9 @@
                                     <TextBlock Foreground="{Binding DataContext.Theme.TxtQueryForeground, ElementName=MainWindowName}"
                                        Grid.Row="0" 
                                        Grid.Column="1"
+                                       MaxWidth="450"
+                                       HorizontalAlignment="Left"
+                                       TextTrimming="WordEllipsis"
                                        Text="{Binding Title}" 
                                        FontSize="15" FontWeight="SemiBold"/>
 

@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Pinpoint.Plugin;
+﻿using Pinpoint.Plugin;
 
 namespace Pinpoint.Win.Models
 {
@@ -7,7 +6,7 @@ namespace Pinpoint.Win.Models
     {
         private ThemeModel _theme = AppSettings.GetAsOrDefault("theme", ThemeModel.DarkTheme);
 
-        public ObservableCollection<AbstractQueryResult> Results { get; } = new ObservableCollection<AbstractQueryResult>();
+        public ObservableUniqueCollection<AbstractQueryResult> Results { get; } = new ObservableUniqueCollection<AbstractQueryResult>();
 
         public ThemeModel Theme
         {
