@@ -28,7 +28,7 @@ namespace Pinpoint.Win.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool _wasModifierKeyDown = false;
+        private bool _wasModifierKeyDown;
         private CancellationTokenSource _cts;
         private readonly SettingsWindow _settingsWindow;
         private readonly PluginEngine _pluginEngine;
@@ -84,6 +84,7 @@ namespace Pinpoint.Win.Views
             else
             {
                 Show();
+                TxtQuery.SelectAll();
                 TxtQuery.Focus();
             }
 
@@ -204,8 +205,20 @@ namespace Pinpoint.Win.Views
             }
         }
 
+        private async Task<bool> StillTyping()
+        {
+            var text = TxtQuery.Text;
+            await Task.Delay(75);
+            return !TxtQuery.Text.Equals(text);
+        }
+
         private async Task UpdateResults()
         {
+            if (await StillTyping())
+            {
+                return;
+            }
+
             Model.Results.Clear();
 
             var query = new Query(TxtQuery.Text.Trim());
