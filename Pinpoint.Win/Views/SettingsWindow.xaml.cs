@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,6 +28,8 @@ namespace Pinpoint.Win.Views
 
             _mainWindow = mainWindow;
             _pluginEngine = pluginEngine;
+
+            LblVersion.Content = "Version " + AppConstants.Version;
         }
 
         internal SettingsWindowModel Model
@@ -217,6 +220,11 @@ namespace Pinpoint.Win.Views
         {
             var selected = (ThemeModel) CbTheme.SelectedItem;
             _mainWindow.Model.Theme = selected;
+        }
+
+        private void LnkCheckUpdate_Click(object sender, RoutedEventArgs e)
+        {
+            ProcessHelper.OpenUrl(LnkCheckUpdate.NavigateUri.AbsoluteUri);
         }
     }
 }

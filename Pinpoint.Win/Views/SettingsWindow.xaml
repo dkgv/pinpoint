@@ -24,6 +24,7 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
 
                         <Grid.ColumnDefinitions>
@@ -59,6 +60,21 @@
                             ItemsSource="{Binding Themes}"
                             SelectionChanged="CbTheme_SelectionChanged">
                         </ComboBox>
+
+                        <Label x:Name="LblVersion" 
+                            Grid.Row="4" 
+                            Grid.Column="0"
+                            Grid.ColumnSpan="4"
+                            HorizontalContentAlignment="Center"
+                            Content="Version"/>
+
+                        <TextBlock
+                            Grid.Row="5"
+                            Grid.Column="0" 
+                            Grid.ColumnSpan="4"
+                            HorizontalAlignment="Center">
+                            <Hyperlink x:Name="LnkCheckUpdate" NavigateUri="https://github.com/dkgv/pinpoint/releases" Click="LnkCheckUpdate_Click">Check for updates</Hyperlink>
+                        </TextBlock>
                     </Grid>
                 </Border>
             </TabItem>
