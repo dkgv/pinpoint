@@ -15,6 +15,7 @@ using Pinpoint.Plugin.Bangs;
 using Pinpoint.Plugin.Calculator;
 using Pinpoint.Plugin.CommandLine;
 using Pinpoint.Plugin.Currency;
+using Pinpoint.Plugin.Dictionary;
 using Pinpoint.Plugin.Everything;
 using Pinpoint.Plugin.MetricConverter;
 using Pinpoint.Win.Models;
@@ -60,6 +61,7 @@ namespace Pinpoint.Win.Views
             _pluginEngine.AddPlugin(new MetricConverterPlugin());
             _pluginEngine.AddPlugin(new BangsPlugin());
             _pluginEngine.AddPlugin(new AppSearchPlugin());
+            _pluginEngine.AddPlugin(new DictionaryPlugin());
             _pluginEngine.AddPlugin(new CommandLinePlugin());
             _pluginEngine.AddPlugin(new SnippetsPlugin(_settingsWindow));
         }

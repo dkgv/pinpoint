@@ -20,7 +20,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Everything"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.AppSearch", "Pinpoint.Plugin.AppSearch\Pinpoint.Plugin.AppSearch.csproj", "{D817C3C1-1222-498C-82BB-CFE3DDBD8646}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.CommandLine", "Pinpoint.Plugin.CommandLine\Pinpoint.Plugin.CommandLine.csproj", "{EE1F0F7D-F303-4408-B059-66C7F0210BA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.CommandLine", "Pinpoint.Plugin.CommandLine\Pinpoint.Plugin.CommandLine.csproj", "{EE1F0F7D-F303-4408-B059-66C7F0210BA1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.Dictionary", "Pinpoint.Plugin.Dictionary\Pinpoint.Plugin.Dictionary.csproj", "{E3602C1B-190D-4E09-94C2-45C8D7C5483C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -152,6 +154,18 @@ Global
 		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Release|x64.Build.0 = Release|Any CPU
 		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Release|x86.ActiveCfg = Release|Any CPU
 		{EE1F0F7D-F303-4408-B059-66C7F0210BA1}.Release|x86.Build.0 = Release|Any CPU
+		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Debug|x64.Build.0 = Debug|Any CPU
+		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Debug|x86.Build.0 = Debug|Any CPU
+		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Release|x64.ActiveCfg = Release|Any CPU
+		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Release|x64.Build.0 = Release|Any CPU
+		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Release|x86.ActiveCfg = Release|Any CPU
+		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
