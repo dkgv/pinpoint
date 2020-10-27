@@ -3,13 +3,13 @@ using FontAwesome5;
 
 namespace Pinpoint.Plugin.CommandLine
 {
-    public class CommandLineResult : AbstractQueryResult
+    public class CommandLineResult : AbstractFontAwesomeQueryResult
     {
         public CommandLineResult(string cmd) : base(cmd.Substring(1), "Execute in command prompt.")
         {
         }
 
-        public override EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Terminal;
+        public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_Terminal;
 
         public override void OnSelect()
         {

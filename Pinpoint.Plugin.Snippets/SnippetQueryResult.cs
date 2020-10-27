@@ -2,7 +2,7 @@
 
 namespace Pinpoint.Plugin.Snippets
 {
-    public class SnippetQueryResult : AbstractQueryResult
+    public class SnippetQueryResult : AbstractFontAwesomeQueryResult
     {
         private readonly AbstractSnippet _snippet;
 
@@ -13,7 +13,7 @@ namespace Pinpoint.Plugin.Snippets
 
         public new object Instance => _snippet;
 
-        public override EFontAwesomeIcon Icon => EFontAwesomeIcon.Solid_Code;
+        public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_Code;
 
         public override void OnSelect()
         {

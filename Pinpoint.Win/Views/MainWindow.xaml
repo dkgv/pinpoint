@@ -4,6 +4,7 @@
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        xmlns:conv="clr-namespace:Pinpoint.Win.Converters"
         MinWidth="600" MaxWidth="600"
         WindowStyle="None"
         ResizeMode="NoResize" 
@@ -23,6 +24,7 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
         <Style TargetType="ListBoxItem">
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
@@ -41,6 +43,8 @@
             <Setter Property="Padding" Value="0"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         </Style>
+
+        <conv:BitmapToImageSourceConverter x:Key="BitmapToImageSourceConverter" />
     </Window.Resources>
 
     <Border CornerRadius="5" Background="{Binding Theme.Background, UpdateSourceTrigger=PropertyChanged}">
@@ -154,13 +158,13 @@
                                     </Grid.RowDefinitions>
 
                                     <!-- Result icon -->
+                                    <!-- Source="{Binding DataContext.Theme.TxtQueryForeground, ElementName=MainWindowName}"-->
                                     <Border Margin="0 0 10 0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" MinWidth="30">
-                                        <fa5:ImageAwesome x:Name="ResultIcon" 
-                                                      Foreground="{Binding DataContext.Theme.TxtQueryForeground, ElementName=MainWindowName}"
-                                                      HorizontalAlignment="Center"
-                                                      VerticalAlignment="Center" 
-                                                      Height="24" 
-                                                      Icon="{Binding Icon}" />
+                                        <Image x:Name="ResultIcon" 
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center" 
+                                               Height="24" 
+                                               Source="{Binding Icon, Converter={StaticResource BitmapToImageSourceConverter}}" />
                                     </Border>
 
                                     <!-- Result title -->

@@ -5,7 +5,7 @@ using Pinpoint.Plugin.Everything.API;
 
 namespace Pinpoint.Plugin.Everything
 {
-    public class EverythingResult : AbstractQueryResult
+    public class EverythingResult : AbstractFontAwesomeQueryResult
     {
         private readonly QueryResultItem _item;
 
@@ -15,10 +15,10 @@ namespace Pinpoint.Plugin.Everything
             )
         {
             _item = item;
-            Icon = icon;
+            FontAwesomeIcon = icon;
         }
 
-        public override EFontAwesomeIcon Icon { get; }
+        public override EFontAwesomeIcon FontAwesomeIcon { get; }
 
         public override void OnSelect()
         {

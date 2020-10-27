@@ -6,6 +6,7 @@ using Pinpoint.Plugin.Snippets;
 using Pinpoint.Plugin;
 using Pinpoint.Plugin.Snippets.Converters;
 using Pinpoint.Win.Converters;
+using Pinpoint.Win.Extensions;
 using Pinpoint.Win.Models;
 
 namespace Pinpoint.Win.Views
@@ -31,8 +32,7 @@ namespace Pinpoint.Win.Views
                 foreach (var (content, base64) in abstractSnippet.Transcriptions)
                 {
                     var bitmap = BitmapToBase64Converter.ConvertBack(base64);
-                    var imageSource = BitmapToImageSourceConverter.Convert(bitmap);
-                    Model.BitmapPairs.Add(new BitmapTextPair(imageSource, null, content));
+                    Model.BitmapPairs.Add(new BitmapTextPair(bitmap.ToImageSource(), null, content));
                 }
             }
         }
@@ -61,8 +61,7 @@ namespace Pinpoint.Win.Views
             var pairs = new List<Tuple<string, Bitmap>>();
             foreach (var item in Model.BitmapPairs)
             {
-                var bitmap = BitmapToImageSourceConverter.ConvertBack(item.Original);
-                pairs.Add(new Tuple<string, Bitmap>(item.Content, bitmap));
+                pairs.Add(new Tuple<string, Bitmap>(item.Content, item.Original.ToBitmap()));
             }
 
             var snippet = new OcrTextSnippet(title, pairs);

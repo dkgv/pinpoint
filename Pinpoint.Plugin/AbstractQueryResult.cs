@@ -1,4 +1,4 @@
-﻿using FontAwesome5;
+﻿using System.Drawing;
 
 namespace Pinpoint.Plugin
 {
@@ -22,8 +22,11 @@ namespace Pinpoint.Plugin
 
         public string Shortcut { get; set; }
 
-        public abstract EFontAwesomeIcon Icon { get; }
+        public abstract Bitmap Icon { get; }
 
+        /// <summary>
+        /// Fired when result is selected (double-clicked or when "ENTER" is pressed) from list.
+        /// </summary>
         public abstract void OnSelect();
     }
 }
