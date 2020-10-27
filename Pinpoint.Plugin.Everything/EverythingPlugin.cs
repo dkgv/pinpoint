@@ -16,6 +16,7 @@ namespace Pinpoint.Plugin.Everything
         private static readonly Regex ZipRegex = new Regex(@"zip|tar|rar|gx|7z|apk|dmg|tar\.(gz|lz|xz)|zz");
         private static readonly Regex WordRegex = new Regex(@"doc|docx");
         private static readonly Regex PowerPointRegex = new Regex(@"ppt|pptx");
+        private static readonly Regex TextRegex = new Regex(@"txt|md|rtf");
         private static readonly Regex CodeRegex = new Regex(@"java|cs|py|cpp|cc|rs|php|js|css|html|rb|pl|h|c|m|swift|xaml");
         private static readonly Regex SpreadsheetRegex = new Regex(@"xls|xlsm|xlsx|numbers|ots|xlr");
 
@@ -90,6 +91,11 @@ namespace Pinpoint.Plugin.Everything
             if (extension.Equals("pdf"))
             {
                 return EFontAwesomeIcon.Regular_FilePdf;
+            }
+
+            if (TextRegex.IsMatch(extension))
+            {
+                return EFontAwesomeIcon.Regular_FileAlt;
             }
 
             if (ZipRegex.IsMatch(extension))
