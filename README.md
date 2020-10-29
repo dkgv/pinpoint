@@ -10,15 +10,27 @@ Searches for applications installed on your computer.
 
 ### Bangs
 
-Enables you to use the 10.000+ [DuckDuckGo !Bang](https://duckduckgo.com/bang) operators. Simply type your query, add the relevant bang operator as a prefix or suffix (e.g. "breaking bad !imdb"), and hit enter.
+Enables you to use the 10.000+ [DuckDuckGo !Bang](https://duckduckgo.com/bang) operators. Simply type your query, add the relevant bang operator as a prefix or suffix, `breaking bad !imdb`, and hit enter.
 
 ### Calculator
 
-Calculates mathematical expressions instantly: "(5 + 5) * 10".
+Calculates mathematical expressions instantly `(5 + 5) * 10`.
+
+### Command Line
+
+Executes command line commands when query is prefixed by `>`, e.g. `>ipconfig`.
+
+### Control Panel
+
+Searches across all control panel items.
 
 ### Currency Converter
 
-Converts between currencies using familiar syntax: "1 USD to EUR". Alternatively, your local currency will be used if you don't specify which currency to convert to: "€1".
+Converts between currencies using familiar syntax `1 USD to EUR`. Alternatively, your local currency will be used if you don't specify which currency to convert to: `€1`.
+
+### Dictionary Definitions
+
+Quickly look up word definitions `smart definition`, `smart def`, `smart define`, `smart meaning`.
 
 ### Everything (File Search)
 
@@ -26,7 +38,7 @@ Uses [Everything](https://www.voidtools.com/) to offer blazingly fast file searc
 
 ### Metric Converter
 
-Easily convert between all the common imperial and metric units: "1m to ft".
+Easily convert between all the common imperial and metric units: `1m to ft`.
 
 ### Snippets
 
