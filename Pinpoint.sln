@@ -22,7 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.AppSearch",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.CommandLine", "Pinpoint.Plugin.CommandLine\Pinpoint.Plugin.CommandLine.csproj", "{EE1F0F7D-F303-4408-B059-66C7F0210BA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.Dictionary", "Pinpoint.Plugin.Dictionary\Pinpoint.Plugin.Dictionary.csproj", "{E3602C1B-190D-4E09-94C2-45C8D7C5483C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Dictionary", "Pinpoint.Plugin.Dictionary\Pinpoint.Plugin.Dictionary.csproj", "{E3602C1B-190D-4E09-94C2-45C8D7C5483C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.ControlPanel", "Pinpoint.Plugin.ControlPanel\Pinpoint.Plugin.ControlPanel.csproj", "{D6A22DE3-EC67-4E85-9C57-BAC4CCD5340C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -166,6 +168,18 @@ Global
 		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Release|x64.Build.0 = Release|Any CPU
 		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Release|x86.ActiveCfg = Release|Any CPU
 		{E3602C1B-190D-4E09-94C2-45C8D7C5483C}.Release|x86.Build.0 = Release|Any CPU
+		{D6A22DE3-EC67-4E85-9C57-BAC4CCD5340C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6A22DE3-EC67-4E85-9C57-BAC4CCD5340C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6A22DE3-EC67-4E85-9C57-BAC4CCD5340C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D6A22DE3-EC67-4E85-9C57-BAC4CCD5340C}.Debug|x64.Build.0 = Debug|Any CPU
+		{D6A22DE3-EC67-4E85-9C57-BAC4CCD5340C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D6A22DE3-EC67-4E85-9C57-BAC4CCD5340C}.Debug|x86.Build.0 = Debug|Any CPU
+		{D6A22DE3-EC67-4E85-9C57-BAC4CCD5340C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6A22DE3-EC67-4E85-9C57-BAC4CCD5340C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6A22DE3-EC67-4E85-9C57-BAC4CCD5340C}.Release|x64.ActiveCfg = Release|Any CPU
+		{D6A22DE3-EC67-4E85-9C57-BAC4CCD5340C}.Release|x64.Build.0 = Release|Any CPU
+		{D6A22DE3-EC67-4E85-9C57-BAC4CCD5340C}.Release|x86.ActiveCfg = Release|Any CPU
+		{D6A22DE3-EC67-4E85-9C57-BAC4CCD5340C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

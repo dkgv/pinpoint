@@ -14,6 +14,7 @@ using Pinpoint.Plugin.AppSearch;
 using Pinpoint.Plugin.Bangs;
 using Pinpoint.Plugin.Calculator;
 using Pinpoint.Plugin.CommandLine;
+using Pinpoint.Plugin.ControlPanel;
 using Pinpoint.Plugin.Currency;
 using Pinpoint.Plugin.Dictionary;
 using Pinpoint.Plugin.Everything;
@@ -56,11 +57,12 @@ namespace Pinpoint.Win.Views
         private void LoadPlugins()
         {
             _pluginEngine.AddPlugin(new EverythingPlugin());
+            _pluginEngine.AddPlugin(new AppSearchPlugin());
+            _pluginEngine.AddPlugin(new ControlPanelPlugin());
             _pluginEngine.AddPlugin(new CalculatorPlugin());
             _pluginEngine.AddPlugin(new CurrencyPlugin());
             _pluginEngine.AddPlugin(new MetricConverterPlugin());
             _pluginEngine.AddPlugin(new BangsPlugin());
-            _pluginEngine.AddPlugin(new AppSearchPlugin());
             _pluginEngine.AddPlugin(new DictionaryPlugin());
             _pluginEngine.AddPlugin(new CommandLinePlugin());
             _pluginEngine.AddPlugin(new SnippetsPlugin(_settingsWindow));
