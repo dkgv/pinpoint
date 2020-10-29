@@ -51,7 +51,7 @@ namespace Pinpoint.Plugin.ControlPanel
         {
             foreach (var item in _controlPanelItems.Where(i => i.Name.ToLower().Contains(query.RawQuery.ToLower()) && i.RegistryKey != null))
             {
-                yield return new ControlPanelResult(item.Name, ControlPanelIconProvider.GetIcon(item.RegistryKey));
+                yield return new ControlPanelResult(item.Name, item.Description, ControlPanelIconProvider.GetIcon(item.RegistryKey));
             }
         }
 

@@ -5,7 +5,7 @@ namespace Pinpoint.Plugin.ControlPanel
 {
     public class ControlPanelResult : AbstractQueryResult
     {
-        public ControlPanelResult(string title, Bitmap icon) : base(title, "Show in control panel.")
+        public ControlPanelResult(string title, string description, Bitmap icon) : base(title, description)
         {
             Icon = icon;
         }
