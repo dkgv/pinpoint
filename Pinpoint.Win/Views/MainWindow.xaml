@@ -131,7 +131,7 @@
 
                 <!-- Results -->
                 <ListBox x:Name="LstResults" Grid.Row="1"
-                         MaxHeight="250"
+                         MaxHeight="275"
                          ItemsSource="{Binding Results}" 
                          HorizontalContentAlignment="Stretch"
                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"

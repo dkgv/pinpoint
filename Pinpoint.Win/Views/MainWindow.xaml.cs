@@ -88,8 +88,9 @@ namespace Pinpoint.Win.Views
             else
             {
                 Show();
-                TxtQuery.SelectAll();
+                Activate();
                 TxtQuery.Focus();
+                TxtQuery.SelectAll();
             }
 
             e.Handled = true;
