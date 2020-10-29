@@ -31,6 +31,7 @@ namespace Pinpoint.Plugin.Everything
 
         public void Unload()
         {
+            _everything.Dispose();
         }
 
         public async Task<bool> Activate(Query query)

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Pinpoint.Plugin.MetricConverter;
 using Pinpoint.Plugin.MetricConverter.Converters;
 
 namespace Pinpoint.Plugin.MetricConverter
@@ -12,7 +11,7 @@ namespace Pinpoint.Plugin.MetricConverter
         //Example of match: 100cm to m | 100cm
         private const string Pattern = @"^(\d+) ?(mm|cm|km|m|micrometer|nm|mi|yd|ft|in){1}( (to|in) )?(mm|cm|km|m|micrometer|nm|mi|yd|ft|in)?$";
         
-        public PluginMeta Meta { get; set; } = new PluginMeta("MetricConverter", PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Metric Converter", PluginPriority.Highest);
 
         public void Load()
         {

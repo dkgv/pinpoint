@@ -10,7 +10,7 @@ namespace Pinpoint.Plugin.AppSearch
         private const string StartMenu = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs";
         private UkkonenTrie<string> _trie = new UkkonenTrie<string>();
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("App Search", PluginPriority.Standard);
+        public PluginMeta Meta { get; set; } = new PluginMeta("App Search", PluginPriority.NextHighest);
 
         public void Load()
         {
