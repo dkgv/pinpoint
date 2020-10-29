@@ -187,10 +187,12 @@ namespace Pinpoint.Win.Views
                 case Key.Down:
                     if (Model.Results.Count > 0)
                     {
-                        LstResults.Focus();
+                        TxtQuery.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
                     }
                     break;
 
+                case Key.Left:
+                case Key.Right:
                 case Key.Up:
                     break;
 
@@ -286,10 +288,6 @@ namespace Pinpoint.Win.Views
                 case Key.Left:
                     TxtQuery.CaretIndex = TxtQuery.Text.Length - 1;
                     TxtQuery.Focus();
-                    break;
-
-                case Key.Down:
-                    LstResults.SelectedIndex = Math.Min(LstResults.SelectedIndex + 1, Model.Results.Count - 1);
                     break;
             }
 
