@@ -16,12 +16,14 @@ namespace Pinpoint.Plugin.AppSearch
         {
             foreach (var file in Directory.GetFiles(StartMenu, "*.lnk", SearchOption.AllDirectories))
             {
-                _trie.Add(file.ToLower(), file);
+                var name = Path.GetFileName(file.ToLower());
+
+                _trie.Add(name, file);
 
                 // Support search for "Mozilla Firefox" through both "Mozilla" and "Firefox"
                 if (file.Contains(" "))
                 {
-                    var variations = file.ToLower().Split(" ");
+                    var variations = name.Split(" ");
                     foreach (var variation in variations)
                     {
                         _trie.Add(variation, file);
