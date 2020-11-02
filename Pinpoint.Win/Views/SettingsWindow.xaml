@@ -114,7 +114,12 @@
                                     <RowDefinition Height="Auto"></RowDefinition>
                                 </Grid.RowDefinitions>
 
-                                <ListBox Grid.Row="0" x:Name="LstManualSnippets" KeyDown="LstManualSnippets_OnKeyDown" MinHeight="100" ItemsSource="{Binding ManualSnippets}">
+                                <ListBox 
+                                    Grid.Row="0"
+                                    x:Name="LstManualSnippets"
+                                    KeyDown="LstManualSnippets_OnKeyDown" 
+                                    MinHeight="130" MaxHeight="130"
+                                    ItemsSource="{Binding ManualSnippets}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
@@ -154,7 +159,12 @@
                                     <RowDefinition Height="Auto"></RowDefinition>
                                 </Grid.RowDefinitions>
 
-                                <ListBox Grid.Row="0" x:Name="LstFileSnippets" KeyDown="LstFileSnippets_KeyDown" MinHeight="100" ItemsSource="{Binding FileSnippets}">
+                                <ListBox
+                                    Grid.Row="0" 
+                                    x:Name="LstFileSnippets" 
+                                    KeyDown="LstFileSnippets_KeyDown" 
+                                    MinHeight="130" MaxHeight="130"
+                                    ItemsSource="{Binding FileSnippets}">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
                                             <StackPanel Orientation="Horizontal">
