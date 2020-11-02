@@ -4,7 +4,7 @@ namespace Pinpoint.Plugin.MetricConverter
 {
     public class ConversionResult : AbstractFontAwesomeQueryResult
     {
-        public ConversionResult(string result) : base("= " + result)
+        public ConversionResult(string to, double amount) : base("= " + amount + " " + to)
         {
         }
 

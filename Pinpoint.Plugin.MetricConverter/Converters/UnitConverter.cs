@@ -1,56 +1,43 @@
 ﻿namespace Pinpoint.Plugin.MetricConverter.Converters
 {
-    public class UnitConverter
+    public static class UnitConverter
     {
-        public double Amount;
-        public readonly string Unit;
-        
-        public UnitConverter(double amount, string unit)
+        private static double ConvertToCm(string fromUnit, double amount)
         {
-            Amount = amount; 
-            Unit = unit;
-        }
-
-        private UnitConverter ConvertToCm()
-        {
-            return Unit switch
+            return fromUnit switch
             {
-                "m" => new UnitConverter(Amount * 100, "cm"),
-                "cm" => this,
-                "km" => new UnitConverter(Amount * 100000, "cm"),
-                "mm" => new UnitConverter(Amount / 10, "cm"),
-                "micrometer" => new UnitConverter(Amount / 10000, "cm"),
-                "nm" => new UnitConverter(Amount / 100000000, "cm"),
-                "mi" => new UnitConverter(Amount * 160934.4, "cm"),
-                "yd" => new UnitConverter(Amount * 91.44, "cm"),
-                "ft" => new UnitConverter(Amount * 30.48, "cm"),
-                "in" => new UnitConverter(Amount * 2.54, "cm"),
-                _ => this
+                "m" => amount * 100,
+                "cm" => amount,
+                "km" => amount * 100000,
+                "mm" => amount / 10,
+                "micrometer" => amount / 10000,
+                "nm" => amount / 100000000,
+                "mi" => amount * 160934.4,
+                "yd" => amount * 91.44,
+                "ft" => amount * 30.48,
+                "in" => amount * 2.54,
+                _ => amount
             };
         }
         
-        public UnitConverter ConvertTo(string toUnit)
+        public static double ConvertTo(string fromUnit, string toUnit, double amount)
         {
-            var amountInCm = ConvertToCm().Amount;
+            var inCm = ConvertToCm(fromUnit, amount);
+
             return toUnit switch
             {
-                "m" => new UnitConverter(amountInCm / 100, "m"),
-                "cm" => ConvertToCm(),
-                "km" => new UnitConverter(amountInCm / 100000, "km"),
-                "mm" => new UnitConverter(amountInCm * 10, "mm"),
-                "micrometer" => new UnitConverter(amountInCm * 10000, "micrometer"),
-                "nm" => new UnitConverter(amountInCm * 100000000, "nm"),
-                "mi" => new UnitConverter(amountInCm / 160934.4, "mi"),
-                "yd" => new UnitConverter(amountInCm / 91.44, "yd"),
-                "ft" => new UnitConverter(amountInCm / 30.48, "ft"),
-                "in" => new UnitConverter(amountInCm / 2.54, "in"),
-                _ => this
+                "m" => inCm / 100,
+                "cm" => inCm,
+                "km" => inCm / 100000,
+                "mm" => inCm * 10,
+                "micrometer" => inCm * 10000,
+                "nm" => inCm * 100000000,
+                "mi" => inCm / 160934.4,
+                "yd" => inCm / 91.44,
+                "ft" => inCm / 30.48,
+                "in" => inCm / 2.54,
+                _ => inCm
             };
-        }
-
-        public override string ToString()
-        {
-            return Amount + " " + Unit;
         }
     }
 }
