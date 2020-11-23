@@ -40,11 +40,10 @@ namespace Pinpoint.Plugin.Dictionary
             }
 
             // Grab at most first five definitions
-            var all = container.QuerySelectorAll("div");
-            for (var i = 0; i < Math.Min(all.Length, 5); i++)
+            var definitions = container.QuerySelectorAll("div");
+            for (var i = 0; i < Math.Min(definitions.Length, 5); i++)
             {
-                var definition = all[i];
-                var text = definition.TextContent;
+                var text = definitions[i].TextContent;
                 if (text.Contains(":"))
                 {
                     text = text.Split(":")[0];
