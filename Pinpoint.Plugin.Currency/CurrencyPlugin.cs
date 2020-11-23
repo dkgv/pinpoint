@@ -32,9 +32,16 @@ namespace Pinpoint.Plugin.Currency
         {
             // Load exchange rates
             var url = $"https://api.exchangeratesapi.io/latest?base={from}";
-            using var client = new WebClient();
-            var json = client.DownloadString(url);
-            CurrencyModels[from] = JsonConvert.DeserializeObject<CurrencyModel>(json);
+            try
+            {
+                using var client = new WebClient();
+                var json = client.DownloadString(url);
+                CurrencyModels[from] = JsonConvert.DeserializeObject<CurrencyModel>(json);
+            }
+            catch (WebException)
+            {
+                // Likely invalid currency
+            }
         }
 
         public void Unload()
@@ -64,8 +71,15 @@ namespace Pinpoint.Plugin.Currency
                 return true;
             }
 
-            // Matches inputs like 104.3 usd to/in eur
+
+            // Matches 10 usd
             var hasNumber = query.Parts[0].All(IsNumber);
+            if (hasNumber && query.Parts.Length == 2 && query.Parts[1].Length == 3)
+            {
+                return true;
+            }
+
+            // Matches inputs like 104.3 usd to/in eur
             var isConverting = raw.Contains("to") || raw.Contains("in");
             var correctParts = query.Parts.Length == 4 && query.Parts[3].Length == 3;
 
