@@ -35,6 +35,7 @@
     <ProjectReference Include="..\Pinpoint.Plugin.Snippets\Pinpoint.Plugin.Snippets.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Calculator\Pinpoint.Plugin.Calculator.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Snippets\Pinpoint.Plugin.Snippets.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.Spotify\Pinpoint.Plugin.Spotify.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin\Pinpoint.Plugin.csproj" />
   </ItemGroup>
 
