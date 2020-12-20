@@ -34,7 +34,7 @@ namespace PinPoint.Plugin.Spotify
 
         public async Task<bool> Activate(Query query)
         {
-            return query.RawQuery.StartsWith("¤") && query.RawQuery.Length > 6;
+            return query.RawQuery.StartsWith("¤") && query.RawQuery.Length > 4;
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
