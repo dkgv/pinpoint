@@ -84,6 +84,7 @@ namespace PinPoint.Plugin.Spotify
             {
                 settings.RefreshToken = null;
                 AppSettings.PutAndSave("spotify", settings);
+                return;
             }
 
             var responseContent = await response.Content.ReadAsStringAsync();
