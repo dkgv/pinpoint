@@ -1,12 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Plugin;
-using System.Web;
 
 namespace PinPoint.Plugin.Spotify
 {
@@ -19,12 +14,12 @@ namespace PinPoint.Plugin.Spotify
 
         public void Load()
         {
-           // Check auth here to ensure we always have a valid refresh token
-           // Case 1: no refresh token, no access token - prompt login in browser
-           // Case 2: refresh token, no access token -attempt to exchange refresh token, if that fails, prompt login in browser
-           //Case 3: refresh token, access token - use access token, if response status code is 401, exchange refresh token and try again
-           var tokens = _authManager.Authenticate();
-           _spotifyClient.InitializeClientWithTokens(tokens);
+            var settings = AppSettings.GetAsOrDefault<SpotifyPluginSettings>("spotify", null);
+            if(settings?.RefreshToken == null)
+            {
+                var tokens = _authManager.Authenticate();
+                _spotifyClient.InitializeClientWithTokens(tokens);
+            }
         }
 
         public void Unload()
@@ -32,18 +27,25 @@ namespace PinPoint.Plugin.Spotify
             _spotifyClient.Dispose();
         }
 
-        public async Task<bool> Activate(Query query)
+        public Task<bool> Activate(Query query)
         {
-            return query.RawQuery.StartsWith("¤") && query.RawQuery.Length > 4;
+            return Task.FromResult(query.RawQuery.StartsWith("¤") && query.RawQuery.Length > 4);
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
-            var res = await _spotifyClient.Search(query.RawQuery.Substring(1));
+            var searchResults = await _spotifyClient.Search(query.RawQuery.Substring(1));
 
-            foreach (var trackResult in res)
+            foreach (var trackResult in searchResults)
             {
-                yield return new SpotifySearchResult(trackResult.Name, trackResult.Uri);
+                var result = trackResult.Name;
+                if(trackResult.Artists.Count > 0)
+                {
+                    var artistsString = string.Join(", ", trackResult.Artists.Select(a => a.Name));
+                    result = $"{result} - {artistsString}";
+                }
+
+                yield return new SpotifySearchResult(result, trackResult.Uri);
             }
         }
     }
