@@ -22,6 +22,7 @@ using Pinpoint.Plugin.MetricConverter;
 using Pinpoint.Win.Models;
 using Xceed.Wpf.Toolkit;
 using Color = System.Windows.Media.Color;
+using PinPoint.Plugin.Spotify;
 
 namespace Pinpoint.Win.Views
 {
@@ -66,6 +67,7 @@ namespace Pinpoint.Win.Views
             _pluginEngine.AddPlugin(new DictionaryPlugin());
             _pluginEngine.AddPlugin(new CommandLinePlugin());
             _pluginEngine.AddPlugin(new SnippetsPlugin(_settingsWindow));
+            _pluginEngine.AddPlugin(new SpotifyPlugin());
         }
 
         internal MainWindowModel Model
