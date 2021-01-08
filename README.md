@@ -31,7 +31,7 @@ Searches across all control panel items.
 
 ### Currency Converter
 
-Converts between currencies using familiar syntax `1 USD to EUR`. Alternatively, your local currency will be used if you don't specify which currency to convert to: `€1`.
+Converts between currencies (including cryptocurrencies) using familiar syntax: `1 USD to EUR`, `£1`, `1 BTC in AUD`.
 ![](https://i.imgur.com/FoOoBDE.png)
 
 ### Dictionary Definitions
@@ -41,7 +41,7 @@ Quickly look up word definitions `smart definition`, `smart def`, `smart define`
 
 ### Everything (File Search)
 
-Uses [Everything](https://www.voidtools.com/) to offer blazingly fast file search across the entire file system.
+Uses [Everything](https://www.voidtools.com/) to offer extremely fast file searches across the entire file system.
 ![](https://i.imgur.com/DafD0xs.png)
 
 ### Metric Converter
