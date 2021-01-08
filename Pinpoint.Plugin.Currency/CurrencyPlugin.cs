@@ -4,8 +4,8 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using Newtonsoft.Json;
 
 namespace Pinpoint.Plugin.Currency
@@ -20,15 +20,22 @@ namespace Pinpoint.Plugin.Currency
 
         public void Load()
         {
-            // Find base currency
-            var ri = new RegionInfo(Thread.CurrentThread.CurrentUICulture.LCID);
-            _baseCurrency = ri.ISOCurrencySymbol;
+            try
+            {
+                // Find base currency
+                var ri = new RegionInfo(CultureInfo.CurrentCulture.Name);
+                _baseCurrency = ri.ISOCurrencySymbol;
+            }
+            catch (ArgumentException)
+            {
+                _baseCurrency = "USD";
+            }
 
-            // Cache rates for base to allow "€5" type queries
-            CacheRates(_baseCurrency);
+            CacheFiatRates(_baseCurrency);
+            CacheCryptoRates();
         }
 
-        private void CacheRates(string from)
+        private void CacheFiatRates(string from)
         {
             // Load exchange rates
             var url = $"https://api.exchangeratesapi.io/latest?base={from}";
@@ -41,6 +48,56 @@ namespace Pinpoint.Plugin.Currency
             catch (WebException)
             {
                 // Likely invalid currency
+            }
+        }
+
+        private void CacheCryptoRates()
+        {
+            CurrencyModel PopulateModel(string ticker, double usdPrice)
+            {
+                var model = new CurrencyModel(ticker)
+                {
+                    Rates = new Dictionary<string, dynamic> {["USD"] = usdPrice}
+                };
+
+                foreach (var @base in CurrencyModels["USD"].Rates.Keys.Where(@base => !@base.Equals("USD")))
+                {
+                    model.Rates[@base] = ConvertFromTo("USD", usdPrice, @base);
+                }
+
+                return model;
+            }
+            
+            const string url = "https://coinmarketcap.com/";
+            var doc = new HtmlWeb().Load(url);
+            
+            const string xpath = "/html/body/div[1]/div/div[2]/div/div/div[2]/table";
+            var table = doc.DocumentNode.SelectSingleNode(xpath);
+            
+            var rows = table.Descendants("tr").ToArray();
+            for (var i = 1; i < rows.Length; i++)
+            {
+                var cols = rows[i].Descendants("td").ToArray();
+                if (cols.Length != 11)
+                {
+                    continue;
+                }
+                
+                var ps = cols[2].Descendants("p").ToArray();
+                if (ps.Length != 2)
+                {
+                    continue;
+                }
+                
+                // Extract current price for entry
+                var price = double.Parse(cols[3].InnerText.TrimStart('$').Replace(",", ""));
+
+                // Skip stable-coins like USDT
+                if (Math.Abs(price - 1) > 0.1)
+                {
+                    var ticker = cols[2].Descendants("p").ToArray()[1].InnerText;
+                    CurrencyModels[ticker] = PopulateModel(ticker, price);
+                }
             }
         }
 
@@ -71,7 +128,6 @@ namespace Pinpoint.Plugin.Currency
                 return true;
             }
 
-
             // Matches 10 usd
             var hasNumber = query.Parts[0].All(IsNumber);
             if (hasNumber && query.Parts.Length == 2 && query.Parts[1].Length == 3)
@@ -100,19 +156,31 @@ namespace Pinpoint.Plugin.Currency
         {
             from = from.ToUpper();
             to = to.ToUpper();
-
+            
+            // Is the `from` currency new?
             if (!CurrencyModels.ContainsKey(from))
             {
-                CacheRates(from);
+                CacheFiatRates(from);
             }
 
-            var model = CurrencyModels[from];
-            if (model.Rates.ContainsKey(to))
+            var fromModel = CurrencyModels[from];
+            
+            // Check if we already know rate for `to`
+            if (fromModel.Rates.ContainsKey(to))
             {
-                return model.Rates[to] * value;
+                return fromModel.Rates[to] * value;
             }
 
-            return 1;
+            // Check if we know inverse rate
+            CurrencyModel toModel;
+            if (CurrencyModels.ContainsKey(to) && (toModel = CurrencyModels[to]).Rates.ContainsKey(from))
+            {
+                fromModel.Rates[to] = 1 / toModel.Rates[from];
+            }
+
+            return fromModel.Rates.ContainsKey(to) 
+                ? fromModel.Rates[to] * value 
+                : 1;
         }
 
         private double IdentifyValue(Query query)
