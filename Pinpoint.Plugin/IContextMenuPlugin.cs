@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Pinpoint.Plugin
+namespace Pinpoint.Core
 {
     public interface IContextMenuPlugin : IPlugin
     {

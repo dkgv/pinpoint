@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.Snippets
 {

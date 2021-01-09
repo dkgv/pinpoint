@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-using Pinpoint.Plugin;
+using Pinpoint.Core;
 using Pinpoint.Plugin.Snippets;
 
 namespace Pinpoint.Win.Views

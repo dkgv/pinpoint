@@ -4,7 +4,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace Pinpoint.Plugin
+namespace Pinpoint.Core
 {
     public static class AppSettings
     {

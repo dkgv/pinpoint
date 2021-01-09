@@ -4,6 +4,8 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using FontAwesome5;
+using Pinpoint.Core;
+using Pinpoint.Plugin.Everything;
 using Pinpoint.Plugin.Everything.API;
 
 namespace Pinpoint.Plugin.Everything

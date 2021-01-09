@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Drawing;
+using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.ControlPanel
 {

@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Pinpoint.Plugin
+namespace Pinpoint.Core
 {
     public class PluginEngine
     {

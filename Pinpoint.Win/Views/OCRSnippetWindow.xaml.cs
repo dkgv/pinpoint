@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows;
 using Pinpoint.Plugin.Snippets;
-using Pinpoint.Plugin;
+using Pinpoint.Core;
 using Pinpoint.Plugin.Snippets.Converters;
 using Pinpoint.Win.Converters;
 using Pinpoint.Win.Extensions;

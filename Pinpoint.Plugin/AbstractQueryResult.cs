@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Pinpoint.Plugin
+namespace Pinpoint.Core
 {
     public abstract class AbstractQueryResult
     {

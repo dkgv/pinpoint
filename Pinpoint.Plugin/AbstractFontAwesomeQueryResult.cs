@@ -5,7 +5,7 @@ using FontAwesome5;
 using FontAwesome5.Extensions;
 using Svg;
 
-namespace Pinpoint.Plugin
+namespace Pinpoint.Core
 {
     public abstract class AbstractFontAwesomeQueryResult : AbstractQueryResult
     {

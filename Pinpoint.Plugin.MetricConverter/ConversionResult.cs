@@ -1,6 +1,6 @@
 using FontAwesome5;
 
-namespace Pinpoint.Plugin.MetricConverter
+namespace Pinpoint.Core.MetricConverter
 {
     public class ConversionResult : AbstractFontAwesomeQueryResult
     {

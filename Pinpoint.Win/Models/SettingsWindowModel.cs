@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using Pinpoint.Plugin.Snippets;
-using Pinpoint.Plugin;
+using Pinpoint.Core;
 
 namespace Pinpoint.Win.Models
 {

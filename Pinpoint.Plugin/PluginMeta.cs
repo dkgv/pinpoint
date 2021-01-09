@@ -1,4 +1,4 @@
-﻿namespace Pinpoint.Plugin
+﻿namespace Pinpoint.Core
 {
     public class PluginMeta
     {

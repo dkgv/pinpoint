@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Pinpoint.Plugin
+namespace Pinpoint.Core
 {
     public static class AppConstants
     {
@@ -11,6 +11,6 @@ namespace Pinpoint.Plugin
         public static readonly string SettingsFilePath = MainDirectory + "settings.json";
         public static readonly string HotkeyIdentifier = "Show/Hide";
 
-        public const string Version = "0.0.5";
+        public const string Version = "0.0.6";
     }
 }

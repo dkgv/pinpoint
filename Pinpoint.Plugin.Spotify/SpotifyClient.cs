@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Pinpoint.Plugin;
+using Pinpoint.Core;
 
 namespace PinPoint.Plugin.Spotify
 {

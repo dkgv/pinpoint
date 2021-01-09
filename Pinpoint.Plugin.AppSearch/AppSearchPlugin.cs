@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
+using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.AppSearch
 {

@@ -1,6 +1,6 @@
 ﻿using System;
 using FontAwesome5;
-using Pinpoint.Plugin;
+using Pinpoint.Core;
 
 namespace PinPoint.Plugin.Spotify
 {

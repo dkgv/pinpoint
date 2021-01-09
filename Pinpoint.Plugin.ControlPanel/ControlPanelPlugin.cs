@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Win32;
 using Newtonsoft.Json;
+using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.ControlPanel
 {

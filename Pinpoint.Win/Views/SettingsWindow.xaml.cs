@@ -8,7 +8,7 @@ using System.Windows.Input;
 using Microsoft.Win32;
 using NHotkey.Wpf;
 using Pinpoint.Plugin.Snippets;
-using Pinpoint.Plugin;
+using Pinpoint.Core;
 using Pinpoint.Win.Models;
 
 namespace Pinpoint.Win.Views

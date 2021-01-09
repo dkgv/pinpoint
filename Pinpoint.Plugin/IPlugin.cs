@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Pinpoint.Plugin
+namespace Pinpoint.Core
 {
     public interface IPlugin : IComparable<IPlugin>
     {

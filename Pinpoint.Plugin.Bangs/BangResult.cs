@@ -1,4 +1,6 @@
-﻿namespace Pinpoint.Plugin.Bangs
+﻿using Pinpoint.Core;
+
+namespace Pinpoint.Plugin.Bangs
 {
     public class BangResult : UrlQueryResult
     {

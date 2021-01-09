@@ -1,4 +1,4 @@
-﻿namespace Pinpoint.Plugin.MetricConverter.Converters
+﻿namespace Pinpoint.Core.MetricConverter.Converters
 {
     public static class UnitConverter
     {

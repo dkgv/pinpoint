@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using FontAwesome5;
+using Pinpoint.Core;
 using Pinpoint.Plugin.Everything.API;
 
 namespace Pinpoint.Plugin.Everything

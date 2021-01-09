@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.AppSearch
 {

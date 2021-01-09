@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
+using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.Currency
 {
@@ -60,9 +61,9 @@ namespace Pinpoint.Plugin.Currency
                     Rates = new Dictionary<string, dynamic> {["USD"] = usdPrice}
                 };
 
-                foreach (var @base in CurrencyModels["USD"].Rates.Keys.Where(@base => !@base.Equals("USD")))
+                foreach (var @base in CurrencyModels[_baseCurrency].Rates.Keys.Where(@base => !@base.Equals("USD")))
                 {
-                    model.Rates[@base] = ConvertFromTo("USD", usdPrice, @base);
+                    model.Rates[@base] = ConvertFromTo(_baseCurrency, usdPrice, @base);
                 }
 
                 return model;

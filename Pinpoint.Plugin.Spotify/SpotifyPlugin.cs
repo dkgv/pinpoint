@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Pinpoint.Plugin;
+using Pinpoint.Core;
 
 namespace PinPoint.Plugin.Spotify
 {
@@ -10,7 +10,7 @@ namespace PinPoint.Plugin.Spotify
         private readonly AuthenticationManager _authManager = new AuthenticationManager();
         private readonly SpotifyClient _spotifyClient = SpotifyClient.GetInstance();
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Spotify Plugin");
+        public PluginMeta Meta { get; set; } = new PluginMeta("Spotify Controller");
 
         public void Load()
         {
