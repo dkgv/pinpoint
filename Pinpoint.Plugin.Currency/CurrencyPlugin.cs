@@ -54,6 +54,9 @@ namespace Pinpoint.Plugin.Currency
 
         private void CacheCryptoRates()
         {
+            // Ensure USD rates are cached
+            CacheFiatRates("USD");
+
             CurrencyModel PopulateModel(string ticker, double usdPrice)
             {
                 var model = new CurrencyModel(ticker)
@@ -61,9 +64,9 @@ namespace Pinpoint.Plugin.Currency
                     Rates = new Dictionary<string, dynamic> {["USD"] = usdPrice}
                 };
 
-                foreach (var @base in CurrencyModels[_baseCurrency].Rates.Keys.Where(@base => !@base.Equals("USD")))
+                foreach (var @base in CurrencyModels["USD"].Rates.Keys.Where(@base => !@base.Equals("USD")))
                 {
-                    model.Rates[@base] = ConvertFromTo(_baseCurrency, usdPrice, @base);
+                    model.Rates[@base] = ConvertFromTo("USD", usdPrice, @base);
                 }
 
                 return model;
@@ -91,7 +94,9 @@ namespace Pinpoint.Plugin.Currency
                 }
                 
                 // Extract current price for entry
-                var price = double.Parse(cols[3].InnerText.TrimStart('$').Replace(",", ""));
+                var priceNodeText = cols[3].InnerText;
+                var priceText = priceNodeText.TrimStart('$').Replace(",", "");
+                var price = double.Parse(priceText, NumberStyles.Any, CultureInfo.InvariantCulture);
 
                 // Skip stable-coins like USDT
                 if (Math.Abs(price - 1) > 0.1)
