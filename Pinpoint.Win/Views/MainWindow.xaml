@@ -120,12 +120,6 @@
                                                KeyUp="TxtQuery_KeyUp" 
                                                KeyDown="TxtQuery_KeyDown" 
                                                TextChanged="TxtQuery_TextChanged"/>
-
-                        <xctk:IconButton Grid.Column="1" x:Name="BtnSettings" Cursor="Hand" HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}" MouseOverBackground="{x:Null}" MouseOverBorderBrush="{x:Null}" MousePressedBorderBrush="{x:Null}" MousePressedBackground="{x:Null}" Click="BtnSettings_Click" MouseEnter="BtnSettings_MouseEnter" MouseLeave="BtnSettings_MouseLeave">
-                            <xctk:IconButton.Icon>
-                                <fa5:ImageAwesome Height="26" Icon="Solid_Cogs" Foreground="#FF575757"></fa5:ImageAwesome>
-                            </xctk:IconButton.Icon>
-                        </xctk:IconButton>
                     </Grid>
                 </Border>
 

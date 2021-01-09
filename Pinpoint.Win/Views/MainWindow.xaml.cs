@@ -123,33 +123,6 @@ namespace Pinpoint.Win.Views
         {
         }
 
-        private void BtnSettings_Click(object sender, RoutedEventArgs e)
-        {
-            _settingsWindow.Show();
-            Hide();
-        }
-
-        private void BtnSettings_MouseEnter(object sender, MouseEventArgs e)
-        {
-            SetSettingsColor(sender, 216, 216, 216);
-        }
-
-        private void BtnSettings_MouseLeave(object sender, MouseEventArgs e)
-        {
-            SetSettingsColor(sender, 87, 87, 87);
-        }
-
-        private void SetSettingsColor(object sender, byte r, byte g, byte b)
-        {
-            var source = (IconButton)sender;
-            source.Icon = new ImageAwesome
-            {
-                Icon = EFontAwesomeIcon.Solid_Cogs,
-                Height = source.Icon.Height,
-                Foreground = new SolidColorBrush(Color.FromRgb(r, g, b)),
-            };
-        }
-
         private void TxtQuery_KeyDown(object sender, KeyEventArgs e)
         {
             _wasModifierKeyDown = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
