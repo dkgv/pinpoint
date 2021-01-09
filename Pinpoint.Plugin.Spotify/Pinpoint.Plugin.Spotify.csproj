@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Pinpoint.Plugin\Pinpoint.Core.csproj" />
+    <ProjectReference Include="..\Pinpoint.Core\Pinpoint.Core.csproj" />
   </ItemGroup>
 
 </Project>

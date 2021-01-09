@@ -6,7 +6,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Win", "Pinpoint.Wi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Snippets", "Pinpoint.Plugin.Snippets\Pinpoint.Plugin.Snippets.csproj", "{10B15234-FF11-4294-B1DF-780691454A9F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Core", "Pinpoint.Plugin\Pinpoint.Core.csproj", "{F78E1679-338A-431E-AB89-13D5F47C5888}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Core", "Pinpoint.Core\Pinpoint.Core.csproj", "{F78E1679-338A-431E-AB89-13D5F47C5888}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Calculator", "Pinpoint.Plugin.Calculator\Pinpoint.Plugin.Calculator.csproj", "{E3FBC1E0-DBC0-4761-9818-CDD5B6F2A504}"
 EndProject
