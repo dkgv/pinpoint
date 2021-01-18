@@ -4,8 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using FontAwesome5;
 using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Plugin.Snippets;
@@ -20,8 +18,6 @@ using Pinpoint.Plugin.CommandLine;
 using Pinpoint.Plugin.ControlPanel;
 using Pinpoint.Plugin.Dictionary;
 using Pinpoint.Win.Models;
-using Xceed.Wpf.Toolkit;
-using Color = System.Windows.Media.Color;
 using PinPoint.Plugin.Spotify;
 
 namespace Pinpoint.Win.Views
@@ -31,7 +27,6 @@ namespace Pinpoint.Win.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool _wasModifierKeyDown;
         private CancellationTokenSource _cts;
         private readonly SettingsWindow _settingsWindow;
         private readonly PluginEngine _pluginEngine;
@@ -125,14 +120,12 @@ namespace Pinpoint.Win.Views
 
         private void TxtQuery_KeyDown(object sender, KeyEventArgs e)
         {
-            _wasModifierKeyDown = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
-
-            if (!_wasModifierKeyDown)
+            if (!IsCtrlKeyDown())
             {
                 return;
             }
 
-            // Check if 0-9 was pressed
+            // Check if CTRL + 0-9 was pressed
             var isDigitPressed = (int) e.Key >= 35 && (int) e.Key <= 43;
             if (isDigitPressed)
             {
@@ -144,7 +137,7 @@ namespace Pinpoint.Win.Views
 
         private async void TxtQuery_KeyUp(object sender, KeyEventArgs e)
         {
-            if (_wasModifierKeyDown)
+            if (IsCtrlKeyDown())
             {
                 return;
             }
@@ -264,9 +257,20 @@ namespace Pinpoint.Win.Views
                     TxtQuery.CaretIndex = TxtQuery.Text.Length - 1;
                     TxtQuery.Focus();
                     break;
-            }
 
-            e.Handled = true;
+                case Key.L:
+                    if (IsCtrlKeyDown())
+                    {
+                        TxtQuery.Focus();
+                        TxtQuery.SelectAll();
+                    }
+                    break;
+            }
+        }
+
+        private bool IsCtrlKeyDown()
+        {
+            return Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
         }
 
         private void StopSearching()
