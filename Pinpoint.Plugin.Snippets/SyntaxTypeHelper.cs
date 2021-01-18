@@ -17,6 +17,7 @@ namespace Pinpoint.Plugin.Snippets
                 SyntaxType.PHP => "PHP",
                 SyntaxType.Tex => "Tex",
                 SyntaxType.XML => "XML",
+                SyntaxType.Python => "Python",
                 _ => "Text"
             };
         }
@@ -32,6 +33,7 @@ namespace Pinpoint.Plugin.Snippets
             yield return SyntaxType.PHP;
             yield return SyntaxType.Tex;
             yield return SyntaxType.XML;
+            yield return SyntaxType.Python;
         }
     }
 
@@ -45,6 +47,7 @@ namespace Pinpoint.Plugin.Snippets
         JavaScript,
         PHP,
         Tex,
-        XML
+        XML,
+        Python
     }
 }
