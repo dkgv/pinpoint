@@ -11,9 +11,7 @@ namespace Pinpoint.Plugin.EncodeDecode
 {
     public class EncodeDecodePlugin: IPlugin
     {
-        private static readonly QueryMatch[] Prefixes =
-            {QueryMatch.CreateHexQueryMatch(), QueryMatch.CreateBase64QueryMatch()};
-
+        private readonly string[] _prefixes = new[] {"bin:", "hex:", "b64:"};
         public PluginMeta Meta { get; set; } = new PluginMeta("Encode/Decode Plugin", PluginPriority.NextHighest);
         public void Load()
         {
@@ -24,37 +22,56 @@ namespace Pinpoint.Plugin.EncodeDecode
         }
 
         public Task<bool> Activate(Query query)
-        { 
-            return Task.FromResult(Prefixes.Any(prefix => prefix.HasMatch(query.RawQuery)));
+        {
+            var match = query.RawQuery.Length > 4 && _prefixes.Any(prefix => query.RawQuery.StartsWith(prefix));
+            return Task.FromResult(match);
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
-            foreach (var queryMatch in Prefixes)
+            var prefix = _prefixes.FirstOrDefault(pre => query.RawQuery.StartsWith(pre));
+
+            var handler = CreateHandler(prefix);
+
+            if (handler != null)
             {
-                if (!queryMatch.HasMatch(query.RawQuery)) continue;
+                var str = query.RawQuery.Substring(4);
+                yield return new EncodeDecodeResult(handler.Encode(str));
+                yield return new EncodeDecodeResult(handler.Decode(str));
+            };
+            
+        }
 
-                var stringToDecode = query.RawQuery.Substring(queryMatch.Identifier.Length);
-                var results = EncodeHex(stringToDecode);
-
-                yield return results.Encoded;
-                yield return results.Decoded;
+        private IEncodeDecodeHandler CreateHandler(string prefix)
+        {
+            switch (prefix)
+            {
+                case "hex:":
+                    return new HexHandler();
+                default:
+                    return new HexHandler();
             }
         }
+    }
 
-        private EncodeDecodeResults EncodeHex(string str)
+    public interface IEncodeDecodeHandler
+    {
+        string Encode(string stringToEncode);
+        string Decode(string stringToDecode);
+    }
+
+    public class HexHandler: IEncodeDecodeHandler
+    {
+        private readonly Regex _decodeRegex = new Regex(@"^[0-9a-f\-]+$");
+        public string Encode(string str)
         {
-            var strBytes = Encoding.UTF8.GetBytes(str);
-
-            return new EncodeDecodeResults
-            {
-                Encoded = new EncodeDecodeResult(BitConverter.ToString(strBytes).Replace("-", "")),
-                Decoded = new EncodeDecodeResult(DecodeHex(str))
-            };
+            var strBytes = Encoding.ASCII.GetBytes(str);
+            return BitConverter.ToString(strBytes).Replace("-", "");
         }
 
-        private string DecodeHex(string hexString)
+        public string Decode(string hexString)
         {
+            if (!_decodeRegex.IsMatch(hexString)) return "Not valid hex.";
             var hex = hexString.Replace("-", "");
 
             var bytes = new byte[hex.Length / 2];
@@ -64,34 +81,7 @@ namespace Pinpoint.Plugin.EncodeDecode
             }
 
             return Encoding.ASCII.GetString(bytes);
-            
         }
-    }
-
-    public class EncodeDecodeResults
-    {
-        public EncodeDecodeResult Encoded { get; set; }
-        public EncodeDecodeResult Decoded { get; set; }
-    }
-
-    public class QueryMatch
-    {
-        private readonly string _identifier;
-        private readonly Regex _regex;
-
-        public string Identifier => _identifier;
-
-        private QueryMatch(string regex, string identifier)
-        {
-            _identifier = identifier ?? throw new ArgumentNullException(nameof(identifier));
-            _regex = new Regex(regex ?? throw new ArgumentNullException(nameof(regex)));
-        }
-
-        public bool HasMatch(string query) => query != null && query.Length > _identifier.Length;
-
-        public static QueryMatch CreateHexQueryMatch() => new QueryMatch("/[0-9a-f]+/i", "hex:");
-
-        public static QueryMatch CreateBase64QueryMatch() => new QueryMatch("regex here", "b64;");
     }
 
     public class EncodeDecodeResult: AbstractFontAwesomeQueryResult
