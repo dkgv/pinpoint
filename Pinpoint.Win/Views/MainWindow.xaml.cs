@@ -19,6 +19,7 @@ using Pinpoint.Plugin.Calculator;
 using Pinpoint.Plugin.CommandLine;
 using Pinpoint.Plugin.ControlPanel;
 using Pinpoint.Plugin.Dictionary;
+using Pinpoint.Plugin.EncodeDecode;
 using Pinpoint.Win.Models;
 using Xceed.Wpf.Toolkit;
 using Color = System.Windows.Media.Color;
@@ -68,6 +69,7 @@ namespace Pinpoint.Win.Views
             _pluginEngine.AddPlugin(new CommandLinePlugin());
             _pluginEngine.AddPlugin(new SnippetsPlugin(_settingsWindow));
             _pluginEngine.AddPlugin(new SpotifyPlugin());
+            _pluginEngine.AddPlugin(new EncodeDecodePlugin());
         }
 
         internal MainWindowModel Model

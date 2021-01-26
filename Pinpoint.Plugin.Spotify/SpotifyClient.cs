@@ -33,7 +33,7 @@ namespace PinPoint.Plugin.Spotify
 
         public async Task<List<TrackResult>> Search(string query)
         {
-            var message = new HttpRequestMessage(HttpMethod.Get, $"https://api.spotify.com/v1/search?q={query}&type=track&limit=5") { Headers = { {"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}};
+            var message = new HttpRequestMessage(HttpMethod.Get, $"https://api.spotify.com/v1/search?q={query}&type=track,artist,playlist,album&limit=5") { Headers = { {"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}};
 
             var response = await _spotifyHttpClient.SendAsync(message);
 
@@ -64,6 +64,58 @@ namespace PinPoint.Plugin.Spotify
                 await ExchangeRefreshToken();
                 var retryMessage = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } }, Content = content };
                 await _spotifyHttpClient.SendAsync(retryMessage);
+            }
+        }
+
+        public async Task PlayPauseTrack()
+        {
+            var message = new HttpRequestMessage(HttpMethod.Get, "https://api.spotify.com/v1/me/player")
+                {Headers = {{"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}};
+
+            var response = await _spotifyHttpClient.SendAsync(message);
+            var bodyJson = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<PlayBackState>(bodyJson);
+
+            if(result == null) return;
+
+            if (result.is_playing)
+            {
+                await PausePlayback();
+            }
+            else
+            {
+                await ResumePlayback();
+            }
+        }
+
+        private async Task ResumePlayback()
+        {
+            var message = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } }};
+
+            var response = await _spotifyHttpClient.SendAsync(message);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                await ExchangeRefreshToken();
+                var retryMessage = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } }};
+                await _spotifyHttpClient.SendAsync(retryMessage);
+            }
+        }
+
+        private async Task PausePlayback()
+        {
+            var message = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/pause") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } } };
+
+            var response = await _spotifyHttpClient.SendAsync(message);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                await ExchangeRefreshToken();
+                var retryMessage = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } } };
+                var res = await _spotifyHttpClient.SendAsync(retryMessage);
+
+                var content = await res.Content.ReadAsStringAsync();
             }
         }
 
@@ -129,5 +181,10 @@ namespace PinPoint.Plugin.Spotify
     public class PlayRequest
     {
         public List<string> uris { get; set; }
+    }
+
+    public class PlayBackState
+    {
+        public bool is_playing { get; set; }
     }
 }
