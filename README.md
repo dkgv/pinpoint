@@ -32,6 +32,7 @@ Searches across all control panel items.
 ### Currency Converter
 
 Converts between currencies (including cryptocurrencies) using familiar syntax: `1 USD to EUR`, `£1`, `1 BTC in AUD`.
+
 ![](https://i.imgur.com/FoOoBDE.png)
 
 ### Dictionary Definitions
@@ -43,6 +44,11 @@ Quickly look up word definitions `smart definition`, `smart def`, `smart define`
 
 Uses [Everything](https://www.voidtools.com/) to offer extremely fast file searches across the entire file system.
 ![](https://i.imgur.com/DafD0xs.png)
+
+### Finance
+
+Lookup real-time ticker prices through Yahoo Finance: `$TICKER`
+![](https://i.imgur.com/Bj7HRPW.png)
 
 ### Metric Converter
 

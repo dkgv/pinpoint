@@ -17,6 +17,7 @@ using Pinpoint.Plugin.Calculator;
 using Pinpoint.Plugin.CommandLine;
 using Pinpoint.Plugin.ControlPanel;
 using Pinpoint.Plugin.Dictionary;
+using Pinpoint.Plugin.Finance;
 using Pinpoint.Win.Models;
 using PinPoint.Plugin.Spotify;
 
@@ -63,6 +64,7 @@ namespace Pinpoint.Win.Views
             _pluginEngine.AddPlugin(new CommandLinePlugin());
             _pluginEngine.AddPlugin(new SnippetsPlugin(_settingsWindow));
             _pluginEngine.AddPlugin(new SpotifyPlugin());
+            _pluginEngine.AddPlugin(new FinancePlugin());
         }
 
         internal MainWindowModel Model
@@ -280,6 +282,11 @@ namespace Pinpoint.Win.Views
 
         private void OpenSelectedResult()
         {
+            if (LstResults.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
             StopSearching();
 
             var selection = LstResults.SelectedItems[0];

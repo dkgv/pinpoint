@@ -28,6 +28,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.ControlPane
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Spotify", "Pinpoint.Plugin.Spotify\Pinpoint.Plugin.Spotify.csproj", "{19E48BA9-ABCA-4104-97E7-B6B421F210A6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.Finance", "Pinpoint.Plugin.Finance\Pinpoint.Plugin.Finance.csproj", "{5FD2B98D-A8E1-4F42-A7C4-815CA4CCA4F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -194,6 +196,18 @@ Global
 		{19E48BA9-ABCA-4104-97E7-B6B421F210A6}.Release|x64.Build.0 = Release|Any CPU
 		{19E48BA9-ABCA-4104-97E7-B6B421F210A6}.Release|x86.ActiveCfg = Release|Any CPU
 		{19E48BA9-ABCA-4104-97E7-B6B421F210A6}.Release|x86.Build.0 = Release|Any CPU
+		{5FD2B98D-A8E1-4F42-A7C4-815CA4CCA4F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5FD2B98D-A8E1-4F42-A7C4-815CA4CCA4F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5FD2B98D-A8E1-4F42-A7C4-815CA4CCA4F8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5FD2B98D-A8E1-4F42-A7C4-815CA4CCA4F8}.Debug|x64.Build.0 = Debug|Any CPU
+		{5FD2B98D-A8E1-4F42-A7C4-815CA4CCA4F8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5FD2B98D-A8E1-4F42-A7C4-815CA4CCA4F8}.Debug|x86.Build.0 = Debug|Any CPU
+		{5FD2B98D-A8E1-4F42-A7C4-815CA4CCA4F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5FD2B98D-A8E1-4F42-A7C4-815CA4CCA4F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5FD2B98D-A8E1-4F42-A7C4-815CA4CCA4F8}.Release|x64.ActiveCfg = Release|Any CPU
+		{5FD2B98D-A8E1-4F42-A7C4-815CA4CCA4F8}.Release|x64.Build.0 = Release|Any CPU
+		{5FD2B98D-A8E1-4F42-A7C4-815CA4CCA4F8}.Release|x86.ActiveCfg = Release|Any CPU
+		{5FD2B98D-A8E1-4F42-A7C4-815CA4CCA4F8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
