@@ -24,8 +24,7 @@ namespace Pinpoint.Plugin.Finance
 
         private double PercentChange(YahooFinanceResponse response)
         {
-            return Math.Round(Math.Abs(response.PreviousClose - response.RegularMarketPrice) /
-                ((response.PreviousClose + response.RegularMarketPrice) / 2) * 100f, 2);
+            return Math.Round((response.PreviousClose - response.RegularMarketPrice) / response.PreviousClose * 100f, 2);
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_ChartLine;
