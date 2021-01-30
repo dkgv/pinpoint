@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using FontAwesome5;
 using Pinpoint.Core;
+using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Currency
 {

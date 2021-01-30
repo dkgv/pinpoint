@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 
-namespace Pinpoint.Core
+namespace Pinpoint.Core.Results
 {
     public abstract class AbstractQueryResult
     {
@@ -14,6 +15,8 @@ namespace Pinpoint.Core
             Title = title;
             Subtitle = subtitle;
         }
+
+        public List<AbstractQueryResult> Options { get; set; } = new List<AbstractQueryResult>();
 
         public string Title { get; set; }
 

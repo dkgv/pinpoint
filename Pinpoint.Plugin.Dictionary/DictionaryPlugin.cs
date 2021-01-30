@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AngleSharp;
 using Pinpoint.Core;
+using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Dictionary
 {

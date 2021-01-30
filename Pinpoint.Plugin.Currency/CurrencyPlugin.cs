@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Pinpoint.Core;
+using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Currency
 {

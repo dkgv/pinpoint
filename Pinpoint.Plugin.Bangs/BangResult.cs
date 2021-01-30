@@ -1,4 +1,5 @@
 ﻿using Pinpoint.Core;
+using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Bangs
 {

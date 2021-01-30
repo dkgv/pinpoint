@@ -1,6 +1,6 @@
 ﻿using FontAwesome5;
 
-namespace Pinpoint.Core
+namespace Pinpoint.Core.Results
 {
     public class UrlQueryResult : AbstractFontAwesomeQueryResult
     {
