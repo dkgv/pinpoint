@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Pinpoint.Core;
 
 namespace PinPoint.Plugin.Spotify
@@ -31,9 +33,9 @@ namespace PinPoint.Plugin.Spotify
             AppSettings.PutAndSave("spotify", settings);
         }
 
-        public async Task<List<TrackResult>> Search(string query)
+        public async Task<List<SpotifyResult>> Search(string query, string type)
         {
-            var message = new HttpRequestMessage(HttpMethod.Get, $"https://api.spotify.com/v1/search?q={query}&type=track&limit=5") { Headers = { {"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}};
+            var message = new HttpRequestMessage(HttpMethod.Get, $"https://api.spotify.com/v1/search?q={query}&type={type}&limit=5") { Headers = { {"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}};
 
             var response = await _spotifyHttpClient.SendAsync(message);
 
@@ -46,9 +48,12 @@ namespace PinPoint.Plugin.Spotify
 
             var bodyJson = await response.Content.ReadAsStringAsync();
 
-            var result = JsonConvert.DeserializeObject<TracksResult>(bodyJson);
+            var jObject = JsonConvert.DeserializeObject<JObject>(bodyJson);
 
-            return result.Tracks.Items;
+            var result = DeserializeResponse(jObject, type);
+            //var result = JsonConvert.DeserializeObject<TracksResult>(bodyJson);
+
+            return result.Items;
         }
 
         public async Task PlayTrack(string trackUri)
@@ -97,33 +102,61 @@ namespace PinPoint.Plugin.Spotify
             AppSettings.PutAndSave("spotify", settings);
         }
 
+        private SearchResult DeserializeResponse(JObject response, string type)
+        {
+            var results = response[$"{type}s"];
+
+            //if (type == "track")
+            //{
+            //    return new SearchResult
+            //    {
+            //        Items = results.ToObject<List<TrackResult>>()
+            //    };
+            //}
+
+            return new SearchResult
+            {
+                Items = results["items"]?.ToObject<List<SpotifyResult>>()
+            };
+        }
+
         public void Dispose()
         {
             _spotifyHttpClient.Dispose();
         }
     }
 
-    public class TracksResult
+    public class SearchResult
     {
-        public Track Tracks { get; set; }
+        public List<SpotifyResult> Items { get; set; } = new List<SpotifyResult>();
     }
 
-    public class Track
+    public class SpotifyResult
     {
-        public List<TrackResult> Items { get; set; }
+        public SpotifyResult(string name, string uri)
+        {
+            Name = name;
+            Uri = uri;
+        }
+        public string Name { get; }
+        public string Uri { get; }
+        public virtual string DisplayString => Name;
     }
 
-
-    public class TrackResult
+    public class TrackResult: SpotifyResult
     {
-        public string Name { get; set; }
-        public string Uri { get; set; }
-        public List<ArtistResult> Artists { get; set; } = new List<ArtistResult>();
-    }
+        public List<SpotifyResult> Artists { get; set; } = new List<SpotifyResult>();
 
-    public class ArtistResult
-    {
-        public string Name { get; set; }
+        public override string DisplayString
+        {
+            get
+            {
+                var artistsString = string.Join(", ", Artists.Select(a => a.Name));
+                return $"{Name} - {artistsString}";
+            }
+        }
+
+        public TrackResult(string name, string uri) : base(name, uri) { }
     }
 
     public class PlayRequest
