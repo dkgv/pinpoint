@@ -43,16 +43,19 @@ namespace Pinpoint.Plugin.Calculator
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
             var table = new System.Data.DataTable();
-            var failed = false;
+            var failed = true;
             var result = 0.0;
             try
             {
                 result = Convert.ToDouble(table.Compute(query.RawQuery, string.Empty));
                 result = Math.Round(result, 5);
+                failed = false;
             }
             catch (SyntaxErrorException)
             {
-                failed = true;
+            }
+            catch (OverflowException)
+            {
             }
 
             if (!failed)
