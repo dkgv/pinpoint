@@ -235,7 +235,6 @@ namespace Pinpoint.Win.Views
 
                 case Key.LeftAlt:
                 case Key.RightAlt:
-                case Key.System:
                 case Key.Left:
                 case Key.Right:
                 case Key.Up:

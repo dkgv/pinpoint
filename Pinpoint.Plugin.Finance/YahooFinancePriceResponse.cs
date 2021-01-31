@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace Pinpoint.Plugin.Finance
 {
-    public class YahooFinanceResponse
+    public class YahooFinancePriceResponse
     {
         [JsonProperty("currency")]
         public string Currency { get; set; }
