@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FontAwesome5;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
+using Pinpoint.Plugin.Spotify.Client;
 
 namespace PinPoint.Plugin.Spotify
 {
     public class SpotifyPlugin : IPlugin
     {
-        private readonly string[] _prefixes = {"album", "artist", "play", "playlist", "podcast"};
+        private readonly string[] _prefixes = {"album", "artist", "episode", "play", "playlist", "show"};
         private readonly AuthenticationManager _authManager = new AuthenticationManager();
         private readonly SpotifyClient _spotifyClient = SpotifyClient.GetInstance();
 
@@ -33,8 +35,8 @@ namespace PinPoint.Plugin.Spotify
         public Task<bool> Activate(Query query)
         {
             var queryParts = query.RawQuery.Split(new[] {' '}, 2);
-            var shouldActivate = _prefixes.Any(prefix => query.RawQuery.StartsWith(prefix)) &&
-                                 queryParts.Length > 1 && queryParts[1].Length > 3;
+            var shouldActivate = queryParts.Length > 1 && _prefixes.Any(prefix => queryParts[0] == prefix) &&
+                                 queryParts[1].Length > 3;
             return Task.FromResult(shouldActivate);
         }
 
@@ -54,15 +56,17 @@ namespace PinPoint.Plugin.Spotify
 
         private static string MapToSpotifySearchType(string type)
         {
-            return type switch
-            {
-                "play" => "track",
-                "playlist" => "playlist",
-                "podcast" => "episode",
-                "album" => "album",
-                "artist" => "artist",
-                _ => "track"
-            };
+            return type == "play" ? "track" : type;
         }
+    }
+
+    public class PlayPauseResult: AbstractFontAwesomeQueryResult
+    {
+        public override void OnSelect()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_Play;
     }
 }

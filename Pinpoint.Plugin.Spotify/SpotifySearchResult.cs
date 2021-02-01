@@ -2,6 +2,7 @@
 using FontAwesome5;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
+using Pinpoint.Plugin.Spotify.Client;
 
 namespace PinPoint.Plugin.Spotify
 {
