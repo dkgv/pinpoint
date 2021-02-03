@@ -64,7 +64,7 @@ namespace Pinpoint.Plugin.Spotify.Client
         {
             var content = new StringContent(JsonConvert.SerializeObject(new PlayRequest {uris = new List<string> { trackUri }}),
                 Encoding.UTF8, "application/json");
-            var message = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } }, Content = content };
+            var message = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } }, Content = trackUri != null ? content : null };
             
             var response = await _spotifyHttpClient.SendAsync(message);
             
@@ -74,6 +74,36 @@ namespace Pinpoint.Plugin.Spotify.Client
                 var retryMessage = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } }, Content = content };
                 await _spotifyHttpClient.SendAsync(retryMessage);
             }
+        }
+
+        public async Task PlayPauseCurrentTrack()
+        {
+            var isPlaying = await SpotifyCurrentlyPlaying();
+
+            if (isPlaying)
+            {
+                var message = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/pause")
+                    {Headers = {{"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}};
+                await _spotifyHttpClient.SendAsync(message);
+            }
+            else
+            {
+                await PlayTrack(null);
+            }
+        }
+
+        private async Task<bool> SpotifyCurrentlyPlaying()
+        {
+            var message = new HttpRequestMessage(HttpMethod.Get, "https://api.spotify.com/v1/me/player")
+            {
+                Headers = {{"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}
+            };
+            var response = await _spotifyHttpClient.SendAsync(message);
+
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<PlaybackInfoResult>(responseContent);
+
+            return result.is_playing;
         }
 
         private async Task ExchangeRefreshToken()
@@ -110,5 +140,10 @@ namespace Pinpoint.Plugin.Spotify.Client
         {
             _spotifyHttpClient.Dispose();
         }
+    }
+
+    public class PlaybackInfoResult
+    {
+        public bool is_playing { get; set; }
     }
 }

@@ -48,6 +48,8 @@ namespace PinPoint.Plugin.Spotify
 
             var searchResults = await _spotifyClient.Search(searchQuery, queryType);
 
+            yield return new PlayPauseResult();
+
             foreach (var searchResult in searchResults)
             {
                 yield return new SpotifySearchResult(searchResult.DisplayString, searchResult.Uri);
@@ -62,9 +64,10 @@ namespace PinPoint.Plugin.Spotify
 
     public class PlayPauseResult: AbstractFontAwesomeQueryResult
     {
+        public PlayPauseResult(): base("Play/pause current track") { }
         public override void OnSelect()
         {
-            throw new NotImplementedException();
+            SpotifyClient.GetInstance().PlayPauseCurrentTrack();
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_Play;
