@@ -23,6 +23,7 @@ using Pinpoint.Plugin.CommandLine;
 using Pinpoint.Plugin.ControlPanel;
 using Pinpoint.Plugin.Dictionary;
 using Pinpoint.Plugin.Finance;
+using Pinpoint.Plugin.MetricConverter;
 using Pinpoint.Win.Models;
 using PinPoint.Plugin.Spotify;
 
