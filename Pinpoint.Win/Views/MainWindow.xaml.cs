@@ -34,7 +34,7 @@ namespace Pinpoint.Win.Views
     public partial class MainWindow : Window
     {
         private CancellationTokenSource _cts;
-        private List<AbstractQueryResult> _searchResults = new List<AbstractQueryResult>();
+        private readonly List<AbstractQueryResult> _searchResults = new List<AbstractQueryResult>();
         private int _showingOptionsForIndex = -1;
         private readonly SettingsWindow _settingsWindow;
         private readonly PluginEngine _pluginEngine;
@@ -248,6 +248,10 @@ namespace Pinpoint.Win.Views
                     break;
 
                 default:
+                    if (_showingOptionsForIndex != -1 && e.Key == Key.System)
+                    {
+                        break;
+                    }
                     await UpdateResults();
                     break;
             }
@@ -316,9 +320,9 @@ namespace Pinpoint.Win.Views
                     break;
 
                 case Key.Up:
-                    // First item of list is already selected so focus query field
                     if (LstResults.SelectedIndex == 0)
                     {
+                        // First item of list is already selected so focus query field
                         TxtQuery.Focus();
                     }
                     else
