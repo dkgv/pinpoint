@@ -15,7 +15,7 @@ namespace Pinpoint.Core.Results
 
         public override void OnSelect()
         {
-            Process.Start("explorer.exe", _filePath);
+            Process.Start("explorer.exe", "\"" + _filePath + "\"");
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon { get; } = EFontAwesomeIcon.Regular_FolderOpen;
