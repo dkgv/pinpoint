@@ -30,12 +30,12 @@ namespace PinPoint.Plugin.Spotify
 
         public Task<bool> Activate(Query query)
         {
-            return Task.FromResult(query.RawQuery.StartsWith("¤") && query.RawQuery.Length > 4);
+            return Task.FromResult(query.RawQuery.StartsWith("play") && query.RawQuery.Length > 4);
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
-            var searchResults = await _spotifyClient.Search(query.RawQuery.Substring(1));
+            var searchResults = await _spotifyClient.Search(query.RawQuery.Substring(4));
 
             foreach (var trackResult in searchResults)
             {

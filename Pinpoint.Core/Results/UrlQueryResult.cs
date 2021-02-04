@@ -6,8 +6,13 @@ namespace Pinpoint.Core.Results
     {
         private readonly string _url;
 
-        public UrlQueryResult(string url)
+        public UrlQueryResult(string url) : this("", url)
         {
+        }
+
+        public UrlQueryResult(string title, string url)
+        {
+            Title = title;
             _url = url;
             Subtitle = url;
         }
