@@ -5,16 +5,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Plugin.Snippets;
 using Pinpoint.Core;
 using Pinpoint.Plugin.Currency;
 using Pinpoint.Plugin.Everything;
-using Pinpoint.Core.MetricConverter;
 using Pinpoint.Core.Results;
 using Pinpoint.Plugin.AppSearch;
 using Pinpoint.Plugin.Bangs;
@@ -52,6 +49,7 @@ namespace Pinpoint.Win.Views
             
             _pluginEngine = new PluginEngine();
             _settingsWindow = new SettingsWindow(this, _pluginEngine);
+
             _pluginEngine.Listeners.Add(_settingsWindow);
 
             LoadPlugins();
@@ -137,11 +135,17 @@ namespace Pinpoint.Win.Views
 
             if (IsCtrlKeyDown())
             {
-                // Check if CTRL + 0-9 was pressed
+                // Check if CTRL+0-9 was pressed
                 if (isDigitPressed)
                 {
                     LstResults.SelectedIndex = index;
                     OpenSelectedResult();
+                }
+
+                // Check if CTRL+, was pressed
+                if (e.Key == Key.OemComma)
+                {
+                    ShowSettingsWindow();
                 }
             }
             else if (IsAltKeyDown())
@@ -356,6 +360,13 @@ namespace Pinpoint.Win.Views
                     }
                     break;
 
+                case Key.OemComma:
+                    if (IsCtrlKeyDown())
+                    {
+                        ShowSettingsWindow();
+                    }
+                    break;
+
                 case Key.Escape:
                     if (_showingOptionsForIndex != -1)
                     {
@@ -428,6 +439,11 @@ namespace Pinpoint.Win.Views
         }
 
         private void ItmSettings_Click(object sender, RoutedEventArgs e)
+        {
+            ShowSettingsWindow();
+        }
+
+        private void ShowSettingsWindow()
         {
             _settingsWindow.Show();
             Hide();
