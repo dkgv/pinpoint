@@ -1,11 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using FontAwesome5;
 using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Plugin.Snippets;
@@ -13,6 +15,7 @@ using Pinpoint.Core;
 using Pinpoint.Plugin.Currency;
 using Pinpoint.Plugin.Everything;
 using Pinpoint.Core.MetricConverter;
+using Pinpoint.Core.Results;
 using Pinpoint.Plugin.AppSearch;
 using Pinpoint.Plugin.Bangs;
 using Pinpoint.Plugin.Calculator;
@@ -20,9 +23,10 @@ using Pinpoint.Plugin.CommandLine;
 using Pinpoint.Plugin.ControlPanel;
 using Pinpoint.Plugin.Dictionary;
 using Pinpoint.Plugin.EncodeDecode;
+using Pinpoint.Plugin.Finance;
+using Pinpoint.Plugin.HackerNews;
+using Pinpoint.Plugin.MetricConverter;
 using Pinpoint.Win.Models;
-using Xceed.Wpf.Toolkit;
-using Color = System.Windows.Media.Color;
 using PinPoint.Plugin.Spotify;
 
 namespace Pinpoint.Win.Views
@@ -32,8 +36,9 @@ namespace Pinpoint.Win.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private bool _wasModifierKeyDown;
         private CancellationTokenSource _cts;
+        private readonly List<AbstractQueryResult> _searchResults = new List<AbstractQueryResult>();
+        private int _showingOptionsForIndex = -1;
         private readonly SettingsWindow _settingsWindow;
         private readonly PluginEngine _pluginEngine;
 
@@ -70,6 +75,8 @@ namespace Pinpoint.Win.Views
             _pluginEngine.AddPlugin(new SnippetsPlugin(_settingsWindow));
             _pluginEngine.AddPlugin(new SpotifyPlugin());
             _pluginEngine.AddPlugin(new EncodeDecodePlugin());
+            _pluginEngine.AddPlugin(new FinancePlugin());
+            _pluginEngine.AddPlugin(new HackerNewsPlugin());
         }
 
         internal MainWindowModel Model
@@ -127,26 +134,89 @@ namespace Pinpoint.Win.Views
 
         private void TxtQuery_KeyDown(object sender, KeyEventArgs e)
         {
-            _wasModifierKeyDown = Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
+            var isDigitPressed = (int)e.Key >= 35 && (int)e.Key <= 43;
+            var index = (int)e.Key - 35;
 
-            if (!_wasModifierKeyDown)
+            if (IsCtrlKeyDown())
+            {
+                // Check if CTRL + 0-9 was pressed
+                if (isDigitPressed)
+                {
+                    LstResults.SelectedIndex = index;
+                    OpenSelectedResult();
+                }
+            }
+            else if (IsAltKeyDown())
+            {
+                if (isDigitPressed)
+                {
+                    ShowQueryResultOptions(index);
+                }
+                else if (LstResults.SelectedIndex != -1)
+                {
+                    ShowQueryResultOptions(LstResults.SelectedIndex);
+                }
+
+                e.Handled = true;
+            }
+        }
+
+        private void ShowQueryResultOptions(int listIndex)
+        {
+            var item = LstResults.Items[listIndex] as AbstractQueryResult;
+            if (!item.Options.Any() || _showingOptionsForIndex != -1)
             {
                 return;
             }
 
-            // Check if 0-9 was pressed
-            var isDigitPressed = (int) e.Key >= 35 && (int) e.Key <= 43;
-            if (isDigitPressed)
+            _showingOptionsForIndex = listIndex;
+
+            // Cache actual search results
+            foreach (var searchResult in Model.Results)
             {
-                var index = (int) e.Key - 35;
-                LstResults.SelectedIndex = index;
-                OpenSelectedResult();
+                _searchResults.Add(searchResult);
             }
+
+            // Remove search results
+            Model.Results.Clear();
+
+            // Add search result options
+            foreach (var option in item.Options)
+            {
+                Model.Results.TryAdd(option);
+            }
+
+            TxtQuery.Focus();
+            LstResults.SelectedIndex = 0;
+        }
+
+        private void HideQueryResultOptions()
+        {
+            if (_showingOptionsForIndex == -1)
+            {
+                return;
+            }
+
+            // Remove options
+            Model.Results.Clear();
+
+            // Add actual search results
+            foreach (var searchResult in _searchResults)
+            {
+                Model.Results.TryAdd(searchResult);
+            }
+            _searchResults.Clear();
+
+            // Set selected index to owner of options
+            LstResults.SelectedIndex = _showingOptionsForIndex;
+            
+            // Clear selection
+            _showingOptionsForIndex = -1;
         }
 
         private async void TxtQuery_KeyUp(object sender, KeyEventArgs e)
         {
-            if (_wasModifierKeyDown)
+            if (IsCtrlKeyDown())
             {
                 return;
             }
@@ -168,12 +238,25 @@ namespace Pinpoint.Win.Views
                     }
                     break;
 
+                case Key.LeftAlt:
+                case Key.RightAlt:
                 case Key.Left:
                 case Key.Right:
                 case Key.Up:
                     break;
 
+                case Key.Escape:
+                    if (_showingOptionsForIndex != -1)
+                    {
+                        HideQueryResultOptions();
+                    }
+                    break;
+
                 default:
+                    if (_showingOptionsForIndex != -1 && e.Key == Key.System)
+                    {
+                        break;
+                    }
                     await UpdateResults();
                     break;
             }
@@ -242,9 +325,9 @@ namespace Pinpoint.Win.Views
                     break;
 
                 case Key.Up:
-                    // First item of list is already selected so focus query field
                     if (LstResults.SelectedIndex == 0)
                     {
+                        // First item of list is already selected so focus query field
                         TxtQuery.Focus();
                     }
                     else
@@ -266,21 +349,50 @@ namespace Pinpoint.Win.Views
                     TxtQuery.CaretIndex = TxtQuery.Text.Length - 1;
                     TxtQuery.Focus();
                     break;
+
+                case Key.L:
+                    if (IsCtrlKeyDown())
+                    {
+                        TxtQuery.Focus();
+                        TxtQuery.SelectAll();
+                    }
+                    break;
+
+                case Key.Escape:
+                    if (_showingOptionsForIndex != -1)
+                    {
+                        HideQueryResultOptions();
+                    }
+                    break;
+
+                case Key.LeftAlt:
+                case Key.RightAlt:
+                case Key.System:
+                    if (LstResults.SelectedIndex != -1)
+                    {
+                        ShowQueryResultOptions(LstResults.SelectedIndex);
+                        e.Handled = true;
+                    }
+                    break;
             }
-
-            e.Handled = true;
         }
 
-        private void StopSearching()
-        {
-            _cts?.Cancel();
-        }
+        private bool IsCtrlKeyDown() => Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
+
+        private bool IsAltKeyDown() => Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
+
+        private void StopSearching() =>  _cts?.Cancel();
 
         private void OpenSelectedResult()
         {
+            if (LstResults.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
             StopSearching();
 
-            var selection = LstResults.SelectedItems[0];
+            var selection = Model.Results[LstResults.SelectedIndex];
 
             if (selection is SnippetQueryResult result)
             {
@@ -303,7 +415,7 @@ namespace Pinpoint.Win.Views
             }
             else
             {
-                (selection as AbstractQueryResult).OnSelect();
+                selection.OnSelect();
             }
 
             Hide();
@@ -323,10 +435,7 @@ namespace Pinpoint.Win.Views
             Hide();
         }
 
-        private void ItmExit_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
+        private void ItmExit_Click(object sender, RoutedEventArgs e) => Application.Current.Shutdown();
 
         private void ItmNewSimpleSnippet_OnClick(object sender, RoutedEventArgs e)
         {

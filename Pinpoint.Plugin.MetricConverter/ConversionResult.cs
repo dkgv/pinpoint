@@ -1,10 +1,11 @@
 using FontAwesome5;
+using Pinpoint.Core.Results;
 
-namespace Pinpoint.Core.MetricConverter
+namespace Pinpoint.Plugin.MetricConverter
 {
-    public class ConversionResult : AbstractFontAwesomeQueryResult
+    public class ConversionResult : CopyabableQueryOption
     {
-        public ConversionResult(string to, double amount) : base("= " + amount + " " + to)
+        public ConversionResult(string to, double amount) : base("= " + amount + " " + to, "" + amount)
         {
         }
 

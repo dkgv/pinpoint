@@ -1,18 +1,14 @@
 ﻿using FontAwesome5;
-using Pinpoint.Core;
+using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Calculator
 {
-    public class CalculatorResult : AbstractFontAwesomeQueryResult
+    public class CalculatorResult : CopyabableQueryOption
     {
-        public CalculatorResult(string result) : base("= " + result)
+        public CalculatorResult(string result) : base("= " + result, result)
         {
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_Calculator;
-
-        public override void OnSelect()
-        {
-        }
     }
 }

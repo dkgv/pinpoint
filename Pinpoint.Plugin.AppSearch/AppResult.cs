@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using Pinpoint.Core;
+using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.AppSearch
 {
@@ -14,6 +14,9 @@ namespace Pinpoint.Plugin.AppSearch
         public AppResult(string filePath) : base(Path.GetFileName(filePath).Split(".")[0], filePath)
         {
             _filePath = filePath;
+
+            Options.Add(new RunAsAdminOption(filePath));
+            Options.Add(new OpenLocationOption(filePath));
         }
 
         public override Bitmap Icon

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Pinpoint.Core;
+using Pinpoint.Core.Results;
 
 namespace PinPoint.Plugin.Spotify
 {
@@ -33,19 +34,14 @@ namespace PinPoint.Plugin.Spotify
 
         public Task<bool> Activate(Query query)
         {
-            return Task.FromResult(query.RawQuery.StartsWith("¤"));
+
+            return Task.FromResult(query.RawQuery.StartsWith("play") && query.RawQuery.Length > 4);
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
-            foreach (var result in _defaultResults)
-            {
-                yield return result;
-            }
 
-            if (query.RawQuery.Length <= 3) yield break;
-
-            var searchResults = await _spotifyClient.Search(query.RawQuery.Substring(1));
+            var searchResults = await _spotifyClient.Search(query.RawQuery.Substring(4));
 
             foreach (var trackResult in searchResults)
             {

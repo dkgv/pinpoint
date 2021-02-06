@@ -29,8 +29,8 @@ namespace Pinpoint.Win.Views
 
             if (string.IsNullOrEmpty(title))
             {
-                MessageBox.Show("Please specify a title for your snippet before saving it.", "Error",
-                    MessageBoxButton.OK, MessageBoxImage.Error);
+                const string msg = "Please specify a title for your snippet before saving it.";
+                MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

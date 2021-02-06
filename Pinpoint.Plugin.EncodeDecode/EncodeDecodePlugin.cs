@@ -2,13 +2,14 @@
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Pinpoint.Core.Results;
 using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.EncodeDecode
 {
     public class EncodeDecodePlugin: IPlugin
     {
-        private readonly string[] _prefixes = new[] {"bin:", "hex:", "b64:"};
+        private readonly string[] _prefixes = new[] {"bin", "hex", "b64"};
         public PluginMeta Meta { get; set; } = new PluginMeta("Encode/Decode Plugin", PluginPriority.NextHighest);
         public void Load()
         {
@@ -29,29 +30,27 @@ namespace Pinpoint.Plugin.EncodeDecode
             var prefix = _prefixes.FirstOrDefault(pre => query.RawQuery.StartsWith(pre));
 
             var handler = CreateHandler(prefix);
+            var queryParts = query.RawQuery.Split(' ');
 
-            if (handler != null)
+            if (handler != null && queryParts.Length > 1)
             {
-                var str = query.RawQuery.Substring(4);
-                yield return new EncodeDecodeResult(handler.Encode(str));
-                yield return new EncodeDecodeResult(handler.Decode(str));
+                var queryString = queryParts.Last().Trim();
+
+                yield return new EncodeDecodeResult(handler.Encode(queryString));
+                yield return new EncodeDecodeResult(handler.Decode(queryString));
             };
             
         }
 
         private IEncodeDecodeHandler CreateHandler(string prefix)
         {
-            switch (prefix)
+            return prefix switch
             {
-                case "hex:":
-                    return new HexHandler();
-                case "bin:":
-                    return new BinaryHandler();
-                case "b64:":
-                    return new Base64Handler();
-                default:
-                    return new NullHandler();
-            }
+                "hex" => new HexHandler(),
+                "bin" => new BinaryHandler(),
+                "b64" => new Base64Handler(),
+                _ => new NullHandler(),
+            };
         }
     }
 }

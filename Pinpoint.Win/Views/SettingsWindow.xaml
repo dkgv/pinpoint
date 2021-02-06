@@ -13,12 +13,13 @@
         Width="470" MinWidth="470" 
         WindowStartupLocation="CenterScreen" Icon="/Icons/Icon.ico">
     <Border Margin="5">
-        <TabControl>
+        <TabControl TabStripPlacement="Left">
             <!-- General settings -->
             <TabItem Header="General">
                 <Border Margin="5">
                     <Grid>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
@@ -61,15 +62,33 @@
                             SelectionChanged="CbTheme_SelectionChanged">
                         </ComboBox>
 
+                        <Label Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right">Plugin Overview:</Label>
+
+                        <ListBox
+                            Grid.Row="3"
+                            Grid.Column="2"
+                            x:Name="LstPlugins"
+                            MaxHeight="150"
+                            ItemsSource="{Binding Plugins}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Label Content="{Binding Meta.Name, Mode=OneWay}"></Label>
+                                        <CheckBox VerticalContentAlignment="Center" IsChecked="{Binding Meta.Enabled, Mode=TwoWay}"></CheckBox>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
                         <Label x:Name="LblVersion" 
-                            Grid.Row="4" 
+                            Grid.Row="5" 
                             Grid.Column="0"
                             Grid.ColumnSpan="4"
                             HorizontalContentAlignment="Center"
                             Content="Version"/>
 
                         <TextBlock
-                            Grid.Row="5"
+                            Grid.Row="6"
                             Grid.Column="0" 
                             Grid.ColumnSpan="4"
                             HorizontalAlignment="Center">
@@ -82,24 +101,7 @@
             <!-- Plugins -->
             <TabItem Header="Plugins">
                 <Border Margin="5">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="*"></ColumnDefinition>
-                        </Grid.ColumnDefinitions>
-
-                       <ItemsControl Grid.Column="1" x:Name="LstPlugins" ItemsSource="{Binding Plugins}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Label Content="{Binding Meta.Name, Mode=OneWay}"></Label>
-                                        <CheckBox VerticalContentAlignment="Center" IsChecked="{Binding Meta.Enabled, Mode=TwoWay}"></CheckBox>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                       </ItemsControl>
-                    </Grid>
+                    
                 </Border>
             </TabItem>
 

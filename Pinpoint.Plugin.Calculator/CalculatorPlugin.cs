@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Pinpoint.Core;
+using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Calculator
 {
@@ -41,9 +43,25 @@ namespace Pinpoint.Plugin.Calculator
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
             var table = new System.Data.DataTable();
-            var result = Convert.ToDouble(table.Compute(query.RawQuery, string.Empty));
-            result = Math.Round(result, 5);
-            yield return new CalculatorResult(result.ToString());
+            var failed = true;
+            var result = 0.0;
+            try
+            {
+                result = Convert.ToDouble(table.Compute(query.RawQuery, string.Empty));
+                result = Math.Round(result, 5);
+                failed = false;
+            }
+            catch (SyntaxErrorException)
+            {
+            }
+            catch (OverflowException)
+            {
+            }
+
+            if (!failed)
+            {
+                yield return new CalculatorResult(result.ToString());
+            }
         }
     }
 }

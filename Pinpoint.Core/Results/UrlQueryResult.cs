@@ -1,13 +1,18 @@
 ﻿using FontAwesome5;
 
-namespace Pinpoint.Core
+namespace Pinpoint.Core.Results
 {
     public class UrlQueryResult : AbstractFontAwesomeQueryResult
     {
         private readonly string _url;
 
-        public UrlQueryResult(string url)
+        public UrlQueryResult(string url) : this("", url)
         {
+        }
+
+        public UrlQueryResult(string title, string url)
+        {
+            Title = title;
             _url = url;
             Subtitle = url;
         }

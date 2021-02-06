@@ -1,21 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
 using Pinpoint.Core;
+using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.AppSearch
 {
     public class AppSearchPlugin : IPlugin
     {
-        private const string StartMenu = @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs";
         private UkkonenTrie<string> _trie = new UkkonenTrie<string>();
 
         public PluginMeta Meta { get; set; } = new PluginMeta("App Search", PluginPriority.NextHighest);
 
         public void Load()
         {
-            foreach (var file in Directory.GetFiles(StartMenu, "*.lnk", SearchOption.AllDirectories))
+            foreach (var file in LoadFileList())
             {
                 var name = Path.GetFileName(file.ToLower());
 
@@ -31,6 +33,27 @@ namespace Pinpoint.Plugin.AppSearch
                     }
                 }
             }
+        }
+
+        private List<string> LoadFileList()
+        {
+            var files = new List<string>();
+
+            var paths = new[]
+            {
+                @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs",
+                $@"C:\Users\{Environment.UserName}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs"
+            };
+
+            foreach (var path in paths)
+            {
+                if (Directory.Exists(path))
+                {
+                    files.AddRange(Directory.GetFiles(path, "*.lnk", SearchOption.AllDirectories));
+                }
+            }
+
+            return files;
         }
 
         public void Unload()
