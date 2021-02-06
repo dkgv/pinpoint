@@ -4,7 +4,7 @@ using Pinpoint.Core;
 
 namespace Pinpoint.Win.Models
 {
-    internal class SettingsWindowModel : BaseWindowModel
+    internal class SettingsWindowModel : BaseControlModel
     {
         private HotkeyModel _hotkey = AppSettings.Contains("hotkey")
             ? new HotkeyModel(AppSettings.GetObject("hotkey")["Text"])

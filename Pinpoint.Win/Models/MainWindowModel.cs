@@ -3,7 +3,7 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Win.Models
 {
-    internal class MainWindowModel : BaseWindowModel
+    internal class MainWindowModel : BaseControlModel
     {
         private ThemeModel _theme = AppSettings.GetAsOrDefault("theme", ThemeModel.DarkTheme);
 

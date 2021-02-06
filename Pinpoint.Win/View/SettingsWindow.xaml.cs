@@ -11,7 +11,7 @@ using Pinpoint.Plugin.Snippets;
 using Pinpoint.Core;
 using Pinpoint.Win.Models;
 
-namespace Pinpoint.Win.Views
+namespace Pinpoint.Win.View
 {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
@@ -206,9 +206,42 @@ namespace Pinpoint.Win.Views
             }
         }
 
+        TabItem MakeTabItem(IPlugin plugin)
+        {
+            var grid = new Grid()
+            {
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition {
+                        Width = new GridLength(0, GridUnitType.Star)
+                    },
+                    new ColumnDefinition {Width = GridLength.Auto},
+                    new ColumnDefinition {Width = GridLength.Auto}, 
+                    new ColumnDefinition
+                    {
+                        Width = new GridLength(0, GridUnitType.Star)
+                    }
+                }
+            };
+            
+            var enabled = new Label{Content = "Enabled"};
+            grid.Children.Add(enabled);
+            Grid.SetRow(enabled, 0);
+
+            Grid.SetColumn(enabled, 1);
+
+            var item = new TabItem()
+            {
+                Header = plugin.Meta.Name,
+                Content = new Label { Content = plugin.Meta.Name }
+            };
+            return item;
+        }
+
         public void PluginChange_Added(object sender, IPlugin plugin, object target)
         {
             Model.Plugins.Add(plugin);
+            TbCtrl.Items.Insert(TbCtrl.Items.Count - 1, new PluginTabItem(plugin));
         }
 
         public void PluginChange_Removed(object sender, IPlugin plugin, object target)

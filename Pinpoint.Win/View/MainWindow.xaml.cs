@@ -25,7 +25,7 @@ using Pinpoint.Plugin.MetricConverter;
 using Pinpoint.Win.Models;
 using PinPoint.Plugin.Spotify;
 
-namespace Pinpoint.Win.Views
+namespace Pinpoint.Win.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
