@@ -9,7 +9,7 @@ using Pinpoint.Win.Converters;
 using Pinpoint.Win.Extensions;
 using Pinpoint.Win.Models;
 
-namespace Pinpoint.Win.Views
+namespace Pinpoint.Win.View
 {
     /// <summary>
     /// Interaction logic for OcrSnippetWindow.xaml

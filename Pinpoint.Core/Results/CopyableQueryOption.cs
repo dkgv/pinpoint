@@ -16,7 +16,7 @@ namespace Pinpoint.Core.Results
         {
             _clipboardContent = content;
         }
-
+        
         public override EFontAwesomeIcon FontAwesomeIcon { get; } = EFontAwesomeIcon.Regular_Copy;
 
         public override void OnSelect()

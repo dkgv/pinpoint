@@ -1,19 +1,19 @@
-﻿<Window x:Class="Pinpoint.Win.Views.SettingsWindow"
+﻿<Window x:Class="Pinpoint.Win.View.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Pinpoint.Win.Views"
+        xmlns:local="clr-namespace:Pinpoint.Win.View"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         mc:Ignorable="d"
         Title="Pinpoint Settings" 
         Height="450" MinHeight="450" 
-        Width="470" MinWidth="470" 
+        Width="587" MinWidth="470" 
         WindowStartupLocation="CenterScreen" Icon="/Icons/Icon.ico">
     <Border Margin="5">
-        <TabControl TabStripPlacement="Left">
+        <TabControl Name="TbCtrl" TabStripPlacement="Left">
             <!-- General settings -->
             <TabItem Header="General">
                 <Border Margin="5">
@@ -31,7 +31,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                             <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            <ColumnDefinition Width="Auto" MinWidth="200"></ColumnDefinition>
+                            <ColumnDefinition Width="Auto" MinWidth="250"></ColumnDefinition>
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
@@ -62,30 +62,12 @@
                             SelectionChanged="CbTheme_SelectionChanged">
                         </ComboBox>
 
-                        <Label Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right">Plugin Overview:</Label>
-
-                        <ListBox
-                            Grid.Row="3"
-                            Grid.Column="2"
-                            x:Name="LstPlugins"
-                            MaxHeight="150"
-                            ItemsSource="{Binding Plugins}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Label Content="{Binding Meta.Name, Mode=OneWay}"></Label>
-                                        <CheckBox VerticalContentAlignment="Center" IsChecked="{Binding Meta.Enabled, Mode=TwoWay}"></CheckBox>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-
                         <Label x:Name="LblVersion" 
-                            Grid.Row="5" 
-                            Grid.Column="0"
-                            Grid.ColumnSpan="4"
-                            HorizontalContentAlignment="Center"
-                            Content="Version"/>
+                               Grid.Row="5" 
+                               Grid.Column="0"
+                               Grid.ColumnSpan="4"
+                               HorizontalContentAlignment="Center"
+                               Content="Version"/>
 
                         <TextBlock
                             Grid.Row="6"
@@ -95,13 +77,6 @@
                             <Hyperlink x:Name="LnkCheckUpdate" NavigateUri="https://github.com/dkgv/pinpoint/releases" Click="LnkCheckUpdate_Click">Check for updates</Hyperlink>
                         </TextBlock>
                     </Grid>
-                </Border>
-            </TabItem>
-
-            <!-- Plugins -->
-            <TabItem Header="Plugins">
-                <Border Margin="5">
-                    
                 </Border>
             </TabItem>
 

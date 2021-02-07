@@ -34,7 +34,7 @@ namespace Pinpoint.Plugin.AppSearch
 
         public override void OnSelect()
         {
-            Process.Start("explorer.exe", _filePath);
+            Process.Start("explorer.exe", "\"" + _filePath + "\"");
         }
     }
 }
