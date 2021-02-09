@@ -23,22 +23,32 @@ namespace Pinpoint.Plugin.Finance
 
         public async Task<bool> Activate(Query query)
         {
-            return query.Parts.Length == 1
-                   && query.Prefix().Equals("$")
-                   && query.RawQuery.Length >= 3
-                   && query.Parts[0].Substring(1).All(ch => !char.IsDigit(ch) && (char.IsUpper(ch) || !char.IsLetter(ch)))
-                   && query.Parts[0].Substring(1).Length < 5;
+            if (query.Parts.Length != 1 || !query.Prefix().Equals("$") || query.RawQuery.Length < 3)
+            {
+                return false;
+            }
+
+            var ticker = query.Parts[0].Substring(1);
+            return ticker.All(ch => !char.IsDigit(ch) && (char.IsUpper(ch) || !char.IsLetter(ch)))
+                   && ticker.Length < 5 
+                   && ticker.Count(char.IsLetter) >= 2;
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
             // $GME => GME
             var ticker = query.Parts[0].Substring(1);
-            var response = await _yahooFinanceApi.Lookup(ticker);
-            if (response != null)
+            var priceResponseTask = _yahooFinanceApi.LookupPrice(ticker);
+            var searchResponseTask = _yahooFinanceApi.Search(ticker);
+
+            await Task.WhenAll(priceResponseTask, searchResponseTask);
+            
+            if (priceResponseTask.Result == null || searchResponseTask.Result == null)
             {
-                yield return new FinanceSearchResult(response);
+                yield break;
             }
+
+            yield return new FinanceSearchResult(priceResponseTask.Result, searchResponseTask.Result);
         }
     }
 }

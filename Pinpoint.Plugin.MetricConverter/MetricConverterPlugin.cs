@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Pinpoint.Core;
 using Pinpoint.Core.MetricConverter.Converters;
 using Pinpoint.Core.Results;
 
-namespace Pinpoint.Core.MetricConverter
+namespace Pinpoint.Plugin.MetricConverter
 {
     public class MetricConverterPlugin : IPlugin
     {

@@ -14,6 +14,10 @@ namespace PinPoint.Plugin.Spotify
         private readonly string[] _prefixes = {"album", "artist", "episode", "play", "playlist", "show"};
         private readonly AuthenticationManager _authManager = new AuthenticationManager();
         private readonly SpotifyClient _spotifyClient = SpotifyClient.GetInstance();
+        private readonly List<AbstractQueryResult> _defaultResults = new List<AbstractQueryResult>
+        {
+            new PausePlayResult()
+        };
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Spotify Controller");
 
@@ -45,6 +49,7 @@ namespace PinPoint.Plugin.Spotify
             var queryParts = query.RawQuery.Split(new[] { ' ' }, 2);
             var queryType = MapToSpotifySearchType(queryParts[0]);
             var searchQuery = queryParts[1];
+
 
             var searchResults = await _spotifyClient.Search(searchQuery, queryType);
 

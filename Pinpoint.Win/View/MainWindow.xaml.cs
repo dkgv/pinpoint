@@ -5,16 +5,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Plugin.Snippets;
 using Pinpoint.Core;
 using Pinpoint.Plugin.Currency;
 using Pinpoint.Plugin.Everything;
-using Pinpoint.Core.MetricConverter;
 using Pinpoint.Core.Results;
 using Pinpoint.Plugin.AppSearch;
 using Pinpoint.Plugin.Bangs;
@@ -22,11 +19,14 @@ using Pinpoint.Plugin.Calculator;
 using Pinpoint.Plugin.CommandLine;
 using Pinpoint.Plugin.ControlPanel;
 using Pinpoint.Plugin.Dictionary;
+using Pinpoint.Plugin.EncodeDecode;
 using Pinpoint.Plugin.Finance;
+using Pinpoint.Plugin.HackerNews;
+using Pinpoint.Plugin.MetricConverter;
 using Pinpoint.Win.Models;
 using PinPoint.Plugin.Spotify;
 
-namespace Pinpoint.Win.Views
+namespace Pinpoint.Win.View
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -34,7 +34,7 @@ namespace Pinpoint.Win.Views
     public partial class MainWindow : Window
     {
         private CancellationTokenSource _cts;
-        private List<AbstractQueryResult> _searchResults = new List<AbstractQueryResult>();
+        private readonly List<AbstractQueryResult> _searchResults = new List<AbstractQueryResult>();
         private int _showingOptionsForIndex = -1;
         private readonly SettingsWindow _settingsWindow;
         private readonly PluginEngine _pluginEngine;
@@ -50,6 +50,7 @@ namespace Pinpoint.Win.Views
             
             _pluginEngine = new PluginEngine();
             _settingsWindow = new SettingsWindow(this, _pluginEngine);
+
             _pluginEngine.Listeners.Add(_settingsWindow);
 
             LoadPlugins();
@@ -71,7 +72,9 @@ namespace Pinpoint.Win.Views
             _pluginEngine.AddPlugin(new CommandLinePlugin());
             _pluginEngine.AddPlugin(new SnippetsPlugin(_settingsWindow));
             _pluginEngine.AddPlugin(new SpotifyPlugin());
+            _pluginEngine.AddPlugin(new EncodeDecodePlugin());
             _pluginEngine.AddPlugin(new FinancePlugin());
+            _pluginEngine.AddPlugin(new HackerNewsPlugin());
         }
 
         internal MainWindowModel Model
@@ -134,11 +137,17 @@ namespace Pinpoint.Win.Views
 
             if (IsCtrlKeyDown())
             {
-                // Check if CTRL + 0-9 was pressed
+                // Check if CTRL+0-9 was pressed
                 if (isDigitPressed)
                 {
                     LstResults.SelectedIndex = index;
                     OpenSelectedResult();
+                }
+
+                // Check if CTRL+, was pressed
+                if (e.Key == Key.OemComma)
+                {
+                    ShowSettingsWindow();
                 }
             }
             else if (IsAltKeyDown())
@@ -235,7 +244,6 @@ namespace Pinpoint.Win.Views
 
                 case Key.LeftAlt:
                 case Key.RightAlt:
-                case Key.System:
                 case Key.Left:
                 case Key.Right:
                 case Key.Up:
@@ -249,6 +257,10 @@ namespace Pinpoint.Win.Views
                     break;
 
                 default:
+                    if (_showingOptionsForIndex != -1 && e.Key == Key.System)
+                    {
+                        break;
+                    }
                     await UpdateResults();
                     break;
             }
@@ -317,9 +329,9 @@ namespace Pinpoint.Win.Views
                     break;
 
                 case Key.Up:
-                    // First item of list is already selected so focus query field
                     if (LstResults.SelectedIndex == 0)
                     {
+                        // First item of list is already selected so focus query field
                         TxtQuery.Focus();
                     }
                     else
@@ -347,6 +359,13 @@ namespace Pinpoint.Win.Views
                     {
                         TxtQuery.Focus();
                         TxtQuery.SelectAll();
+                    }
+                    break;
+
+                case Key.OemComma:
+                    if (IsCtrlKeyDown())
+                    {
+                        ShowSettingsWindow();
                     }
                     break;
 
@@ -422,6 +441,11 @@ namespace Pinpoint.Win.Views
         }
 
         private void ItmSettings_Click(object sender, RoutedEventArgs e)
+        {
+            ShowSettingsWindow();
+        }
+
+        private void ShowSettingsWindow()
         {
             _settingsWindow.Show();
             Hide();

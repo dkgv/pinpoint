@@ -92,6 +92,25 @@ namespace Pinpoint.Plugin.Spotify.Client
             }
         }
 
+        public async Task QueueItem(string uri)
+        {
+            var message = new HttpRequestMessage(HttpMethod.Post, $"https://api.spotify.com/v1/me/player/queue?uri={uri}")
+            {
+                Headers = {{"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}
+            };
+
+            var response = await _spotifyHttpClient.SendAsync(message);
+
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                await ExchangeRefreshToken();
+                var retryMessage = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play")
+                    {Headers = {{"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}};
+
+                await _spotifyHttpClient.SendAsync(retryMessage);
+            }
+        }
+
         private async Task<bool> SpotifyCurrentlyPlaying()
         {
             var message = new HttpRequestMessage(HttpMethod.Get, "https://api.spotify.com/v1/me/player")
@@ -103,7 +122,7 @@ namespace Pinpoint.Plugin.Spotify.Client
             var responseContent = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<PlaybackInfoResult>(responseContent);
 
-            return result.is_playing;
+            return result.IsPlaying;
         }
 
         private async Task ExchangeRefreshToken()
@@ -144,6 +163,7 @@ namespace Pinpoint.Plugin.Spotify.Client
 
     public class PlaybackInfoResult
     {
-        public bool is_playing { get; set; }
+        [JsonProperty("is_playing")]
+        public bool IsPlaying { get; set; }
     }
 }

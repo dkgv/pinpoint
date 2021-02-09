@@ -11,7 +11,7 @@ using Pinpoint.Win.Models;
 using Pranas;
 using Point = System.Windows.Point;
 
-namespace Pinpoint.Win.Views
+namespace Pinpoint.Win.View
 {
     /// <summary>
     /// Interaction logic for ScreenCaptureOverlayWindow.xaml

@@ -1,31 +1,30 @@
 using System;
 using FontAwesome5;
-using Pinpoint.Core;
 using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Finance
 {
     public class FinanceSearchResult : UrlQueryResult
     {
-        public FinanceSearchResult(YahooFinanceResponse response) : base(response.Url)
+        public FinanceSearchResult(YahooFinancePriceResponse priceResponse, YahooFinanceSearchResponse searchResponse) : base(priceResponse.Url)
         {
-            var pricePrefix = response.RegularMarketPrice > response.PreviousClose
+            var pricePrefix = priceResponse.RegularMarketPrice > priceResponse.PreviousClose
                 ? "+" 
                 : "-";
-            var priceChange = Math.Abs(PriceChange(response));
-            var percentChange = Math.Abs(PercentChange(response));
+            var priceChange = Math.Abs(PriceChange(priceResponse));
+            var percentChange = Math.Abs(PercentChange(priceResponse));
 
-            Title = response.Symbol + " @ " + response.RegularMarketPrice + " " + pricePrefix + priceChange + " (" + pricePrefix + percentChange + "%)";
+            Title = searchResponse.ShortName + " (" + priceResponse.Symbol + ") @ " + priceResponse.RegularMarketPrice + " " + pricePrefix + priceChange + " (" + pricePrefix + percentChange + "%)";
         }
 
-        private double PriceChange(YahooFinanceResponse response)
+        private double PriceChange(YahooFinancePriceResponse priceResponse)
         {
-            return Math.Round(response.RegularMarketPrice - response.PreviousClose, 2);
+            return Math.Round(priceResponse.RegularMarketPrice - priceResponse.PreviousClose, 2);
         }
 
-        private double PercentChange(YahooFinanceResponse response)
+        private double PercentChange(YahooFinancePriceResponse priceResponse)
         {
-            return Math.Round((response.PreviousClose - response.RegularMarketPrice) / response.PreviousClose * 100f, 2);
+            return Math.Round((priceResponse.PreviousClose - priceResponse.RegularMarketPrice) / priceResponse.PreviousClose * 100f, 2);
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_ChartLine;
