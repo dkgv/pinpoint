@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FontAwesome5;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
+using Pinpoint.Plugin.Spotify.Client;
 
 namespace PinPoint.Plugin.Spotify
 {
     public class SpotifyPlugin : IPlugin
     {
+        private readonly string[] _prefixes = {"album", "artist", "episode", "play", "playlist", "show"};
         private readonly AuthenticationManager _authManager = new AuthenticationManager();
         private readonly SpotifyClient _spotifyClient = SpotifyClient.GetInstance();
         private readonly List<AbstractQueryResult> _defaultResults = new List<AbstractQueryResult>
@@ -34,26 +38,43 @@ namespace PinPoint.Plugin.Spotify
 
         public Task<bool> Activate(Query query)
         {
-
-            return Task.FromResult(query.RawQuery.StartsWith("play") && query.RawQuery.Length > 4);
+            var queryParts = query.RawQuery.Split(new[] {' '}, 2);
+            var shouldActivate = queryParts.Length > 1 && _prefixes.Any(prefix => queryParts[0] == prefix) &&
+                                 queryParts[1].Length > 3;
+            return Task.FromResult(shouldActivate);
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
+            var queryParts = query.RawQuery.Split(new[] { ' ' }, 2);
+            var queryType = MapToSpotifySearchType(queryParts[0]);
+            var searchQuery = queryParts[1];
 
-            var searchResults = await _spotifyClient.Search(query.RawQuery.Substring(4));
 
-            foreach (var trackResult in searchResults)
+            var searchResults = await _spotifyClient.Search(searchQuery, queryType);
+
+            yield return new PlayPauseResult();
+
+            foreach (var searchResult in searchResults)
             {
-                var result = trackResult.Name;
-                if(trackResult.Artists.Count > 0)
-                {
-                    var artistsString = string.Join(", ", trackResult.Artists.Select(a => a.Name));
-                    result = $"{result} - {artistsString}";
-                }
-
-                yield return new SpotifySearchResult(result, trackResult.Uri);
+                yield return new SpotifySearchResult(searchResult.DisplayString, searchResult.Uri);
             }
         }
+
+        private static string MapToSpotifySearchType(string type)
+        {
+            return type == "play" ? "track" : type;
+        }
+    }
+
+    public class PlayPauseResult: AbstractFontAwesomeQueryResult
+    {
+        public PlayPauseResult(): base("Play/pause current track") { }
+        public override void OnSelect()
+        {
+            SpotifyClient.GetInstance().PlayPauseCurrentTrack();
+        }
+
+        public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_Play;
     }
 }

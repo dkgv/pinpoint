@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Pinpoint.Core;
+using PinPoint.Plugin.Spotify;
 
-namespace PinPoint.Plugin.Spotify
+namespace Pinpoint.Plugin.Spotify.Client
 {
     public class SpotifyClient: IDisposable
     {
@@ -31,9 +32,9 @@ namespace PinPoint.Plugin.Spotify
             AppSettings.PutAndSave("spotify", settings);
         }
 
-        public async Task<List<TrackResult>> Search(string query)
+        public async Task<List<SpotifyResultEntity>> Search(string query, string type)
         {
-            var message = new HttpRequestMessage(HttpMethod.Get, $"https://api.spotify.com/v1/search?q={query}&type=track,artist,playlist,album&limit=5") { Headers = { {"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}};
+            var message = new HttpRequestMessage(HttpMethod.Get, $"https://api.spotify.com/v1/search?q={query}&type={type}&limit=5") { Headers = { {"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}};
 
             var response = await _spotifyHttpClient.SendAsync(message);
 
@@ -45,17 +46,33 @@ namespace PinPoint.Plugin.Spotify
             }
 
             var bodyJson = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<SearchResult>(bodyJson);
 
-            var result = JsonConvert.DeserializeObject<TracksResult>(bodyJson);
-
-            return result.Tracks.Items;
+            return type switch
+            {
+                "track" => result.Tracks.Items.Cast<SpotifyResultEntity>().ToList(),
+                "album" => result.Albums.Items,
+                "artist" => result.Artists.Items,
+                "playlist" => result.Playlists.Items,
+                "show" => result.Shows.Items,
+                "episode" => result.Episodes.Items,
+                _ => new List<SpotifyResultEntity>()
+            };
         }
 
-        public async Task PlayTrack(string trackUri)
+        public async Task PlayItem(string uri)
         {
-            var content = new StringContent(JsonConvert.SerializeObject(new PlayRequest {uris = new List<string> { trackUri }}),
+            PlayRequest request = null;
+            if (uri != null)
+            {
+                request = uri.Contains("track")
+                    ? new PlayRequest {Uris = new List<string> {uri}}
+                    : new PlayRequest {ContextUri = uri};
+            }
+
+            var content = new StringContent(JsonConvert.SerializeObject(request),
                 Encoding.UTF8, "application/json");
-            var message = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } }, Content = content };
+            var message = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } }, Content = uri != null ? content : null };
             
             var response = await _spotifyHttpClient.SendAsync(message);
             
@@ -67,56 +84,53 @@ namespace PinPoint.Plugin.Spotify
             }
         }
 
-        public async Task PlayPauseTrack()
+        public async Task PlayPauseCurrentTrack()
         {
-            var message = new HttpRequestMessage(HttpMethod.Get, "https://api.spotify.com/v1/me/player")
-                {Headers = {{"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}};
+            var isPlaying = await SpotifyCurrentlyPlaying();
 
-            var response = await _spotifyHttpClient.SendAsync(message);
-            var bodyJson = await response.Content.ReadAsStringAsync();
-
-            var result = JsonConvert.DeserializeObject<PlayBackState>(bodyJson);
-
-            if(result == null) return;
-
-            if (result.is_playing)
+            if (isPlaying)
             {
-                await PausePlayback();
+                var message = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/pause")
+                    {Headers = {{"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}};
+                await _spotifyHttpClient.SendAsync(message);
             }
             else
             {
-                await ResumePlayback();
+                await PlayItem(null);
             }
         }
 
-        private async Task ResumePlayback()
+        public async Task QueueItem(string uri)
         {
-            var message = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } }};
+            var message = new HttpRequestMessage(HttpMethod.Post, $"https://api.spotify.com/v1/me/player/queue?uri={uri}")
+            {
+                Headers = {{"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}
+            };
 
             var response = await _spotifyHttpClient.SendAsync(message);
 
             if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 await ExchangeRefreshToken();
-                var retryMessage = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } }};
+                var retryMessage = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play")
+                    {Headers = {{"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}};
+
                 await _spotifyHttpClient.SendAsync(retryMessage);
             }
         }
 
-        private async Task PausePlayback()
+        private async Task<bool> SpotifyCurrentlyPlaying()
         {
-            var message = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/pause") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } } };
-
+            var message = new HttpRequestMessage(HttpMethod.Get, "https://api.spotify.com/v1/me/player")
+            {
+                Headers = {{"Authorization", $"Bearer {_accessToken}"}, {"Accept", "application/json"}}
+            };
             var response = await _spotifyHttpClient.SendAsync(message);
 
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                await ExchangeRefreshToken();
-                var retryMessage = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } } };
-                var res = await _spotifyHttpClient.SendAsync(retryMessage);
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<PlaybackInfoResult>(responseContent);
 
-                var content = await res.Content.ReadAsStringAsync();
-            }
+            return result.IsPlaying;
         }
 
         private async Task ExchangeRefreshToken()
@@ -155,36 +169,9 @@ namespace PinPoint.Plugin.Spotify
         }
     }
 
-    public class TracksResult
+    public class PlaybackInfoResult
     {
-        public Track Tracks { get; set; }
-    }
-
-    public class Track
-    {
-        public List<TrackResult> Items { get; set; }
-    }
-
-
-    public class TrackResult
-    {
-        public string Name { get; set; }
-        public string Uri { get; set; }
-        public List<ArtistResult> Artists { get; set; } = new List<ArtistResult>();
-    }
-
-    public class ArtistResult
-    {
-        public string Name { get; set; }
-    }
-
-    public class PlayRequest
-    {
-        public List<string> uris { get; set; }
-    }
-
-    public class PlayBackState
-    {
-        public bool is_playing { get; set; }
+        [JsonProperty("is_playing")]
+        public bool IsPlaying { get; set; }
     }
 }
