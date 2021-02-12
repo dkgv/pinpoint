@@ -60,11 +60,19 @@ namespace Pinpoint.Plugin.Spotify.Client
             };
         }
 
-        public async Task PlayTrack(string trackUri)
+        public async Task PlayItem(string uri)
         {
-            var content = new StringContent(JsonConvert.SerializeObject(new PlayRequest {uris = new List<string> { trackUri }}),
+            PlayRequest request = null;
+            if (uri != null)
+            {
+                request = uri.Contains("track")
+                    ? new PlayRequest {Uris = new List<string> {uri}}
+                    : new PlayRequest {ContextUri = uri};
+            }
+
+            var content = new StringContent(JsonConvert.SerializeObject(request),
                 Encoding.UTF8, "application/json");
-            var message = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } }, Content = trackUri != null ? content : null };
+            var message = new HttpRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play") { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } }, Content = uri != null ? content : null };
             
             var response = await _spotifyHttpClient.SendAsync(message);
             
@@ -88,7 +96,7 @@ namespace Pinpoint.Plugin.Spotify.Client
             }
             else
             {
-                await PlayTrack(null);
+                await PlayItem(null);
             }
         }
 

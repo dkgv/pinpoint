@@ -18,7 +18,7 @@ namespace PinPoint.Plugin.Spotify
         public string Uri { get; }
         public override void OnSelect()
         {
-            SpotifyClient.GetInstance().PlayTrack(Uri);
+            SpotifyClient.GetInstance().PlayItem(Uri);
         }
     }
 
