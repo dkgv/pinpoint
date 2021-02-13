@@ -20,6 +20,12 @@ namespace Pinpoint.Plugin.Bookmarks
         public void Load()
         {
             _defaultBrowserType = DetectDefaultBrowser();
+
+            if (_defaultBrowserType == BrowserType.Unknown)
+            {
+                return;
+            }
+
             _bookmarkExtractor = MapBrowserTypeToExtractor(_defaultBrowserType);
             
             foreach (var bookmarkModel in _bookmarkExtractor.Extract())
