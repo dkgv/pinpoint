@@ -11,6 +11,6 @@ namespace Pinpoint.Core
         public static readonly string SettingsFilePath = MainDirectory + "settings.json";
         public static readonly string HotkeyIdentifier = "Show/Hide";
 
-        public const string Version = "0.0.8";
+        public const string Version = "0.0.9";
     }
 }

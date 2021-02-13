@@ -8,7 +8,7 @@ namespace Pinpoint.Core
     public interface IPlugin : IComparable<IPlugin>
     {
         public PluginMeta Meta { get; set; }
-
+        
         public void Load();
 
         public void Unload();

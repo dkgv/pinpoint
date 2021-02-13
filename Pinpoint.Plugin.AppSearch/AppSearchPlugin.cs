@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Principal;
+using System.Linq;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
 using Pinpoint.Core;
@@ -13,10 +13,15 @@ namespace Pinpoint.Plugin.AppSearch
     {
         private UkkonenTrie<string> _trie = new UkkonenTrie<string>();
 
+        // Hacky
+        public static string LastQuery;
+
         public PluginMeta Meta { get; set; } = new PluginMeta("App Search", PluginPriority.NextHighest);
 
         public void Load()
         {
+            AppSearchFrequency.Load();
+
             foreach (var file in LoadFileList())
             {
                 var name = Path.GetFileName(file.ToLower());
@@ -59,6 +64,7 @@ namespace Pinpoint.Plugin.AppSearch
         public void Unload()
         {
             _trie = null;
+            AppSearchFrequency.Reset();
         }
 
         public async Task<bool> Activate(Query query)
@@ -68,7 +74,11 @@ namespace Pinpoint.Plugin.AppSearch
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
-            foreach (var result in _trie.Retrieve(query.RawQuery.ToLower()))
+            var rawQuery = query.RawQuery.ToLower();
+            LastQuery = rawQuery;
+
+            foreach (var result in _trie.Retrieve(rawQuery)
+                .OrderByDescending(entry => AppSearchFrequency.FrequencyOfFor(rawQuery, entry)))
             {
                 yield return new AppResult(result);
             }
