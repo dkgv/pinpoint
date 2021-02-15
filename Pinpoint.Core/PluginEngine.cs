@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -57,18 +58,26 @@ namespace Pinpoint.Core
 
             foreach (var plugin in Plugins.Where(p => p.Meta.Enabled))
             {
-                if (numResults >= 30)
+                try
                 {
-                    yield break;
-                }
-
-                if (await plugin.Activate(query))
-                {
-                    await foreach (var result in plugin.Process(query).WithCancellation(ct))
+                    if (numResults >= 30)
                     {
-                        numResults++;
-                        yield return result;
+                        yield break;
                     }
+
+                    if (await plugin.Activate(query))
+                    {
+                        await foreach (var result in plugin.Process(query).WithCancellation(ct))
+                        {
+                            numResults++;
+                            yield return result;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    RemovePlugin(plugin);
+                    await ErrorLogging.LogException(e);
                 }
             }
         }
