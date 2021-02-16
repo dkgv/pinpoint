@@ -113,6 +113,11 @@ namespace Pinpoint.Win.View
             TxtQuery.Clear();
             TxtQuery.Focus();
 
+            MoveWindowToDefaultPosition();
+        }
+
+        public void MoveWindowToDefaultPosition()
+        {
             // Locate window horizontal center near top of screen
             Left = SystemParameters.PrimaryScreenWidth / 2 - Width / 2;
             Top = SystemParameters.PrimaryScreenHeight / 5;
@@ -467,6 +472,14 @@ namespace Pinpoint.Win.View
             var screenCaptureOverlay = new ScreenCaptureOverlayWindow(_pluginEngine);
             screenCaptureOverlay.Show();
             Hide();
+        }
+
+        private void MainWindow_OnMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+            {
+                DragMove();
+            }
         }
     }
 }

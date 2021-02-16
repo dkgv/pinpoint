@@ -14,7 +14,8 @@
         Topmost="True" 
         Loaded="Window_Loaded" 
         Background="{x:Null}"
-        Name="MainWindowName">
+        Name="MainWindowName"
+        MouseDown="MainWindow_OnMouseDown">
 
     <Window.Resources>
         <Style TargetType="ListBox">
