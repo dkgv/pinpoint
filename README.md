@@ -20,6 +20,7 @@ Pinpoint is an extensible keystroke launcher written in C# (.NET Core).
 | ------------------------ | ------------------------------------------------------------ | ------------------------------------ |
 | App Search               | Searches for applications on your computer                   | ![](https://i.imgur.com/O3BdrxM.png) |
 | Bangs                    | Search on websites directly with the 10.000+ [DuckDuckGo !Bang](https://duckduckgo.com/bang) operators | ![](https://i.imgur.com/pbF7sZB.png) |
+| Bookmarks                | Enables you to search for bookmarks from your default browser (Chrome, Firefox) | ![](https://i.imgur.com/M2qvYCs.png) |
 | Calculator               | Calculate mathematical expressions instantly                 | ![](https://i.imgur.com/mtsthTj.png) |
 | Command Line             | Execute CLI queries without breaking your workflow           | ![](https://i.imgur.com/tsPcp1l.png) |
 | Control Panel            | Search directly across control panel items                   | ![](https://i.imgur.com/GClOIaI.png) |
