@@ -39,6 +39,7 @@ namespace Pinpoint.Win.View
         private int _showingOptionsForIndex = -1;
         private readonly SettingsWindow _settingsWindow;
         private readonly PluginEngine _pluginEngine;
+        private readonly QueryHistory _queryHistory;
 
         public MainWindow()
         {
@@ -50,6 +51,7 @@ namespace Pinpoint.Win.View
             Model = new MainWindowModel();
             
             _pluginEngine = new PluginEngine();
+            _queryHistory = new QueryHistory(10);
             _settingsWindow = new SettingsWindow(this, _pluginEngine);
 
             _pluginEngine.Listeners.Add(_settingsWindow);
@@ -140,14 +142,14 @@ namespace Pinpoint.Win.View
         private void TxtQuery_KeyDown(object sender, KeyEventArgs e)
         {
             var isDigitPressed = (int)e.Key >= 35 && (int)e.Key <= 43;
-            var index = (int)e.Key - 35;
+            var resultIndex = (int)e.Key - 35;
 
             if (IsCtrlKeyDown())
             {
                 // Check if CTRL+0-9 was pressed
                 if (isDigitPressed)
                 {
-                    LstResults.SelectedIndex = index;
+                    LstResults.SelectedIndex = resultIndex;
                     OpenSelectedResult();
                 }
 
@@ -161,7 +163,7 @@ namespace Pinpoint.Win.View
             {
                 if (isDigitPressed)
                 {
-                    ShowQueryResultOptions(index);
+                    ShowQueryResultOptions(resultIndex);
                 }
                 else if (LstResults.SelectedIndex != -1)
                 {
@@ -169,6 +171,74 @@ namespace Pinpoint.Win.View
                 }
 
                 e.Handled = true;
+            }
+        }
+
+        private async void TxtQuery_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (IsCtrlKeyDown())
+            {
+                // Check if CTRL+UP or CTRL+DOWN was pressed
+                if (e.Key == Key.Up)
+                {
+                    AdjustQueryToHistory(true);
+                }
+                else if (e.Key == Key.Down)
+                {
+                    AdjustQueryToHistory(false);
+                }
+                e.Handled = true;
+                return;
+            }
+
+            switch (e.Key)
+            {
+                case Key.Enter:
+                    if (LstResults.SelectedIndex >= 0)
+                    {
+                        OpenSelectedResult();
+                        TxtQuery.Clear();
+                    }
+                    break;
+
+                case Key.Down:
+                    if (Model.Results.Count > 0)
+                    {
+                        TxtQuery.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+                    }
+                    break;
+
+                case Key.LeftAlt:
+                case Key.RightAlt:
+                case Key.Left:
+                case Key.Right:
+                case Key.Up:
+                    break;
+
+                case Key.Escape:
+                    if (_showingOptionsForIndex != -1)
+                    {
+                        HideQueryResultOptions();
+                    }
+                    break;
+
+                default:
+                    if (_showingOptionsForIndex != -1 && e.Key == Key.System)
+                    {
+                        break;
+                    }
+                    await UpdateResults();
+                    break;
+            }
+        }
+
+        private void TxtQuery_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            StopSearching();
+
+            if (string.IsNullOrWhiteSpace(TxtQuery.Text))
+            {
+                Model.Results.Clear();
             }
         }
 
@@ -225,64 +295,6 @@ namespace Pinpoint.Win.View
             _showingOptionsForIndex = -1;
         }
 
-        private async void TxtQuery_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (IsCtrlKeyDown())
-            {
-                return;
-            }
-
-            switch (e.Key)
-            {
-                case Key.Enter:
-                    if (LstResults.SelectedIndex >= 0)
-                    {
-                        OpenSelectedResult();
-                        TxtQuery.Clear();
-                    }
-                    break;
-
-                case Key.Down:
-                    if (Model.Results.Count > 0)
-                    {
-                        TxtQuery.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
-                    }
-                    break;
-
-                case Key.LeftAlt:
-                case Key.RightAlt:
-                case Key.Left:
-                case Key.Right:
-                case Key.Up:
-                    break;
-
-                case Key.Escape:
-                    if (_showingOptionsForIndex != -1)
-                    {
-                        HideQueryResultOptions();
-                    }
-                    break;
-
-                default:
-                    if (_showingOptionsForIndex != -1 && e.Key == Key.System)
-                    {
-                        break;
-                    }
-                    await UpdateResults();
-                    break;
-            }
-        }
-
-        private void TxtQuery_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            StopSearching();
-
-            if (string.IsNullOrWhiteSpace(TxtQuery.Text))
-            {
-                Model.Results.Clear();
-            }
-        }
-
         private async Task<bool> StillTyping()
         {
             var text = TxtQuery.Text;
@@ -321,6 +333,8 @@ namespace Pinpoint.Win.View
                 }
             }
 
+            _queryHistory.Add(query);
+
             if (Model.Results.Count > 0 && LstResults.SelectedIndex == -1)
             {
                 LstResults.SelectedIndex = 0;
@@ -335,15 +349,29 @@ namespace Pinpoint.Win.View
                     OpenSelectedResult();
                     break;
 
-                case Key.Up:
-                    if (LstResults.SelectedIndex == 0)
+                case Key.Down:
+                    if (IsCtrlKeyDown())
                     {
-                        // First item of list is already selected so focus query field
-                        TxtQuery.Focus();
+                        AdjustQueryToHistory(false);
+                    }
+                    break;
+
+                case Key.Up:
+                    if (IsCtrlKeyDown())
+                    {
+                        AdjustQueryToHistory(true);
                     }
                     else
                     {
-                        LstResults.SelectedIndex = Math.Max(LstResults.SelectedIndex - 1, 0);
+                        if (LstResults.SelectedIndex == 0)
+                        {
+                            // First item of list is already selected so focus query field
+                            TxtQuery.Focus();
+                        }
+                        else
+                        {
+                            LstResults.SelectedIndex = Math.Max(LstResults.SelectedIndex - 1, 0);
+                        }
                     }
                     break;
 
@@ -395,11 +423,23 @@ namespace Pinpoint.Win.View
             }
         }
 
+        private void AdjustQueryToHistory(bool older)
+        {
+            var next = older ? _queryHistory.Current.Next : _queryHistory.Current.Previous;
+
+            if (next != null)
+            {
+                _queryHistory.Current = next;
+                TxtQuery.Text = _queryHistory.Current.Value.RawQuery;
+                TxtQuery.CaretIndex = TxtQuery.Text.Length;
+            }
+        }
+
         private bool IsCtrlKeyDown() => Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
 
         private bool IsAltKeyDown() => Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
 
-        private void StopSearching() =>  _cts?.Cancel();
+        private void StopSearching() => _cts?.Cancel();
 
         private void OpenSelectedResult()
         {
@@ -447,10 +487,7 @@ namespace Pinpoint.Win.View
             }
         }
 
-        private void ItmSettings_Click(object sender, RoutedEventArgs e)
-        {
-            ShowSettingsWindow();
-        }
+        private void ItmSettings_Click(object sender, RoutedEventArgs e) => ShowSettingsWindow();
 
         private void ShowSettingsWindow()
         {
