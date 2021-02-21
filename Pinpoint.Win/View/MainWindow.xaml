@@ -170,6 +170,7 @@
                                        HorizontalAlignment="Left"
                                        TextTrimming="WordEllipsis"
                                        Text="{Binding Title}" 
+                                       ToolTip="{Binding Title}"
                                        FontSize="15" FontWeight="SemiBold"/>
 
                                     <!-- Result subtitle -->
