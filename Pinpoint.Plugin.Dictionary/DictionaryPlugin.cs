@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using AngleSharp;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
 
@@ -10,8 +13,6 @@ namespace Pinpoint.Plugin.Dictionary
 {
     public class DictionaryPlugin : IPlugin
     {
-        private static readonly BrowsingContext Ctx = new BrowsingContext(Configuration.Default.WithDefaultLoader());
-        private const string ContainerSelector = "section.css-pnw38j:nth-child(2) > div:nth-child(2)";
         private static readonly Regex DefineRegex = new Regex(@"(meaning|def|define|definition)$");
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Dictionary", PluginPriority.Standard);
@@ -31,26 +32,39 @@ namespace Pinpoint.Plugin.Dictionary
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
-            var url = $"https://www.dictionary.com/browse/{query.Parts[0]}";
+            var url = $"https://api.dictionaryapi.dev/api/v2/entries/en_US/{query.Parts[0]}";
 
-            var document = await Ctx.OpenAsync(url);
-            var container = document.Body.QuerySelector(ContainerSelector);
-            if (container == null)
+            var httpResponse = await SendGet(url);
+            var matches = JArray.Parse(httpResponse);
+
+            if (matches.Count == 0)
             {
                 yield break;
             }
-
-            // Grab at most first five definitions
-            var definitions = container.QuerySelectorAll("div");
-            for (var i = 0; i < Math.Min(definitions.Length, 5); i++)
+            Console.WriteLine(matches.ToString());
+            var meanings = matches[0]["meanings"].ToArray();
+            foreach (var meaning in meanings)
             {
-                var text = definitions[i].TextContent;
-                if (text.Contains(":"))
+                var definitions = meaning["definitions"].ToArray();
+                for (var i = 0; i < Math.Min(definitions.Length, 2); i++)
                 {
-                    text = text.Split(":")[0];
+                    var model = JsonConvert.DeserializeObject<DefinitionModel>(definitions[i].ToString());
+                    model.PartOfSpeech = meaning["partOfSpeech"].ToString();
+                    yield return new DictionaryResult(model);
                 }
+            }
+        }
 
-                yield return new DictionaryResult(text, url);
+        private async Task<string> SendGet(string url)
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
+                return await httpClient.GetStringAsync(url);
+            }
+            catch (HttpRequestException)
+            {
+                return null;
             }
         }
     }

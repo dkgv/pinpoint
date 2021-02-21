@@ -1,14 +1,12 @@
 ﻿using FontAwesome5;
-using Pinpoint.Core;
 using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Dictionary
 {
-    public class DictionaryResult : UrlQueryResult
+    public class DictionaryResult : CopyabableQueryOption
     {
-        public DictionaryResult(string definition, string url) : base(url)
+        public DictionaryResult(DefinitionModel definition) : base(definition.PartOfSpeech + ": " + definition.Definition, definition.Definition)
         {
-            Title = definition;
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_Book;
