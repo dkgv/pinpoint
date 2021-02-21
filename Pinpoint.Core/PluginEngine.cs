@@ -10,6 +10,7 @@ namespace Pinpoint.Core
 {
     public class PluginEngine
     {
+        private List<Type> _originalPluginTypes = new List<Type>();
         public List<IPlugin> Plugins { get; } = new List<IPlugin>();
 
         public List<IPluginListener<IPlugin, object>> Listeners { get; } = new List<IPluginListener<IPlugin, object>>();
@@ -33,6 +34,8 @@ namespace Pinpoint.Core
                 // Ensure order of plugin execution is correct
                 Plugins.Sort();
 
+                _originalPluginTypes.Add(plugin.GetType());
+
                 Listeners.ForEach(listener => listener.PluginChange_Added(this, plugin, null));
             }
         }
@@ -55,29 +58,67 @@ namespace Pinpoint.Core
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var numResults = 0;
+            var errorOccurred = false;
 
             foreach (var plugin in Plugins.Where(p => p.Meta.Enabled))
             {
-                try
+                if (numResults >= 30)
                 {
-                    if (numResults >= 30)
-                    {
-                        yield break;
-                    }
+                    yield break;
+                }
 
-                    if (await plugin.Activate(query))
+                if (await plugin.Activate(query))
+                {
+                    var resultStream = plugin.Process(query).WithCancellation(ct);
+
+                    var enumerator = resultStream.GetAsyncEnumerator();
+                    var hasResult = true;
+                    AbstractQueryResult result = null;
+
+                    while(hasResult)
                     {
-                        await foreach (var result in plugin.Process(query).WithCancellation(ct))
+                        try
                         {
-                            numResults++;
-                            yield return result;
+                            hasResult = await enumerator.MoveNextAsync();
+                            if (hasResult)
+                            {
+                                result = enumerator.Current;
+                                numResults++;
+                            }
+                            else
+                                result = null;
                         }
+                        catch (Exception e)
+                        {
+                            await ErrorLogging.LogException(e);
+                            RemovePlugin(plugin);
+                            errorOccurred = true;
+                        }
+
+                        if (result != null)
+                            yield return result;
                     }
                 }
-                catch (Exception e)
+                
+            }
+
+            if(errorOccurred)
+            {
+                ReconstructFailedPlugins();
+            }
+        }
+
+        private void ReconstructFailedPlugins()
+        {
+            var removedPluginTypes = _originalPluginTypes.Where(pluginType => !Plugins.Any(plugin => plugin.GetType() == pluginType));
+
+            foreach (var pluginType in removedPluginTypes)
+            {
+                var pluginInstance = Activator.CreateInstance(pluginType) as IPlugin;
+
+                if(pluginInstance != null)
                 {
-                    RemovePlugin(plugin);
-                    await ErrorLogging.LogException(e);
+                    AddPlugin(pluginInstance);
                 }
             }
         }
