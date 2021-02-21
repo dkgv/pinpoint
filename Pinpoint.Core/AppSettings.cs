@@ -15,10 +15,7 @@ namespace Pinpoint.Core
             return JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(Get(key).ToString());
         }
 
-        public static T GetAs<T>(string key)
-        {
-            return JsonConvert.DeserializeObject<T>(Get(key).ToString());
-        }
+        public static T GetAs<T>(string key) => JsonConvert.DeserializeObject<T>(Get(key).ToString());
 
         public static List<T> GetListAs<T>(string key)
         {
@@ -40,15 +37,9 @@ namespace Pinpoint.Core
             }
         }
 
-        public static T GetAsOrDefault<T>(string key, T fallback)
-        {
-            return !Contains(key) ? fallback : GetAs<T>(key);
-        }
+        public static T GetAsOrDefault<T>(string key, T fallback) =>  !Contains(key) ? fallback : GetAs<T>(key);
         
-        public static object Get(string key)
-        {
-            return Settings[key];
-        }
+        public static object Get(string key) => Settings[key];
 
         public static void Put(string key, object value, bool overwrite = true)
         {
@@ -64,10 +55,7 @@ namespace Pinpoint.Core
             Save();
         }
 
-        public static bool Contains(string key)
-        {
-            return Settings.ContainsKey(key);
-        }
+        public static bool Contains(string key) => Settings.ContainsKey(key);
 
         public static void Save()
         {

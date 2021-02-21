@@ -34,6 +34,7 @@ namespace Pinpoint.Plugin.AppSearch
 
         public override void OnSelect()
         {
+            AppSearchFrequency.Track(AppSearchPlugin.LastQuery, _filePath);
             Process.Start("explorer.exe", "\"" + _filePath + "\"");
         }
     }

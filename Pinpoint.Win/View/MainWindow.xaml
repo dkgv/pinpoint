@@ -14,7 +14,8 @@
         Topmost="True" 
         Loaded="Window_Loaded" 
         Background="{x:Null}"
-        Name="MainWindowName">
+        Name="MainWindowName"
+        MouseDown="MainWindow_OnMouseDown">
 
     <Window.Resources>
         <Style TargetType="ListBox">
@@ -169,6 +170,7 @@
                                        HorizontalAlignment="Left"
                                        TextTrimming="WordEllipsis"
                                        Text="{Binding Title}" 
+                                       ToolTip="{Binding Title}"
                                        FontSize="15" FontWeight="SemiBold"/>
 
                                     <!-- Result subtitle -->

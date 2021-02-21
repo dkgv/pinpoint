@@ -32,7 +32,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.EncodeDecod
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Finance", "Pinpoint.Plugin.Finance\Pinpoint.Plugin.Finance.csproj", "{5FD2B98D-A8E1-4F42-A7C4-815CA4CCA4F8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.HackerNews", "Pinpoint.Plugin.HackerNews\Pinpoint.Plugin.HackerNews.csproj", "{4353E969-AD3F-41E4-9300-94070B6D2881}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.HackerNews", "Pinpoint.Plugin.HackerNews\Pinpoint.Plugin.HackerNews.csproj", "{4353E969-AD3F-41E4-9300-94070B6D2881}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.Bookmarks", "Pinpoint.Plugin.Bookmarks\Pinpoint.Plugin.Bookmarks.csproj", "{27028161-0136-41CD-B374-64046F97FCAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -236,6 +238,18 @@ Global
 		{4353E969-AD3F-41E4-9300-94070B6D2881}.Release|x64.Build.0 = Release|Any CPU
 		{4353E969-AD3F-41E4-9300-94070B6D2881}.Release|x86.ActiveCfg = Release|Any CPU
 		{4353E969-AD3F-41E4-9300-94070B6D2881}.Release|x86.Build.0 = Release|Any CPU
+		{27028161-0136-41CD-B374-64046F97FCAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27028161-0136-41CD-B374-64046F97FCAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27028161-0136-41CD-B374-64046F97FCAD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{27028161-0136-41CD-B374-64046F97FCAD}.Debug|x64.Build.0 = Debug|Any CPU
+		{27028161-0136-41CD-B374-64046F97FCAD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{27028161-0136-41CD-B374-64046F97FCAD}.Debug|x86.Build.0 = Debug|Any CPU
+		{27028161-0136-41CD-B374-64046F97FCAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27028161-0136-41CD-B374-64046F97FCAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27028161-0136-41CD-B374-64046F97FCAD}.Release|x64.ActiveCfg = Release|Any CPU
+		{27028161-0136-41CD-B374-64046F97FCAD}.Release|x64.Build.0 = Release|Any CPU
+		{27028161-0136-41CD-B374-64046F97FCAD}.Release|x86.ActiveCfg = Release|Any CPU
+		{27028161-0136-41CD-B374-64046F97FCAD}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

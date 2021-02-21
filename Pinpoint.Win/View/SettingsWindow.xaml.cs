@@ -259,5 +259,12 @@ namespace Pinpoint.Win.View
         {
             ProcessHelper.OpenUrl(LnkCheckUpdate.NavigateUri.AbsoluteUri);
         }
+
+        private void BtnReCenterWindow_OnClick(object sender, RoutedEventArgs e)
+        {
+            _mainWindow.MoveWindowToDefaultPosition();
+            Close();
+            _mainWindow.Show();
+        }
     }
 }

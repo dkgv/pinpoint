@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AngleSharp" Version="0.14.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Pinpoint.Core\Pinpoint.Core.csproj" />
   </ItemGroup>
 

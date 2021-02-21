@@ -61,6 +61,11 @@
                             ItemsSource="{Binding Themes}"
                             SelectionChanged="CbTheme_SelectionChanged">
                         </ComboBox>
+                        
+                        <Label Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right">Window Location:</Label>
+
+                        <Button Grid.Row="3" Grid.Column="2" x:Name="BtnReCenterWindow" Content="Reset to Default" Click="BtnReCenterWindow_OnClick">
+                        </Button>
 
                         <Label x:Name="LblVersion" 
                                Grid.Row="5" 
