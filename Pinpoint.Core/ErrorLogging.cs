@@ -7,6 +7,7 @@ namespace Pinpoint.Core
     public static class ErrorLogging
     {
         private static readonly string ErrorLogFilePath = AppConstants.MainDirectory + "errorlog.txt";
+
         public static async Task LogException(Exception e)
         {
             if (!File.Exists(ErrorLogFilePath))

@@ -10,7 +10,6 @@ namespace Pinpoint.Core
 {
     public class PluginEngine
     {
-        private List<IPlugin> _failedPlugins = new List<IPlugin>();
         public List<IPlugin> Plugins { get; } = new List<IPlugin>();
 
         public List<IPluginListener<IPlugin, object>> Listeners { get; } = new List<IPluginListener<IPlugin, object>>();
@@ -56,7 +55,7 @@ namespace Pinpoint.Core
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var numResults = 0;
-            var errorOccurred = false;
+            var deadPlugins = new List<IPlugin>();
 
             foreach (var plugin in Plugins.Where(p => p.Meta.Enabled))
             {
@@ -65,57 +64,56 @@ namespace Pinpoint.Core
                     yield break;
                 }
 
-                if (!await plugin.Activate(query)) continue;
+                if (!await plugin.Activate(query))
+                {
+                    continue;
+                }
 
-                var resultStream = plugin.Process(query).WithCancellation(ct);
-
-                var enumerator = resultStream.GetAsyncEnumerator();
-                var hasResult = true;
+                var enumerator = plugin.Process(query).WithCancellation(ct).GetAsyncEnumerator();
                 AbstractQueryResult result = null;
 
-                while(hasResult)
+                do
                 {
                     try
                     {
-                        hasResult = await enumerator.MoveNextAsync();
-                        if (hasResult)
+                        if (await enumerator.MoveNextAsync())
                         {
                             result = enumerator.Current;
                             numResults++;
                         }
                         else
+                        {
                             result = null;
+                        }
                     }
                     catch (Exception e)
                     {
                         await ErrorLogging.LogException(e);
-                        errorOccurred = true;
-                        _failedPlugins.Add(plugin);
+                        deadPlugins.Add(plugin);
                     }
 
                     if (result != null)
+                    {
                         yield return result;
-                }
-
+                    }
+                } while (result != null);
             }
 
-            if(errorOccurred)
+            if (deadPlugins.Any())
             {
-                ReconstructFailedPlugins();
+                ReinitializePlugins(deadPlugins);
             }
         }
 
-        private void ReconstructFailedPlugins()
+        private void ReinitializePlugins(List<IPlugin> plugins)
         {
-            foreach (var failedPlugin in _failedPlugins)
+            foreach (var plugin in plugins)
             {
-                RemovePlugin(failedPlugin);
+                RemovePlugin(plugin);
 
-                var newPlugin = Activator.CreateInstance(failedPlugin.GetType()) as IPlugin;
+                var newPlugin = Activator.CreateInstance(plugin.GetType()) as IPlugin;
                 AddPlugin(newPlugin);
             }
-
-            _failedPlugins.Clear();
         }
     }
 }
