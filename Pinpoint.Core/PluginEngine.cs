@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -54,6 +55,7 @@ namespace Pinpoint.Core
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var numResults = 0;
+            var deadPlugins = new List<IPlugin>();
 
             foreach (var plugin in Plugins.Where(p => p.Meta.Enabled))
             {
@@ -62,14 +64,55 @@ namespace Pinpoint.Core
                     yield break;
                 }
 
-                if (await plugin.Activate(query))
+                if (!await plugin.Activate(query))
                 {
-                    await foreach (var result in plugin.Process(query).WithCancellation(ct))
+                    continue;
+                }
+
+                var enumerator = plugin.Process(query).WithCancellation(ct).GetAsyncEnumerator();
+                AbstractQueryResult result = null;
+
+                do
+                {
+                    try
                     {
-                        numResults++;
+                        if (await enumerator.MoveNextAsync())
+                        {
+                            result = enumerator.Current;
+                            numResults++;
+                        }
+                        else
+                        {
+                            result = null;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        await ErrorLogging.LogException(e);
+                        deadPlugins.Add(plugin);
+                    }
+
+                    if (result != null)
+                    {
                         yield return result;
                     }
-                }
+                } while (result != null);
+            }
+
+            if (deadPlugins.Any())
+            {
+                ReinitializePlugins(deadPlugins);
+            }
+        }
+
+        private void ReinitializePlugins(List<IPlugin> plugins)
+        {
+            foreach (var plugin in plugins)
+            {
+                RemovePlugin(plugin);
+
+                var newPlugin = Activator.CreateInstance(plugin.GetType()) as IPlugin;
+                AddPlugin(newPlugin);
             }
         }
     }
