@@ -17,13 +17,13 @@ namespace Pinpoint.Plugin.Bookmarks
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Bookmarks Plugin", PluginPriority.NextHighest);
 
-        public void Load()
+        public bool TryLoad()
         {
             _defaultBrowserType = DetectDefaultBrowser();
 
             if (_defaultBrowserType == BrowserType.Unknown)
             {
-                return;
+                return false;
             }
 
             _bookmarkExtractor = MapBrowserTypeToExtractor(_defaultBrowserType);
@@ -32,6 +32,8 @@ namespace Pinpoint.Plugin.Bookmarks
             {
                 _trie.Add(bookmarkModel.Name.ToLower(), bookmarkModel);
             }
+
+            return true;
         }
 
         public void Unload()

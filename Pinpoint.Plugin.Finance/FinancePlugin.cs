@@ -12,10 +12,8 @@ namespace Pinpoint.Plugin.Finance
         private readonly YahooFinanceApi _yahooFinanceApi = new YahooFinanceApi(TimeSpan.FromMinutes(2));
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Finance Plugin", PluginPriority.Highest);
-        
-        public void Load()
-        {
-        }
+
+        public bool TryLoad() => true;
 
         public void Unload()
         {

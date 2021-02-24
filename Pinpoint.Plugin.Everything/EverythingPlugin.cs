@@ -27,9 +27,10 @@ namespace Pinpoint.Plugin.Everything
 
         private IEverythingClient _everything;
 
-        public void Load()
+        public bool TryLoad()
         {
             _everything = new EverythingClient(new DefaultSearchConfig());
+            return true;
         }
 
         public void Unload()

@@ -9,7 +9,7 @@ namespace Pinpoint.Core
     {
         public PluginMeta Meta { get; set; }
         
-        public void Load();
+        public bool TryLoad();
 
         public void Unload();
 

@@ -10,11 +10,11 @@ namespace Pinpoint.Plugin.EncodeDecode
     public class EncodeDecodePlugin: IPlugin
     {
         private readonly string[] _prefixes = new[] {"bin", "hex", "b64"};
+        
         public PluginMeta Meta { get; set; } = new PluginMeta("Encode/Decode Plugin", PluginPriority.NextHighest);
-        public void Load()
-        {
-        }
-
+        
+        public bool TryLoad() => true;
+        
         public void Unload()
         {
         }

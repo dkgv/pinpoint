@@ -18,7 +18,7 @@ namespace Pinpoint.Plugin.AppSearch
 
         public PluginMeta Meta { get; set; } = new PluginMeta("App Search", PluginPriority.NextHighest);
 
-        public void Load()
+        public bool TryLoad()
         {
             AppSearchFrequency.Load();
 
@@ -38,6 +38,8 @@ namespace Pinpoint.Plugin.AppSearch
                     }
                 }
             }
+            
+            return true;
         }
 
         private List<string> LoadFileList()

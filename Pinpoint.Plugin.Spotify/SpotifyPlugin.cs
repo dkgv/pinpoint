@@ -21,14 +21,15 @@ namespace PinPoint.Plugin.Spotify
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Spotify Controller");
 
-        public void Load()
+        public bool TryLoad()
         {
             var settings = AppSettings.GetAsOrDefault<SpotifyPluginSettings>("spotify", null);
-            if(settings?.RefreshToken == null)
+            if (settings?.RefreshToken == null)
             {
                 var tokens = _authManager.Authenticate();
                 _spotifyClient.InitializeClientWithTokens(tokens);
             }
+            return true;
         }
 
         public void Unload()

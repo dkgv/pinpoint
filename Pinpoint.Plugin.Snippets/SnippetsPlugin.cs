@@ -23,7 +23,7 @@ namespace Pinpoint.Plugin.Snippets
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Snippets", PluginPriority.Highest);
 
-        public void Load()
+        public bool TryLoad()
         {
             void LoadSnippets<T>(string key) where T : AbstractSnippet
             {
@@ -40,6 +40,8 @@ namespace Pinpoint.Plugin.Snippets
             LoadSnippets<FileSnippet>(FileSnippetsKey);
             LoadSnippets<TextSnippet>(TextSnippetsKey);
             LoadSnippets<OcrTextSnippet>(OcrSnippetsKey);
+
+            return true;
         }
 
         public bool AddSnippet(object sender, AbstractSnippet snippet)

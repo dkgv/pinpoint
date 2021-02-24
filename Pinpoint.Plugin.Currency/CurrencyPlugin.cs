@@ -20,7 +20,7 @@ namespace Pinpoint.Plugin.Currency
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Currency Converter", PluginPriority.Highest);
 
-        public void Load()
+        public bool TryLoad()
         {
             try
             {
@@ -33,6 +33,7 @@ namespace Pinpoint.Plugin.Currency
                 _baseCurrency = "USD";
             }
             _currencyRepo = new CurrencyRepository(_baseCurrency);
+            return true;
         }
 
         public void Unload()

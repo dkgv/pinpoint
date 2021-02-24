@@ -18,23 +18,30 @@ namespace Pinpoint.Core
         {
             var prevSettings = AppSettings.GetListAs<PluginMeta>("plugins");
 
-            if (!Plugins.Contains(plugin))
+            // Disallow duplicate plugins
+            if (Plugins.Contains(plugin))
             {
-                plugin.Load();
-
-                var pluginName = plugin.Meta.Name;
-                if (prevSettings.Any(m => m.Name.Equals(pluginName)))
-                {
-                    plugin.Meta = prevSettings.First(m => m.Name.Equals(pluginName));
-                }
-
-                Plugins.Add(plugin);
-
-                // Ensure order of plugin execution is correct
-                Plugins.Sort();
-
-                Listeners.ForEach(listener => listener.PluginChange_Added(this, plugin, null));
+                return;
             }
+            
+            // Don't add plugin if it fails to load
+            if (!plugin.TryLoad())
+            {
+                return;
+            }
+
+            var pluginName = plugin.Meta.Name;
+            if (prevSettings.Any(m => m.Name.Equals(pluginName)))
+            {
+                plugin.Meta = prevSettings.First(m => m.Name.Equals(pluginName));
+            }
+
+            Plugins.Add(plugin);
+
+            // Ensure order of plugin execution is correct
+            Plugins.Sort();
+
+            Listeners.ForEach(listener => listener.PluginChange_Added(this, plugin, null));
         }
 
         public void RemovePlugin(IPlugin plugin)

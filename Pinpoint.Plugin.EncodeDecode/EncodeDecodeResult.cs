@@ -7,7 +7,6 @@ namespace Pinpoint.Plugin.EncodeDecode
     {
         public EncodeDecodeResult(string result): base(result)
         {
-            
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_Hashtag;
