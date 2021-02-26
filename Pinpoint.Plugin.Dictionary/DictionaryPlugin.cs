@@ -33,13 +33,18 @@ namespace Pinpoint.Plugin.Dictionary
             var url = $"https://api.dictionaryapi.dev/api/v2/entries/en_US/{query.Parts[0]}";
 
             var httpResponse = await SendGet(url);
-            var matches = JArray.Parse(httpResponse);
-
-            if (matches.Count == 0)
+            if (string.IsNullOrEmpty(httpResponse))
             {
                 yield break;
             }
-            Console.WriteLine(matches.ToString());
+
+            var matches = JArray.Parse(httpResponse);
+
+            if (matches == null || matches.Count == 0)
+            {
+                yield break;
+            }
+
             var meanings = matches[0]["meanings"].ToArray();
             foreach (var meaning in meanings)
             {

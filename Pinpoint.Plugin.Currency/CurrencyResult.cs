@@ -1,13 +1,12 @@
 ﻿using System.Globalization;
 using FontAwesome5;
-using Pinpoint.Core;
 using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Currency
 {
-    public class CurrencyResult : AbstractFontAwesomeQueryResult
+    public class CurrencyResult : CopyabableQueryOption
     {
-        public CurrencyResult(double value, string to) : base("= " + value.ToString(CultureInfo.InvariantCulture) + " " + to.ToUpper())
+        public CurrencyResult(double value, string to) : base("= " + value.ToString(CultureInfo.InvariantCulture) + " " + to.ToUpper(), value.ToString())
         {
         }
 

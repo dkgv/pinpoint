@@ -45,6 +45,11 @@ namespace Pinpoint.Plugin.Currency
         {
             var raw = query.RawQuery;
 
+            if (raw.Length < 2)
+            {
+                return false;
+            }
+
             bool IsNumber(char ch)
             {
                 return char.IsDigit(ch) || ch == '.';
@@ -52,7 +57,7 @@ namespace Pinpoint.Plugin.Currency
 
             // Matches inputs like $100, €5
             var hasSymbol = raw.Length > 1 && Symbols.Contains(query.Prefix());
-            if (hasSymbol && raw[..1].All(IsNumber))
+            if (hasSymbol && raw.Substring(1).All(IsNumber))
             {
                 return true;
             }

@@ -18,7 +18,7 @@ namespace Pinpoint.Plugin.ControlPanel
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Control Panel Search", PluginPriority.Standard);
 
-        public void Load()
+        public bool TryLoad()
         {
             // Load actual control panel items
             _controlPanelItems = LoadControlPanelItems();
@@ -37,6 +37,8 @@ namespace Pinpoint.Plugin.ControlPanel
                     item.RegistryKey = subKeyName;
                 }
             }
+
+            return true;
         }
 
         public void Unload()
