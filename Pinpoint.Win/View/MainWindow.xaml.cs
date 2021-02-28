@@ -24,6 +24,7 @@ using Pinpoint.Plugin.EncodeDecode;
 using Pinpoint.Plugin.Finance;
 using Pinpoint.Plugin.HackerNews;
 using Pinpoint.Plugin.MetricConverter;
+using Pinpoint.Plugin.Reddit;
 using Pinpoint.Win.Models;
 using PinPoint.Plugin.Spotify;
 
@@ -79,6 +80,7 @@ namespace Pinpoint.Win.View
             _pluginEngine.AddPlugin(new FinancePlugin());
             _pluginEngine.AddPlugin(new HackerNewsPlugin());
             _pluginEngine.AddPlugin(new BookmarksPlugin());
+            _pluginEngine.AddPlugin(new RedditPlugin());
         }
 
         internal MainWindowModel Model
