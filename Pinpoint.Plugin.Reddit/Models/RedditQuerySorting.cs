@@ -1,4 +1,4 @@
-﻿namespace Pinpoint.Plugin.Reddit
+﻿namespace Pinpoint.Plugin.Reddit.Models
 {
     public enum RedditQuerySorting
     {
@@ -6,6 +6,7 @@
         New,
         Rising,
         Controversial,
-        Top
+        Top,
+        InvalidValue
     }
 }

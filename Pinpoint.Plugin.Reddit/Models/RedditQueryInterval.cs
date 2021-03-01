@@ -1,4 +1,4 @@
-﻿namespace Pinpoint.Plugin.Reddit
+﻿namespace Pinpoint.Plugin.Reddit.Models
 {
     public enum RedditQueryInterval
     {
@@ -7,6 +7,7 @@
         Week,
         Month,
         Year,
-        All
+        All,
+        InvalidValue
     }
 }

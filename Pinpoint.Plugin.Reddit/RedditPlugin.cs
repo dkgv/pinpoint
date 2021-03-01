@@ -7,12 +7,16 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
+using Pinpoint.Plugin.Reddit.Models;
 
 namespace Pinpoint.Plugin.Reddit
 {
     public class RedditPlugin: IPlugin
     {
-        private readonly Regex _subredditRegex = new Regex(@"^r\/[0-9a-zA-z]+$");
+        private readonly Dictionary<string, CacheValue> _resultCache =
+            new Dictionary<string, CacheValue>();
+        private readonly Regex _subRedditRegex = new Regex(@"^r\/[0-9a-zA-z]+$");
+        private const int CacheExpirationTimeInMinutes = 5;
 
         private readonly HttpClient _httpClient = new HttpClient
         {
@@ -33,7 +37,7 @@ namespace Pinpoint.Plugin.Reddit
 
             if (queryParts.Length == 0) return false;
 
-            return _subredditRegex.IsMatch(queryParts[0]);
+            return _subRedditRegex.IsMatch(queryParts[0]);
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
@@ -41,11 +45,42 @@ namespace Pinpoint.Plugin.Reddit
             var queryParts = query.RawQuery.Split(' ');
 
             var subReddit = queryParts[0];
-            var sorting = queryParts.Length > 1 ? queryParts[1] : null;
-            var interval = queryParts.Length > 2 ? queryParts[2] : null;
 
-            var redditQuery = RedditQuery.FromStringValues(subReddit, sorting, interval);
-            var result = await GetRedditPosts(redditQuery);
+            var validParts = 1;
+            string sorting = null;
+            string interval = null;
+            string limit = null;
+
+            foreach (var part in queryParts.Skip(1))
+            {
+                if (!int.TryParse(part, out _) && Enum.TryParse(part, ignoreCase: true, out RedditQuerySorting _))
+                {
+                    sorting = part;
+                    validParts++;
+                }
+
+                if (!int.TryParse(part, out _) && Enum.TryParse(part, ignoreCase: true, out RedditQueryInterval _))
+                {
+                    interval = part;
+                    validParts++;
+                }
+
+                if (int.TryParse(part, out var val) && val <= 100)
+                {
+                    limit = part;
+                    validParts++;
+                }
+            }
+
+            var redditQuery = RedditQuery.FromStringValues(subReddit, sorting, interval, limit);
+
+            //Matches the scenario where a user is typing one of the parameters, so we don't send requests unnecessarily with invalid parameters.
+            if (validParts < queryParts.Length)
+            {
+                yield break;
+            }
+
+            var result = await GetSubRedditPosts(redditQuery);
 
             foreach (var redditPostResult in result)
             {
@@ -53,9 +88,19 @@ namespace Pinpoint.Plugin.Reddit
             }
         }
 
-        private async Task<IEnumerable<RedditPostResultData>> GetRedditPosts(RedditQuery query)
+        private async Task<IEnumerable<RedditPostResultData>> GetSubRedditPosts(RedditQuery query)
         {
-            var url = $"/{query.SubReddit}/.json?sort={query.Sorting}&t={query.Interval}";
+            var url = $"/{query.SubReddit}/{query.Sorting}.json?t={query.Interval}&limit={query.Limit}";
+
+            if (_resultCache.TryGetValue(url, out var value))
+            {
+                if (value.InsertedAt.AddMinutes(CacheExpirationTimeInMinutes) > DateTime.UtcNow)
+                {
+                    return value.Data;
+                }
+
+                _resultCache.Remove(url);
+            }
 
             var response = await _httpClient.GetAsync(url);
 
@@ -63,62 +108,18 @@ namespace Pinpoint.Plugin.Reddit
 
             var apiResult = JsonConvert.DeserializeObject<RedditApiResult>(responseJson);
 
-            return apiResult.Data.Children.Select(r => r.Data);
-        }
-    }
+            var result = apiResult.Data.Children.Select(r => r.Data).ToList();
 
-    public class RedditApiResult
-    {
-        public RedditApiResultData Data { get; set; } = new RedditApiResultData();
-    }
+            if (!_resultCache.ContainsKey(url))
+            {
+                _resultCache.Add(url, new CacheValue
+                {
+                    InsertedAt = DateTime.UtcNow,
+                    Data = result
+                });
+            }
 
-    public class RedditApiResultData
-    {
-        public List<RedditPostResult> Children { get; set; } = new List<RedditPostResult>();
-    }
-
-    public class RedditPostResult
-    {
-        public RedditPostResultData Data { get; set; }
-    }
-
-    public class RedditPostResultData
-    {
-        public string Title { get; set; }
-        public string PermaLink { get; set; }
-        [JsonProperty("ups")]
-        public int Upvotes { get; set; }
-    }
-
-    public class RedditQuery
-    {
-        private readonly RedditQuerySorting _querySorting;
-        private readonly RedditQueryInterval _queryInterval;
-
-        private RedditQuery(string subReddit, RedditQuerySorting querySorting, RedditQueryInterval queryInterval)
-        {
-            SubReddit = subReddit;
-            _querySorting = querySorting;
-            _queryInterval = queryInterval;
-        }
-
-        public string SubReddit { get; }
-
-        public string Sorting => _querySorting.ToString().ToLower();
-
-        public string Interval => _queryInterval.ToString().ToLower();
-
-        public static RedditQuery FromStringValues(string subReddit, string sorting, string interval)
-        {
-            if (subReddit == null) throw new ArgumentException(nameof(subReddit));
-
-            var querySorting = RedditQuerySorting.Hot;
-            var queryInterval = RedditQueryInterval.Day;
-
-            if(sorting != null) Enum.TryParse(sorting, ignoreCase: true, out querySorting);
-            if(interval != null) Enum.TryParse(interval, ignoreCase: true, out queryInterval);
-
-            return new RedditQuery(subReddit, querySorting, queryInterval);
+            return result;
         }
     }
 }
