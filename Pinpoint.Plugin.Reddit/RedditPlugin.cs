@@ -35,9 +35,7 @@ namespace Pinpoint.Plugin.Reddit
         {
             var queryParts = query.RawQuery.Split(' ');
 
-            if (queryParts.Length == 0) return false;
-
-            return _subRedditRegex.IsMatch(queryParts[0]);
+            return queryParts.Length != 0 && _subRedditRegex.IsMatch(queryParts[0]);
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
