@@ -37,6 +37,7 @@
     <ProjectReference Include="..\Pinpoint.Plugin.Finance\Pinpoint.Plugin.Finance.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.HackerNews\Pinpoint.Plugin.HackerNews.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.MetricConverter\Pinpoint.Plugin.MetricConverter.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.Reddit\Pinpoint.Plugin.Reddit.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Snippets\Pinpoint.Plugin.Snippets.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Calculator\Pinpoint.Plugin.Calculator.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Snippets\Pinpoint.Plugin.Snippets.csproj" />
