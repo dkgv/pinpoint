@@ -70,6 +70,8 @@ namespace Pinpoint.Plugin.Reddit
                 }
             }
 
+            yield return new SubRedditResult(subReddit);
+
             var redditQuery = RedditQuery.FromStringValues(subReddit, sorting, interval, limit);
 
             //Matches the scenario where a user is typing one of the parameters, so we don't send requests unnecessarily with invalid parameters.
