@@ -24,11 +24,11 @@ namespace PinPoint.Plugin.Spotify
         public bool TryLoad()
         {
             var settings = AppSettings.GetAsOrDefault<SpotifyPluginSettings>("spotify", null);
-            if (settings?.RefreshToken == null)
-            {
-                var tokens = _authManager.Authenticate();
-                _spotifyClient.InitializeClientWithTokens(tokens);
-            }
+
+            if (settings?.RefreshToken != null) return true;
+
+            var tokens = _authManager.Authenticate();
+            _spotifyClient.InitializeClientWithTokens(tokens);
             return true;
         }
 
@@ -50,7 +50,6 @@ namespace PinPoint.Plugin.Spotify
             var queryParts = query.RawQuery.Split(new[] { ' ' }, 2);
             var queryType = MapToSpotifySearchType(queryParts[0]);
             var searchQuery = queryParts[1];
-
 
             var searchResults = await _spotifyClient.Search(searchQuery, queryType);
 
