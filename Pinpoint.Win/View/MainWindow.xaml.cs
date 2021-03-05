@@ -478,6 +478,8 @@ namespace Pinpoint.Win.View
                 selection.OnSelect();
             }
 
+            _showingOptionsForIndex = -1;
+
             Hide();
         }
 

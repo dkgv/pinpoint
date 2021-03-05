@@ -46,18 +46,25 @@ namespace Pinpoint.Plugin.Spotify.Client
             }
 
             var bodyJson = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<SearchResult>(bodyJson);
 
-            return type switch
+            try
             {
-                "track" => result.Tracks.Items.Cast<SpotifyResultEntity>().ToList(),
-                "album" => result.Albums.Items,
-                "artist" => result.Artists.Items,
-                "playlist" => result.Playlists.Items,
-                "show" => result.Shows.Items,
-                "episode" => result.Episodes.Items,
-                _ => new List<SpotifyResultEntity>()
-            };
+                var result = JsonConvert.DeserializeObject<SearchResult>(bodyJson);
+                return type switch
+                {
+                    "track" => result.Tracks.Items.Cast<SpotifyResultEntity>().ToList(),
+                    "album" => result.Albums.Items,
+                    "artist" => result.Artists.Items,
+                    "playlist" => result.Playlists.Items,
+                    "show" => result.Shows.Items,
+                    "episode" => result.Episodes.Items,
+                    _ => new List<SpotifyResultEntity>()
+                };
+            }
+            catch (Exception)
+            {
+                return new List<SpotifyResultEntity>();
+            }
         }
 
         public async Task PlayItem(string uri)
@@ -148,8 +155,6 @@ namespace Pinpoint.Plugin.Spotify.Client
             var response = await _spotifyHttpClient.SendAsync(request);
             if(!response.IsSuccessStatusCode)
             {
-                settings.RefreshToken = null;
-                AppSettings.PutAndSave("spotify", settings);
                 return;
             }
 
@@ -157,8 +162,11 @@ namespace Pinpoint.Plugin.Spotify.Client
 
             var renewedTokens = JsonConvert.DeserializeObject<TokenResult>(responseContent);
 
-            _accessToken = renewedTokens.access_token;
-            settings.RefreshToken = renewedTokens.refresh_token;
+            if (renewedTokens?.access_token != null && renewedTokens?.refresh_token != null)
+            {
+                _accessToken = renewedTokens.access_token;
+                settings.RefreshToken = renewedTokens.refresh_token;
+            }
 
             AppSettings.PutAndSave("spotify", settings);
         }
