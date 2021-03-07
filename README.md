@@ -30,8 +30,9 @@ Pinpoint is an extensible keystroke launcher written in C# (.NET Core).
 | Finance                  | Look up real-time ticker prices through Yahoo Finance        | ![](https://i.imgur.com/dXSv6aQ.png) |
 | Hacker News              | Browse (and open) recent popular submissions from [Hacker News](https://news.ycombinator.com/) at a glance | ![](https://i.imgur.com/neQd1nv.png) |
 | Metric Converter         | Convert between imperial and metric units                    | ![](https://i.imgur.com/OqOwZNY.png) |
+| reddit                   | Quick browse reddit posts (same sorting options as website)  | ![](https://i.imgur.com/sViePHZ.png) |
 | Snippets                 | Create (text + OCR), manage, and search code snippets        | ![](https://i.imgur.com/z6Uo1KX.png) |
-| Spotify                  | Control Spotify without leaving whatever you're doing. Play, pause, skip, queue. | ![](https://i.imgur.com/Ol8dBI4.png) |
+| Spotify                  | Control Spotify without leaving whatever you're doing. Play, pause, skip, queue | ![](https://i.imgur.com/Ol8dBI4.png) |
 
 ## Keyboard Shortcuts
 
@@ -44,5 +45,5 @@ Pinpoint is an extensible keystroke launcher written in C# (.NET Core).
 | <kbd>CTRL</kbd>+<kbd>,</kbd>                                 | Open settings panel              |
 | <kbd>CTRL</kbd>+<kbd>L</kbd>                                 | Focus query box and its contents |
 | <kbd>CTRL</kbd>+[<kbd>1</kbd>,<kbd>2</kbd>,<kbd>3</kbd>,<kbd>4</kbd>,<kbd>5</kbd>,<kbd>6</kbd>,<kbd>7</kbd>,<kbd>8</kbd>,<kbd>9</kbd>] | Quick open result `n`            |
-| <kbd>ALT</kbd>                                               | View selected result options     |
+| <kbd>ALT</kbd>/<kbd>ESC</kbd>                                | View result options / go back    |
 
