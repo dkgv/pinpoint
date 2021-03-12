@@ -41,6 +41,7 @@ namespace PinPoint.Plugin.Spotify
             var ctx = server.RetrieveContext();
             var authCode = ctx.Request.QueryString["code"];
 
+            server.Stop();
             return ExchangeAuthCodeForToken(authCode);
         }
 
