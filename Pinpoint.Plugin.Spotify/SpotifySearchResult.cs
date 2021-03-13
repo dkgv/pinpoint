@@ -13,7 +13,7 @@ namespace PinPoint.Plugin.Spotify
             Options.Add(new QueueOption("Queue", uri));
         }
 
-        public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_Music;
+        public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Brands_Spotify;
 
         public string Uri { get; }
         public override void OnSelect()
@@ -29,7 +29,7 @@ namespace PinPoint.Plugin.Spotify
             
         }
 
-        public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_Play;
+        public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Brands_Spotify;
 
         public override void OnSelect()
         {

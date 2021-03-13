@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FontAwesome5;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
 using Pinpoint.Plugin.Spotify.Client;
@@ -11,7 +10,7 @@ namespace PinPoint.Plugin.Spotify
 {
     public class SpotifyPlugin : IPlugin
     {
-        private readonly string[] _prefixes = {"album", "artist", "episode", "play", "playlist", "show"};
+        private readonly HashSet<string> _keywords = new HashSet<string> {"album", "artist", "episode", "play", "playlist", "show", "skip", "next", "prev", "back"};
         private readonly AuthenticationManager _authManager = new AuthenticationManager();
         private readonly SpotifyClient _spotifyClient = SpotifyClient.GetInstance();
         private readonly List<AbstractQueryResult> _defaultResults = new List<AbstractQueryResult>
@@ -40,20 +39,37 @@ namespace PinPoint.Plugin.Spotify
         public Task<bool> Activate(Query query)
         {
             var queryParts = query.RawQuery.Split(new[] {' '}, 2);
-            var shouldActivate = queryParts.Length > 1 && _prefixes.Any(prefix => queryParts[0] == prefix) &&
-                                 queryParts[1].Length > 3;
+            if (queryParts.Length == 0) return Task.FromResult(false);
+
+            var matchesAnyKeyword = _keywords.Contains(queryParts[0]);
+
+            var isSkipOrPreviousTrackQuery = queryParts[0] == "skip" || queryParts[0] == "next" ||
+                                             queryParts[0] == "prev" || queryParts[0] == "back";
+            var isSearchQuery = queryParts.Length > 1 &&
+                                queryParts[1].Length > 3;
+
+            var shouldActivate = matchesAnyKeyword && (isSkipOrPreviousTrackQuery || isSearchQuery);
+
             return Task.FromResult(shouldActivate);
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
             var queryParts = query.RawQuery.Split(new[] { ' ' }, 2);
+
+            if (queryParts[0] == "skip" || queryParts[0] == "next" ||
+                queryParts[0] == "prev" || queryParts[0] == "back") 
+            {
+                yield return new ChangeTrackResult(queryParts[0]);
+                yield break;
+            }
+
+            yield return new PlayPauseResult();
+
             var queryType = MapToSpotifySearchType(queryParts[0]);
             var searchQuery = queryParts[1];
 
             var searchResults = await _spotifyClient.Search(searchQuery, queryType);
-
-            yield return new PlayPauseResult();
 
             foreach (var searchResult in searchResults)
             {
@@ -65,16 +81,5 @@ namespace PinPoint.Plugin.Spotify
         {
             return type == "play" ? "track" : type;
         }
-    }
-
-    public class PlayPauseResult: AbstractFontAwesomeQueryResult
-    {
-        public PlayPauseResult(): base("Play/pause current track") { }
-        public override void OnSelect()
-        {
-            SpotifyClient.GetInstance().PlayPauseCurrentTrack();
-        }
-
-        public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_Play;
     }
 }
