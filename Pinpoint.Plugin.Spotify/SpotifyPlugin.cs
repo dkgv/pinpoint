@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FontAwesome5;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
 using Pinpoint.Plugin.Spotify.Client;
@@ -82,39 +81,5 @@ namespace PinPoint.Plugin.Spotify
         {
             return type == "play" ? "track" : type;
         }
-    }
-
-    public class PlayPauseResult: AbstractFontAwesomeQueryResult
-    {
-        public PlayPauseResult(): base("Play/pause current track") { }
-        public override void OnSelect()
-        {
-            SpotifyClient.GetInstance().PlayPauseCurrentTrack();
-        }
-
-        public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Brands_Spotify;
-    }
-
-    public class ChangeTrackResult: AbstractFontAwesomeQueryResult
-    {
-        private readonly string _keyword;
-
-        public ChangeTrackResult(string keyword): base(keyword == "skip" || keyword == "next" ? "Next track" : "Previous track")
-        {
-            _keyword = keyword;
-        }
-        public override void OnSelect()
-        {
-            if (_keyword == "skip" || _keyword == "next")
-            {
-                SpotifyClient.GetInstance().NextTrack();
-            }
-            else
-            {
-                SpotifyClient.GetInstance().PreviousTrack();
-            }
-        }
-
-        public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Brands_Spotify;
     }
 }
