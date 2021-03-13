@@ -16,7 +16,7 @@ namespace Pinpoint.Plugin.AppSearch
         // Hacky
         public static string LastQuery;
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("App Search", PluginPriority.NextHighest);
+        public PluginMeta Meta { get; set; } = new PluginMeta("App Search", PluginPriority.Highest);
 
         public bool TryLoad()
         {
@@ -28,14 +28,23 @@ namespace Pinpoint.Plugin.AppSearch
 
                 _trie.Add(name, file);
 
-                // Support search for "Mozilla Firefox" through both "Mozilla" and "Firefox"
-                if (file.Contains(" "))
+                if (!file.Contains(" "))
                 {
-                    var variations = name.Split(" ");
-                    foreach (var variation in variations)
-                    {
-                        _trie.Add(variation, file);
-                    }
+                    continue;
+                }
+
+                // Support search for "Mozilla Firefox" through both "Mozilla" and "Firefox"
+                var variations = name.Split(" ");
+                foreach (var variation in variations)
+                {
+                    _trie.Add(variation, file);
+                }
+
+                // Support "Visual Studio Code" -> "VSC"
+                if (variations.Length > 1)
+                {
+                    var fuzz = string.Join(',', variations.Select(part => part[0]).ToArray()).Replace(",", "");
+                    _trie.Add(fuzz, file);
                 }
             }
             

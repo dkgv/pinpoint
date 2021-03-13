@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using NHotkey;
 using NHotkey.Wpf;
@@ -27,6 +28,8 @@ using Pinpoint.Plugin.MetricConverter;
 using Pinpoint.Plugin.Reddit;
 using Pinpoint.Win.Models;
 using PinPoint.Plugin.Spotify;
+using Application = System.Windows.Application;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace Pinpoint.Win.View
 {
@@ -38,10 +41,12 @@ namespace Pinpoint.Win.View
         private CancellationTokenSource _cts;
         private readonly List<AbstractQueryResult> _searchResults = new List<AbstractQueryResult>();
         private int _showingOptionsForIndex = -1;
+        private double _offsetFromDefaultX = 0, _offsetFromDefaultY = 0;
+        private Point _defaultWindowPosition;
         private readonly SettingsWindow _settingsWindow;
         private readonly PluginEngine _pluginEngine;
         private readonly QueryHistory _queryHistory;
-
+        
         public MainWindow()
         {
             InitializeComponent();
@@ -102,6 +107,10 @@ namespace Pinpoint.Win.View
             }
             else
             {
+                var screen = Screen.FromPoint(System.Windows.Forms.Cursor.Position);
+                Left = (screen.Bounds.Left + screen.Bounds.Width / 2 - Width / 2) + _offsetFromDefaultX;
+                Top = (screen.Bounds.Top + screen.Bounds.Height / 5) + _offsetFromDefaultY;
+
                 Show();
                 Activate();
                 TxtQuery.Focus();
@@ -117,15 +126,19 @@ namespace Pinpoint.Win.View
             TxtQuery.Clear();
             TxtQuery.Focus();
 
+            _defaultWindowPosition = ComputeDefaultWindowPosition();
             MoveWindowToDefaultPosition();
         }
 
         public void MoveWindowToDefaultPosition()
         {
             // Locate window horizontal center near top of screen
-            Left = SystemParameters.PrimaryScreenWidth / 2 - Width / 2;
-            Top = SystemParameters.PrimaryScreenHeight / 5;
+            Left = _defaultWindowPosition.X;
+            Top = _defaultWindowPosition.Y;
+            _offsetFromDefaultX = _offsetFromDefaultY = 0;
         }
+
+        private Point ComputeDefaultWindowPosition() => new Point(SystemParameters.PrimaryScreenWidth / 2 - Width / 2, SystemParameters.PrimaryScreenHeight / 5);
 
         protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
@@ -520,6 +533,9 @@ namespace Pinpoint.Win.View
             if (e.ChangedButton == MouseButton.Left)
             {
                 DragMove();
+
+                _offsetFromDefaultX = Left - _defaultWindowPosition.X;
+                _offsetFromDefaultY = Top - _defaultWindowPosition.Y;
             }
         }
     }

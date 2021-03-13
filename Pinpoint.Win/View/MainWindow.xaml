@@ -157,6 +157,7 @@
                                     <Border Margin="0 0 10 0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" MinWidth="30">
                                         <Image x:Name="ResultIcon" 
                                                HorizontalAlignment="Center"
+                                               RenderOptions.BitmapScalingMode="HighQuality"
                                                VerticalAlignment="Center" 
                                                Height="24" 
                                                Source="{Binding Icon, Converter={StaticResource BitmapToImageSourceConverter}}" />
