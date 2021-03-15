@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
@@ -10,42 +11,54 @@ namespace Pinpoint.Core
     {
         private static readonly Dictionary<string, object> Settings = new Dictionary<string, object>();
 
-        public static Dictionary<string, dynamic> GetObject(string key)
+        public static T Get<T>(string key) where T : class
         {
-            return JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(Get(key).ToString());
+            TryGet(key, out T settings);
+
+            return settings;
         }
 
-        public static T GetAs<T>(string key) => JsonConvert.DeserializeObject<T>(Get(key).ToString());
-
-        public static List<T> GetListAs<T>(string key)
+        public static T GetOrDefault<T>(string key, T defaultValue) where T : class
         {
-            if (!Contains(key))
-            {
-                return new List<T>();
-            }
+            TryGet(key, out T settings);
+
+            return settings ?? defaultValue;
+        }
+
+        public static bool TryGet<T>(string key, out T settings) where T: class
+        {
+            settings = null;
+
+            if (!Settings.TryGetValue(key, out var value ) || value?.ToString() == null) return false;
 
             try
             {
-                var json = GetAs<JArray>(key);
-                return json.AsEnumerable()
-                    .Select(elem => JsonConvert.DeserializeObject<T>(elem.ToString()))
-                    .ToList();
+                settings = JsonConvert.DeserializeObject<T>(value.ToString());
+                return true;
             }
-            catch (JsonSerializationException)
+            catch (Exception)
             {
-                return new List<T>();
+                return false;
             }
         }
 
-        public static T GetAsOrDefault<T>(string key, T fallback) =>  !Contains(key) ? fallback : GetAs<T>(key);
-        
-        public static object Get(string key) => Settings[key];
+        public static bool TryGetOrDefault<T>(string key, T defaultValue, out T settings) where T : class
+        {
+            TryGet(key, out settings);
+
+            if (settings != null) return true;
+
+            settings = defaultValue;
+            return false;
+        }
 
         public static void Put(string key, object value, bool overwrite = true)
         {
+            var asJObject = JObject.FromObject(value);
+
             if (!Contains(key) || overwrite)
             {
-                Settings[key] = value;
+                Settings[key] = asJObject;
             }
         }
 
@@ -89,10 +102,18 @@ namespace Pinpoint.Core
             var container = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
             foreach (var setting in container)
             {
-                Put(setting.Key, setting.Value);
+                PutInitial(setting.Key, setting.Value);
             }
 
             return true;
+        }
+
+        private static void PutInitial(string key, object value, bool overwrite = true)
+        {
+            if (!Contains(key) || overwrite)
+            {
+                Settings[key] = value;
+            }
         }
     }
 }
