@@ -22,7 +22,7 @@ namespace PinPoint.Plugin.Spotify
 
         public bool TryLoad()
         {
-            var settings = AppSettings.GetAsOrDefault<SpotifyPluginSettings>("spotify", null);
+            var settings = AppSettings.GetOrDefault<SpotifyPluginSettings>("spotify", null);
 
             if (settings?.RefreshToken != null) return true;
 

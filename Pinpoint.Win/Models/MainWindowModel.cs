@@ -5,7 +5,7 @@ namespace Pinpoint.Win.Models
 {
     internal class MainWindowModel : BaseControlModel
     {
-        private ThemeModel _theme = AppSettings.GetAsOrDefault("theme", ThemeModel.DarkTheme);
+        private ThemeModel _theme = AppSettings.GetOrDefault("theme", ThemeModel.DarkTheme);
 
         public ObservableUniqueCollection<AbstractQueryResult> Results { get; } = new ObservableUniqueCollection<AbstractQueryResult>();
 

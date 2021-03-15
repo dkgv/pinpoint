@@ -29,7 +29,7 @@ namespace Pinpoint.Plugin.Snippets
             {
                 if (AppSettings.Contains(key))
                 {
-                    var sources = AppSettings.GetListAs<T>(key);
+                    var sources = AppSettings.GetOrDefault(key, new List<T>());
                     foreach (var snippet in sources)
                     {
                         AddSnippet(this, snippet);

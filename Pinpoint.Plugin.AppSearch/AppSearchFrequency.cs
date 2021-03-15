@@ -9,7 +9,7 @@ namespace Pinpoint.Plugin.AppSearch
 
         public static void Load()
         {
-            _database = AppSettings.GetAsOrDefault("app_search", new Dictionary<string, Dictionary<string, int>>());
+            _database = AppSettings.GetOrDefault("app_search", new Dictionary<string, Dictionary<string, int>>());
         }
 
         public static void Track(string query, string exactMatch)

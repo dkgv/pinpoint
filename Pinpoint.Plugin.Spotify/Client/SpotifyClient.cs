@@ -126,7 +126,7 @@ namespace Pinpoint.Plugin.Spotify.Client
 
         private async Task ExchangeRefreshToken()
         {
-            var settings = AppSettings.GetAs<SpotifyPluginSettings>("spotify");
+            var settings = AppSettings.GetOrDefault("spotify", new SpotifyPluginSettings());
 
             var content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
@@ -152,7 +152,7 @@ namespace Pinpoint.Plugin.Spotify.Client
                 settings.RefreshToken = renewedTokens.refresh_token;
             }
 
-            AppSettings.PutAndSave("spotify", JObject.FromObject(settings));
+            AppSettings.PutAndSave("spotify", settings);
         }
 
         public void Dispose()
