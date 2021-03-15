@@ -15,7 +15,7 @@ namespace Pinpoint.Core
 
         public void AddPlugin(IPlugin plugin)
         {
-            var prevSettings = AppSettings.GetListAs<PluginMeta>("plugins");
+            var prevSettings = AppSettings.GetOrDefault("plugins", new List<PluginMeta>());
 
             // Disallow duplicate plugins
             if (Plugins.Contains(plugin))

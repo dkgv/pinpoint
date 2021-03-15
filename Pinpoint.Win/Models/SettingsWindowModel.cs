@@ -7,7 +7,7 @@ namespace Pinpoint.Win.Models
     internal class SettingsWindowModel : BaseControlModel
     {
         private HotkeyModel _hotkey = AppSettings.Contains("hotkey")
-            ? new HotkeyModel(AppSettings.GetObject("hotkey")["Text"])
+            ? new HotkeyModel(AppSettings.Get<HotkeyModel>("hotkey").Text)
             : new HotkeyModel("Alt + Space");
 
         public ObservableCollection<ThemeModel> Themes { get; } = new ObservableCollection<ThemeModel>(new []
