@@ -11,9 +11,5 @@ namespace Pinpoint.Plugin.Currency
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_Coins;
-
-        public override void OnSelect()
-        {
-        }
     }
 }
