@@ -36,7 +36,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.HackerNews"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Bookmarks", "Pinpoint.Plugin.Bookmarks\Pinpoint.Plugin.Bookmarks.csproj", "{27028161-0136-41CD-B374-64046F97FCAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.Reddit", "Pinpoint.Plugin.Reddit\Pinpoint.Plugin.Reddit.csproj", "{B8071A3A-7810-4666-8F18-6CF23A70278F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Reddit", "Pinpoint.Plugin.Reddit\Pinpoint.Plugin.Reddit.csproj", "{B8071A3A-7810-4666-8F18-6CF23A70278F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.Notes", "Pinpoint.Plugin.Notes\Pinpoint.Plugin.Notes.csproj", "{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -264,6 +266,18 @@ Global
 		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Release|x64.Build.0 = Release|Any CPU
 		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Release|x86.ActiveCfg = Release|Any CPU
 		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Release|x86.Build.0 = Release|Any CPU
+		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Debug|x64.Build.0 = Debug|Any CPU
+		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Debug|x86.Build.0 = Debug|Any CPU
+		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Release|x64.ActiveCfg = Release|Any CPU
+		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Release|x64.Build.0 = Release|Any CPU
+		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Release|x86.ActiveCfg = Release|Any CPU
+		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
