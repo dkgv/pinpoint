@@ -10,6 +10,8 @@ namespace Pinpoint.Plugin.Notes
     public class NotesPlugin : IPlugin
     {
         private static readonly string[] Actions = {
+            "nls",
+            "notes",
             "notes-add",
             "n+"
         };
@@ -47,11 +49,15 @@ namespace Pinpoint.Plugin.Notes
                     var noteContent = string.Join(' ', query.Parts[1..]);
                     yield return new AddNoteResult(noteContent);
                     break;
-            }
+                
+                case "nls":
+                case "notes":
+                    foreach (var note in notes.OrderByDescending(n => n.CreatedAt))
+                    {
+                        yield return new NoteResult(note);
+                    }
 
-            foreach (var note in notes.OrderByDescending(n => n.CreatedAt))
-            {
-                yield return new NoteResult(note);
+                    break;
             }
         }
     }
