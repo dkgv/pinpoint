@@ -60,12 +60,6 @@ namespace Pinpoint.Core
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            IEnumerable<IPlugin> enabledPlugins;
-            lock (Plugins)
-            {
-                enabledPlugins = Plugins.Where(p => p.Meta.Enabled);
-            }
-
             var numResults = 0;
 
             foreach (var plugin in Plugins.Where(p => p.Meta.Enabled))
