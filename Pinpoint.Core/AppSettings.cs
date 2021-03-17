@@ -46,7 +46,10 @@ namespace Pinpoint.Core
         {
             TryGet(key, out settings);
 
-            if (settings != null) return true;
+            if (settings != null)
+            {
+                return true;
+            }
 
             settings = defaultValue;
             return false;
@@ -54,11 +57,19 @@ namespace Pinpoint.Core
 
         public static void Put(string key, object value, bool overwrite = true)
         {
-            var asJObject = JObject.FromObject(value);
+            JToken token;
+            if (value.GetType().IsArray)
+            {
+                token = JArray.FromObject(value);
+            }
+            else
+            {
+                token = JObject.FromObject(value);
+            }
 
             if (!Contains(key) || overwrite)
             {
-                Settings[key] = asJObject;
+                Settings[key] = token;
             }
         }
 
