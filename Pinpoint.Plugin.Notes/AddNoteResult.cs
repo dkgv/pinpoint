@@ -8,7 +8,7 @@ namespace Pinpoint.Plugin.Notes
     {
         private readonly string _content;
 
-        public AddNoteResult(string content): base("Add note")
+        public AddNoteResult(string content): base("Save Note", content)
         {
             _content = content;
         }

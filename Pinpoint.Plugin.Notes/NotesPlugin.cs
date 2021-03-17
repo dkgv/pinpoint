@@ -10,9 +10,12 @@ namespace Pinpoint.Plugin.Notes
     public class NotesPlugin : IPlugin
     {
         private static readonly string[] Actions = {
+            // List notes
             "nls",
             "notes",
-            "notes-add",
+
+            // New note
+            "note",
             "n+"
         };
         private readonly NotesManager _notesManager;
@@ -40,7 +43,7 @@ namespace Pinpoint.Plugin.Notes
             switch (query.Parts[0])
             {
                 case "n+":
-                case "notes-add":
+                case "note":
                     if (query.Parts.Length == 1)
                     {
                         break;
@@ -56,7 +59,6 @@ namespace Pinpoint.Plugin.Notes
                     {
                         yield return new NoteResult(note);
                     }
-
                     break;
             }
         }
