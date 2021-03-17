@@ -12,6 +12,7 @@ namespace Pinpoint.Plugin.Notes
         {
             _content = content;
         }
+        
         public override void OnSelect()
         {
             var note = new Note

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Pinpoint.Core;
@@ -33,19 +34,18 @@ namespace Pinpoint.Plugin.Notes
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
             var notes = await _notesManager.GetNotes();
-            var prefix = query.Parts[0];
-
-            switch (prefix)
+            
+            switch (query.Parts[0])
             {
                 case "n+":
                 case "notes-add":
-                    var noteContent = query.RawQuery.Replace(prefix, "").TrimStart();
-
-                    if (!string.IsNullOrWhiteSpace(noteContent))
+                    if (query.Parts.Length == 1)
                     {
-                        yield return new AddNoteResult(noteContent);
+                        break;
                     }
-
+                    
+                    var noteContent = string.Join(' ', query.Parts[1..]);
+                    yield return new AddNoteResult(noteContent);
                     break;
             }
 
