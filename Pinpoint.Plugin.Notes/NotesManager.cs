@@ -28,25 +28,7 @@ namespace Pinpoint.Plugin.Notes
                     Directory.CreateDirectory(AppConstants.MainDirectory + "/notes");
                 }
 
-                var defaultValue = new NotesFile()
-                {
-                    Notes = new List<Note>
-                    {
-                        new Note
-                        {
-                            Content = "Det her er en note",
-                            CreatedAt = DateTime.Now,
-                            Id = Guid.NewGuid()
-                        },
-                        new Note
-                        {
-                            Content = "Det her er også en note",
-                            CreatedAt = DateTime.Now,
-                            Id = Guid.NewGuid()
-                        }
-                    }
-                };
-
+                var defaultValue = new NotesFile();
                 var defaultValueJson = JsonConvert.SerializeObject(defaultValue);
                 File.WriteAllText(_notesFilePath, defaultValueJson);
             }
