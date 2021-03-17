@@ -14,7 +14,6 @@ namespace Pinpoint.Plugin.Notes
 
         public override void OnSelect()
         {
-            
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_List;

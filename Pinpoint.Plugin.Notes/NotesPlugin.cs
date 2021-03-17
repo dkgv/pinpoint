@@ -6,7 +6,7 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Notes
 {
-    public class NotesPlugin: IPlugin
+    public class NotesPlugin : IPlugin
     {
         private readonly NotesManager _notesManager;
 
@@ -16,10 +16,8 @@ namespace Pinpoint.Plugin.Notes
         }
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Notes plugin", PluginPriority.Highest);
-        public bool TryLoad()
-        {
-            return true;
-        }
+        
+        public bool TryLoad() => true;
 
         public void Unload() { }
 

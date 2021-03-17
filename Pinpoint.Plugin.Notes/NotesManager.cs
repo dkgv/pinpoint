@@ -48,12 +48,10 @@ namespace Pinpoint.Plugin.Notes
                 };
 
                 var defaultValueJson = JsonConvert.SerializeObject(defaultValue);
-
                 File.WriteAllText(_notesFilePath, defaultValueJson);
             }
 
             var json = File.ReadAllText(_notesFilePath);
-
             var notesFile = JsonConvert.DeserializeObject<NotesFile>(json);
 
             _notesCached = notesFile.Notes;
@@ -61,15 +59,15 @@ namespace Pinpoint.Plugin.Notes
 
         public async Task<List<Note>> GetNotes()
         {
-            if (_notesCached != null && _notesCached.Count != 0) return _notesCached;
+            if (_notesCached != null && _notesCached.Count != 0)
+            {
+                return _notesCached;
+            }
 
             var json = await File.ReadAllTextAsync(_notesFilePath);
-
             var notesFile = JsonConvert.DeserializeObject<NotesFile>(json);
 
-            _notesCached = notesFile.Notes;
-
-            return _notesCached;
+            return _notesCached = notesFile.Notes;
         }
 
         public async Task AddNote(Note note)
