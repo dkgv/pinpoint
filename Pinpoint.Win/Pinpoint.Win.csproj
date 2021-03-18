@@ -28,6 +28,7 @@
     <ProjectReference Include="..\Pinpoint.Plugin.AppSearch\Pinpoint.Plugin.AppSearch.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Bangs\Pinpoint.Plugin.Bangs.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Bookmarks\Pinpoint.Plugin.Bookmarks.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.ColorConverter\Pinpoint.Plugin.ColorConverter.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.CommandLine\Pinpoint.Plugin.CommandLine.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.ControlPanel\Pinpoint.Plugin.ControlPanel.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Currency\Pinpoint.Plugin.Currency.csproj" />

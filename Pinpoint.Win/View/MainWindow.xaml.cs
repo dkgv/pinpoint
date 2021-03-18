@@ -18,6 +18,7 @@ using Pinpoint.Plugin.AppSearch;
 using Pinpoint.Plugin.Bangs;
 using Pinpoint.Plugin.Bookmarks;
 using Pinpoint.Plugin.Calculator;
+using Pinpoint.Plugin.ColorConverter;
 using Pinpoint.Plugin.CommandLine;
 using Pinpoint.Plugin.ControlPanel;
 using Pinpoint.Plugin.Dictionary;
@@ -88,6 +89,7 @@ namespace Pinpoint.Win.View
             _pluginEngine.AddPlugin(new BookmarksPlugin());
             _pluginEngine.AddPlugin(new RedditPlugin());
             _pluginEngine.AddPlugin(new NotesPlugin());
+            _pluginEngine.AddPlugin(new ColorConverterPlugin());
         }
 
         internal MainWindowModel Model
