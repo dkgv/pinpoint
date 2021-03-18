@@ -12,6 +12,8 @@ namespace Pinpoint.Plugin.HackerNews
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Hacker News Browser", PluginPriority.Highest);
 
+        public List<PluginSetting> Settings { get; set; } = new List<PluginSetting>();
+
         public bool TryLoad() => true;
 
         public void Unload()

@@ -9,6 +9,8 @@ namespace Pinpoint.Plugin.CommandLine
     {
         public PluginMeta Meta { get; set; } = new PluginMeta("Command Line", PluginPriority.Highest);
 
+        public List<PluginSetting> Settings { get; set; } = new List<PluginSetting>();
+
         public bool TryLoad() => true;
 
         public void Unload()

@@ -23,6 +23,8 @@ namespace Pinpoint.Plugin.Snippets
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Snippets", PluginPriority.Highest);
 
+        public List<PluginSetting> Settings { get; set; } = new List<PluginSetting>();
+
         public bool TryLoad()
         {
             void LoadSnippets<T>(string key) where T : AbstractSnippet

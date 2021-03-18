@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -14,7 +13,6 @@ namespace Pinpoint.Core
         public static T Get<T>(string key) where T : class
         {
             TryGet(key, out T settings);
-
             return settings;
         }
 
@@ -25,7 +23,7 @@ namespace Pinpoint.Core
             return settings ?? defaultValue;
         }
 
-        public static bool TryGet<T>(string key, out T settings) where T: class
+        public static bool TryGet<T>(string key, out T settings) where T : class
         {
             settings = null;
 

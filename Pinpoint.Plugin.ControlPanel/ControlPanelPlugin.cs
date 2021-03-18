@@ -18,6 +18,8 @@ namespace Pinpoint.Plugin.ControlPanel
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Control Panel Search", PluginPriority.Standard);
 
+        public List<PluginSetting> Settings { get; set; } = new List<PluginSetting>();
+
         public bool TryLoad()
         {
             // Load actual control panel items

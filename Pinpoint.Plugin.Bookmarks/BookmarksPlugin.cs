@@ -17,6 +17,8 @@ namespace Pinpoint.Plugin.Bookmarks
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Bookmarks Plugin", PluginPriority.NextHighest);
 
+        public List<PluginSetting> Settings { get; set; } = new List<PluginSetting>();
+
         public bool TryLoad()
         {
             _defaultBrowserType = DetectDefaultBrowser();

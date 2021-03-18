@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -206,42 +207,17 @@ namespace Pinpoint.Win.View
             }
         }
 
-        TabItem MakeTabItem(IPlugin plugin)
-        {
-            var grid = new Grid()
-            {
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition {
-                        Width = new GridLength(0, GridUnitType.Star)
-                    },
-                    new ColumnDefinition {Width = GridLength.Auto},
-                    new ColumnDefinition {Width = GridLength.Auto}, 
-                    new ColumnDefinition
-                    {
-                        Width = new GridLength(0, GridUnitType.Star)
-                    }
-                }
-            };
-            
-            var enabled = new Label{Content = "Enabled"};
-            grid.Children.Add(enabled);
-            Grid.SetRow(enabled, 0);
-
-            Grid.SetColumn(enabled, 1);
-
-            var item = new TabItem()
-            {
-                Header = plugin.Meta.Name,
-                Content = new Label { Content = plugin.Meta.Name }
-            };
-            return item;
-        }
-
         public void PluginChange_Added(object sender, IPlugin plugin, object target)
         {
             Model.Plugins.Add(plugin);
-            TbCtrl.Items.Insert(TbCtrl.Items.Count - 1, new PluginTabItem(plugin));
+
+            // Add to tab control
+            var pluginTabItem = new PluginTabItem(plugin);
+            if (plugin.Settings.Count == 0)
+            {
+                pluginTabItem.Separator.Visibility = pluginTabItem.LblSettings.Visibility = pluginTabItem.PluginSettings.Visibility = Visibility.Hidden;
+            }
+            TbCtrl.Items.Insert(TbCtrl.Items.Count - 1, pluginTabItem);
         }
 
         public void PluginChange_Removed(object sender, IPlugin plugin, object target)

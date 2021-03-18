@@ -17,6 +17,8 @@ namespace Pinpoint.Plugin.Dictionary
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Dictionary", PluginPriority.Standard);
 
+        public List<PluginSetting> Settings { get; set; } = new List<PluginSetting>();
+
         public bool TryLoad() => true;
 
         public void Unload()
