@@ -35,6 +35,7 @@ Pinpoint is an extensible keystroke launcher written in C# (.NET Core).
 | Reddit                   | Quick browse reddit posts (same sorting options as website)  | ![](https://i.imgur.com/sViePHZ.png) |
 | Snippets                 | Create (text + OCR), manage, and search code snippets        | ![](https://i.imgur.com/z6Uo1KX.png) |
 | Spotify                  | Control Spotify without leaving whatever you're doing. Play, pause, skip, queue | ![](https://i.imgur.com/Ol8dBI4.png) |
+| URL Launcher             | Launch URLs in your favorite browser                         | ![](https://i.imgur.com/faRe3zd.png) |
 
 ## Keyboard Shortcuts
 

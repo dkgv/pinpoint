@@ -13,6 +13,7 @@ namespace Pinpoint.Plugin.UrlLauncher
         private readonly Regex _urlRegex = new Regex(@"[0-9a-zA-Z]+\.[0-9a-zA-Z]+[\/\?\%\=\&0-9a-zA-Z]+$");
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Url launcher", PluginPriority.Highest);
+
         public bool TryLoad() => true;
 
         public void Unload() { }
@@ -32,7 +33,6 @@ namespace Pinpoint.Plugin.UrlLauncher
             }
 
             var uri = new Uri(url);
-
             yield return new UrlLauncherResult(uri.ToString());
         }
     }
