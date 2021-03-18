@@ -30,6 +30,7 @@ using Pinpoint.Plugin.Notes;
 using Pinpoint.Plugin.Reddit;
 using Pinpoint.Win.Models;
 using PinPoint.Plugin.Spotify;
+using Pinpoint.Plugin.UrlLauncher;
 using Application = System.Windows.Application;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
@@ -90,6 +91,7 @@ namespace Pinpoint.Win.View
             _pluginEngine.AddPlugin(new RedditPlugin());
             _pluginEngine.AddPlugin(new NotesPlugin());
             _pluginEngine.AddPlugin(new ColorConverterPlugin());
+            _pluginEngine.AddPlugin(new UrlLauncherPlugin());
         }
 
         internal MainWindowModel Model
