@@ -94,14 +94,13 @@ namespace Pinpoint.Plugin.Currency
             }
 
             var conversion = Math.Round(_currencyRepo.ConvertFromTo(from, value, to), 5);
-
             yield return new CurrencyResult(conversion, to);
         }
 
         private double IdentifyValue(Query query)
         {
-            var match = Regex.Match(query.RawQuery, @"[+-]?(\d*\.)?\d+");
-            return double.Parse(match.Groups[0].Value);
+            var match = Regex.Match(query.RawQuery, @"[+-]?([0-9]*[.])?[0-9]+");
+            return double.Parse(match.Groups[0].Value, CultureInfo.InvariantCulture);
         }
 
         private string IdentifyFrom(Query query)
