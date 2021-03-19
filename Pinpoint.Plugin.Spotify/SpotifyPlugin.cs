@@ -10,24 +10,19 @@ namespace PinPoint.Plugin.Spotify
 {
     public class SpotifyPlugin : IPlugin
     {
-        private readonly HashSet<string> _keywords = new HashSet<string> {"album", "artist", "episode", "play", "playlist", "show", "skip", "next", "prev", "back"};
+        private readonly HashSet<string> _keywords = new HashSet<string> {"album", "artist", "episode", "play", "playlist", "show", "skip", "next", "prev", "back", "pause"};
         private readonly AuthenticationManager _authManager = new AuthenticationManager();
         private readonly SpotifyClient _spotifyClient = SpotifyClient.GetInstance();
-        private readonly List<AbstractQueryResult> _defaultResults = new List<AbstractQueryResult>
-        {
-            new PausePlayResult()
-        };
+        private bool _isAuthenticated;
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Spotify Controller");
 
         public bool TryLoad()
         {
-            var settings = AppSettings.GetOrDefault<SpotifyPluginSettings>("spotify", null);
+            var settings = AppSettings.GetOrDefault("spotify", new SpotifyPluginSettings());
 
-            if (settings?.RefreshToken != null) return true;
+            _isAuthenticated = !string.IsNullOrWhiteSpace(settings.RefreshToken);
 
-            var tokens = _authManager.Authenticate();
-            _spotifyClient.InitializeClientWithTokens(tokens);
             return true;
         }
 
@@ -36,21 +31,30 @@ namespace PinPoint.Plugin.Spotify
             _spotifyClient.Dispose();
         }
 
-        public Task<bool> Activate(Query query)
+        public async Task<bool> Activate(Query query)
         {
             var queryParts = query.RawQuery.Split(new[] {' '}, 2);
-            if (queryParts.Length == 0) return Task.FromResult(false);
 
-            var matchesAnyKeyword = _keywords.Contains(queryParts[0]);
+            var shouldActivate = queryParts.Length > 0 && _keywords.Contains(queryParts[0]);
 
-            var isSkipOrPreviousTrackQuery = queryParts[0] == "skip" || queryParts[0] == "next" ||
-                                             queryParts[0] == "prev" || queryParts[0] == "back";
-            var isSearchQuery = queryParts.Length > 1 &&
-                                queryParts[1].Length > 3;
+            switch (shouldActivate)
+            {
+                case false:
+                    return false;
+                case true when !_isAuthenticated:
+                {
+                    var tokens = await _authManager.Authenticate();
+                    if (tokens?.access_token != null && tokens.refresh_token != null)
+                    {
+                        _spotifyClient.InitializeClientWithTokens(tokens);
+                        _isAuthenticated = true;
+                    }
 
-            var shouldActivate = matchesAnyKeyword && (isSkipOrPreviousTrackQuery || isSearchQuery);
+                    break;
+                }
+            }
 
-            return Task.FromResult(shouldActivate);
+            return _isAuthenticated;
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
@@ -65,6 +69,12 @@ namespace PinPoint.Plugin.Spotify
             }
 
             yield return new PlayPauseResult();
+
+            var isSearchQuery = queryParts.Length > 1 &&
+                                queryParts[1].Length > 3 && 
+                                queryParts[0] != "pause";
+
+            if(!isSearchQuery) yield break;
 
             var queryType = MapToSpotifySearchType(queryParts[0]);
             var searchQuery = queryParts[1];

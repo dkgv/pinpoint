@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Pinpoint.Core;
 
 namespace PinPoint.Plugin.Spotify
@@ -28,7 +29,7 @@ namespace PinPoint.Plugin.Spotify
             AuthHttpClient.Dispose();
         }
 
-        public TokenResult Authenticate()
+        public async Task<TokenResult> Authenticate()
         {
             //Start server on localhost
             var server = new LocalServer();
@@ -42,10 +43,10 @@ namespace PinPoint.Plugin.Spotify
             var authCode = ctx.Request.QueryString["code"];
 
             server.Stop();
-            return ExchangeAuthCodeForToken(authCode);
+            return await ExchangeAuthCodeForToken(authCode);
         }
 
-        public TokenResult ExchangeAuthCodeForToken(string authCode)
+        public async Task<TokenResult> ExchangeAuthCodeForToken(string authCode)
         {
             var parameters = new Dictionary<string, string>
             {
@@ -59,7 +60,7 @@ namespace PinPoint.Plugin.Spotify
             var urlEncodedParameters = new FormUrlEncodedContent(parameters);
             var request = new HttpRequestMessage(HttpMethod.Post, "https://accounts.spotify.com/api/token") { Content = urlEncodedParameters };
             var response = AuthHttpClient.SendAsync(request).Result;
-            var bodyJson = response.Content.ReadAsStringAsync().Result;
+            var bodyJson = await response.Content.ReadAsStringAsync();
 
             return JsonSerializer.Deserialize<TokenResult>(bodyJson);
         }
