@@ -14,7 +14,7 @@ namespace Pinpoint.Plugin.ColorConverter
         private const string HexPattern = @"^(#)([0-9A-Fa-f]{8}|[0-9A-Fa-f]{6})$";
         public PluginMeta Meta { get; set; } = new PluginMeta("Color Converter", PluginPriority.Highest);
 
-        public List<PluginSetting> Settings { get; set; } = new List<PluginSetting>();
+        public PluginSettings Settings { get; set; } = new PluginSettings();
 
         public bool TryLoad() => true;
 

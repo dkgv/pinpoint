@@ -25,7 +25,7 @@ namespace Pinpoint.Plugin.Reddit
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Reddit plugin", PluginPriority.Highest);
 
-        public List<PluginSetting> Settings { get; set; } = new List<PluginSetting>();
+        public PluginSettings Settings { get; set; } = new PluginSettings();
 
         public bool TryLoad() => true;
 

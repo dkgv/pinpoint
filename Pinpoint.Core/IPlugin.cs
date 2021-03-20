@@ -9,7 +9,7 @@ namespace Pinpoint.Core
     {
         public PluginMeta Meta { get; set; }
 
-        public List<PluginSetting> Settings { get; set; }
+        public PluginSettings Settings { get; set; }
         
         public bool TryLoad();
 

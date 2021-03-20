@@ -14,7 +14,7 @@ namespace Pinpoint.Plugin.UrlLauncher
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Url launcher", PluginPriority.Highest);
 
-        public List<PluginSetting> Settings { get; set; } = new List<PluginSetting>();
+        public PluginSettings Settings { get; set; } = new PluginSettings();
 
         public bool TryLoad() => true;
 

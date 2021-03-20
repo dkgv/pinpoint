@@ -12,11 +12,12 @@ namespace Pinpoint.Plugin.Currency
     public class CurrencyPlugin : IPlugin
     {
         private CurrencyRepository _currencyRepo;
+        private const string BaseCurrencyId = "Base currency";
         private const string Symbols = "$£€¥";
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Currency Converter", PluginPriority.Highest);
 
-        public List<PluginSetting> Settings { get; set; } = new List<PluginSetting>();
+        public PluginSettings Settings { get; set; } = new PluginSettings();
 
         public bool TryLoad()
         {
@@ -34,11 +35,7 @@ namespace Pinpoint.Plugin.Currency
 
             _currencyRepo = new CurrencyRepository(baseCurrency);
 
-            Settings.Add(new PluginSetting
-            {
-                Name = "Base currency",
-                Value = baseCurrency
-            });
+            Settings.Put(BaseCurrencyId, baseCurrency);
 
             return true;
         }
@@ -136,7 +133,7 @@ namespace Pinpoint.Plugin.Currency
             // Handles queries like 100 usd, 100 eur
             if (!query.RawQuery.Contains("in") && !query.RawQuery.Contains("to"))
             {
-                return _baseCurrency;
+                return Settings.Str(BaseCurrencyId);
             }
 
             // Get last part
