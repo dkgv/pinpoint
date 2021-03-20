@@ -53,9 +53,6 @@ namespace Pinpoint.Win.View
         public MainWindow()
         {
             InitializeComponent();
-            
-            // Load old settings
-            AppSettings.Load();
 
             Model = new MainWindowModel();
             
@@ -65,10 +62,19 @@ namespace Pinpoint.Win.View
 
             _pluginEngine.Listeners.Add(_settingsWindow);
 
-            LoadPlugins();
-
             var hotkey = _settingsWindow.Model.Hotkey;
             HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyIdentifier, hotkey.Key, hotkey.Modifiers, OnToggleVisibility);
+        }
+
+        private void LoadSettingsFromFile()
+        {
+            AppSettings.Load();
+
+            var plugins = AppSettings.GetOrDefault("plugins", new IPlugin[0]);
+            foreach (var plugin in plugins)
+            {
+                _pluginEngine.PluginByType(plugin.GetType()).UserSettings.Overwrite(plugin.UserSettings);
+            }
         }
 
         private void LoadPlugins()
@@ -134,6 +140,9 @@ namespace Pinpoint.Win.View
 
             _defaultWindowPosition = ComputeDefaultWindowPosition();
             MoveWindowToDefaultPosition();
+
+            LoadPlugins();
+            LoadSettingsFromFile();
         }
 
         public void MoveWindowToDefaultPosition()

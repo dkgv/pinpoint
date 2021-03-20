@@ -43,7 +43,7 @@ namespace Pinpoint.Win.View
         {
             e.Cancel = true;
 
-            AppSettings.Put("plugins", Model.Plugins.Select(plugin => plugin.Meta).ToArray());
+            AppSettings.Put("plugins", Model.Plugins.ToArray());
             AppSettings.Put("theme", _mainWindow.Model.Theme);
             AppSettings.Save();
 
@@ -68,7 +68,7 @@ namespace Pinpoint.Win.View
             foreach (var fileName in fileOpener.FileNames)
             {
                 var fileSource = new FileSnippet(fileName);
-                if (_pluginEngine.Plugin<SnippetsPlugin>().AddSnippet(this, fileSource))
+                if (_pluginEngine.PluginByType<SnippetsPlugin>().AddSnippet(this, fileSource))
                 {
                     Model.FileSnippets.Add(fileSource);
                 }
@@ -123,7 +123,7 @@ namespace Pinpoint.Win.View
             if (lst.SelectedIndex >= 0)
             {
                 var index = lst.SelectedIndex;
-                _pluginEngine.Plugin<SnippetsPlugin>().RemoveSnippet(this, collection[index]);
+                _pluginEngine.PluginByType<SnippetsPlugin>().RemoveSnippet(this, collection[index]);
                 collection.RemoveAt(index);
             }
             else
@@ -213,7 +213,7 @@ namespace Pinpoint.Win.View
 
             // Add to tab control
             var pluginTabItem = new PluginTabItem(plugin);
-            if (plugin.Settings.Count == 0)
+            if (plugin.UserSettings.Count == 0)
             {
                 pluginTabItem.Separator.Visibility = pluginTabItem.LblSettings.Visibility = pluginTabItem.PluginSettings.Visibility = Visibility.Hidden;
             }

@@ -9,7 +9,7 @@ namespace Pinpoint.Plugin.CommandLine
     {
         public PluginMeta Meta { get; set; } = new PluginMeta("Command Line", PluginPriority.Highest);
 
-        public PluginSettings Settings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
         public bool TryLoad() => true;
 

@@ -27,7 +27,10 @@ namespace Pinpoint.Core
         {
             settings = null;
 
-            if (!Settings.TryGetValue(key, out var value ) || value?.ToString() == null) return false;
+            if (!Settings.TryGetValue(key, out var value) || value?.ToString() == null)
+            {
+                return false;
+            }
 
             try
             {

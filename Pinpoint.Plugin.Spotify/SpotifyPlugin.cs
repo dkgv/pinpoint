@@ -17,7 +17,7 @@ namespace PinPoint.Plugin.Spotify
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Spotify Controller");
 
-        public PluginSettings Settings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
         public bool TryLoad()
         {

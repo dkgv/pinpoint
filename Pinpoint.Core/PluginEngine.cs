@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -53,9 +54,14 @@ namespace Pinpoint.Core
             }
         }
 
-        public T Plugin<T>() where T : IPlugin
+        public T PluginByType<T>() where T : IPlugin
         {
             return Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
+        }
+
+        public IPlugin PluginByType(Type type)
+        {
+            return Plugins.First(plugin => plugin.GetType() == type);
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)

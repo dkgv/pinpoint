@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
 
@@ -19,11 +20,12 @@ namespace Pinpoint.Plugin.Snippets
 
         public List<AbstractSnippet> Snippets { get; } = new List<AbstractSnippet>();
 
+        [JsonIgnore]
         public List<ISnippetListener> Listeners { get; } = new List<ISnippetListener>();
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Snippets", PluginPriority.Highest);
 
-        public PluginSettings Settings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
         public bool TryLoad()
         {

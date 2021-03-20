@@ -13,7 +13,7 @@ namespace Pinpoint.Plugin.Calculator
     {
         public PluginMeta Meta { get; set; } = new PluginMeta("Calculator", PluginPriority.Highest);
 
-        public PluginSettings Settings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
         public bool TryLoad() => true;
 

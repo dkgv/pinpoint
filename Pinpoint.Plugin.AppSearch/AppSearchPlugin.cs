@@ -18,7 +18,7 @@ namespace Pinpoint.Plugin.AppSearch
 
         public PluginMeta Meta { get; set; } = new PluginMeta("App Search", PluginPriority.Highest);
 
-        public PluginSettings Settings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
         public bool TryLoad()
         {

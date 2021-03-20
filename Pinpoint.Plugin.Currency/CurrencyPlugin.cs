@@ -17,7 +17,7 @@ namespace Pinpoint.Plugin.Currency
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Currency Converter", PluginPriority.Highest);
 
-        public PluginSettings Settings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
         public bool TryLoad()
         {
@@ -35,7 +35,7 @@ namespace Pinpoint.Plugin.Currency
 
             _currencyRepo = new CurrencyRepository(baseCurrency);
 
-            Settings.Put(BaseCurrencyId, baseCurrency);
+            UserSettings.Put(BaseCurrencyId, baseCurrency);
 
             return true;
         }
@@ -133,7 +133,7 @@ namespace Pinpoint.Plugin.Currency
             // Handles queries like 100 usd, 100 eur
             if (!query.RawQuery.Contains("in") && !query.RawQuery.Contains("to"))
             {
-                return Settings.Str(BaseCurrencyId);
+                return UserSettings.Str(BaseCurrencyId);
             }
 
             // Get last part
