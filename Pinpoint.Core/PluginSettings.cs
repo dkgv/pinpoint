@@ -21,6 +21,8 @@ namespace Pinpoint.Core
             get => _settingsByName.GetValueOrDefault(name, null)?.Value;
             set => Put(name, value);
         }
+
+        public bool Has(string name) => _settingsByName.ContainsKey(name);
         
         public bool Remove(string name)
         {
@@ -41,7 +43,10 @@ namespace Pinpoint.Core
         {
             foreach (var setting in other)
             {
-                Put(setting.Name, setting.Value);
+                if (setting.Value != null)
+                {
+                    Put(setting.Name, setting.Value);
+                }
             }
         }
     }

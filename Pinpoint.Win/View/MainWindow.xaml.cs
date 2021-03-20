@@ -66,17 +66,6 @@ namespace Pinpoint.Win.View
             HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyIdentifier, hotkey.Key, hotkey.Modifiers, OnToggleVisibility);
         }
 
-        private void LoadSettingsFromFile()
-        {
-            AppSettings.Load();
-
-            var plugins = AppSettings.GetOrDefault("plugins", new IPlugin[0]);
-            foreach (var plugin in plugins)
-            {
-                _pluginEngine.PluginByType(plugin.GetType()).UserSettings.Overwrite(plugin.UserSettings);
-            }
-        }
-
         private void LoadPlugins()
         {
             _pluginEngine.AddPlugin(new EverythingPlugin());
@@ -141,8 +130,8 @@ namespace Pinpoint.Win.View
             _defaultWindowPosition = ComputeDefaultWindowPosition();
             MoveWindowToDefaultPosition();
 
+            AppSettings.Load();
             LoadPlugins();
-            LoadSettingsFromFile();
         }
 
         public void MoveWindowToDefaultPosition()
