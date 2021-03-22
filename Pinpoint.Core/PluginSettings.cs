@@ -37,7 +37,11 @@ namespace Pinpoint.Core
 
         public string Str(string name) => this[name]?.ToString();
 
-        public int Int(string name) => int.Parse(this[name]?.ToString() ?? "0");
+        public int Int(string name) 
+        {
+            int.TryParse(this[name]?.ToString(), out var value);
+            return value;
+        }
 
         public void Overwrite(PluginSettings other)
         {
