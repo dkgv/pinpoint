@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -13,34 +14,33 @@ namespace Pinpoint.Core
 
         public List<IPluginListener<IPlugin, object>> Listeners { get; } = new List<IPluginListener<IPlugin, object>>();
 
-        public void AddPlugin(IPlugin plugin)
+        public void AddPlugin(IPlugin toAdd)
         {
-            var prevSettings = AppSettings.GetOrDefault("plugins", new List<PluginMeta>());
-
             // Disallow duplicate plugins
-            if (Plugins.Contains(plugin))
+            if (Plugins.Contains(toAdd))
             {
                 return;
             }
-            
+
             // Don't add plugin if it fails to load
-            if (!plugin.TryLoad())
+            if (!toAdd.TryLoad())
             {
                 return;
             }
 
-            var pluginName = plugin.Meta.Name;
-            if (prevSettings.Any(m => m.Name.Equals(pluginName)))
+            var plugins = AppSettings.GetOrDefault("plugins", new EmptyPlugin[0]);
+            var match = plugins.FirstOrDefault(p => p.Meta.Name.Equals(toAdd.Meta.Name));
+            if (match != default)
             {
-                plugin.Meta = prevSettings.First(m => m.Name.Equals(pluginName));
+                toAdd.UserSettings = match.UserSettings;
             }
 
-            Plugins.Add(plugin);
+            Plugins.Add(toAdd);
 
             // Ensure order of plugin execution is correct
             Plugins.Sort();
 
-            Listeners.ForEach(listener => listener.PluginChange_Added(this, plugin, null));
+            Listeners.ForEach(listener => listener.PluginChange_Added(this, toAdd, null));
         }
 
         public void RemovePlugin(IPlugin plugin)
@@ -53,9 +53,14 @@ namespace Pinpoint.Core
             }
         }
 
-        public T Plugin<T>() where T : IPlugin
+        public T PluginByType<T>() where T : IPlugin
         {
             return Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
+        }
+
+        public IPlugin PluginByType(Type type)
+        {
+            return Plugins.First(plugin => plugin.GetType() == type);
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)

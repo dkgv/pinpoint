@@ -65,7 +65,7 @@ namespace Pinpoint.Win.View
             }
 
             var snippet = new OcrTextSnippet(title, pairs);
-            if (_pluginEngine.Plugin<SnippetsPlugin>().AddSnippet(this, snippet))
+            if (_pluginEngine.PluginByType<SnippetsPlugin>().AddSnippet(this, snippet))
             {
                 snippet.SaveAsJson();
             }

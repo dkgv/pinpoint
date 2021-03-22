@@ -35,7 +35,7 @@ namespace Pinpoint.Win.View
             }
 
             var snippet = new TextSnippet(title, TxtContent.Text);
-            if (_pluginEngine.Plugin<SnippetsPlugin>().AddSnippet(this, snippet))
+            if (_pluginEngine.PluginByType<SnippetsPlugin>().AddSnippet(this, snippet))
             {
                 snippet.SaveAsJson();
             }

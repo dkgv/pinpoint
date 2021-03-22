@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
-using Newtonsoft.Json;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
 
@@ -15,24 +12,31 @@ namespace Pinpoint.Plugin.Currency
     public class CurrencyPlugin : IPlugin
     {
         private CurrencyRepository _currencyRepo;
-        private string _baseCurrency;
+        private const string BaseCurrencyId = "Base currency";
         private const string Symbols = "$£€¥";
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Currency Converter", PluginPriority.Highest);
 
+        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+
         public bool TryLoad()
         {
+            string baseCurrency;
             try
             {
                 // Find base currency
                 var ri = new RegionInfo(CultureInfo.CurrentCulture.Name);
-                _baseCurrency = ri.ISOCurrencySymbol;
+                baseCurrency = ri.ISOCurrencySymbol;
             }
             catch (ArgumentException)
             {
-                _baseCurrency = "USD";
+                baseCurrency = "USD";
             }
-            _currencyRepo = new CurrencyRepository(_baseCurrency);
+
+            _currencyRepo = new CurrencyRepository(baseCurrency);
+
+            UserSettings.Put(BaseCurrencyId, baseCurrency);
+
             return true;
         }
 
@@ -129,7 +133,7 @@ namespace Pinpoint.Plugin.Currency
             // Handles queries like 100 usd, 100 eur
             if (!query.RawQuery.Contains("in") && !query.RawQuery.Contains("to"))
             {
-                return _baseCurrency;
+                return UserSettings.Str(BaseCurrencyId);
             }
 
             // Get last part

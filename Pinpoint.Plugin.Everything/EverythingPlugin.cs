@@ -25,6 +25,8 @@ namespace Pinpoint.Plugin.Everything
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Everything (File Search)", PluginPriority.Lowest);
 
+        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+
         private IEverythingClient _everything;
 
         public bool TryLoad()

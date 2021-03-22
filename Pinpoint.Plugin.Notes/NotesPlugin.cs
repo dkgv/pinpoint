@@ -26,7 +26,9 @@ namespace Pinpoint.Plugin.Notes
         }
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Notes Plugin", PluginPriority.Highest);
-        
+
+        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+
         public bool TryLoad() => true;
 
         public void Unload() { }

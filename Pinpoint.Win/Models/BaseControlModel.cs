@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace Pinpoint.Win.Models
 {
-    internal class BaseControlModel : INotifyPropertyChanged
+    public class BaseControlModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 

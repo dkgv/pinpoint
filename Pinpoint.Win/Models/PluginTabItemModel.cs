@@ -5,7 +5,7 @@ namespace Pinpoint.Win.Models
     internal class PluginTabItemModel : BaseControlModel
     {
         private IPlugin _plugin;
-
+        
         public IPlugin Plugin
         {
             get => _plugin;
