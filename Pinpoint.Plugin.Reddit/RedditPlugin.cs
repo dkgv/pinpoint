@@ -15,7 +15,7 @@ namespace Pinpoint.Plugin.Reddit
     {
         private readonly Dictionary<string, CacheValue> _resultCache =
             new Dictionary<string, CacheValue>();
-        private readonly Regex _subRedditRegex = new Regex(@"^r\/[0-9a-zA-z]+$");
+        private static readonly Regex SubRedditRegex = new Regex(@"^r\/[0-9a-zA-z]+$");
         private const int CacheExpirationTimeInMinutes = 5;
 
         private readonly HttpClient _httpClient = new HttpClient
@@ -37,22 +37,19 @@ namespace Pinpoint.Plugin.Reddit
         public async Task<bool> Activate(Query query)
         {
             var queryParts = query.RawQuery.Split(' ');
-
-            return queryParts.Length != 0 && _subRedditRegex.IsMatch(queryParts[0]);
+            return queryParts.Length != 0 && SubRedditRegex.IsMatch(queryParts[0]);
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
-            var queryParts = query.RawQuery.Split(' ');
-
-            var subReddit = queryParts[0];
+            var subReddit = query.Parts[0];
 
             var validParts = 1;
             string sorting = null;
             string interval = null;
             string limit = null;
 
-            foreach (var part in queryParts.Skip(1))
+            foreach (var part in query.Parts.Skip(1))
             {
                 if (!int.TryParse(part, out _) && Enum.TryParse(part, ignoreCase: true, out RedditQuerySorting _))
                 {
@@ -78,7 +75,7 @@ namespace Pinpoint.Plugin.Reddit
             var redditQuery = RedditQuery.FromStringValues(subReddit, sorting, interval, limit);
 
             //Matches the scenario where a user is typing one of the parameters, so we don't send requests unnecessarily with invalid parameters.
-            if (validParts < queryParts.Length)
+            if (validParts < query.Parts.Length)
             {
                 yield break;
             }

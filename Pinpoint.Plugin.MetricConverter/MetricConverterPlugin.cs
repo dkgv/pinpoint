@@ -11,7 +11,8 @@ namespace Pinpoint.Plugin.MetricConverter
     public class MetricConverterPlugin : IPlugin
     {
         //Example of match: 100cm to m | 100cm
-        private const string Pattern = @"^(\d+) ?(mm|cm|km|micrometer|nm|mi|yd|ft|in|m){1}( (to|in) )?(mm|cm|km|m|micrometer|nm|mi|yd|ft|in)?";
+        private static readonly Regex Pattern = new Regex(@"^(\d+) ?(mm|cm|km|micrometer|nm|mi|yd|ft|in|m){1}( (to|in) )?(mm|cm|km|m|micrometer|nm|mi|yd|ft|in)?");
+        private static Match _match;
         
         public PluginMeta Meta { get; set; } = new PluginMeta("Metric Converter", PluginPriority.Highest);
 
@@ -25,19 +26,13 @@ namespace Pinpoint.Plugin.MetricConverter
 
         private static Tuple<string, double> ConvertQuery(Query query)
         {
-            var match = Regex.Match(query.RawQuery, Pattern);
-            if (!match.Success)
-            {
-                return default;
-            }
-
             // match.Groups[0].Value holds the entire matched expression.
-            var value = match.Groups[1].Value;
-            var fromUnit = match.Groups[2].Value;
-            var toUnit = match.Groups[5].Value;
+            var value = _match.Groups[1].Value;
+            var fromUnit = _match.Groups[2].Value;
+            var toUnit = _match.Groups[5].Value;
                 
             // Handle non specified toUnit.
-            if (match.Groups[3].Value == "" || toUnit == "")
+            if (_match.Groups[3].Value == "" || toUnit == "")
             {
                 toUnit = "m";
             }
@@ -48,7 +43,8 @@ namespace Pinpoint.Plugin.MetricConverter
 
         public async Task<bool> Activate(Query query)
         {
-            return Regex.IsMatch(query.RawQuery, Pattern);
+            _match = Pattern.Match(query.RawQuery);
+            return _match != default && _match.Success;
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)

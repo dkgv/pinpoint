@@ -40,8 +40,7 @@ namespace Pinpoint.Plugin.EncodeDecode
 
                 yield return new EncodeDecodeResult(handler.Encode(queryString));
                 yield return new EncodeDecodeResult(handler.Decode(queryString));
-            };
-            
+            }
         }
 
         private IEncodeDecodeHandler CreateHandler(string prefix)

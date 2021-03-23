@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Gma.DataStructures.StringSearch;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using Pinpoint.Core;
@@ -13,7 +14,7 @@ namespace Pinpoint.Plugin.ControlPanel
 {
     public class ControlPanelPlugin : IPlugin
     {
-        private List<ControlPanelItem> _controlPanelItems;
+        private UkkonenTrie<ControlPanelItem> _controlPanelItems = new UkkonenTrie<ControlPanelItem>();
         private const string ControlPanelRegistryPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel\NameSpace";
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Control Panel Search", PluginPriority.Standard);
@@ -23,7 +24,7 @@ namespace Pinpoint.Plugin.ControlPanel
         public bool TryLoad()
         {
             // Load actual control panel items
-            _controlPanelItems = LoadControlPanelItems();
+            var items = LoadControlPanelItems();
 
             // Lookup registry details for each item
             var registryRoot = Registry.LocalMachine.OpenSubKey(ControlPanelRegistryPath);
@@ -33,11 +34,16 @@ namespace Pinpoint.Plugin.ControlPanel
                 var value = registryRoot.OpenSubKey(subKeyName)?.GetValue("");
 
                 // Ensure registry entry actually is a control panel item
-                var item = _controlPanelItems.FirstOrDefault(i => i.Name.ToLower().Equals(value?.ToString().ToLower()));
+                var item = items.FirstOrDefault(i => i.Name.ToLower().Equals(value?.ToString().ToLower()));
                 if (item != null)
                 {
                     item.RegistryKey = subKeyName;
                 }
+            }
+
+            foreach (var controlPanelItem in items)
+            {
+                _controlPanelItems.Add(controlPanelItem.Name.ToLower(), controlPanelItem);
             }
 
             return true;
@@ -45,7 +51,7 @@ namespace Pinpoint.Plugin.ControlPanel
 
         public void Unload()
         {
-            _controlPanelItems.Clear();
+            _controlPanelItems = null;
         }
 
         public async Task<bool> Activate(Query query)
@@ -55,7 +61,7 @@ namespace Pinpoint.Plugin.ControlPanel
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
-            foreach (var item in _controlPanelItems.Where(i => i.Name.ToLower().Contains(query.RawQuery.ToLower()) && i.RegistryKey != null))
+            foreach (var item in _controlPanelItems.Retrieve(query.RawQuery.ToLower()).Where(i => i.RegistryKey != null))
             {
                 yield return new ControlPanelResult(item.Name, item.Description, ControlPanelIconProvider.GetIcon(item.RegistryKey));
             }
@@ -83,7 +89,7 @@ namespace Pinpoint.Plugin.ControlPanel
             {
                 sb.Append(process.StandardOutput.ReadLine());
             }
-
+            
             return JsonConvert.DeserializeObject<List<ControlPanelItem>>(sb.ToString());
         }
     }

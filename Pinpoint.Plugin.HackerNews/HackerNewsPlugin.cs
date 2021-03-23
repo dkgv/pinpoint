@@ -23,7 +23,7 @@ namespace Pinpoint.Plugin.HackerNews
         public async Task<bool> Activate(Query query)
         {
             var raw = query.RawQuery.ToLower();
-            return raw.Equals("hackernews") || raw.Equals("hacker news");
+            return raw.Length >= 10 && (raw.Equals("hackernews") || raw.Equals("hacker news"));
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)

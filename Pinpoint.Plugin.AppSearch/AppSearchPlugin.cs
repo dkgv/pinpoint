@@ -82,7 +82,7 @@ namespace Pinpoint.Plugin.AppSearch
 
         public async Task<bool> Activate(Query query)
         {
-            return query.RawQuery.Length >= 3;
+            return query.RawQuery.Length >= 2;
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)

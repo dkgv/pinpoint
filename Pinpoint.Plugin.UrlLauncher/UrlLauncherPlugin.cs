@@ -10,7 +10,7 @@ namespace Pinpoint.Plugin.UrlLauncher
     public class UrlLauncherPlugin: IPlugin
     {
         private const string HttpsProtocolPrefix = "https://";
-        private static readonly List<string> Tlds = new List<string>(1577);
+        private static readonly HashSet<string> Tlds = new HashSet<string>(1577);
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Url launcher", PluginPriority.Highest);
 
@@ -18,7 +18,10 @@ namespace Pinpoint.Plugin.UrlLauncher
 
         public bool TryLoad()
         {
-            Tlds.AddRange(File.ReadAllLines("tlds.txt"));
+            foreach (var line in File.ReadAllLines("tlds.txt"))
+            {
+                Tlds.Add(line);
+            }
             return true;
         }
 
