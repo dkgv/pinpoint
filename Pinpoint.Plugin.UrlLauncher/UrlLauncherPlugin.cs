@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using System.IO;
 using System.Threading.Tasks;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
@@ -10,20 +10,28 @@ namespace Pinpoint.Plugin.UrlLauncher
     public class UrlLauncherPlugin: IPlugin
     {
         private const string HttpsProtocolPrefix = "https://";
-        private readonly Regex _urlRegex = new Regex(@"[0-9a-zA-Z]+\.[0-9a-zA-Z]+[\/\?\%\=\&0-9a-zA-Z]+$");
+        private static readonly List<string> Tlds = new List<string>(1577);
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Url launcher", PluginPriority.Highest);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
-        public bool TryLoad() => true;
+        public bool TryLoad()
+        {
+            Tlds.AddRange(File.ReadAllLines("tlds.txt"));
+            return true;
+        }
 
         public void Unload() { }
 
-        public Task<bool> Activate(Query query)
+        public async Task<bool> Activate(Query query)
         {
-            var isUrl = _urlRegex.IsMatch(query.RawQuery);
-            return Task.FromResult(isUrl);
+            if (query.RawQuery.Length < 3 || !query.RawQuery.Contains("."))
+            {
+                return false;
+            }
+            var split = query.RawQuery.Split(".");
+            return split.Length > 0 && Tlds.Contains(split[^1]);
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
