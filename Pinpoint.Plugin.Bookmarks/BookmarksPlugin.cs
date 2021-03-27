@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
 using Microsoft.Win32;
@@ -11,9 +12,7 @@ namespace Pinpoint.Plugin.Bookmarks
 {
     public class BookmarksPlugin : IPlugin
     {
-        private BrowserType _defaultBrowserType;
-        private IBookmarkExtractor _bookmarkExtractor;
-        private readonly UkkonenTrie<AbstractBookmarkModel> _trie = new UkkonenTrie<AbstractBookmarkModel>();
+        private readonly UkkonenTrie<Tuple<BrowserType, AbstractBookmarkModel>> _trie = new UkkonenTrie<Tuple<BrowserType, AbstractBookmarkModel>>();
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Bookmarks Plugin", PluginPriority.NextHighest);
 
@@ -21,18 +20,14 @@ namespace Pinpoint.Plugin.Bookmarks
 
         public bool TryLoad()
         {
-            _defaultBrowserType = DetectDefaultBrowser();
-
-            if (_defaultBrowserType == BrowserType.Unknown)
+            foreach (var browserType in Enum.GetValues(typeof(BrowserType)).Cast<BrowserType>())
             {
-                return false;
-            }
-
-            _bookmarkExtractor = MapBrowserTypeToExtractor(_defaultBrowserType);
-            
-            foreach (var bookmarkModel in _bookmarkExtractor.Extract())
-            {
-                _trie.Add(bookmarkModel.Name.ToLower(), bookmarkModel);
+                var _bookmarkExtractor = MapBrowserTypeToExtractor(browserType);
+                foreach (var bookmarkModel in _bookmarkExtractor.Extract())
+                {
+                    var tuple = new Tuple<BrowserType, AbstractBookmarkModel>(browserType, bookmarkModel);
+                    _trie.Add(bookmarkModel.Name.ToLower(), tuple);
+                }
             }
 
             return true;
@@ -42,61 +37,18 @@ namespace Pinpoint.Plugin.Bookmarks
         {
         }
 
-        public async Task<bool> Activate(Query query)
-        {
-            return _defaultBrowserType != BrowserType.Unknown;
-        }
+        public async Task<bool> Activate(Query query) => true;
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
+            var seen = new HashSet<string>();
             foreach (var bookmarkModel in _trie.Retrieve(query.RawQuery.ToLower()))
             {
-                yield return MapBrowserToResult(_defaultBrowserType, bookmarkModel);
-            }
-        }
-
-        private string GetSystemDefaultBrowserPath()
-        {
-            string name;
-            RegistryKey regKey = null;
-
-            try
-            {
-                regKey = Registry.ClassesRoot.OpenSubKey("HTTP\\shell\\open\\command", false);
-
-                // Remove enclosing quotes
-                name = regKey?.GetValue(null).ToString()?.ToLower().Replace("" + (char)34, "");
-
-                // Check if value ends with .exe (we remove any command line arguments)
-                if (name != null && !name.EndsWith("exe"))
+                if (seen.Add(bookmarkModel.Item2.Url))
                 {
-                    name = name.Substring(0, name.LastIndexOf(".exe", StringComparison.Ordinal) + 4);
+                    yield return MapBrowserToResult(bookmarkModel.Item1, bookmarkModel.Item2);
                 }
-
             }
-            catch (Exception ex)
-            {
-                name =
-                    $"ERROR: An exception of type: {ex.GetType()} occurred in method: {ex.TargetSite} in the following module: {this.GetType()}";
-            }
-            finally
-            {
-                regKey?.Close();
-            }
-            return name;
-
-        }
-
-        private BrowserType DetectDefaultBrowser()
-        {
-            var browser = Path.GetFileName(GetSystemDefaultBrowserPath());
-            return browser switch
-            {
-                "firefox.exe" => BrowserType.Firefox,
-                "chrome.exe" => BrowserType.Chrome,
-                // "AppXq0fevzme2pys62n3e0fbqa7peapykr8v" => BrowserType.Edge,
-                _ => BrowserType.Unknown
-            };
         }
 
         private IBookmarkExtractor MapBrowserTypeToExtractor(BrowserType browser)
@@ -105,6 +57,7 @@ namespace Pinpoint.Plugin.Bookmarks
             {
                 BrowserType.Chrome => new ChromeBookmarkExtractor(new ChromeBookmarkExtractor.WindowsJSONFileLocator()),
                 BrowserType.Firefox => new FirefoxBookmarkExtractor(new FirefoxBookmarkExtractor.WindowsDatabaseLocator()),
+                BrowserType.Brave => new BraveBookmarkExtractor(new BraveBookmarkExtractor.WindowsJSONFileLocator()),
                 _ => null
             };
         }
@@ -115,6 +68,7 @@ namespace Pinpoint.Plugin.Bookmarks
             {
                 BrowserType.Firefox => new FirefoxBookmarkResult(model.Name, model.Url),
                 BrowserType.Chrome => new ChromeBookmarkResult(model.Name, model.Url),
+                BrowserType.Brave => new DefaultBookmarkResult(model.Name, model.Url),
                 _ => new UrlQueryResult(model.Name, model.Url)
             };
         }
