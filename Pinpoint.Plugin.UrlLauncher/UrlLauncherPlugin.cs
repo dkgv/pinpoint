@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
@@ -18,10 +20,16 @@ namespace Pinpoint.Plugin.UrlLauncher
 
         public bool TryLoad()
         {
-            foreach (var line in File.ReadAllLines("tlds.txt"))
+            var asm = GetType().Assembly;
+
+            using var stream = asm.GetManifestResourceStream("Pinpoint.Plugin.UrlLauncher.tlds.txt");
+            using var reader = new StreamReader(stream, Encoding.UTF8);
+            string line;
+            while ((line = reader.ReadLine()) != null)
             {
                 Tlds.Add(line);
             }
+
             return true;
         }
 

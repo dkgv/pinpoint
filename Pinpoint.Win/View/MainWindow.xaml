@@ -25,7 +25,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-
         <Style TargetType="ListBoxItem">
             <Style.Triggers>
                 <Trigger Property="IsSelected" Value="True">
@@ -37,6 +36,10 @@
                 </Trigger>
 
                 <Trigger Property="IsFocused" Value="True">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Trigger>
+
+                <Trigger Property="IsFocused" Value="False">
                     <Setter Property="BorderThickness" Value="0"/>
                 </Trigger>
             </Style.Triggers>

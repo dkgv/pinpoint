@@ -5,6 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="tlds.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="tlds.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Pinpoint.Core\Pinpoint.Core.csproj" />
   </ItemGroup>
 
