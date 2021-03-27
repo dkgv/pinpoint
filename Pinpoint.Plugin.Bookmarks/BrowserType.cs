@@ -4,7 +4,6 @@
     {
         Firefox,
         Chrome,
-        Edge,
-        Unknown
+        Brave
     }
 }

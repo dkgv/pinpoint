@@ -55,6 +55,11 @@ namespace Pinpoint.Plugin.Bookmarks
                     "Profiles"
                 );
 
+                if (!Directory.Exists(profileDirectory))
+                {
+                    return string.Empty;
+                }
+
                 var directories = Directory.GetDirectories(profileDirectory);
                 if (!directories.Any())
                 {
