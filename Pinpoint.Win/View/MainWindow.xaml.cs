@@ -33,6 +33,7 @@ using PinPoint.Plugin.Spotify;
 using Pinpoint.Plugin.UrlLauncher;
 using Application = System.Windows.Application;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using MessageBox = System.Windows.MessageBox;
 
 namespace Pinpoint.Win.View
 {
@@ -63,7 +64,15 @@ namespace Pinpoint.Win.View
             _pluginEngine.Listeners.Add(_settingsWindow);
 
             var hotkey = _settingsWindow.Model.Hotkey;
-            HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyIdentifier, hotkey.Key, hotkey.Modifiers, OnToggleVisibility);
+            try
+            {
+                HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyIdentifier, hotkey.Key, hotkey.Modifiers, OnToggleVisibility);
+            }
+            catch (HotkeyAlreadyRegisteredException)
+            {
+                var msg = $"Failed to register Pinpoint hotkey, {_settingsWindow.Model.Hotkey.Text} seems to already be bound. You can pick another one in settings.";
+                MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void LoadPlugins()
