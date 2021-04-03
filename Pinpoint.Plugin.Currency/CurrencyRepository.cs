@@ -66,6 +66,14 @@ namespace Pinpoint.Plugin.Currency
             if (eurRates.ContainsKey(to))
             {
                 var rate = eurRates[to] * value / eurRates[from];
+                if (!CurrencyModels.ContainsKey(@from))
+                {
+                    CurrencyModels[from] = new CurrencyModel(from)
+                    {
+                        Rates = new Dictionary<string, dynamic>()
+                    };
+                }
+                
                 CurrencyModels[from].Rates[to] = rate;
                 return rate;
             }
