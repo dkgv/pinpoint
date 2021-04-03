@@ -10,13 +10,12 @@ namespace Pinpoint.Plugin.Currency
 {
     public class CurrencyRepository
     {
-
         private readonly HashSet<string> _validIsos = new HashSet<string>();
 
-        public CurrencyRepository(string baseCurrency)
+        public CurrencyRepository()
         {
+            CacheFiatRatesEurBase();
             CacheCryptoRates();
-            CacheFiatRates(baseCurrency);
 
             foreach (var (@base, model) in CurrencyModels)
             {
@@ -32,46 +31,48 @@ namespace Pinpoint.Plugin.Currency
 
         public Dictionary<string, CurrencyModel> CurrencyModels { get; } = new Dictionary<string, CurrencyModel>();
 
+        // Convert all values for USD
+        
         public double ConvertFromTo(string from, double value, string to)
         {
             from = from.ToUpper();
             to = to.ToUpper();
 
-            // Is the `from` currency new?
-            if (!CurrencyModels.ContainsKey(from))
+            // Check if we know rate
+            if (CurrencyModels.ContainsKey(from) && CurrencyModels[from].Rates.ContainsKey(to))
             {
-                CacheFiatRates(from);
-            }
-
-            var fromModel = CurrencyModels[from];
-
-            // Check if we already know rate for `to`
-            if (fromModel.Rates.ContainsKey(to))
-            {
-                return fromModel.Rates[to] * value;
+                return CurrencyModels[from].Rates[to] * value;
             }
 
             // Check if we know inverse rate
-            CurrencyModel toModel;
-            if (CurrencyModels.ContainsKey(to) && (toModel = CurrencyModels[to]).Rates.ContainsKey(from))
+            if (CurrencyModels.ContainsKey(to) && CurrencyModels[to].Rates.ContainsKey(from))
             {
-                fromModel.Rates[to] = 1 / toModel.Rates[from];
+                var invertedRate = 1 / CurrencyModels[to].Rates[from];
+                CurrencyModels[from].Rates[to] = invertedRate;
+                return invertedRate * value;
+            }
+            
+            // Convert from EUR
+            var eurRates = CurrencyModels["EUR"].Rates;
+            if (eurRates.ContainsKey(to))
+            {
+                var rate = eurRates[to] * value / eurRates[from];
+                CurrencyModels[from].Rates[to] = rate;
+                return rate;
             }
 
-            return fromModel.Rates.ContainsKey(to)
-                ? fromModel.Rates[to] * value
-                : 1;
+            return 1;
         }
 
-        private void CacheFiatRates(string from)
+        private void CacheFiatRatesEurBase()
         {
             // Load exchange rates
-            var url = $"https://api.exchangeratesapi.io/latest?base={from}";
+            var url = "http://getpinpoint.herokuapp.com/api/currency";
             try
             {
                 using var client = new WebClient();
                 var json = client.DownloadString(url);
-                CurrencyModels[from] = JsonConvert.DeserializeObject<CurrencyModel>(json);
+                CurrencyModels["EUR"] = JsonConvert.DeserializeObject<CurrencyModel>(json);
             }
             catch (WebException)
             {
@@ -81,19 +82,18 @@ namespace Pinpoint.Plugin.Currency
 
         private void CacheCryptoRates()
         {
-            // Ensure USD rates are cached
-            CacheFiatRates("USD");
-
             CurrencyModel PopulateModel(string ticker, double usdPrice)
             {
+                var eurPrice = ConvertFromTo("USD", usdPrice, "EUR");
+
                 var model = new CurrencyModel(ticker)
                 {
-                    Rates = new Dictionary<string, dynamic> { ["USD"] = usdPrice }
+                    Rates = new Dictionary<string, dynamic> { ["EUR"] = eurPrice }
                 };
 
-                foreach (var @base in CurrencyModels["USD"].Rates.Keys.Where(@base => !@base.Equals("USD")))
+                foreach (var @base in CurrencyModels["EUR"].Rates.Keys.Where(@base => !@base.Equals("EUR")))
                 {
-                    model.Rates[@base] = ConvertFromTo("USD", usdPrice, @base);
+                    model.Rates[@base] = ConvertFromTo("EUR", usdPrice, @base);
                 }
 
                 return model;
