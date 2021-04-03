@@ -48,6 +48,15 @@ namespace Pinpoint.Plugin.Currency
             if (CurrencyModels.ContainsKey(to) && CurrencyModels[to].Rates.ContainsKey(from))
             {
                 var invertedRate = 1 / CurrencyModels[to].Rates[from];
+                
+                if (!CurrencyModels.ContainsKey(@from))
+                {
+                    CurrencyModels[from] = new CurrencyModel(from)
+                    {
+                        Rates = new Dictionary<string, dynamic>()
+                    };
+                }
+                
                 CurrencyModels[from].Rates[to] = invertedRate;
                 return invertedRate * value;
             }
