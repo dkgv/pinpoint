@@ -10,8 +10,8 @@ namespace Pinpoint.Plugin.Currency
             Base = @base;
         }
 
-        [JsonProperty("rates")]
-        public Dictionary<string, dynamic> Rates { get; set; }
+        [JsonProperty("rates")] 
+        public Dictionary<string, dynamic> Rates { get; set; } = new Dictionary<string, dynamic>();
 
         [JsonProperty("base")]
         public string Base { get; set; }

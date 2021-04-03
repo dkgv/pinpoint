@@ -32,11 +32,10 @@ namespace Pinpoint.Plugin.Currency
             {
                 baseCurrency = "USD";
             }
-
-            _currencyRepo = new CurrencyRepository(baseCurrency);
-
             UserSettings.Put(BaseCurrencyId, baseCurrency);
 
+            _currencyRepo = new CurrencyRepository();
+            
             return true;
         }
 
