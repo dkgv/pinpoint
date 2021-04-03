@@ -49,7 +49,7 @@ namespace Pinpoint.Plugin.Currency
             {
                 var invertedRate = 1 / CurrencyModels[to].Rates[from];
                 
-                if (!CurrencyModels.ContainsKey(@from))
+                if (!CurrencyModels.ContainsKey(from))
                 {
                     CurrencyModels[from] = new CurrencyModel(from)
                     {
@@ -66,7 +66,7 @@ namespace Pinpoint.Plugin.Currency
             if (eurRates.ContainsKey(to))
             {
                 var rate = eurRates[to] * value / eurRates[from];
-                if (!CurrencyModels.ContainsKey(@from))
+                if (!CurrencyModels.ContainsKey(from))
                 {
                     CurrencyModels[from] = new CurrencyModel(from)
                     {
