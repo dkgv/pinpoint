@@ -18,6 +18,7 @@ using Pinpoint.Plugin.AppSearch;
 using Pinpoint.Plugin.Bangs;
 using Pinpoint.Plugin.Bookmarks;
 using Pinpoint.Plugin.Calculator;
+using Pinpoint.Plugin.ClipboardManager;
 using Pinpoint.Plugin.ColorConverter;
 using Pinpoint.Plugin.CommandLine;
 using Pinpoint.Plugin.ControlPanel;
@@ -32,7 +33,9 @@ using Pinpoint.Plugin.Reddit;
 using Pinpoint.Win.Models;
 using PinPoint.Plugin.Spotify;
 using Pinpoint.Plugin.UrlLauncher;
+using Pinpoint.Win.Annotations;
 using Application = System.Windows.Application;
+using Clipboard = System.Windows.Clipboard;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
 
@@ -64,14 +67,20 @@ namespace Pinpoint.Win.View
 
             _pluginEngine.Listeners.Add(_settingsWindow);
 
-            var hotkey = _settingsWindow.Model.Hotkey;
+            RegisterHotkey(AppConstants.HotkeyToggleVisibilityId, _settingsWindow.Model.HotkeyToggleVisibility, OnToggleVisibility);
+            RegisterHotkey(AppConstants.HotkeyCopyId, new HotkeyModel(Key.C, ModifierKeys.Control), OnSystemClipboardCopy);
+            RegisterHotkey(AppConstants.HotkeyPasteId, _settingsWindow.Model.HotkeyPasteClipboard, OnSystemClipboardPaste);
+        }
+
+        private void RegisterHotkey(string identifier, HotkeyModel hotkey, EventHandler<HotkeyEventArgs> handler)
+        {
             try
             {
-                HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyIdentifier, hotkey.Key, hotkey.Modifiers, OnToggleVisibility);
+                HotkeyManager.Current.AddOrReplace(identifier, hotkey.Key, hotkey.Modifiers, handler);
             }
             catch (HotkeyAlreadyRegisteredException)
             {
-                var msg = $"Failed to register Pinpoint hotkey, {_settingsWindow.Model.Hotkey.Text} seems to already be bound. You can pick another one in settings.";
+                var msg = $"Failed to register Pinpoint hotkey, {_settingsWindow.Model.HotkeyToggleVisibility.Text} seems to already be bound. You can pick another one in settings.";
                 MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -98,6 +107,7 @@ namespace Pinpoint.Win.View
             _pluginEngine.AddPlugin(new ColorConverterPlugin());
             _pluginEngine.AddPlugin(new UrlLauncherPlugin());
             _pluginEngine.AddPlugin(new PasswordGeneratorPlugin());
+            _pluginEngine.AddPlugin(new ClipboardManagerPlugin());
         }
 
         internal MainWindowModel Model
@@ -106,7 +116,27 @@ namespace Pinpoint.Win.View
             set => DataContext = value;
         }
 
-        public void OnToggleVisibility(object? sender, HotkeyEventArgs e)
+        public void OnSystemClipboardCopy([CanBeNull] object sender, HotkeyEventArgs e)
+        {
+            var entry = new TextClipboardEntry
+            {
+                Title = Clipboard.GetText().Trim(),
+                Content = Clipboard.GetText()
+            };
+            _pluginEngine.PluginByType<ClipboardManagerPlugin>().ClipboardHistory.AddFirst(entry);
+        }
+
+        public async void OnSystemClipboardPaste([CanBeNull] object sender, HotkeyEventArgs e)
+        {
+            await AwaitAddEnumerable(_pluginEngine.PluginByType<ClipboardManagerPlugin>().Process(null));
+
+            if (Visibility != Visibility.Visible)
+            {
+                OnToggleVisibility(sender, e);
+            }
+        }
+
+        public void OnToggleVisibility([CanBeNull] object sender, HotkeyEventArgs e)
         {
             if (_settingsWindow.Visibility == Visibility.Visible)
             {
@@ -349,10 +379,21 @@ namespace Pinpoint.Win.View
             }
 
             _cts = new CancellationTokenSource();
+            await AwaitAddEnumerable(_pluginEngine.Process(query, _cts.Token));
 
+            _queryHistory.Add(query);
+
+            if (Model.Results.Count > 0 && LstResults.SelectedIndex == -1)
+            {
+                LstResults.SelectedIndex = 0;
+            }
+        }
+
+        private async Task AwaitAddEnumerable(IAsyncEnumerable<AbstractQueryResult> enumerable)
+        {
             var shortcutIndex = 0;
 
-            await foreach(var result in _pluginEngine.Process(query, _cts.Token))
+            await foreach (var result in enumerable)
             {
                 var didAdd = Model.Results.TryAdd(result);
 
@@ -361,13 +402,6 @@ namespace Pinpoint.Win.View
                 {
                     result.Shortcut = "CTRL+" + ++shortcutIndex;
                 }
-            }
-
-            _queryHistory.Add(query);
-
-            if (Model.Results.Count > 0 && LstResults.SelectedIndex == -1)
-            {
-                LstResults.SelectedIndex = 0;
             }
         }
 

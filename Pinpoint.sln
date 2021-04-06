@@ -44,7 +44,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.ColorConver
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.UrlLauncher", "Pinpoint.Plugin.UrlLauncher\Pinpoint.Plugin.UrlLauncher.csproj", "{0ED3DFB2-856E-4118-8EAD-C14594BD0444}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.PasswordGenerator", "Pinpoint.Plugin.PasswordGenerator\Pinpoint.Plugin.PasswordGenerator.csproj", "{A4568B08-D408-44A0-8AC2-48D157EF9EBE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.PasswordGenerator", "Pinpoint.Plugin.PasswordGenerator\Pinpoint.Plugin.PasswordGenerator.csproj", "{A4568B08-D408-44A0-8AC2-48D157EF9EBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.ClipboardManager", "Pinpoint.Plugin.ClipboardManager\Pinpoint.Plugin.ClipboardManager.csproj", "{F9C5B8EE-A051-4A17-AD2C-484EE7734178}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -320,6 +322,18 @@ Global
 		{A4568B08-D408-44A0-8AC2-48D157EF9EBE}.Release|x64.Build.0 = Release|Any CPU
 		{A4568B08-D408-44A0-8AC2-48D157EF9EBE}.Release|x86.ActiveCfg = Release|Any CPU
 		{A4568B08-D408-44A0-8AC2-48D157EF9EBE}.Release|x86.Build.0 = Release|Any CPU
+		{F9C5B8EE-A051-4A17-AD2C-484EE7734178}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9C5B8EE-A051-4A17-AD2C-484EE7734178}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9C5B8EE-A051-4A17-AD2C-484EE7734178}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F9C5B8EE-A051-4A17-AD2C-484EE7734178}.Debug|x64.Build.0 = Debug|Any CPU
+		{F9C5B8EE-A051-4A17-AD2C-484EE7734178}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F9C5B8EE-A051-4A17-AD2C-484EE7734178}.Debug|x86.Build.0 = Debug|Any CPU
+		{F9C5B8EE-A051-4A17-AD2C-484EE7734178}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9C5B8EE-A051-4A17-AD2C-484EE7734178}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9C5B8EE-A051-4A17-AD2C-484EE7734178}.Release|x64.ActiveCfg = Release|Any CPU
+		{F9C5B8EE-A051-4A17-AD2C-484EE7734178}.Release|x64.Build.0 = Release|Any CPU
+		{F9C5B8EE-A051-4A17-AD2C-484EE7734178}.Release|x86.ActiveCfg = Release|Any CPU
+		{F9C5B8EE-A051-4A17-AD2C-484EE7734178}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

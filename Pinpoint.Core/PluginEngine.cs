@@ -53,15 +53,9 @@ namespace Pinpoint.Core
             }
         }
 
-        public T PluginByType<T>() where T : IPlugin
-        {
-            return Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
-        }
+        public T PluginByType<T>() where T : IPlugin => Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
 
-        public IPlugin PluginByType(Type type)
-        {
-            return Plugins.First(plugin => plugin.GetType() == type);
-        }
+        public IPlugin PluginByType(Type type) => Plugins.First(plugin => plugin.GetType() == type);
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
