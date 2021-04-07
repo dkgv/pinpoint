@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -34,8 +35,8 @@ using Pinpoint.Win.Models;
 using PinPoint.Plugin.Spotify;
 using Pinpoint.Plugin.UrlLauncher;
 using Pinpoint.Win.Annotations;
+using WK.Libraries.SharpClipboardNS;
 using Application = System.Windows.Application;
-using Clipboard = System.Windows.Clipboard;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
 
@@ -54,6 +55,7 @@ namespace Pinpoint.Win.View
         private readonly SettingsWindow _settingsWindow;
         private readonly PluginEngine _pluginEngine;
         private readonly QueryHistory _queryHistory;
+        private readonly SharpClipboard _clipboard = new SharpClipboard();
         
         public MainWindow()
         {
@@ -68,8 +70,19 @@ namespace Pinpoint.Win.View
             _pluginEngine.Listeners.Add(_settingsWindow);
 
             RegisterHotkey(AppConstants.HotkeyToggleVisibilityId, _settingsWindow.Model.HotkeyToggleVisibility, OnToggleVisibility);
-            RegisterHotkey(AppConstants.HotkeyCopyId, new HotkeyModel(Key.C, ModifierKeys.Control), OnSystemClipboardCopy);
             RegisterHotkey(AppConstants.HotkeyPasteId, _settingsWindow.Model.HotkeyPasteClipboard, OnSystemClipboardPaste);
+
+            _clipboard.ClipboardChanged += ClipboardOnClipboardChanged;
+        }
+
+        private void ClipboardOnClipboardChanged([CanBeNull] object sender, SharpClipboard.ClipboardChangedEventArgs e)
+        {
+            var entry = new TextClipboardEntry
+            {
+                Title = _clipboard.ClipboardText.Trim().Replace("\n", ""),
+                Content = _clipboard.ClipboardText
+            };
+            _pluginEngine.PluginByType<ClipboardManagerPlugin>().ClipboardHistory.AddFirst(entry);
         }
 
         private void RegisterHotkey(string identifier, HotkeyModel hotkey, EventHandler<HotkeyEventArgs> handler)
@@ -116,19 +129,17 @@ namespace Pinpoint.Win.View
             set => DataContext = value;
         }
 
-        public void OnSystemClipboardCopy([CanBeNull] object sender, HotkeyEventArgs e)
-        {
-            var entry = new TextClipboardEntry
-            {
-                Title = Clipboard.GetText().Trim(),
-                Content = Clipboard.GetText()
-            };
-            _pluginEngine.PluginByType<ClipboardManagerPlugin>().ClipboardHistory.AddFirst(entry);
-        }
-
         public async void OnSystemClipboardPaste([CanBeNull] object sender, HotkeyEventArgs e)
         {
-            await AwaitAddEnumerable(_pluginEngine.PluginByType<ClipboardManagerPlugin>().Process(null));
+            var plugin = _pluginEngine.PluginByType<ClipboardManagerPlugin>();
+            if (plugin.ClipboardHistory.Count == 0)
+            {
+                return;
+            }
+
+            // Remove old results and add clipboard history content
+            Model.Results.Clear();
+            await AwaitAddEnumerable(plugin.Process(null));
 
             if (Visibility != Visibility.Visible)
             {
@@ -395,6 +406,7 @@ namespace Pinpoint.Win.View
 
             await foreach (var result in enumerable)
             {
+                Debug.WriteLine("x"+result);
                 var didAdd = Model.Results.TryAdd(result);
 
                 // If one of first 9 results, set keyboard shortcut for result

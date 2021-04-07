@@ -6,6 +6,11 @@ namespace Pinpoint.Plugin.ClipboardManager
     {
         public new void AddFirst(IClipboardEntry entry)
         {
+            if (Contains(entry))
+            {
+                return;
+            }
+
             if (Count > 10)
             {
                 RemoveLast();
