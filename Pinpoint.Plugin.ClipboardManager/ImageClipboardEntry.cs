@@ -1,18 +1,16 @@
 ﻿using System;
+using System.Drawing;
 
 namespace Pinpoint.Plugin.ClipboardManager
 {
-    public class TextClipboardEntry : IClipboardEntry
+    public class ImageClipboardEntry : IClipboardEntry
     {
-        public TextClipboardEntry()
+        public ImageClipboardEntry()
         {
             Copied = DateTime.Now;
         }
-
         public string Title { get; set; }
-
-        public string Content { get; set; }
-        
+        public Image Content { get; set; }
         public DateTime Copied { get; set; }
     }
 }

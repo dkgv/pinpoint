@@ -77,12 +77,20 @@ namespace Pinpoint.Win.View
 
         private void ClipboardOnClipboardChanged([CanBeNull] object sender, SharpClipboard.ClipboardChangedEventArgs e)
         {
-            var entry = new TextClipboardEntry
+            IClipboardEntry entry = e.ContentType switch
             {
-                Title = _clipboard.ClipboardText.Trim().Replace("\n", ""),
-                Content = _clipboard.ClipboardText
+                SharpClipboard.ContentTypes.Text => new TextClipboardEntry
+                {
+                    Title = _clipboard.ClipboardText.Trim().Replace("\n", ""), Content = _clipboard.ClipboardText
+                },
+                SharpClipboard.ContentTypes.Image => new ImageClipboardEntry
+                {
+                    Title = $"Image - Copied {DateTime.Now.ToShortDateString()}", Content = _clipboard.ClipboardImage
+                },
+                _ => null
             };
-            _pluginEngine.PluginByType<ClipboardManagerPlugin>().ClipboardHistory.AddFirst(entry);
+            if(entry != null)
+                _pluginEngine.PluginByType<ClipboardManagerPlugin>().ClipboardHistory.AddFirst(entry);
         }
 
         private void RegisterHotkey(string identifier, HotkeyModel hotkey, EventHandler<HotkeyEventArgs> handler)
