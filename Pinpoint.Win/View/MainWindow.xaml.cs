@@ -509,7 +509,7 @@ namespace Pinpoint.Win.View
 
         private void AdjustQueryToHistory(bool older)
         {
-            var next = older ? _queryHistory.Current.Next : _queryHistory.Current.Previous;
+            var next = older ? _queryHistory.Current?.Next : _queryHistory.Current?.Previous;
 
             if (next != null)
             {
