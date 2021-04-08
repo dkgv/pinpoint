@@ -10,7 +10,9 @@ namespace Pinpoint.Plugin.ClipboardManager
             Copied = DateTime.Now;
         }
         public string Title { get; set; }
+        
         public Image Content { get; set; }
+        
         public DateTime Copied { get; set; }
     }
 }

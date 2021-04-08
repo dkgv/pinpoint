@@ -21,10 +21,7 @@ namespace Pinpoint.Plugin.ClipboardManager
             ClipboardHistory.Clear();
         }
 
-        public async Task<bool> Activate(Query query)
-        {
-            return query.RawQuery.StartsWith("clip");
-        }
+        public async Task<bool> Activate(Query query) => false;
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
