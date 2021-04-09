@@ -11,9 +11,10 @@ namespace Pinpoint.Plugin.Calculator
 {
     public class CalculatorPlugin : IPlugin
     {
+        private const string Description = "Evaluate mathematical expressions quickly.\n\nExamples: \"9+5*(123/5)\"";
         private static readonly Regex MathPattern = new Regex(@"([-+]?[0-9]*\.?[0-9]+[\/\+\-\*])+([-+]?[0-9]*\.?[0-9]+)");
         
-        public PluginMeta Meta { get; set; } = new PluginMeta("Calculator", PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Calculator", Description, PluginPriority.Highest);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 

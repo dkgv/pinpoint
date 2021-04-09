@@ -13,17 +13,17 @@ namespace Pinpoint.Plugin.Reddit
 {
     public class RedditPlugin: IPlugin
     {
-        private readonly Dictionary<string, CacheValue> _resultCache =
-            new Dictionary<string, CacheValue>();
+        private readonly Dictionary<string, CacheValue> _resultCache = new Dictionary<string, CacheValue>();
         private static readonly Regex SubRedditRegex = new Regex(@"^r\/[0-9a-zA-z]+$");
         private const int CacheExpirationTimeInMinutes = 5;
+        private const string Description = "Browse your favorite subreddits.\n\nExamples: \"r/news\", \"r/news top\", \"r/news top week\"";
 
         private readonly HttpClient _httpClient = new HttpClient
         {
             BaseAddress = new Uri("https://reddit.com", UriKind.Absolute)
         };
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Reddit plugin", PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Reddit Browser", Description, PluginPriority.Highest);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
@@ -51,13 +51,13 @@ namespace Pinpoint.Plugin.Reddit
 
             foreach (var part in query.Parts.Skip(1))
             {
-                if (!int.TryParse(part, out _) && Enum.TryParse(part, ignoreCase: true, out RedditQuerySorting _))
+                if (!int.TryParse(part, out _) && Enum.TryParse(part, true, out RedditQuerySorting _))
                 {
                     sorting = part;
                     validParts++;
                 }
 
-                if (!int.TryParse(part, out _) && Enum.TryParse(part, ignoreCase: true, out RedditQueryInterval _))
+                if (!int.TryParse(part, out _) && Enum.TryParse(part, true, out RedditQueryInterval _))
                 {
                     interval = part;
                     validParts++;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Pinpoint.Core;
@@ -9,6 +8,8 @@ namespace Pinpoint.Plugin.Notes
 {
     public class NotesPlugin : IPlugin
     {
+        private const string Description = "Create and view quick notes.\n\nExamples: \"n+ a new note\", \"nls\" or \"notes\" to list existing notes";
+
         private static readonly string[] Actions = {
             // List notes
             "nls",
@@ -25,7 +26,7 @@ namespace Pinpoint.Plugin.Notes
             _notesManager = NotesManager.GetInstance();
         }
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Notes Plugin", PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Notes Plugin", Description, PluginPriority.Highest);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 

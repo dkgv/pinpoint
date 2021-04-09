@@ -7,7 +7,9 @@ namespace Pinpoint.Plugin.Bangs
 {
     public class BangsPlugin : IPlugin
     {
-        public PluginMeta Meta { get; set; } = new PluginMeta("DuckDuckGo !Bangs", PluginPriority.Highest);
+        private const string Description = "Search 10.000+ websites directly via DuckDuckGo bangs.\n\nExamples: \"breaking bad !imdb\", \"diameter of the earth !g\"";
+
+        public PluginMeta Meta { get; set; } = new PluginMeta("DuckDuckGo !Bangs", Description, PluginPriority.Highest);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 

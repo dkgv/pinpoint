@@ -255,7 +255,7 @@ namespace Pinpoint.Win.View
             var pluginTabItem = new PluginTabItem(plugin);
             if (plugin.UserSettings.Count == 0)
             {
-                pluginTabItem.Separator.Visibility = pluginTabItem.LblSettings.Visibility = pluginTabItem.PluginSettings.Visibility = Visibility.Hidden;
+                pluginTabItem.LblSettings.Visibility = pluginTabItem.PluginSettings.Visibility = Visibility.Hidden;
             }
             TbCtrl.Items.Insert(TbCtrl.Items.Count - 1, pluginTabItem);
         }

@@ -12,7 +12,7 @@
             Enabled = enabled;
         }
 
-        public PluginMeta(string name, PluginPriority priority, bool enabled = true) : this(name, string.Empty, priority, enabled)
+        public PluginMeta(string name, PluginPriority priority, bool enabled = true) : this(name, "This plugin does not have a description yet.", priority, enabled)
         {
         }
 
