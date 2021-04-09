@@ -29,7 +29,7 @@ namespace Pinpoint.Plugin.Finance
             }
 
             var ticker = query.Parts[0].Substring(1);
-            return ticker.All(ch => char.IsLetter(ch) || ch == '.') && ticker.Count(char.IsLetter) >= 2;
+            return ticker.All(ch => char.IsLetter(ch) || ch == '.' || ch == '^') && ticker.Count(char.IsLetter) >= 2;
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
