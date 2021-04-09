@@ -9,7 +9,7 @@
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         mc:Ignorable="d"
         Title="Pinpoint Settings" 
-        Height="450" MinHeight="450" 
+        Height="549" MinHeight="450" 
         Width="587" MinWidth="470" 
         WindowStartupLocation="CenterScreen" Icon="/Icons/Icon.ico">
     
