@@ -23,6 +23,8 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
@@ -41,44 +43,53 @@
                         <CheckBox x:Name="ChbLaunchOnStartup" IsChecked="True" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">Launch Pinpoint at login</CheckBox>
                         -->
 
-                        <Label Grid.Row="1" Grid.Column="1">Pinpoint Hotkey:</Label>
-                        <Grid Grid.Row="1" Grid.Column="2" VerticalAlignment="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                                <ColumnDefinition Width="Auto"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-
-                            <TextBox Grid.Column="0" x:Name="TxtHotkey"
-                                     IsReadOnly="True"
-                                     PreviewKeyDown="TxtHotkey_PreviewKeyDown"
-                                     HorizontalContentAlignment="Center"
-                                     VerticalContentAlignment="Center"
-                                     IsReadOnlyCaretVisible="False"
-                                     IsUndoEnabled="False"
-                                     Text="{Binding Hotkey, Mode=OneWay}"></TextBox>
-                        </Grid>
+                        <Label 
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            HorizontalAlignment="Right">
+                            Pinpoint Visibility Hotkey:
+                        </Label>
+                        <TextBox Grid.Row="1" Grid.Column="2" x:Name="TxtHotkeyToggleVisiblity"
+                                 IsReadOnly="True"
+                                 PreviewKeyDown="TxtHotkey_PreviewKeyDown"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 IsReadOnlyCaretVisible="False"
+                                 IsUndoEnabled="False"
+                                 Text="{Binding HotkeyToggleVisibility, Mode=OneWay}"></TextBox>
                         
-                        <Label Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right">Theme:</Label>
 
-                        <ComboBox Grid.Row="2" Grid.Column="2" x:Name="CbTheme"
-                            ItemsSource="{Binding Themes}"
-                            SelectionChanged="CbTheme_SelectionChanged">
+                        <Label Grid.Row="2" Grid.Column="1">Clipboard Manager Hotkey:</Label>
+                        <TextBox Grid.Row="2" Grid.Column="2" x:Name="TxtHotkeyClipboardManager"
+                                 IsReadOnly="True"
+                                 PreviewKeyDown="TxtHotkeyClipboardManager_OnPreviewKeyDown"
+                                 HorizontalContentAlignment="Center"
+                                 VerticalContentAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 IsReadOnlyCaretVisible="False"
+                                 IsUndoEnabled="False"
+                                 Text="{Binding HotkeyPasteClipboard, Mode=OneWay}"></TextBox>
+                        
+                        <Label Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right">Theme:</Label>
+                        <ComboBox Grid.Row="3" Grid.Column="2" x:Name="CbTheme"
+                                  ItemsSource="{Binding Themes}"
+                                  SelectionChanged="CbTheme_SelectionChanged">
                         </ComboBox>
                         
-                        <Label Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right">Window Location:</Label>
-
-                        <Button Grid.Row="3" Grid.Column="2" x:Name="BtnReCenterWindow" Content="Reset to Default" Click="BtnReCenterWindow_OnClick">
+                        <Label Grid.Row="4" Grid.Column="1" HorizontalAlignment="Right">Window Location:</Label>
+                        <Button Grid.Row="4" Grid.Column="2" x:Name="BtnReCenterWindow" Content="Reset to Default" Click="BtnReCenterWindow_OnClick">
                         </Button>
 
                         <Label x:Name="LblVersion" 
-                               Grid.Row="5" 
+                               Grid.Row="7" 
                                Grid.Column="0"
                                Grid.ColumnSpan="4"
                                HorizontalContentAlignment="Center"
                                Content="Version"/>
 
                         <TextBlock
-                            Grid.Row="6"
+                            Grid.Row="8"
                             Grid.Column="0" 
                             Grid.ColumnSpan="4"
                             HorizontalAlignment="Center">

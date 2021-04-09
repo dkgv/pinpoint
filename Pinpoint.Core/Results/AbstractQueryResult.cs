@@ -21,9 +21,7 @@ namespace Pinpoint.Core.Results
         public string Title { get; set; }
 
         public string Subtitle { get; set; }
-
-        public object Instance { get; }
-
+        
         public string Shortcut { get; set; }
 
         public abstract Bitmap Icon { get; }
@@ -35,7 +33,7 @@ namespace Pinpoint.Core.Results
 
         protected bool Equals(AbstractQueryResult other)
         {
-            return Title == other.Title && Subtitle == other.Subtitle && Equals(Instance, other.Instance);
+            return Title == other.Title && Subtitle == other.Subtitle;
         }
 
         public override bool Equals(object obj)
@@ -60,7 +58,7 @@ namespace Pinpoint.Core.Results
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(Title, Subtitle, Instance);
+            return HashCode.Combine(Title, Subtitle);
         }
     }
 }

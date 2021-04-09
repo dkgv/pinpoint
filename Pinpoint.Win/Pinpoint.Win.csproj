@@ -20,6 +20,7 @@
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.0.8" />
     <PackageReference Include="NHotkey.Wpf" Version="2.1.0" />
     <PackageReference Include="Pranas.ScreenshotCapture" Version="1.0.11" />
+    <PackageReference Include="SharpClipboard" Version="3.5.2" />
     <PackageReference Include="Tesseract" Version="4.1.0-beta1" />
   </ItemGroup>
 
@@ -28,6 +29,7 @@
     <ProjectReference Include="..\Pinpoint.Plugin.AppSearch\Pinpoint.Plugin.AppSearch.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Bangs\Pinpoint.Plugin.Bangs.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Bookmarks\Pinpoint.Plugin.Bookmarks.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.ClipboardManager\Pinpoint.Plugin.ClipboardManager.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.ColorConverter\Pinpoint.Plugin.ColorConverter.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.CommandLine\Pinpoint.Plugin.CommandLine.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.ControlPanel\Pinpoint.Plugin.ControlPanel.csproj" />

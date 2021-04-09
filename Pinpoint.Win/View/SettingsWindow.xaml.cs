@@ -133,7 +133,7 @@ namespace Pinpoint.Win.View
             }
         }
 
-        private void TxtHotkey_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void TxtHotkeyClipboardManager_OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = true;
 
@@ -147,9 +147,10 @@ namespace Pinpoint.Win.View
                 key = e.SystemKey;
             }
 
+            // Clear modifier keys
             if (modifiers == ModifierKeys.None && (key == Key.Delete || key == Key.Back || key == Key.Escape))
             {
-                Model.Hotkey = new HotkeyModel(Key.Space, ModifierKeys.Alt);
+                Model.HotkeyPasteClipboard = new HotkeyModel(Key.V, ModifierKeys.Control & ModifierKeys.Alt);
                 return;
             }
 
@@ -164,9 +165,48 @@ namespace Pinpoint.Win.View
                 return;
             }
 
-            Model.Hotkey = new HotkeyModel(key, modifiers);
-            HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyIdentifier, Model.Hotkey.Key, Model.Hotkey.Modifiers, _mainWindow.OnToggleVisibility);
-            AppSettings.PutAndSave("hotkey", Model.Hotkey);
+            // Save and set new hotkey
+            Model.HotkeyPasteClipboard = new HotkeyModel(key, modifiers);
+            HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyPasteId, Model.HotkeyPasteClipboard.Key, Model.HotkeyPasteClipboard.Modifiers, _mainWindow.OnSystemClipboardPaste);
+            AppSettings.PutAndSave("hotkey_paste_clipboard", Model.HotkeyPasteClipboard);
+        }
+
+        private void TxtHotkey_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            e.Handled = true;
+
+            // Get modifiers and key data
+            var modifiers = Keyboard.Modifiers;
+            var key = e.Key;
+
+            // When Alt is pressed, SystemKey is used instead
+            if (key == Key.System)
+            {
+                key = e.SystemKey;
+            }
+
+            // Clear modifier keys
+            if (modifiers == ModifierKeys.None && (key == Key.Delete || key == Key.Back || key == Key.Escape))
+            {
+                Model.HotkeyToggleVisibility = new HotkeyModel(Key.Space, ModifierKeys.Alt);
+                return;
+            }
+
+            var invalidKeys = new[]
+            {
+                Key.LeftCtrl, Key.RightCtrl, Key.LeftAlt, Key.RightAlt, Key.LeftShift, Key.RightShift, Key.LWin,
+                Key.RWin, Key.Clear, Key.OemClear, Key.Apps
+            };
+
+            if (invalidKeys.Contains(key))
+            {
+                return;
+            }
+
+            // Save and set new hotkey
+            Model.HotkeyToggleVisibility = new HotkeyModel(key, modifiers);
+            HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyToggleVisibilityId, Model.HotkeyToggleVisibility.Key, Model.HotkeyToggleVisibility.Modifiers, _mainWindow.OnToggleVisibility);
+            AppSettings.PutAndSave("hotkey_toggle_visibility", Model.HotkeyToggleVisibility);
         }
 
         public void SnippetAdded(object sender, SnippetsPlugin plugin, AbstractSnippet target)

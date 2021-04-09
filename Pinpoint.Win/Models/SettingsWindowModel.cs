@@ -6,9 +6,13 @@ namespace Pinpoint.Win.Models
 {
     internal class SettingsWindowModel : BaseControlModel
     {
-        private HotkeyModel _hotkey = AppSettings.Contains("hotkey")
-            ? new HotkeyModel(AppSettings.Get<HotkeyModel>("hotkey").Text)
+        private HotkeyModel _hotkeyToggleVisibility = AppSettings.Contains("hotkey_toggle_visibility")
+            ? new HotkeyModel(AppSettings.Get<HotkeyModel>("hotkey_toggle_visibility").Text)
             : new HotkeyModel("Alt + Space");
+
+        private HotkeyModel _hotkeyPasteClipboard = AppSettings.Contains("hotkey_paste_clipboard")
+            ? new HotkeyModel(AppSettings.Get<HotkeyModel>("hotkey_paste_clipboard").Text)
+            : new HotkeyModel("Ctrl + Alt + V");
 
         public ObservableCollection<ThemeModel> Themes { get; } = new ObservableCollection<ThemeModel>(new []
         {
@@ -16,10 +20,16 @@ namespace Pinpoint.Win.Models
             ThemeModel.DarkTheme, 
         });
 
-        public HotkeyModel Hotkey
+        public HotkeyModel HotkeyToggleVisibility
         {
-            get => _hotkey;
-            set => SetProperty(ref _hotkey, value);
+            get => _hotkeyToggleVisibility;
+            set => SetProperty(ref _hotkeyToggleVisibility, value);
+        }
+
+        public HotkeyModel HotkeyPasteClipboard
+        {
+            get => _hotkeyPasteClipboard;
+            set => SetProperty(ref _hotkeyPasteClipboard, value);
         }
         
         public ObservableCollection<TextSnippet> ManualSnippets { get; } = new ObservableCollection<TextSnippet>();
