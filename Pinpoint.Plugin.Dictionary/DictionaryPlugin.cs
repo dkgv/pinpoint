@@ -13,9 +13,11 @@ namespace Pinpoint.Plugin.Dictionary
 {
     public class DictionaryPlugin : IPlugin
     {
+        private const string Description = "Find word definitions.\n\nExamples: \"cool meaning\", \"nice def\", \"sweet definition\"";
+
         private static readonly Regex DefineRegex = new Regex(@"(meaning|def|define|definition)$");
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Dictionary", PluginPriority.Standard);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Dictionary", Description, PluginPriority.Standard);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 

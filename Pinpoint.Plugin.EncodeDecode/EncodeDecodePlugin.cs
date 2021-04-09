@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Pinpoint.Core.Results;
@@ -9,7 +8,7 @@ namespace Pinpoint.Plugin.EncodeDecode
 {
     public class EncodeDecodePlugin: IPlugin
     {
-        private readonly string[] _prefixes = new[] {"bin", "hex", "b64"};
+        private readonly string[] _prefixes = {"bin", "hex", "b64"};
         
         public PluginMeta Meta { get; set; } = new PluginMeta("Encode/Decode Plugin", PluginPriority.NextHighest);
 

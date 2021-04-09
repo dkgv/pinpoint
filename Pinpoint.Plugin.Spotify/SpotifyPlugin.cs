@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
@@ -10,12 +8,17 @@ namespace PinPoint.Plugin.Spotify
 {
     public class SpotifyPlugin : IPlugin
     {
-        private readonly HashSet<string> _keywords = new HashSet<string> {"album", "artist", "episode", "play", "playlist", "show", "skip", "next", "prev", "back", "pause"};
+        private readonly HashSet<string> _keywords = new HashSet<string>
+        {
+            "album", "artist", "episode", "play", "playlist", "show", "skip", "next", "prev", "back", "pause"
+        };
         private readonly AuthenticationManager _authManager = new AuthenticationManager();
         private readonly SpotifyClient _spotifyClient = SpotifyClient.GetInstance();
         private bool _isAuthenticated;
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Spotify Controller", PluginPriority.Highest);
+        private const string Description = "Control Spotify without leaving your workflow. Requires sign-in on first use.\n\nExamples: \"album <name>\", \"artist <name>\", \"episode <name>\", \"play <name>\", \"playlist <name>\", \"show <name>\", \"skip\", \"next\", \"prev\", \"back\", \"pause\"";
+
+        public PluginMeta Meta { get; set; } = new PluginMeta("Spotify Controller", Description, PluginPriority.Highest);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 

@@ -12,6 +12,7 @@
         Height="450" MinHeight="450" 
         Width="587" MinWidth="470" 
         WindowStartupLocation="CenterScreen" Icon="/Icons/Icon.ico">
+    
     <Border Margin="5">
         <TabControl Name="TbCtrl" TabStripPlacement="Left">
             <!-- General settings -->

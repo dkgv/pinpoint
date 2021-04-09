@@ -9,9 +9,11 @@ namespace Pinpoint.Plugin.Finance
 {
     public class FinancePlugin : IPlugin
     {
+        private const string Description = "Look up stock tickers.\n\nExamples: \"$GME\", \"$MSFT\"";
+
         private readonly YahooFinanceApi _yahooFinanceApi = new YahooFinanceApi(TimeSpan.FromMinutes(2));
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Finance Plugin", PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Finance Plugin", Description, PluginPriority.Highest);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 

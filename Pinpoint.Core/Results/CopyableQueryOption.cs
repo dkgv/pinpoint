@@ -5,16 +5,16 @@ namespace Pinpoint.Core.Results
 {
     public class CopyabableQueryOption : AbstractFontAwesomeQueryResult
     {
-        private readonly string _clipboardContent;
+        public readonly string Content;
         
         public CopyabableQueryOption(string title, string content) : base(title, "Copy content to clipboard")
         {
-            _clipboardContent = content;
+            Content = content;
         }
 
         public CopyabableQueryOption(string content) : base(content, "Copy content to clipboard")
         {
-            _clipboardContent = content;
+            Content = content;
         }
         
         public override EFontAwesomeIcon FontAwesomeIcon { get; } = EFontAwesomeIcon.Regular_Copy;
@@ -29,7 +29,7 @@ namespace Pinpoint.Core.Results
                 }
             };
             clipboardExecutable.Start();
-            clipboardExecutable.StandardInput.Write(_clipboardContent);
+            clipboardExecutable.StandardInput.Write(Content);
             clipboardExecutable.StandardInput.Close();
         }
     }
