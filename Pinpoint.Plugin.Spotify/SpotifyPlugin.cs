@@ -15,7 +15,7 @@ namespace PinPoint.Plugin.Spotify
         private readonly SpotifyClient _spotifyClient = SpotifyClient.GetInstance();
         private bool _isAuthenticated;
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Spotify Controller");
+        public PluginMeta Meta { get; set; } = new PluginMeta("Spotify Controller", PluginPriority.Highest);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
