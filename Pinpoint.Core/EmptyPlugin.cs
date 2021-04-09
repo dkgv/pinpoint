@@ -11,8 +11,6 @@ namespace Pinpoint.Core
         public PluginMeta Meta { get; set; }
 
         public PluginSettings UserSettings { get; set; }
-        
-        public bool TryLoad() => true;
 
         public void Unload()
         {

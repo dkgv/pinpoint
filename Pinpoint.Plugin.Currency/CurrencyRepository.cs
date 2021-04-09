@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
 
@@ -12,10 +14,12 @@ namespace Pinpoint.Plugin.Currency
     {
         private readonly HashSet<string> _validIsos = new HashSet<string>();
 
-        public CurrencyRepository()
+        public async Task LoadCurrenciesInitial()
         {
-            CacheFiatRatesEurBase();
-            CacheCryptoRates();
+            await CacheFiatRatesEurBase().ConfigureAwait(false);
+            await CacheCryptoRates().ConfigureAwait(false);
+
+            //await Task.WhenAll(cacheFiatRatesTask, cacheCryptoRatesTask);
 
             foreach (var (@base, model) in CurrencyModels)
             {
@@ -81,14 +85,18 @@ namespace Pinpoint.Plugin.Currency
             return 1;
         }
 
-        private void CacheFiatRatesEurBase()
+        private async Task CacheFiatRatesEurBase()
         {
             // Load exchange rates
             var url = "http://getpinpoint.herokuapp.com/api/currency";
             try
             {
-                using var client = new WebClient();
-                var json = client.DownloadString(url);
+                using var httpClient = new HttpClient();
+                var response = await httpClient.GetAsync(url).ConfigureAwait(false);
+                var json = await response.Content.ReadAsStringAsync();
+
+                //using var client = new WebClient();
+                //var json = client.DownloadString(url);
                 CurrencyModels["EUR"] = JsonConvert.DeserializeObject<CurrencyModel>(json);
             }
             catch (WebException)
@@ -97,7 +105,7 @@ namespace Pinpoint.Plugin.Currency
             }
         }
 
-        private void CacheCryptoRates()
+        private async Task CacheCryptoRates()
         {
             CurrencyModel PopulateModel(string ticker, double usdPrice)
             {
@@ -116,8 +124,9 @@ namespace Pinpoint.Plugin.Currency
                 return model;
             }
 
+            var htmlWeb = new HtmlWeb();
             const string url = "https://coinmarketcap.com/";
-            var doc = new HtmlWeb().Load(url);
+            var doc = await htmlWeb.LoadFromWebAsync(url).ConfigureAwait(false);
 
             const string xpath = "/html/body/div[1]/div/div[2]/div/div/div[2]/table";
             var table = doc.DocumentNode.SelectSingleNode(xpath);

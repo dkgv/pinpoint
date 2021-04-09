@@ -16,8 +16,8 @@ namespace Pinpoint.Plugin.PasswordGenerator
             "abcdefgijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ1234567890+#¤%&/()=@£$€{[]}?<>".ToCharArray();
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Password generator", PluginPriority.Highest);
+
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
-        public bool TryLoad() => true;
 
         public void Unload() { }
 

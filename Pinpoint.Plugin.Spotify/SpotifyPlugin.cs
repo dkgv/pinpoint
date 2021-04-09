@@ -19,13 +19,16 @@ namespace PinPoint.Plugin.Spotify
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
-        public bool TryLoad()
+        public bool IsLoaded { get; set; }
+
+        public Task<bool> TryLoad()
         {
             var settings = AppSettings.GetOrDefault("spotify", new SpotifyPluginSettings());
 
             _isAuthenticated = !string.IsNullOrWhiteSpace(settings.RefreshToken);
 
-            return true;
+            IsLoaded = true;
+            return Task.FromResult(IsLoaded);
         }
 
         public void Unload()

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
-using Microsoft.Win32;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
 
@@ -18,19 +16,22 @@ namespace Pinpoint.Plugin.Bookmarks
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
-        public bool TryLoad()
+        public bool IsLoaded { get; set; }
+
+        public async Task<bool> TryLoad()
         {
             foreach (var browserType in Enum.GetValues(typeof(BrowserType)).Cast<BrowserType>())
             {
-                var _bookmarkExtractor = MapBrowserTypeToExtractor(browserType);
-                foreach (var bookmarkModel in _bookmarkExtractor.Extract())
+                var bookmarkExtractor = MapBrowserTypeToExtractor(browserType);
+                foreach (var bookmarkModel in await bookmarkExtractor.Extract().ConfigureAwait(false))
                 {
                     var tuple = new Tuple<BrowserType, AbstractBookmarkModel>(browserType, bookmarkModel);
                     _trie.Add(bookmarkModel.Name.ToLower(), tuple);
                 }
             }
 
-            return true;
+            IsLoaded = true;
+            return IsLoaded;
         }
 
         public void Unload()

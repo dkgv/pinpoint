@@ -27,7 +27,9 @@ namespace Pinpoint.Plugin.Snippets
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
-        public bool TryLoad()
+        public bool IsLoaded { get; set; }
+
+        public Task<bool> TryLoad()
         {
             void LoadSnippets<T>(string key) where T : AbstractSnippet
             {
@@ -45,7 +47,8 @@ namespace Pinpoint.Plugin.Snippets
             LoadSnippets<TextSnippet>(TextSnippetsKey);
             LoadSnippets<OcrTextSnippet>(OcrSnippetsKey);
 
-            return true;
+            IsLoaded = true;
+            return Task.FromResult(IsLoaded);
         }
 
         public bool AddSnippet(object sender, AbstractSnippet snippet)

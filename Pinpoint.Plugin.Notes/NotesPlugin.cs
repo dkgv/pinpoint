@@ -29,8 +29,6 @@ namespace Pinpoint.Plugin.Notes
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
-        public bool TryLoad() => true;
-
         public void Unload() { }
 
         public async Task<bool> Activate(Query query)

@@ -18,8 +18,9 @@ namespace Pinpoint.Plugin.Currency
         public PluginMeta Meta { get; set; } = new PluginMeta("Currency Converter", PluginPriority.Highest);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public bool IsLoaded { get; set; }
 
-        public bool TryLoad()
+        public async Task<bool> TryLoad()
         {
             string baseCurrency;
             try
@@ -35,8 +36,10 @@ namespace Pinpoint.Plugin.Currency
             UserSettings.Put(BaseCurrencyId, baseCurrency);
 
             _currencyRepo = new CurrencyRepository();
-            
-            return true;
+            await _currencyRepo.LoadCurrenciesInitial().ConfigureAwait(false);
+
+            IsLoaded = true;
+            return IsLoaded;
         }
 
         public void Unload()

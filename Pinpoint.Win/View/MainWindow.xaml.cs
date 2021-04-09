@@ -111,29 +111,34 @@ namespace Pinpoint.Win.View
             }
         }
 
-        private void LoadPlugins()
+        private async Task LoadPlugins()
         {
-            _pluginEngine.AddPlugin(new EverythingPlugin());
-            _pluginEngine.AddPlugin(new AppSearchPlugin());
-            _pluginEngine.AddPlugin(new ControlPanelPlugin());
-            _pluginEngine.AddPlugin(new CalculatorPlugin());
-            _pluginEngine.AddPlugin(new CurrencyPlugin());
-            _pluginEngine.AddPlugin(new MetricConverterPlugin());
-            _pluginEngine.AddPlugin(new BangsPlugin());
-            _pluginEngine.AddPlugin(new DictionaryPlugin());
-            _pluginEngine.AddPlugin(new CommandLinePlugin());
-            _pluginEngine.AddPlugin(new SnippetsPlugin(_settingsWindow));
-            _pluginEngine.AddPlugin(new SpotifyPlugin());
-            _pluginEngine.AddPlugin(new EncodeDecodePlugin());
-            _pluginEngine.AddPlugin(new FinancePlugin());
-            _pluginEngine.AddPlugin(new HackerNewsPlugin());
-            _pluginEngine.AddPlugin(new BookmarksPlugin());
-            _pluginEngine.AddPlugin(new RedditPlugin());
-            _pluginEngine.AddPlugin(new NotesPlugin());
-            _pluginEngine.AddPlugin(new ColorConverterPlugin());
-            _pluginEngine.AddPlugin(new UrlLauncherPlugin());
-            _pluginEngine.AddPlugin(new PasswordGeneratorPlugin());
-            _pluginEngine.AddPlugin(new ClipboardManagerPlugin());
+            var addPluginTasks = new List<Task>
+            {
+                _pluginEngine.AddPlugin(new EverythingPlugin()),
+                _pluginEngine.AddPlugin(new AppSearchPlugin()),
+                _pluginEngine.AddPlugin(new ControlPanelPlugin()),
+                _pluginEngine.AddPlugin(new CalculatorPlugin()),
+                _pluginEngine.AddPlugin(new CurrencyPlugin()),
+                _pluginEngine.AddPlugin(new MetricConverterPlugin()),
+                _pluginEngine.AddPlugin(new BangsPlugin()),
+                _pluginEngine.AddPlugin(new DictionaryPlugin()),
+                _pluginEngine.AddPlugin(new CommandLinePlugin()),
+                _pluginEngine.AddPlugin(new SnippetsPlugin(_settingsWindow)),
+                _pluginEngine.AddPlugin(new SpotifyPlugin()),
+                _pluginEngine.AddPlugin(new EncodeDecodePlugin()),
+                _pluginEngine.AddPlugin(new FinancePlugin()),
+                _pluginEngine.AddPlugin(new HackerNewsPlugin()),
+                _pluginEngine.AddPlugin(new BookmarksPlugin()),
+                _pluginEngine.AddPlugin(new RedditPlugin()),
+                _pluginEngine.AddPlugin(new NotesPlugin()),
+                _pluginEngine.AddPlugin(new ColorConverterPlugin()),
+                _pluginEngine.AddPlugin(new UrlLauncherPlugin()),
+                _pluginEngine.AddPlugin(new PasswordGeneratorPlugin()),
+                _pluginEngine.AddPlugin(new ClipboardManagerPlugin())
+            };
+
+            await Task.WhenAll(addPluginTasks).ConfigureAwait(false);
         }
 
         internal MainWindowModel Model

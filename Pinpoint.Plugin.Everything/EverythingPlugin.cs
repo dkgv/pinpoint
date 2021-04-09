@@ -27,12 +27,15 @@ namespace Pinpoint.Plugin.Everything
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
+        public bool IsLoaded { get; set; }
+
         private IEverythingClient _everything;
 
-        public bool TryLoad()
+        public Task<bool> TryLoad()
         {
             _everything = new EverythingClient(new DefaultSearchConfig());
-            return true;
+            IsLoaded = true;
+            return Task.FromResult(IsLoaded);
         }
 
         public void Unload()

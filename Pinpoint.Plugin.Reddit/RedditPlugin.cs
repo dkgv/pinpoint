@@ -27,8 +27,6 @@ namespace Pinpoint.Plugin.Reddit
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
-        public bool TryLoad() => true;
-
         public void Unload()
         {
             _httpClient?.Dispose();

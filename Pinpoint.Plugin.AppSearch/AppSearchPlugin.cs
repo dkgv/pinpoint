@@ -20,7 +20,9 @@ namespace Pinpoint.Plugin.AppSearch
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
-        public bool TryLoad()
+        public bool IsLoaded { get; set; }
+
+        public Task<bool> TryLoad()
         {
             AppSearchFrequency.Load();
 
@@ -49,8 +51,9 @@ namespace Pinpoint.Plugin.AppSearch
                     _trie.Add(fuzz, file);
                 }
             }
-            
-            return true;
+
+            IsLoaded = true;
+            return Task.FromResult(IsLoaded);
         }
 
         private List<string> LoadFileList()
