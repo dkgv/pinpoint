@@ -388,14 +388,13 @@ namespace Pinpoint.Win.View
                 return;
             }
 
-            Model.Results.Clear();
-
             var query = new Query(TxtQuery.Text.Trim());
-
             if (query.IsEmpty)
             {
                 return;
             }
+
+            Model.Results.Clear();
 
             _cts = new CancellationTokenSource();
             await AwaitAddEnumerable(_pluginEngine.Process(query, _cts.Token));
@@ -414,7 +413,6 @@ namespace Pinpoint.Win.View
 
             await foreach (var result in enumerable)
             {
-                Debug.WriteLine("x"+result);
                 var didAdd = Model.Results.TryAdd(result);
 
                 // If one of first 9 results, set keyboard shortcut for result
@@ -536,32 +534,38 @@ namespace Pinpoint.Win.View
 
             var selection = Model.Results[LstResults.SelectedIndex];
 
-            if (selection is SnippetQueryResult result)
+            switch (selection)
             {
-                switch (result.Instance)
-                {
-                    case OcrTextSnippet s:
-                        var ocrSnippetWindow = new OcrSnippetWindow(_pluginEngine, s);
-                        ocrSnippetWindow.Show();
-                        break;
+                case SnippetQueryResult result:
+                    switch (result.Instance)
+                    {
+                        case OcrTextSnippet s:
+                            var ocrSnippetWindow = new OcrSnippetWindow(_pluginEngine, s);
+                            ocrSnippetWindow.Show();
+                            break;
 
-                    case TextSnippet s:
-                        var textSnippetWindow = new TextSnippetWindow(_pluginEngine, s);
-                        textSnippetWindow.Show();
-                        break;
+                        case TextSnippet s:
+                            var textSnippetWindow = new TextSnippetWindow(_pluginEngine, s);
+                            textSnippetWindow.Show();
+                            break;
 
-                    case FileSnippet s:
-                        Process.Start(s.FilePath);
-                        break;
-                }
-            }
-            else
-            {
-                selection.OnSelect();
+                        case FileSnippet s:
+                            Process.Start(s.FilePath);
+                            break;
+                    }
+                    break;
+
+                case ClipboardResult _:
+                    Model.Results.Clear();
+                    selection.OnSelect();
+                    break;
+
+                default:
+                    selection.OnSelect();
+                    break;
             }
 
             _showingOptionsForIndex = -1;
-
             Hide();
         }
 
