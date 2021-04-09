@@ -3,6 +3,7 @@ using FontAwesome5;
 using Pinpoint.Core.Results;
 using System.Windows.Forms;
 using System.Windows.Input;
+using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.ClipboardManager
 {
@@ -21,26 +22,16 @@ namespace Pinpoint.Plugin.ClipboardManager
             {
                 case TextClipboardEntry textEntry:
                     Clipboard.SetText(textEntry.Content);
-                    PasteContent();
                     break;
                 
                 case ImageClipboardEntry imageEntry:
                     Clipboard.SetImage(imageEntry.Content);
-                    PasteContent();
                     break;
             }
+
+            ClipboardHelper.PasteClipboard();
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Regular_Copy;
-
-        
-        public static void PasteContent()
-        {
-            Task.Run(async () =>
-            {
-                await Task.Delay(100);
-                SendKeys.SendWait("^{v}");
-            });
-        }
     }
 }
