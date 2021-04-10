@@ -28,12 +28,12 @@ namespace Pinpoint.Plugin.Weather
 
         public async Task<bool> Activate(Query query)
         {
-            return query.Parts.Length == 2 && query.Parts[0].ToLower().Equals("weather");
+            return query.Parts.Length >= 2 && query.Parts[0].ToLower().Equals("weather");
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
-            var location = query.Parts[1];
+            var location = string.Join(" ", query.Parts[1..]);
 
             if (_weatherCache.ContainsKey(location))
             {
