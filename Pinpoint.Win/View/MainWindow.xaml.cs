@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -34,6 +33,7 @@ using Pinpoint.Plugin.Reddit;
 using Pinpoint.Win.Models;
 using PinPoint.Plugin.Spotify;
 using Pinpoint.Plugin.UrlLauncher;
+using Pinpoint.Plugin.Weather;
 using Pinpoint.Win.Annotations;
 using WK.Libraries.SharpClipboardNS;
 using Application = System.Windows.Application;
@@ -135,7 +135,8 @@ namespace Pinpoint.Win.View
                 _pluginEngine.AddPlugin(new ColorConverterPlugin()),
                 _pluginEngine.AddPlugin(new UrlLauncherPlugin()),
                 _pluginEngine.AddPlugin(new PasswordGeneratorPlugin()),
-                _pluginEngine.AddPlugin(new ClipboardManagerPlugin())
+                _pluginEngine.AddPlugin(new ClipboardManagerPlugin()),
+                _pluginEngine.AddPlugin(new WeatherPlugin())
             };
 
             await Task.WhenAll(addPluginTasks).ConfigureAwait(false);
