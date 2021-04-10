@@ -14,8 +14,6 @@ namespace Pinpoint.Plugin.EncodeDecode
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
-        public bool TryLoad() => true;
-        
         public void Unload()
         {
         }

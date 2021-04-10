@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Pinpoint.Plugin.Bookmarks
 {
     public interface IBookmarkExtractor
     {
-        IEnumerable<AbstractBookmarkModel> Extract();
+        Task<IEnumerable<AbstractBookmarkModel>> Extract();
     }
 }

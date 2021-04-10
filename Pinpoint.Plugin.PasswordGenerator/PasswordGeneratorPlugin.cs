@@ -17,8 +17,6 @@ namespace Pinpoint.Plugin.PasswordGenerator
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
-        public bool TryLoad() => true;
-
         public void Unload() { }
 
         public Task<bool> Activate(Query query)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -16,25 +17,22 @@ namespace Pinpoint.Plugin.Bookmarks
             _locator = locator;
         }
 
-        public IEnumerable<AbstractBookmarkModel> Extract()
+        public async Task<IEnumerable<AbstractBookmarkModel>> Extract()
         {
             var jsonFile = _locator.Locate();
             if (string.IsNullOrEmpty(jsonFile) || !File.Exists(jsonFile))
             {
-                yield break;
+                return new List<AbstractBookmarkModel>();
             }
 
-            var jsonContent = File.ReadAllText(jsonFile);
+            var jsonContent = await File.ReadAllTextAsync(jsonFile).ConfigureAwait(false);
             var json = JObject.Parse(jsonContent)["roots"]["bookmark_bar"]["children"].ToArray();
             if (json.Length == 0)
             {
-                yield break;
+                return new List<AbstractBookmarkModel>();
             }
 
-            foreach (var bookmark in json)
-            {
-                yield return JsonConvert.DeserializeObject<ChromeBookmarkModel>(bookmark.ToString());
-            }
+            return json.Select(bookmark => JsonConvert.DeserializeObject<ChromeBookmarkModel>(bookmark.ToString()));
         }
 
         private class ChromeBookmarkModel : AbstractBookmarkModel

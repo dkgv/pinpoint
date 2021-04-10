@@ -14,7 +14,7 @@ namespace Pinpoint.Core
 
         public List<IPluginListener<IPlugin, object>> Listeners { get; } = new List<IPluginListener<IPlugin, object>>();
 
-        public void AddPlugin(IPlugin toAdd)
+        public async Task AddPlugin(IPlugin toAdd)
         {
             // Disallow duplicate plugins
             if (Plugins.Contains(toAdd))
@@ -22,8 +22,9 @@ namespace Pinpoint.Core
                 return;
             }
 
+            var pluginCouldLoad = await toAdd.TryLoad();
             // Don't add plugin if it fails to load
-            if (!toAdd.TryLoad())
+            if (!pluginCouldLoad)
             {
                 return;
             }
@@ -61,7 +62,7 @@ namespace Pinpoint.Core
         {
             var numResults = 0;
 
-            foreach (var plugin in Plugins.Where(p => p.Meta.Enabled))
+            foreach (var plugin in Plugins.Where(p => p.Meta.Enabled && p.IsLoaded))
             {
                 if (numResults >= 30)
                 {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 
 namespace Pinpoint.Plugin.Bookmarks
@@ -16,32 +17,38 @@ namespace Pinpoint.Plugin.Bookmarks
             _locator = locator;
         }
 
-        public IEnumerable<AbstractBookmarkModel> Extract()
+        public async Task<IEnumerable<AbstractBookmarkModel>> Extract()
         {
+            var result = new List<AbstractBookmarkModel>();
+
             var databasePath = _locator.Locate();
             if (string.IsNullOrEmpty(databasePath) || !File.Exists(databasePath))
             {
-                yield break;
+                return result;
             }
 
-            using var connection = new SqliteConnection("Data Source=" + databasePath);
+            await using var connection = new SqliteConnection("Data Source=" + databasePath);
             connection.Open();
 
             var command = connection.CreateCommand();
             command.CommandText = SqlQuery;
 
-            using var reader = command.ExecuteReader();
+            await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
             while (reader.Read())
             {
                 var name = reader.GetString(0);
                 var url = reader.GetString(1);
 
-                yield return new DefaultBookmarkModel
+                var bookmarkModel = new DefaultBookmarkModel
                 {
                     Name = name,
                     Url = url
                 };
+
+                result.Add(bookmarkModel);
             }
+
+            return result;
         }
 
         public class WindowsDatabaseLocator : IBookmarkFileLocator

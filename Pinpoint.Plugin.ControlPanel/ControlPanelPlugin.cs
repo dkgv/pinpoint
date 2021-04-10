@@ -21,7 +21,9 @@ namespace Pinpoint.Plugin.ControlPanel
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
-        public bool TryLoad()
+        public bool IsLoaded { get; set; }
+
+        public Task<bool> TryLoad()
         {
             // Load actual control panel items
             var items = LoadControlPanelItems();
@@ -46,7 +48,8 @@ namespace Pinpoint.Plugin.ControlPanel
                 _controlPanelItems.Add(controlPanelItem.Name.ToLower(), controlPanelItem);
             }
 
-            return true;
+            IsLoaded = true;
+            return Task.FromResult(IsLoaded);
         }
 
         public void Unload()
