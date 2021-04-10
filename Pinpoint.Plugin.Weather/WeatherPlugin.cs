@@ -79,6 +79,10 @@ namespace Pinpoint.Plugin.Weather
             {
                 var weatherDayModel = JsonConvert.DeserializeObject<WeatherDayModel>(token["day"].ToString());
                 weatherDayModel.DayOfWeek = DateTime.Parse(token["date"].ToString()).ToString("ddd").Substring(0, 2);
+                weatherDayModel.Hours = token["hour"]
+                    .Select(t => JsonConvert.DeserializeObject<WeatherHourModel>(t.ToString()))
+                    .ToArray();
+                
                 days.Add(weatherDayModel);
             }
 
