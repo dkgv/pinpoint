@@ -73,20 +73,15 @@ namespace Pinpoint.Plugin.Weather
                 return null;
             }
 
-            var days = new List<WeatherDayModel>();
-            var result = JObject.Parse(httpResponse)["forecast"]["forecastday"].ToArray();
-            foreach (var token in result)
+            return JObject.Parse(httpResponse)["forecast"]["forecastday"].Select(token =>
             {
                 var weatherDayModel = JsonConvert.DeserializeObject<WeatherDayModel>(token["day"].ToString());
                 weatherDayModel.DayOfWeek = DateTime.Parse(token["date"].ToString()).ToString("ddd").Substring(0, 2);
                 weatherDayModel.Hours = token["hour"]
                     .Select(t => JsonConvert.DeserializeObject<WeatherHourModel>(t.ToString()))
                     .ToArray();
-                
-                days.Add(weatherDayModel);
-            }
-
-            return days;
+                return weatherDayModel;
+            }).ToList();
         }
 
 
