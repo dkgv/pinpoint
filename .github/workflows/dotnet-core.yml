@@ -30,8 +30,13 @@ jobs:
       - name: Build Artifact
         run: dotnet publish -c Release Pinpoint.Win/Pinpoint.Win.csproj -o ./ -p:PublishSingleFile=true --self-contained false --runtime win-x64
       
+      - name: Extract Tag Version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        shell: bash
+
       - name: Zip Artifact
-        run: 7z a -zip Pinpoint-${{ github.ref }}.zip Pinpoint.exe
+        run: 7z a -tzip Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip Pinpoint.exe
       
       - name: Create Release
         id: create_release
@@ -42,8 +47,8 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
           body: |
-            Alpha ${{ github.ref }}
-          draft: true
+            Alpha ${{ steps.get_version.outputs.VERSION }}
+          draft: false
           prerelease: true
       
       - name: Upload Release Asset
@@ -53,6 +58,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./Pinpoint-${{ github.ref }}.zip
-          asset_name: Pinpoint-${{ github.ref }}.zip
+          asset_path: ./Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_name: Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
           asset_content_type: application/zip

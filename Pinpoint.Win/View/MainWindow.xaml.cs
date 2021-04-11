@@ -48,13 +48,15 @@ namespace Pinpoint.Win.View
     public partial class MainWindow : Window
     {
         private CancellationTokenSource _cts;
-        private readonly List<AbstractQueryResult> _searchResults = new List<AbstractQueryResult>();
         private int _showingOptionsForIndex = -1;
         private double _offsetFromDefaultX = 0, _offsetFromDefaultY = 0;
         private Point _defaultWindowPosition;
+        private bool _wasModifierKeyDown = false;
+
         private readonly SettingsWindow _settingsWindow;
         private readonly PluginEngine _pluginEngine;
         private readonly QueryHistory _queryHistory;
+        private readonly List<AbstractQueryResult> _searchResults = new List<AbstractQueryResult>();
         private readonly SharpClipboard _clipboard = new SharpClipboard();
         
         public MainWindow()
@@ -229,7 +231,7 @@ namespace Pinpoint.Win.View
         {
         }
 
-        private void TxtQuery_KeyDown(object sender, KeyEventArgs e)
+        private void TxtQuery_OnKeyDown(object sender, KeyEventArgs e)
         {
             var isDigitPressed = (int)e.Key >= 35 && (int)e.Key <= 43;
             var resultIndex = (int)e.Key - 35;
@@ -240,13 +242,23 @@ namespace Pinpoint.Win.View
                 if (isDigitPressed)
                 {
                     LstResults.SelectedIndex = resultIndex;
-                    OpenSelectedResult();
+                    TryOpenSelectedResult();
                 }
 
                 // Check if CTRL+, was pressed
                 if (e.Key == Key.OemComma)
                 {
                     ShowSettingsWindow();
+                }
+
+                // Check if CTRL+UP or CTRL+DOWN was pressed
+                if (e.Key == Key.Up)
+                {
+                    AdjustQueryToHistory(true);
+                }
+                else if (e.Key == Key.Down)
+                {
+                    AdjustQueryToHistory(false);
                 }
             }
             else if (IsAltKeyDown())
@@ -262,32 +274,15 @@ namespace Pinpoint.Win.View
 
                 e.Handled = true;
             }
-        }
 
-        private async void TxtQuery_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (IsCtrlKeyDown())
-            {
-                // Check if CTRL+UP or CTRL+DOWN was pressed
-                if (e.Key == Key.Up)
-                {
-                    AdjustQueryToHistory(true);
-                }
-                else if (e.Key == Key.Down)
-                {
-                    AdjustQueryToHistory(false);
-                }
-                e.Handled = true;
-                return;
-            }
+            _wasModifierKeyDown = Control.ModifierKeys != Keys.None;
 
             switch (e.Key)
             {
                 case Key.Enter:
                     if (LstResults.SelectedIndex >= 0)
                     {
-                        OpenSelectedResult();
-                        TxtQuery.Clear();
+                        TryOpenSelectedResult();
                     }
                     break;
 
@@ -298,28 +293,23 @@ namespace Pinpoint.Win.View
                     }
                     break;
 
-                case Key.LeftAlt:
-                case Key.RightAlt:
-                case Key.Left:
-                case Key.Right:
-                case Key.Up:
-                    break;
-
                 case Key.Escape:
                     if (_showingOptionsForIndex != -1)
                     {
                         HideQueryResultOptions();
                     }
                     break;
-
-                default:
-                    if (_showingOptionsForIndex != -1 && e.Key == Key.System)
-                    {
-                        break;
-                    }
-                    await UpdateResults();
-                    break;
             }
+        }
+
+        private void TxtQuery_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (_wasModifierKeyDown || _showingOptionsForIndex != -1 && e.Key == Key.System)
+            {
+                return;
+            }
+
+            _ = Dispatcher.Invoke(async () => await UpdateResults());
         }
 
         private void TxtQuery_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -388,7 +378,7 @@ namespace Pinpoint.Win.View
         private async Task<bool> StillTyping()
         {
             var text = TxtQuery.Text;
-            await Task.Delay(75);
+            await Task.Delay(150);
             return !TxtQuery.Text.Equals(text);
         }
 
@@ -439,7 +429,7 @@ namespace Pinpoint.Win.View
             switch (e.Key)
             {
                 case Key.Enter:
-                    OpenSelectedResult();
+                    TryOpenSelectedResult();
                     break;
 
                 case Key.Down:
@@ -519,7 +509,6 @@ namespace Pinpoint.Win.View
         private void AdjustQueryToHistory(bool older)
         {
             var next = older ? _queryHistory.Current?.Next : _queryHistory.Current?.Previous;
-
             if (next != null)
             {
                 _queryHistory.Current = next;
@@ -528,23 +517,23 @@ namespace Pinpoint.Win.View
             }
         }
 
-        private bool IsCtrlKeyDown() => Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl);
+        private bool IsCtrlKeyDown() => (Control.ModifierKeys & Keys.Control) == Keys.Control;
 
         private bool IsAltKeyDown() => Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
 
         private void StopSearching() => _cts?.Cancel();
 
-        private void OpenSelectedResult()
+        private void TryOpenSelectedResult()
         {
-            if (LstResults.SelectedItems.Count == 0)
+            if (LstResults.SelectedIndex == -1)
             {
                 return;
             }
 
+            TxtQuery.Clear();
             StopSearching();
 
             var selection = Model.Results[LstResults.SelectedIndex];
-
             switch (selection)
             {
                 case SnippetQueryResult result:
@@ -580,13 +569,7 @@ namespace Pinpoint.Win.View
             Hide();
         }
 
-        private void LstResults_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if (LstResults.SelectedIndex >= 0)
-            {
-                OpenSelectedResult();
-            }
-        }
+        private void LstResults_MouseDoubleClick(object sender, MouseButtonEventArgs e) => TryOpenSelectedResult();
 
         private void ItmSettings_Click(object sender, RoutedEventArgs e) => ShowSettingsWindow();
 
