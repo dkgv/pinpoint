@@ -280,17 +280,7 @@ namespace Pinpoint.Win.View
             switch (e.Key)
             {
                 case Key.Enter:
-                    if (LstResults.SelectedIndex >= 0)
-                    {
-                        TryOpenSelectedResult();
-                    }
-                    break;
-
-                case Key.Down:
-                    if (Model.Results.Count > 0)
-                    {
-                        TxtQuery.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
-                    }
+                    TryOpenSelectedResult();
                     break;
 
                 case Key.Escape:
@@ -309,7 +299,19 @@ namespace Pinpoint.Win.View
                 return;
             }
 
-            _ = Dispatcher.Invoke(async () => await UpdateResults());
+            switch (e.Key)
+            {
+                case Key.Down:
+                    if (Model.Results.Count > 0)
+                    {
+                        TxtQuery.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+                    }
+                    break;
+
+                default:
+                    _ = Dispatcher.Invoke(async () => await UpdateResults());
+                    break;
+            }
         }
 
         private void TxtQuery_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)

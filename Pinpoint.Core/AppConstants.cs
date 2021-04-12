@@ -12,8 +12,7 @@ namespace Pinpoint.Core
         
         public static readonly string HotkeyToggleVisibilityId = "ToggleVisibility";
         public static readonly string HotkeyPasteId = "PasteFromClipboard";
-        public static readonly string HotkeyCopyId = "CopyToClipboard";
 
-        public const string Version = "0.1.6";
+        public const string Version = "0.1.7";
     }
 }
