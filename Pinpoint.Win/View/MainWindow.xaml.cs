@@ -530,10 +530,10 @@ namespace Pinpoint.Win.View
                 return;
             }
 
-            TxtQuery.Clear();
             StopSearching();
-
             var selection = Model.Results[LstResults.SelectedIndex];
+            TxtQuery.Clear();
+            
             switch (selection)
             {
                 case SnippetQueryResult result:
