@@ -279,6 +279,15 @@ namespace Pinpoint.Win.View
 
             switch (e.Key)
             {
+                case Key.Tab:
+                    if (Model.Results.Count > 0)
+                    {
+                        TxtQuery.Text = Model.Results.First().Title;
+                        TxtQuery.CaretIndex = TxtQuery.Text.Length;
+                    }
+                    e.Handled = true;
+                    break;
+
                 case Key.Enter:
                     TryOpenSelectedResult();
                     break;

@@ -102,7 +102,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         
-                        <xctk:IconButton Grid.Column="0" Margin="5 0 0 0" x:Name="SearchLogo" HorizontalAlignment="Left" Background="{x:Null}" BorderBrush="{x:Null}" MouseOverBackground="{x:Null}" MouseOverBorderBrush="{x:Null}" MousePressedBorderBrush="{x:Null}" MousePressedBackground="{x:Null}">
+                        <xctk:IconButton Focusable="False" Grid.Column="0" Margin="5 0 0 0" x:Name="SearchLogo" HorizontalAlignment="Left" Background="{x:Null}" BorderBrush="{x:Null}" MouseOverBackground="{x:Null}" MouseOverBorderBrush="{x:Null}" MousePressedBorderBrush="{x:Null}" MousePressedBackground="{x:Null}">
                             <xctk:IconButton.Icon>
                                 <fa5:ImageAwesome Height="26" Icon="Solid_Search" Foreground="#FF575757"></fa5:ImageAwesome>
                             </xctk:IconButton.Icon>
