@@ -24,6 +24,7 @@ Pinpoint is an extensible keystroke launcher written in C# (.NET Core).
 | Bangs                    | Search on websites directly with the 10.000+ [DuckDuckGo !Bang](https://duckduckgo.com/bang) operators | ![](https://i.imgur.com/pbF7sZB.png) |
 | Bookmarks                | Search in bookmarks from your default browser (Brave, Chrome, Firefox) | ![](https://i.imgur.com/M2qvYCs.png) |
 | Calculator               | Calculate mathematical expressions instantly                 | ![](https://i.imgur.com/mtsthTj.png) |
+| Clipboard History        | Easy-to-use clipboard history manager                        |                                      |
 | Color Converter          | Convert hex colors to RGB and vice versa                     | ![](https://i.imgur.com/r1NmnZE.png) |
 | Command Line             | Execute CLI queries without breaking your workflow           | ![](https://i.imgur.com/tsPcp1l.png) |
 | Control Panel            | Search directly across control panel items                   | ![](https://i.imgur.com/GClOIaI.png) |
@@ -43,14 +44,16 @@ Pinpoint is an extensible keystroke launcher written in C# (.NET Core).
 
 ## Keyboard Shortcuts
 
-| Key Combination                                              | Action                           |
-| ------------------------------------------------------------ | -------------------------------- |
-| <kbd>ALT</kbd>+<kbd>SPACE</kbd>                              | Open/close query box             |
-| <kbd>Enter</kbd>                                             | Execute selected query result    |
-| <kbd>↑</kbd>,<kbd>↓</kbd>                                    | Select item above or below       |
-| <kbd>CTRL</kbd>+[<kbd>↑</kbd>,<kbd>↓</kbd>]                  | Navigate history older/newer     |
-| <kbd>CTRL</kbd>+<kbd>,</kbd>                                 | Open settings panel              |
-| <kbd>CTRL</kbd>+<kbd>L</kbd>                                 | Focus query box and its contents |
-| <kbd>CTRL</kbd>+[<kbd>1</kbd>,<kbd>2</kbd>,<kbd>3</kbd>,<kbd>4</kbd>,<kbd>5</kbd>,<kbd>6</kbd>,<kbd>7</kbd>,<kbd>8</kbd>,<kbd>9</kbd>] | Quick open result `n`            |
-| <kbd>ALT</kbd>/<kbd>ESC</kbd>                                | View result options / go back    |
+| Key Combination                                              | Action                                     |
+| ------------------------------------------------------------ | ------------------------------------------ |
+| <kbd>ALT</kbd>+<kbd>SPACE</kbd>                              | Open/close query box                       |
+| <kbd>Enter</kbd>                                             | Execute selected query result              |
+| <kbd>↑</kbd>,<kbd>↓</kbd>                                    | Select item above or below                 |
+| <kbd>CTRL</kbd>+[<kbd>↑</kbd>,<kbd>↓</kbd>]                  | Navigate history older/newer               |
+| <kbd>CTRL</kbd>+<kbd>,</kbd>                                 | Open settings panel                        |
+| <kbd>CTRL</kbd>+<kbd>L</kbd>                                 | Focus query box and its contents           |
+| <kbd>CTRL</kbd>+[<kbd>1</kbd>,<kbd>2</kbd>,<kbd>3</kbd>,<kbd>4</kbd>,<kbd>5</kbd>,<kbd>6</kbd>,<kbd>7</kbd>,<kbd>8</kbd>,<kbd>9</kbd>] | Quick open result `n`                      |
+| <kbd>ALT</kbd>/<kbd>ESC</kbd>                                | View result options / go back              |
+| <kbd>TAB</kbd>                                               | Auto-complete query according to results   |
+| <kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>V</kbd>                  | Paste an entry from your clipboard history |
 

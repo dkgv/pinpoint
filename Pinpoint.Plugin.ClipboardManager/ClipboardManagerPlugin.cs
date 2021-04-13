@@ -7,9 +7,11 @@ namespace Pinpoint.Plugin.ClipboardManager
 {
     public class ClipboardManagerPlugin : IPlugin
     {
+        private const string Description = "Copy as you normally would with CTRL+C and paste from your clipboard history via CTRL+ALT+V.";
+
         public readonly ClipboardHistory ClipboardHistory = new ClipboardHistory();
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Clipboard Manager", PluginPriority.Standard);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Clipboard Manager", Description, PluginPriority.Standard);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
