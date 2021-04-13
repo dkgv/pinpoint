@@ -1,63 +1,78 @@
-name: Build release
+name: Create release
 
 on:
-  push:
-    tags:
-      - '*'
+    push:
+        tags:
+            - "*"
 
 jobs:
-  create_release:
-    name: Create GitHub Release
-    runs-on: windows-2019
-    
-    steps:
-      - name: Install 7Zip PowerShell Module
-        shell: powershell
-        run: Install-Module 7Zip4PowerShell -Force
-      
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v1.7.2
-        with:
-          dotnet-version: '5.0.202'
-      - uses: actions/checkout@v2
-      
-      - name: Fix nuget problems
-        run: dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org --configfile $env:APPDATA\NuGet\NuGet.Config
-      
-      - name: Restore Packages
-        run: dotnet restore
-      
-      - name: Build Artifact
-        run: dotnet publish -c Release Pinpoint.Win/Pinpoint.Win.csproj -o ./ -p:PublishSingleFile=true --self-contained false --runtime win-x64
-      
-      - name: Extract Tag Version
-        id: get_version
-        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-        shell: bash
+    create_release:
+        name: Create Release
+        runs-on: windows-2019
 
-      - name: Zip Artifact
-        run: 7z a -tzip Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip Pinpoint.exe
-      
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@latest
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: |
-            Alpha ${{ steps.get_version.outputs.VERSION }}
-          draft: false
-          prerelease: true
-      
-      - name: Upload Release Asset
-        id: upload-release-asset-x64
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
-          asset_name: Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
-          asset_content_type: application/zip
+        steps:
+            - name: Install 7Zip PowerShell Module
+              shell: powershell
+              run: Install-Module 7Zip4PowerShell -Force
+
+            - name: Setup dotnet
+              uses: actions/setup-dotnet@v1.7.2
+              with:
+                  dotnet-version: "5.0.202"
+            - uses: actions/checkout@v2
+
+            - name: Fix nuget problems
+              run: dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org --configfile $env:APPDATA\NuGet\NuGet.Config
+
+            - name: Restore Packages
+              run: dotnet restore
+
+            - name: Build Artifact
+              run: dotnet publish -c Release Pinpoint.Win/Pinpoint.Win.csproj -o ./ -p:PublishSingleFile=true --self-contained false --runtime win-x64
+
+            - name: Extract Tag Version
+              id: get_version
+              run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+              shell: bash
+
+            - name: Zip Artifact
+              run: 7z a -tzip Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip Pinpoint.exe
+
+            - name: Create Release
+              id: create_release
+              uses: actions/create-release@latest
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: ${{ github.ref }}
+                  release_name: ${{ github.ref }}
+                  body: |
+                      Alpha ${{ steps.get_version.outputs.VERSION }}
+                  draft: false
+                  prerelease: true
+
+            - name: Upload Release Asset
+              id: upload-release-asset-x64
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ./Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
+                  asset_name: Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
+                  asset_content_type: application/zip
+
+            - name: Prepare Chocolatey
+              uses: crazy-max/ghaction-chocolatey@v1.4.1
+              with:
+                  args: apikey --key ${{ secrets.CHOCOLATEY_API_KEY }} --source https://push.chocolatey.org/
+
+            - name: Overwrite version in Nuspec
+              shell: bash
+              run: |
+                  sed -i "s/<Version>.*<\/Version>/<Version>${{ steps.get_version.outputs.VERSION }}<\/Version>/g" Pinpoint.nuspec
+
+            - name: Package and push to Chocolatey
+              run: |
+                  choco pack
+                  choco push Pinpoint.${{ steps.get_version.outputs.VERSION }}.nupkg --source https://push.chocolatey.org/

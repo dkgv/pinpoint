@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <metadata>
+    <id>Pinpoint</id>
+    <title>Pinpoint</title>
+    <version>0.0.0</version>
+    <authors>Gustav V. Y.</authors>
+    <owners>Gustav V. Y.</owners>
+    <summary>Pinpoint is a keystroke launcher akin to macOS Spotlight but for Windows.</summary>
+    <projectUrl>https://github.com/dkgv/pinpoint</projectUrl>
+    <tags>keystroke launcher, clipboard manager</tags>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <iconUrl>https://raw.githubusercontent.com/dkgv/pinpoint/master/Pinpoint.Win/Icons/Icon.ico</iconUrl>
+  </metadata>
+</package>
