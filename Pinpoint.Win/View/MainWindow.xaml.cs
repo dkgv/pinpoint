@@ -28,6 +28,7 @@ using Pinpoint.Plugin.Finance;
 using Pinpoint.Plugin.HackerNews;
 using Pinpoint.Plugin.MetricConverter;
 using Pinpoint.Plugin.Notes;
+using Pinpoint.Plugin.OperatingSystem;
 using Pinpoint.Plugin.PasswordGenerator;
 using Pinpoint.Plugin.Reddit;
 using Pinpoint.Win.Models;
@@ -138,7 +139,8 @@ namespace Pinpoint.Win.View
                 _pluginEngine.AddPlugin(new UrlLauncherPlugin()),
                 _pluginEngine.AddPlugin(new PasswordGeneratorPlugin()),
                 _pluginEngine.AddPlugin(new ClipboardManagerPlugin()),
-                _pluginEngine.AddPlugin(new WeatherPlugin())
+                _pluginEngine.AddPlugin(new WeatherPlugin()),
+                _pluginEngine.AddPlugin(new OperatingSystemPlugin()),
             };
 
             await Task.WhenAll(addPluginTasks).ConfigureAwait(false);

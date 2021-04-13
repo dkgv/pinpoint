@@ -41,6 +41,7 @@
     <ProjectReference Include="..\Pinpoint.Plugin.HackerNews\Pinpoint.Plugin.HackerNews.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.MetricConverter\Pinpoint.Plugin.MetricConverter.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Notes\Pinpoint.Plugin.Notes.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.OperatingSystem\Pinpoint.Plugin.OperatingSystem.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.PasswordGenerator\Pinpoint.Plugin.PasswordGenerator.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Reddit\Pinpoint.Plugin.Reddit.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Snippets\Pinpoint.Plugin.Snippets.csproj" />
