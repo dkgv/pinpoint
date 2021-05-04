@@ -10,9 +10,11 @@ namespace Pinpoint.Plugin.Bookmarks
 {
     public class BookmarksPlugin : IPlugin
     {
+        private const string Description = "Search for browser bookmarks from Brave, Chrome, Firefox.";
+
         private readonly UkkonenTrie<Tuple<BrowserType, AbstractBookmarkModel>> _trie = new UkkonenTrie<Tuple<BrowserType, AbstractBookmarkModel>>();
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Bookmarks Plugin", PluginPriority.NextHighest);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Bookmarks Plugin", Description, PluginPriority.NextHighest);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 

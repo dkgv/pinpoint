@@ -9,12 +9,14 @@ namespace Pinpoint.Plugin.ColorConverter
 {
     public class ColorConverterPlugin : IPlugin
     {
+        private const string Description = "Convert colors from RGB <-> Hex.\n\nExamples: \"#FF5555\", \"rgb(255,100,50)\"";
+
         private const string RgbPattern =
             @"^rgb\(([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5]),( ?)([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5]),( ?)([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\)$";
         private const string HexPattern = @"^(#)([0-9A-Fa-f]{8}|[0-9A-Fa-f]{6})$";
         private static readonly Regex Pattern = new Regex($@"({HexPattern})|({RgbPattern})");
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Color Converter", PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Color Converter", Description, PluginPriority.Highest);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 

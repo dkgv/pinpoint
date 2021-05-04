@@ -13,6 +13,8 @@ namespace Pinpoint.Plugin.Everything
 {
     public class EverythingPlugin : IPlugin
     {
+        private const string Description = "Search for files on your computer via Everything by David Carpenter.";
+
         private static readonly Regex ImageRegex = new Regex(@"png|jpg|gif|psd|svg|raw|jpeg|bmp|tiff");
         private static readonly Regex VideoRegex = new Regex(@"mp4|avi|mkv|flv|webm|mov|wmv|mpg|m4v|mpeg|wmv");
         private static readonly Regex AudioRegex = new Regex(@"mp3|flac|wma|alac");
@@ -23,7 +25,7 @@ namespace Pinpoint.Plugin.Everything
         private static readonly Regex CodeRegex = new Regex(@"java|cs|py|cpp|cc|rs|php|js|css|html|rb|pl|h|c|m|swift|xaml");
         private static readonly Regex SpreadsheetRegex = new Regex(@"xls|xlsm|xlsx|numbers|ots|xlr");
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Everything (File Search)", PluginPriority.Lowest);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Everything (File Search)", Description, PluginPriority.Lowest);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 

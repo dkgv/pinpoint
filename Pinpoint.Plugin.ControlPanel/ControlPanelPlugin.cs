@@ -14,10 +14,12 @@ namespace Pinpoint.Plugin.ControlPanel
 {
     public class ControlPanelPlugin : IPlugin
     {
+        private const string Description = "Search for Windows control panel items.";
+
         private UkkonenTrie<ControlPanelItem> _controlPanelItems = new UkkonenTrie<ControlPanelItem>();
         private const string ControlPanelRegistryPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel\NameSpace";
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Control Panel Search", PluginPriority.Standard);
+        public PluginMeta Meta { get; set; } = new PluginMeta("Control Panel Search", Description, PluginPriority.Standard);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
 
