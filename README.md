@@ -35,6 +35,7 @@ Pinpoint is an extensible keystroke launcher written in C# (.NET Core).
 | Hacker News              | Browse (and open) recent popular submissions from [Hacker News](https://news.ycombinator.com/) at a glance | ![](https://i.imgur.com/neQd1nv.png) |
 | Metric Converter         | Convert between imperial and metric units                    | ![](https://i.imgur.com/OqOwZNY.png) |
 | Notes                    | Quickly create and save notes                                | ![](https://i.imgur.com/foFfxtv.png) |
+| Operating System         | Shut down, restart/rebbot, and sleep your computer           | ![](https://i.imgur.com/5GwwQBg.png) |
 | Password Generator       | Generate variable length passwords on the fly                | ![](https://i.imgur.com/zonNyXo.png) |
 | Reddit                   | Quick browse reddit posts (same sorting options as website)  | ![](https://i.imgur.com/sViePHZ.png) |
 | Snippets                 | Create (text + OCR), manage, and search code snippets        | ![](https://i.imgur.com/z6Uo1KX.png) |
