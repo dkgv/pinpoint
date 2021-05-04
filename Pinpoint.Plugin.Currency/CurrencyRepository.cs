@@ -128,7 +128,7 @@ namespace Pinpoint.Plugin.Currency
             const string url = "https://coinmarketcap.com/";
             var doc = await htmlWeb.LoadFromWebAsync(url).ConfigureAwait(false);
 
-            const string xpath = "/html/body/div[1]/div/div[2]/div/div/div[2]/table";
+            const string xpath = "/html/body/div/div/div[1]/div[2]/div/div/div[2]/table";
             var table = doc.DocumentNode.SelectSingleNode(xpath);
 
             var rows = table.Descendants("tr").ToArray();
