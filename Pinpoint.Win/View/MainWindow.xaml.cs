@@ -53,6 +53,7 @@ namespace Pinpoint.Win.View
         private double _offsetFromDefaultX = 0, _offsetFromDefaultY = 0;
         private Point _defaultWindowPosition;
         private bool _wasModifierKeyDown = false;
+        private string _prevQuery = string.Empty;
 
         private readonly SettingsWindow _settingsWindow;
         private readonly PluginEngine _pluginEngine;
@@ -305,7 +306,7 @@ namespace Pinpoint.Win.View
 
         private void TxtQuery_OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (_wasModifierKeyDown || _showingOptionsForIndex != -1 && e.Key == Key.System)
+            if (_wasModifierKeyDown && _prevQuery.Equals(TxtQuery.Text) || _showingOptionsForIndex != -1 && e.Key == Key.System)
             {
                 return;
             }
@@ -323,6 +324,8 @@ namespace Pinpoint.Win.View
                     _ = Dispatcher.Invoke(async () => await UpdateResults());
                     break;
             }
+
+            _prevQuery = TxtQuery.Text;
         }
 
         private void TxtQuery_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)

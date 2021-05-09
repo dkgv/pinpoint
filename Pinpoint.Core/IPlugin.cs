@@ -15,7 +15,9 @@ namespace Pinpoint.Core
 
         public Task<bool> TryLoad() => Task.FromResult(true);
 
-        public void Unload();
+        public void Unload()
+        {
+        }
 
         public Task<bool> Activate(Query query);
 

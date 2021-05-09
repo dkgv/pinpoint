@@ -10,9 +10,9 @@ namespace Pinpoint.Core
         public static readonly string MainDirectory = UserHome + Path.DirectorySeparatorChar + "Pinpoint" + Path.DirectorySeparatorChar;
         public static readonly string SettingsFilePath = MainDirectory + "settings.json";
         
-        public static readonly string HotkeyToggleVisibilityId = "ToggleVisibility";
-        public static readonly string HotkeyPasteId = "PasteFromClipboard";
+        public const string HotkeyToggleVisibilityId = "ToggleVisibility";
+        public const string HotkeyPasteId = "PasteFromClipboard";
 
-        public const string Version = "0.1.8";
+        public const string Version = "0.1.9";
     }
 }
