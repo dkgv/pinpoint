@@ -234,12 +234,12 @@ namespace Pinpoint.Win.View
 
         private void TxtQuery_OnKeyDown(object sender, KeyEventArgs e)
         {
+            // Check if CTRL+0-9 was pressed
             var isDigitPressed = (int)e.Key >= 35 && (int)e.Key <= 43;
             var resultIndex = (int)e.Key - 35;
 
             if (IsCtrlKeyDown())
             {
-                // Check if CTRL+0-9 was pressed
                 if (isDigitPressed)
                 {
                     LstResults.SelectedIndex = resultIndex;
@@ -264,15 +264,12 @@ namespace Pinpoint.Win.View
             }
             else if (IsAltKeyDown())
             {
-                if (isDigitPressed)
+                var digit = GetDigitDown();
+                if (digit != default)
                 {
-                    ShowQueryResultOptions(resultIndex);
+                    var number = int.Parse(digit.ToString().Replace("D", ""));
+                    ShowQueryResultOptions(number - 1);
                 }
-                else if (LstResults.SelectedIndex != -1)
-                {
-                    ShowQueryResultOptions(LstResults.SelectedIndex);
-                }
-
                 e.Handled = true;
             }
 
@@ -280,6 +277,10 @@ namespace Pinpoint.Win.View
 
             switch (e.Key)
             {
+                case Key.System:
+                    e.Handled = true;
+                    break;
+
                 case Key.Tab:
                     if (Model.Results.Count > 0)
                     {
@@ -303,16 +304,18 @@ namespace Pinpoint.Win.View
                         Hide();
                     }
                     break;
+
+                case Key.Down:
+                    if (Model.Results.Count > 0)
+                    {
+                        TxtQuery.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+                    }
+                    break;
             }
         }
 
         private void TxtQuery_OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (_wasModifierKeyDown && _prevQuery.Equals(TxtQuery.Text) || _showingOptionsForIndex != -1 && e.Key == Key.System)
-            {
-                return;
-            }
-
             switch (e.Key)
             {
                 case Key.Down:
@@ -445,12 +448,35 @@ namespace Pinpoint.Win.View
             }
         }
 
-        private void LstResults_KeyDown(object sender, KeyEventArgs e)
+        private void LstResults_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.LeftAlt:
+                case Key.RightAlt:
+                case Key.System:
+                    if (LstResults.SelectedIndex != -1)
+                    {
+                        ShowQueryResultOptions(LstResults.SelectedIndex);
+                        e.Handled = true;
+                    }
+                    break;
+            }
+        }
+
+        private void LstResults_OnKeyDown(object sender, KeyEventArgs e)
         {
             switch (e.Key)
             {
                 case Key.Enter:
                     TryOpenSelectedResult();
+                    break;
+
+                case Key.System:
+                    if (IsAltKeyDown() && Keyboard.IsKeyDown(Key.Enter))
+                    {
+                        TryOpenPrimaryOption();
+                    }
                     break;
 
                 case Key.Down:
@@ -514,16 +540,6 @@ namespace Pinpoint.Win.View
                         HideQueryResultOptions();
                     }
                     break;
-
-                case Key.LeftAlt:
-                case Key.RightAlt:
-                case Key.System:
-                    if (LstResults.SelectedIndex != -1)
-                    {
-                        ShowQueryResultOptions(LstResults.SelectedIndex);
-                        e.Handled = true;
-                    }
-                    break;
             }
         }
 
@@ -538,11 +554,30 @@ namespace Pinpoint.Win.View
             }
         }
 
+        private static readonly Key[] Digits = {Key.D1, Key.D2, Key.D3, Key.D4, Key.D5, Key.D6, Key.D7, Key.D8, Key.D9};
+
+        private Key GetDigitDown() => Digits.FirstOrDefault(Keyboard.IsKeyDown);
+
         private bool IsCtrlKeyDown() => (Control.ModifierKeys & Keys.Control) == Keys.Control;
 
         private bool IsAltKeyDown() => Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
 
         private void StopSearching() => _cts?.Cancel();
+
+        private void TryOpenPrimaryOption()
+        {
+            if (LstResults.SelectedIndex == -1)
+            {
+                return;
+            }
+
+            var selection = Model.Results[LstResults.SelectedIndex];
+            if (selection.OnPrimaryOptionSelect())
+            {
+                TxtQuery.Clear();
+                Hide();
+            }
+        }
 
         private void TryOpenSelectedResult()
         {

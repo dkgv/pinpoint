@@ -31,6 +31,8 @@ namespace Pinpoint.Core.Results
         /// </summary>
         public abstract void OnSelect();
 
+        public virtual bool OnPrimaryOptionSelect() => false;
+
         protected bool Equals(AbstractQueryResult other)
         {
             return Title == other.Title && Subtitle == other.Subtitle;

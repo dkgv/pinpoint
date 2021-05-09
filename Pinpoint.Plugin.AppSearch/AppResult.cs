@@ -37,5 +37,11 @@ namespace Pinpoint.Plugin.AppSearch
             AppSearchFrequency.Track(AppSearchPlugin.LastQuery, _filePath);
             Process.Start("explorer.exe", "\"" + _filePath + "\"");
         }
+
+        public override bool OnPrimaryOptionSelect()
+        {
+            Process.Start("explorer.exe", Path.GetDirectoryName(_filePath));
+            return true;
+        }
     }
 }

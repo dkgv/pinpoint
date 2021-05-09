@@ -32,5 +32,11 @@ namespace Pinpoint.Plugin.Everything
         {
             Process.Start("explorer.exe", _item.FullPath);
         }
+
+        public override bool OnPrimaryOptionSelect()
+        {
+            Process.Start("explorer.exe", Path.GetDirectoryName(_item.FullPath));
+            return true;
+        }
     }
 }
