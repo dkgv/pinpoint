@@ -48,6 +48,7 @@ Pinpoint is an extensible keystroke launcher written in C# (.NET Core).
 | Key Combination                                              | Action                                     |
 | ------------------------------------------------------------ | ------------------------------------------ |
 | <kbd>ALT</kbd>+<kbd>SPACE</kbd>                              | Open/close query box                       |
+| <kbd>ESC</kbd>                                               | Close query box if empty                   |
 | <kbd>Enter</kbd>                                             | Execute selected query result              |
 | <kbd>↑</kbd>,<kbd>↓</kbd>                                    | Select item above or below                 |
 | <kbd>CTRL</kbd>+[<kbd>↑</kbd>,<kbd>↓</kbd>]                  | Navigate history older/newer               |

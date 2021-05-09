@@ -193,8 +193,6 @@ namespace Pinpoint.Win.View
                 TxtQuery.Focus();
                 TxtQuery.SelectAll();
             }
-
-            e.Handled = true;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -299,6 +297,10 @@ namespace Pinpoint.Win.View
                     if (_showingOptionsForIndex != -1)
                     {
                         HideQueryResultOptions();
+                    }
+                    else if (string.IsNullOrEmpty(TxtQuery.Text))
+                    {
+                        Hide();
                     }
                     break;
             }
