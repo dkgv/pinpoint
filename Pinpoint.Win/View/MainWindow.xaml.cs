@@ -321,7 +321,10 @@ namespace Pinpoint.Win.View
                     break;
 
                 default:
-                    _ = Dispatcher.Invoke(async () => await UpdateResults());
+                    if (!_prevQuery.Equals(TxtQuery.Text))
+                    {
+                        _ = Dispatcher.Invoke(async () => await UpdateResults());
+                    }
                     break;
             }
 
