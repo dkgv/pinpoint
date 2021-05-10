@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -13,31 +12,50 @@ namespace Pinpoint.Plugin.ProcessManager
     public class ProcessManagerPlugin: IPlugin
     {
         public PluginMeta Meta { get; set; } = new PluginMeta("Process Manager", PluginPriority.Highest);
+        
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
-        public void Unload()
+        
+        public async Task<bool> Activate(Query query)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> Activate(Query query)
-        {
-            var shouldActivate = query.RawQuery.StartsWith("ps") && query.Parts.Length > 1;
-            return Task.FromResult(shouldActivate);
+            return query.Prefix(2).Equals("ps") && query.Parts.Length > 1;
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
         {
-            var searchQuery = query.Parts[1].ToLower();
-            var processes = System.Diagnostics.Process.GetProcesses();
+            var term = string.Join(' ', query.Parts[1..]).ToLower();
+            var visited = new HashSet<string>();
 
-            foreach (var process in processes)
+            foreach (var process in System.Diagnostics.Process.GetProcesses().Where(p => visited.Add(p.ProcessName)))
             {
-                if (process.ProcessName.ToLower().Contains(searchQuery) || (process.MainModule != null &&
-                                                                            process.MainModule.FileVersionInfo
-                                                                                .FileDescription.ToLower()
-                                                                                .Contains(searchQuery)))
+                var windowTitle = process.MainWindowTitle;
+                var contains = windowTitle.ToLower().Contains(term);
+
+                if (!contains)
                 {
-                    yield return new ProcessResult(process);
+                    contains = process.ProcessName.ToLower().Contains(term);
+                }
+
+                var processName = $"{process.ProcessName}.exe";
+                if (!contains)
+                {
+                    try
+                    {
+                        var description = FileVersionInfo.GetVersionInfo(process.MainModule?.FileName ?? string.Empty).FileDescription;
+                        if (!string.IsNullOrEmpty(description))
+                        {
+                            processName = $"{description}";
+                            contains = description.ToLower().Contains(term);
+                        }
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                if (contains)
+                {
+                    var subtitle = string.IsNullOrEmpty(windowTitle) ? $"{process.ProcessName}.exe" : windowTitle;
+                    yield return new ProcessResult(process, processName, subtitle);
                 }
             }
         }
@@ -47,14 +65,11 @@ namespace Pinpoint.Plugin.ProcessManager
     {
         private readonly Process _process;
 
-        public ProcessResult(Process process): base(process.MainModule?.FileVersionInfo.FileDescription ?? "none")
+        public ProcessResult(Process process, string processName, string subtitle): base($"Kill \"{processName}\" (PID {process.Id})", $"{subtitle}")
         {
             _process = process;
         }
-        public override void OnSelect()
-        {
-            _process.Kill();
-        }
+        public override void OnSelect() => _process.Kill();
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Regular_File;
     }
