@@ -60,15 +60,10 @@ namespace Pinpoint.Core
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var numResults = 0;
-
-            foreach (var plugin in Plugins.Where(p => p.Meta.Enabled && p.IsLoaded))
+            var enabledPlugins = Plugins.Where(p => p.Meta.Enabled && p.IsLoaded).ToList();
+            for (int i = 0, numResults = 0; i < enabledPlugins.Count && numResults < 20 && !ct.IsCancellationRequested; i++)
             {
-                if (numResults >= 30)
-                {
-                    yield break;
-                }
-
+                var plugin = enabledPlugins[i];
                 if (await plugin.Activate(query))
                 {
                     await foreach (var result in plugin.Process(query).WithCancellation(ct))
