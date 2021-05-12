@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit;
 
-namespace Pinpoint.Win.View
+namespace Pinpoint.Win.ViewControllers
 {
     /// <summary>
     /// Class that inherits from the AvalonEdit TextEditor control to 

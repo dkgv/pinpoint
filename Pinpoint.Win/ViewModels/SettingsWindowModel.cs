@@ -1,8 +1,11 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Documents;
 using Pinpoint.Plugin.Snippets;
 using Pinpoint.Core;
+using Pinpoint.Win.ViewControllers;
 
-namespace Pinpoint.Win.Models
+namespace Pinpoint.Win.ViewModels
 {
     internal class SettingsWindowModel : BaseControlModel
     {
@@ -13,6 +16,8 @@ namespace Pinpoint.Win.Models
         private HotkeyModel _hotkeyPasteClipboard = AppSettings.Contains("hotkey_paste_clipboard")
             ? new HotkeyModel(AppSettings.Get<HotkeyModel>("hotkey_paste_clipboard").Text)
             : new HotkeyModel("Ctrl + Alt + V");
+
+        private List<PluginTabItem> _pluginTabItems = new List<PluginTabItem>();
 
         public ObservableCollection<ThemeModel> Themes { get; } = new ObservableCollection<ThemeModel>(new []
         {
@@ -37,5 +42,11 @@ namespace Pinpoint.Win.Models
         public ObservableCollection<FileSnippet> FileSnippets { get; } = new ObservableCollection<FileSnippet>();
 
         public ObservableCollection<IPlugin> Plugins { get; } = new ObservableCollection<IPlugin>();
+
+        public List<PluginTabItem> PluginTabItems
+        {
+            get => _pluginTabItems;
+            set => SetProperty(ref _pluginTabItems, value);
+        }
     }
 }

@@ -5,7 +5,7 @@ using ICSharpCode.AvalonEdit.Highlighting;
 using Pinpoint.Plugin.Snippets;
 using Xceed.Wpf.AvalonDock.Controls;
 
-namespace Pinpoint.Win.View
+namespace Pinpoint.Win.ViewControllers
 {
     /// <summary>
     /// Interaction logic for SnippetSyntaxControl.xaml

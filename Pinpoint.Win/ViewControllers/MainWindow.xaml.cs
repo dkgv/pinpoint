@@ -32,7 +32,7 @@ using Pinpoint.Plugin.OperatingSystem;
 using Pinpoint.Plugin.PasswordGenerator;
 using Pinpoint.Plugin.ProcessManager;
 using Pinpoint.Plugin.Reddit;
-using Pinpoint.Win.Models;
+using Pinpoint.Win.ViewModels;
 using PinPoint.Plugin.Spotify;
 using Pinpoint.Plugin.UrlLauncher;
 using Pinpoint.Plugin.Weather;
@@ -42,7 +42,7 @@ using Application = System.Windows.Application;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
 
-namespace Pinpoint.Win.View
+namespace Pinpoint.Win.ViewControllers
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

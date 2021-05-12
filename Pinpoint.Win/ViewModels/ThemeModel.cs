@@ -1,6 +1,6 @@
 using System.Windows.Media;
 
-namespace Pinpoint.Win.Models
+namespace Pinpoint.Win.ViewModels
 {
     internal class ThemeModel
     {

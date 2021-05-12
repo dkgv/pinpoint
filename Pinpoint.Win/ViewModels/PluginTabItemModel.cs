@@ -1,6 +1,6 @@
 ﻿using Pinpoint.Core;
 
-namespace Pinpoint.Win.Models
+namespace Pinpoint.Win.ViewModels
 {
     internal class PluginTabItemModel : BaseControlModel
     {

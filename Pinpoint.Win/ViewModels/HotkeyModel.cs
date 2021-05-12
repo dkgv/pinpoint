@@ -2,7 +2,7 @@
 using System.Text;
 using System.Windows.Input;
 
-namespace Pinpoint.Win.Models
+namespace Pinpoint.Win.ViewModels
 {
     public class HotkeyModel
     {

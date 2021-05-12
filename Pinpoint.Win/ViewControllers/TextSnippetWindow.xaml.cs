@@ -2,7 +2,7 @@
 using Pinpoint.Core;
 using Pinpoint.Plugin.Snippets;
 
-namespace Pinpoint.Win.View
+namespace Pinpoint.Win.ViewControllers
 {
     /// <summary>
     /// Interaction logic for NewSimpleSnippetWindow.xaml

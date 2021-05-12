@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 
-namespace Pinpoint.Win.Models
+namespace Pinpoint.Win.ViewModels
 {
     internal class OcrSnippetWindowModel : BaseControlModel
     {

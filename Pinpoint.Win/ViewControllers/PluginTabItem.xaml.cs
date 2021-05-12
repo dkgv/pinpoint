@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using Pinpoint.Core;
-using Pinpoint.Win.Models;
+using Pinpoint.Win.ViewModels;
 
-namespace Pinpoint.Win.View
+namespace Pinpoint.Win.ViewControllers
 {
     /// <summary>
     /// Interaction logic for PluginTabItem.xaml

@@ -1,7 +1,7 @@
 ﻿using Pinpoint.Core;
 using Pinpoint.Core.Results;
 
-namespace Pinpoint.Win.Models
+namespace Pinpoint.Win.ViewModels
 {
     internal class MainWindowModel : BaseControlModel
     {

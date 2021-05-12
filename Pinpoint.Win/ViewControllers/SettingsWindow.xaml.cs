@@ -1,18 +1,26 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
+using MarkdownSharp;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using NHotkey.Wpf;
 using Pinpoint.Plugin.Snippets;
 using Pinpoint.Core;
-using Pinpoint.Win.Models;
+using Pinpoint.Win.ViewModels;
 
-namespace Pinpoint.Win.View
+namespace Pinpoint.Win.ViewControllers
 {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
@@ -30,13 +38,60 @@ namespace Pinpoint.Win.View
             _mainWindow = mainWindow;
             _pluginEngine = pluginEngine;
 
-            LblVersion.Content = "Version " + AppConstants.Version;
+            _ = Dispatcher.InvokeAsync(async () => await PopulateUpdateLog());
         }
 
         internal SettingsWindowModel Model
         {
             get => (SettingsWindowModel) DataContext;
             set => DataContext = value;
+        }
+
+        private async Task PopulateUpdateLog()
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
+                httpClient.DefaultRequestHeaders.Add("User-Agent", "Pinpoint");
+                var json = await httpClient.GetStringAsync("https://api.github.com/repos/dkgv/pinpoint/releases");
+                var releases = JsonConvert.DeserializeObject<List<Release>>(json);
+                var sb = new StringBuilder();
+                sb.Append("# Changelog\n");
+                foreach (var release in releases)
+                {
+                    sb.Append("## [Pinpoint ").Append(release.TagName).Append("](").Append(release.Assets[0].BrowserDownloadUrl).Append(")\n");
+                    sb.Append("*Released on ").Append(DateTime.Parse(release.PublishedAt, new DateTimeFormatInfo())).Append(".*\n\n");
+                    sb.Append(release.Body.Replace("\r\n", "<br>")).Append("\n\n");
+                }
+
+                var md = new Markdown();
+                var html = md.Transform(sb.ToString());
+                Dispatcher.Invoke(() => UpdateLog.NavigateToString(html));
+            }
+            catch (HttpRequestException)
+            {
+            }
+        }
+
+        private class Release
+        {
+            [JsonProperty("tag_name")]
+            public string TagName { get; set; }
+
+            [JsonProperty("published_at")]
+            public string PublishedAt { get; set; }
+
+            [JsonProperty("body")]
+            public string Body { get; set; }
+
+            [JsonProperty("assets")]
+            public Asset[] Assets { get; set; }
+
+            public class Asset
+            {
+                [JsonProperty("browser_download_url")]
+                public string BrowserDownloadUrl { get; set; }
+            }
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -89,15 +144,9 @@ namespace Pinpoint.Win.View
             Hide();
         }
 
-        private void LstFileSnippets_KeyDown(object sender, KeyEventArgs e)
-        {
-            HandleLstSnippetKeyDown(sender, Model.FileSnippets, e);
-        }
+        private void LstFileSnippets_KeyDown(object sender, KeyEventArgs e) => HandleLstSnippetKeyDown(sender, Model.FileSnippets, e);
 
-        private void LstManualSnippets_OnKeyDown(object sender, KeyEventArgs e)
-        {
-            HandleLstSnippetKeyDown(sender, Model.ManualSnippets, e);
-        }
+        private void LstManualSnippets_OnKeyDown(object sender, KeyEventArgs e) => HandleLstSnippetKeyDown(sender, Model.ManualSnippets, e);
 
         private void HandleLstSnippetKeyDown<T>(object sender, ObservableCollection<T> collection, KeyEventArgs e) where T : AbstractSnippet
         {
@@ -107,15 +156,9 @@ namespace Pinpoint.Win.View
             }
         }
 
-        private void BtnRemoveFileSnippet_Click(object sender, RoutedEventArgs e)
-        {
-            RemoveSelectedSnippet(LstFileSnippets, Model.FileSnippets);
-        }
+        private void BtnRemoveFileSnippet_Click(object sender, RoutedEventArgs e) => RemoveSelectedSnippet(LstFileSnippets, Model.FileSnippets);
 
-        private void BtnRemoveManualSnippet_OnClick(object sender, RoutedEventArgs e)
-        {        
-            RemoveSelectedSnippet(LstManualSnippets, Model.ManualSnippets);
-        }
+        private void BtnRemoveManualSnippet_OnClick(object sender, RoutedEventArgs e) => RemoveSelectedSnippet(LstManualSnippets, Model.ManualSnippets);
 
         private void RemoveSelectedSnippet<T>(object sender, ObservableCollection<T> collection) where T : AbstractSnippet
         {
@@ -257,23 +300,16 @@ namespace Pinpoint.Win.View
             {
                 pluginTabItem.LblSettings.Visibility = pluginTabItem.PluginSettings.Visibility = Visibility.Hidden;
             }
-            TbCtrl.Items.Insert(TbCtrl.Items.Count - 1, pluginTabItem);
+            Model.PluginTabItems.Add(pluginTabItem);
+            Model.PluginTabItems = Model.PluginTabItems.OrderBy(p => p.Model.Plugin.Meta.Name).ToList();
         }
 
-        public void PluginChange_Removed(object sender, IPlugin plugin, object target)
-        {
-            Model.Plugins.Remove(plugin);
-        }
+        public void PluginChange_Removed(object sender, IPlugin plugin, object target) => Model.Plugins.Remove(plugin);
 
         private void CbTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selected = (ThemeModel) CbTheme.SelectedItem;
             _mainWindow.Model.Theme = selected;
-        }
-
-        private void LnkCheckUpdate_Click(object sender, RoutedEventArgs e)
-        {
-            ProcessHelper.OpenUrl(LnkCheckUpdate.NavigateUri.AbsoluteUri);
         }
 
         private void BtnReCenterWindow_OnClick(object sender, RoutedEventArgs e)

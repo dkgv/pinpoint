@@ -7,11 +7,11 @@ using System.Windows.Input;
 using Pinpoint.Core;
 using Pinpoint.Win.Converters;
 using Pinpoint.Win.Extensions;
-using Pinpoint.Win.Models;
+using Pinpoint.Win.ViewModels;
 using Pranas;
 using Point = System.Windows.Point;
 
-namespace Pinpoint.Win.View
+namespace Pinpoint.Win.ViewControllers
 {
     /// <summary>
     /// Interaction logic for ScreenCaptureOverlayWindow.xaml
