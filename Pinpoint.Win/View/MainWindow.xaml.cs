@@ -30,6 +30,7 @@ using Pinpoint.Plugin.MetricConverter;
 using Pinpoint.Plugin.Notes;
 using Pinpoint.Plugin.OperatingSystem;
 using Pinpoint.Plugin.PasswordGenerator;
+using Pinpoint.Plugin.ProcessManager;
 using Pinpoint.Plugin.Reddit;
 using Pinpoint.Win.Models;
 using PinPoint.Plugin.Spotify;
@@ -142,6 +143,7 @@ namespace Pinpoint.Win.View
                 _pluginEngine.AddPlugin(new ClipboardManagerPlugin()),
                 _pluginEngine.AddPlugin(new WeatherPlugin()),
                 _pluginEngine.AddPlugin(new OperatingSystemPlugin()),
+                _pluginEngine.AddPlugin(new ProcessManagerPlugin())
             };
 
             await Task.WhenAll(addPluginTasks).ConfigureAwait(false);

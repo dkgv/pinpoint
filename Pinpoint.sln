@@ -50,7 +50,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.ClipboardMa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Weather", "Pinpoint.Plugin.Weather\Pinpoint.Plugin.Weather.csproj", "{F0F787B4-052F-425F-AA8B-4689BAE9449B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.OperatingSystem", "Pinpoint.Plugin.OperatingSystem\Pinpoint.Plugin.OperatingSystem.csproj", "{B0963373-8E94-42B9-8EF5-3262931A0640}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.OperatingSystem", "Pinpoint.Plugin.OperatingSystem\Pinpoint.Plugin.OperatingSystem.csproj", "{B0963373-8E94-42B9-8EF5-3262931A0640}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.ProcessManager", "Pinpoint.Plugin.ProcessManager\Pinpoint.Plugin.ProcessManager.csproj", "{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -362,6 +364,18 @@ Global
 		{B0963373-8E94-42B9-8EF5-3262931A0640}.Release|x64.Build.0 = Release|Any CPU
 		{B0963373-8E94-42B9-8EF5-3262931A0640}.Release|x86.ActiveCfg = Release|Any CPU
 		{B0963373-8E94-42B9-8EF5-3262931A0640}.Release|x86.Build.0 = Release|Any CPU
+		{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}.Debug|x64.Build.0 = Debug|Any CPU
+		{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}.Debug|x86.Build.0 = Debug|Any CPU
+		{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}.Release|x64.ActiveCfg = Release|Any CPU
+		{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}.Release|x64.Build.0 = Release|Any CPU
+		{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}.Release|x86.ActiveCfg = Release|Any CPU
+		{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
