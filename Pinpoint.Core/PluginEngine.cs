@@ -30,9 +30,7 @@ namespace Pinpoint.Core
             }
 
             var plugins = AppSettings.GetOrDefault("plugins", new EmptyPlugin[0]);
-
             var match = plugins.FirstOrDefault(p => p.Meta.Name.Equals(toAdd.Meta.Name));
-
             if (match != null)
             {
                 toAdd.UserSettings = match.UserSettings;
@@ -64,7 +62,6 @@ namespace Pinpoint.Core
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var enabledPlugins = Plugins.Where(p => p.Meta.Enabled && p.IsLoaded).ToList();
-
             for (int i = 0, numResults = 0; i < enabledPlugins.Count && numResults < 20 && !ct.IsCancellationRequested; i++)
             {
                 var plugin = enabledPlugins[i];
