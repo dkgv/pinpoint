@@ -31,9 +31,10 @@ namespace Pinpoint.Core
 
             var plugins = AppSettings.GetOrDefault("plugins", new EmptyPlugin[0]);
             var match = plugins.FirstOrDefault(p => p.Meta.Name.Equals(toAdd.Meta.Name));
-            if (match != default)
+            if (match != null)
             {
                 toAdd.UserSettings = match.UserSettings;
+                toAdd.Meta.Enabled = match.Meta.Enabled;
             }
 
             Plugins.Add(toAdd);
