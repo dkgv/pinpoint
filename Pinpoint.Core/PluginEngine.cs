@@ -33,13 +33,11 @@ namespace Pinpoint.Core
 
             var match = plugins.FirstOrDefault(p => p.Meta.Name.Equals(toAdd.Meta.Name));
 
-            if (match == null)
+            if (match != null)
             {
-                return;
+                toAdd.UserSettings = match.UserSettings;
+                toAdd.Meta.Enabled = match.Meta.Enabled;
             }
-
-            toAdd.UserSettings = match.UserSettings;
-            toAdd.Meta.Enabled = match.Meta.Enabled;
 
             Plugins.Add(toAdd);
 
