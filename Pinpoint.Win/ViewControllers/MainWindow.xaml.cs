@@ -147,6 +147,11 @@ namespace Pinpoint.Win.ViewControllers
             };
 
             await Task.WhenAll(addPluginTasks).ConfigureAwait(false);
+            Dispatcher.Invoke(() =>
+            {
+                TxtQuery.Watermark = "Pinpoint";
+                TxtQuery.IsEnabled = true;
+            });
         }
 
         internal MainWindowModel Model
