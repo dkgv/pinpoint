@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Documents;
-using Pinpoint.Plugin.Snippets;
 using Pinpoint.Core;
 using Pinpoint.Win.ViewControllers;
 
@@ -37,10 +35,6 @@ namespace Pinpoint.Win.ViewModels
             set => SetProperty(ref _hotkeyPasteClipboard, value);
         }
         
-        public ObservableCollection<TextSnippet> ManualSnippets { get; } = new ObservableCollection<TextSnippet>();
-
-        public ObservableCollection<FileSnippet> FileSnippets { get; } = new ObservableCollection<FileSnippet>();
-
         public ObservableCollection<IPlugin> Plugins { get; } = new ObservableCollection<IPlugin>();
 
         public List<PluginTabItem> PluginTabItems
