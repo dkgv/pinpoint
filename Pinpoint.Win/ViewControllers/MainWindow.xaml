@@ -62,18 +62,6 @@
 
                 <tb:TaskbarIcon.ContextMenu>
                     <ContextMenu>
-                        <MenuItem x:Name="ItmNewSimpleSnippet" Header="_New Text Snippet" Click="ItmNewSimpleSnippet_OnClick">
-                            <MenuItem.Icon>
-                                <fa5:ImageAwesome Icon="Solid_StickyNote"></fa5:ImageAwesome>
-                            </MenuItem.Icon>
-                        </MenuItem>
-
-                        <MenuItem x:Name="ItmNewCustomSnippet" Header="_New OCR Snippet" Click="ItmNewCustomSnippet_OnClick">
-                            <MenuItem.Icon>
-                                <fa5:ImageAwesome Icon="Solid_Camera"></fa5:ImageAwesome>
-                            </MenuItem.Icon>
-                        </MenuItem>
-
                         <MenuItem x:Name="ItmSettings" Header="_Settings" Click="ItmSettings_Click">
                             <MenuItem.Icon>
                                 <fa5:ImageAwesome Icon="Solid_Cogs"></fa5:ImageAwesome>

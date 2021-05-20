@@ -62,7 +62,6 @@
                                  IsUndoEnabled="False"
                                  Text="{Binding HotkeyToggleVisibility, Mode=OneWay}"></TextBox>
                         
-
                         <Label Grid.Row="2" Grid.Column="1">Clipboard Manager Hotkey:</Label>
                         <TextBox Grid.Row="2" Grid.Column="2" x:Name="TxtHotkeyClipboardManager"
                                  IsReadOnly="True"
@@ -105,97 +104,7 @@
                             TabStripPlacement="Left"></TabControl>
             </TabItem>
 
-            <!-- Snippet settings -->
-            <TabItem Header="Snippets">
-                <Border Margin="5">
-                    <StackPanel>
-                        <GroupBox Header="Manual Snippets">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                </Grid.RowDefinitions>
-
-                                <ListBox 
-                                    Grid.Row="0"
-                                    x:Name="LstManualSnippets"
-                                    KeyDown="LstManualSnippets_OnKeyDown" 
-                                    MinHeight="130" MaxHeight="130"
-                                    ItemsSource="{Binding ManualSnippets}">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Label Content="{Binding Identifier}"></Label>
-                                                <Label Content="{Binding FilePath}"></Label>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-
-                                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <xctk:IconButton x:Name="BtnRemoveManualSnippet" Click="BtnRemoveManualSnippet_OnClick">
-                                        <xctk:IconButton.Icon>
-                                            <fa5:ImageAwesome Height="16" Icon="Regular_TrashAlt"></fa5:ImageAwesome>
-                                        </xctk:IconButton.Icon>
-                                    </xctk:IconButton>
-
-                                    <xctk:IconButton x:Name="BtnAddSimpleSnippet" Click="BtnAddManualSnippet_OnClick" Content=" Simple">
-                                        <xctk:IconButton.Icon>
-                                            <fa5:ImageAwesome Height="16" Icon="Solid_Plus"></fa5:ImageAwesome>
-                                        </xctk:IconButton.Icon>
-                                    </xctk:IconButton>
-
-                                    <xctk:IconButton x:Name="BtnAddCustomSnippet" Click="BtnAddCustomSnippet_OnClick"  Content=" OCR">
-                                        <xctk:IconButton.Icon>
-                                            <fa5:ImageAwesome Height="16" Icon="Solid_Plus"></fa5:ImageAwesome>
-                                        </xctk:IconButton.Icon>
-                                    </xctk:IconButton>
-                                </StackPanel>
-                            </Grid>
-                        </GroupBox>
-
-                        <GroupBox Header="File Snippets">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                    <RowDefinition Height="Auto"></RowDefinition>
-                                </Grid.RowDefinitions>
-
-                                <ListBox
-                                    Grid.Row="0" 
-                                    x:Name="LstFileSnippets" 
-                                    KeyDown="LstFileSnippets_KeyDown" 
-                                    MinHeight="130" MaxHeight="130"
-                                    ItemsSource="{Binding FileSnippets}">
-                                    <ListBox.ItemTemplate>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Label Content="{Binding Identifier}"></Label>
-                                                <Label Content="{Binding FilePath}"></Label>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-
-                                <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <xctk:IconButton x:Name="BtnRemoveFileSnippet" Click="BtnRemoveFileSnippet_Click">
-                                        <xctk:IconButton.Icon>
-                                            <fa5:ImageAwesome Height="16" Icon="Regular_TrashAlt"></fa5:ImageAwesome>
-                                        </xctk:IconButton.Icon>
-                                    </xctk:IconButton>
-
-                                    <xctk:IconButton x:Name="BtnAddFileSnippet" Click="BtnAddFileSnippet_Click">
-                                        <xctk:IconButton.Icon>
-                                            <fa5:ImageAwesome Height="16" Icon="Solid_Plus"></fa5:ImageAwesome>
-                                        </xctk:IconButton.Icon>
-                                    </xctk:IconButton>
-                                </StackPanel>
-                            </Grid>
-                        </GroupBox>
-                    </StackPanel>
-                </Border>
-            </TabItem>
-
+            <!-- Update log -->
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Vertical">

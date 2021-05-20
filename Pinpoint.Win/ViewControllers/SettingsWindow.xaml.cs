@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
@@ -10,13 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using MarkdownSharp;
 using Microsoft.Win32;
 using Newtonsoft.Json;
 using NHotkey.Wpf;
-using Pinpoint.Plugin.Snippets;
 using Pinpoint.Core;
 using Pinpoint.Win.ViewModels;
 
@@ -25,7 +22,7 @@ namespace Pinpoint.Win.ViewControllers
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class SettingsWindow : Window, ISnippetListener, IPluginListener<IPlugin, object>
+    public partial class SettingsWindow : Window, IPluginListener<IPlugin, object>
     {
         private readonly MainWindow _mainWindow;
         private readonly PluginEngine _pluginEngine;
@@ -105,77 +102,6 @@ namespace Pinpoint.Win.ViewControllers
             Hide();
         }
 
-        private void BtnAddFileSnippet_Click(object sender, RoutedEventArgs e)
-        {
-            var fileOpener = new OpenFileDialog
-            {
-                Title = "Select Source(s)",
-                CheckFileExists = true, 
-                CheckPathExists = true,
-                Multiselect = true
-            };
-
-            if (!fileOpener.ShowDialog().Value)
-            {
-                return;
-            }
-
-            foreach (var fileName in fileOpener.FileNames)
-            {
-                var fileSource = new FileSnippet(fileName);
-                if (_pluginEngine.PluginByType<SnippetsPlugin>().AddSnippet(this, fileSource))
-                {
-                    Model.FileSnippets.Add(fileSource);
-                }
-            }
-        }
-
-        private void BtnAddManualSnippet_OnClick(object sender, RoutedEventArgs e)
-        {
-            var newSimpleSnippetWindow = new TextSnippetWindow(_pluginEngine);
-            newSimpleSnippetWindow.Show();
-            Hide();
-        }
-
-        private void BtnAddCustomSnippet_OnClick(object sender, RoutedEventArgs e)
-        {
-            var screenCaptureOverlay = new ScreenCaptureOverlayWindow(_pluginEngine);
-            screenCaptureOverlay.Show();
-            Hide();
-        }
-
-        private void LstFileSnippets_KeyDown(object sender, KeyEventArgs e) => HandleLstSnippetKeyDown(sender, Model.FileSnippets, e);
-
-        private void LstManualSnippets_OnKeyDown(object sender, KeyEventArgs e) => HandleLstSnippetKeyDown(sender, Model.ManualSnippets, e);
-
-        private void HandleLstSnippetKeyDown<T>(object sender, ObservableCollection<T> collection, KeyEventArgs e) where T : AbstractSnippet
-        {
-            if (e.Key == Key.Delete || e.Key == Key.Back)
-            {
-                RemoveSelectedSnippet(sender, collection);
-            }
-        }
-
-        private void BtnRemoveFileSnippet_Click(object sender, RoutedEventArgs e) => RemoveSelectedSnippet(LstFileSnippets, Model.FileSnippets);
-
-        private void BtnRemoveManualSnippet_OnClick(object sender, RoutedEventArgs e) => RemoveSelectedSnippet(LstManualSnippets, Model.ManualSnippets);
-
-        private void RemoveSelectedSnippet<T>(object sender, ObservableCollection<T> collection) where T : AbstractSnippet
-        {
-            var lst = sender as ListBox;
-            if (lst.SelectedIndex >= 0)
-            {
-                var index = lst.SelectedIndex;
-                _pluginEngine.PluginByType<SnippetsPlugin>().RemoveSnippet(this, collection[index]);
-                collection.RemoveAt(index);
-            }
-            else
-            {
-                MessageBox.Show("Please select a snippet to delete.", "Error", MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
-        }
-
         private void TxtHotkeyClipboardManager_OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
             e.Handled = true;
@@ -250,44 +176,6 @@ namespace Pinpoint.Win.ViewControllers
             Model.HotkeyToggleVisibility = new HotkeyModel(key, modifiers);
             HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyToggleVisibilityId, Model.HotkeyToggleVisibility.Key, Model.HotkeyToggleVisibility.Modifiers, _mainWindow.OnToggleVisibility);
             AppSettings.PutAndSave("hotkey_toggle_visibility", Model.HotkeyToggleVisibility);
-        }
-
-        public void SnippetAdded(object sender, SnippetsPlugin plugin, AbstractSnippet target)
-        {
-            if (Equals(sender, this))
-            {
-                return;
-            }
-
-            switch (target)
-            {
-                case FileSnippet fileSnippet:
-                    Model.FileSnippets.Add(fileSnippet);
-                    break;
-
-                case TextSnippet manualSnippet:
-                    Model.ManualSnippets.Add(manualSnippet);
-                    break;
-            }
-        }
-
-        public void SnippetRemoved(object sender, SnippetsPlugin plugin, AbstractSnippet target)
-        {
-            if (Equals(sender, this))
-            {
-                return;
-            }
-
-            switch (target)
-            {
-                case FileSnippet fileSnippet:
-                    Model.FileSnippets.Remove(fileSnippet);
-                    break;
-
-                case TextSnippet manualSnippet:
-                    Model.ManualSnippets.Remove(manualSnippet);
-                    break;
-            }
         }
 
         public void PluginChange_Added(object sender, IPlugin plugin, object target)

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using NHotkey;
 using NHotkey.Wpf;
-using Pinpoint.Plugin.Snippets;
 using Pinpoint.Core;
 using Pinpoint.Plugin.Currency;
 using Pinpoint.Plugin.Everything;
@@ -53,7 +51,6 @@ namespace Pinpoint.Win.ViewControllers
         private int _showingOptionsForIndex = -1;
         private double _offsetFromDefaultX = 0, _offsetFromDefaultY = 0;
         private Point _defaultWindowPosition;
-        private bool _wasModifierKeyDown = false;
         private string _prevQuery = string.Empty;
 
         private readonly SettingsWindow _settingsWindow;
@@ -129,7 +126,6 @@ namespace Pinpoint.Win.ViewControllers
                 _pluginEngine.AddPlugin(new BangsPlugin()),
                 _pluginEngine.AddPlugin(new DictionaryPlugin()),
                 _pluginEngine.AddPlugin(new CommandLinePlugin()),
-                _pluginEngine.AddPlugin(new SnippetsPlugin(_settingsWindow)),
                 _pluginEngine.AddPlugin(new SpotifyPlugin()),
                 _pluginEngine.AddPlugin(new EncodeDecodePlugin()),
                 _pluginEngine.AddPlugin(new FinancePlugin()),
@@ -280,8 +276,6 @@ namespace Pinpoint.Win.ViewControllers
                 e.Handled = true;
             }
 
-            _wasModifierKeyDown = Control.ModifierKeys != Keys.None;
-
             switch (e.Key)
             {
                 case Key.System:
@@ -345,7 +339,7 @@ namespace Pinpoint.Win.ViewControllers
 
         private void TxtQuery_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            StopSearching();
+            CancelRunningSearch();
 
             if (string.IsNullOrWhiteSpace(TxtQuery.Text))
             {
@@ -406,7 +400,7 @@ namespace Pinpoint.Win.ViewControllers
             _showingOptionsForIndex = -1;
         }
 
-        private async Task<bool> StillTyping()
+        private async Task<bool> IsUserStillTyping()
         {
             var text = TxtQuery.Text;
             await Task.Delay(150);
@@ -415,7 +409,7 @@ namespace Pinpoint.Win.ViewControllers
 
         private async Task UpdateResults()
         {
-            if (await StillTyping())
+            if (await IsUserStillTyping())
             {
                 return;
             }
@@ -569,7 +563,7 @@ namespace Pinpoint.Win.ViewControllers
 
         private bool IsAltKeyDown() => Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
 
-        private void StopSearching() => _cts?.Cancel();
+        private void CancelRunningSearch() => _cts?.Cancel();
 
         private void TryOpenPrimaryOption()
         {
@@ -593,31 +587,12 @@ namespace Pinpoint.Win.ViewControllers
                 return;
             }
 
-            StopSearching();
-            var selection = Model.Results[LstResults.SelectedIndex];
+            CancelRunningSearch();
             TxtQuery.Clear();
-            
+
+            var selection = Model.Results[LstResults.SelectedIndex];
             switch (selection)
             {
-                case SnippetQueryResult result:
-                    switch (result.Instance)
-                    {
-                        case OcrTextSnippet s:
-                            var ocrSnippetWindow = new OcrSnippetWindow(_pluginEngine, s);
-                            ocrSnippetWindow.Show();
-                            break;
-
-                        case TextSnippet s:
-                            var textSnippetWindow = new TextSnippetWindow(_pluginEngine, s);
-                            textSnippetWindow.Show();
-                            break;
-
-                        case FileSnippet s:
-                            Process.Start(s.FilePath);
-                            break;
-                    }
-                    break;
-
                 case ClipboardResult _:
                     Model.Results.Clear();
                     selection.OnSelect();
@@ -644,26 +619,11 @@ namespace Pinpoint.Win.ViewControllers
 
         private void ItmExit_Click(object sender, RoutedEventArgs e) => Application.Current.Shutdown();
 
-        private void ItmNewSimpleSnippet_OnClick(object sender, RoutedEventArgs e)
-        {
-            var newSimpleSnippetWindow = new TextSnippetWindow(_pluginEngine);
-            newSimpleSnippetWindow.Show();
-            Hide();
-        }
-
-        private void ItmNewCustomSnippet_OnClick(object sender, RoutedEventArgs e)
-        {
-            var screenCaptureOverlay = new ScreenCaptureOverlayWindow(_pluginEngine);
-            screenCaptureOverlay.Show();
-            Hide();
-        }
-
         private void MainWindow_OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left)
             {
                 DragMove();
-
                 _offsetFromDefaultX = Left - _defaultWindowPosition.X;
                 _offsetFromDefaultY = Top - _defaultWindowPosition.Y;
             }

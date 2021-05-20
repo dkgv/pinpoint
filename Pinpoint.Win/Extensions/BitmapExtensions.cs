@@ -4,16 +4,12 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Pinpoint.Win.Converters;
-using Tesseract;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Pinpoint.Win.Extensions
 {
     public static class BitmapExtensions
     {
-        private static readonly TesseractEngine OcrEngine = new TesseractEngine("./tessdata", "eng", EngineMode.Default);
-
         public static ImageSource ToImageSource(this Bitmap bitmap)
         {
             var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
@@ -63,14 +59,6 @@ namespace Pinpoint.Win.Extensions
             tmp.Dispose();
 
             return cropped;
-        }
-
-        public static Tuple<string, Rectangle> Ocr(this Bitmap bitmap)
-        {
-            using var img = OcrEngine.Process(BitmapToPixConverter.ToPix(bitmap));
-            var tessRect = img.RegionOfInterest;
-            var rect = new Rectangle(tessRect.X1, tessRect.Y1, tessRect.Width, tessRect.Height);
-            return new Tuple<string, Rectangle>(img.GetText().Trim().Replace('”', '"'), rect);
         }
 
         public static Bitmap Scale(this Bitmap bitmap, double scalar)

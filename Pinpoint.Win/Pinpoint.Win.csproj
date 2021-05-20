@@ -22,7 +22,6 @@
     <PackageReference Include="NHotkey.Wpf" Version="2.1.0" />
     <PackageReference Include="Pranas.ScreenshotCapture" Version="1.0.11" />
     <PackageReference Include="SharpClipboard" Version="3.5.2" />
-    <PackageReference Include="Tesseract" Version="4.1.0-beta1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -46,9 +45,7 @@
     <ProjectReference Include="..\Pinpoint.Plugin.PasswordGenerator\Pinpoint.Plugin.PasswordGenerator.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.ProcessManager\Pinpoint.Plugin.ProcessManager.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Reddit\Pinpoint.Plugin.Reddit.csproj" />
-    <ProjectReference Include="..\Pinpoint.Plugin.Snippets\Pinpoint.Plugin.Snippets.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Calculator\Pinpoint.Plugin.Calculator.csproj" />
-    <ProjectReference Include="..\Pinpoint.Plugin.Snippets\Pinpoint.Plugin.Snippets.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Spotify\Pinpoint.Plugin.Spotify.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.UrlLauncher\Pinpoint.Plugin.UrlLauncher.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Weather\Pinpoint.Plugin.Weather.csproj" />
@@ -58,12 +55,6 @@
     <Resource Include="Icons\Icon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="tessdata\eng.traineddata">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

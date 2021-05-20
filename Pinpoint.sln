@@ -4,8 +4,6 @@ VisualStudioVersion = 16.0.29911.84
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Win", "Pinpoint.Win\Pinpoint.Win.csproj", "{81559AE7-3A5C-4953-B02E-EE2CD32EED9B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Snippets", "Pinpoint.Plugin.Snippets\Pinpoint.Plugin.Snippets.csproj", "{10B15234-FF11-4294-B1DF-780691454A9F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Core", "Pinpoint.Core\Pinpoint.Core.csproj", "{F78E1679-338A-431E-AB89-13D5F47C5888}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Calculator", "Pinpoint.Plugin.Calculator\Pinpoint.Plugin.Calculator.csproj", "{E3FBC1E0-DBC0-4761-9818-CDD5B6F2A504}"
@@ -52,7 +50,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Weather", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.OperatingSystem", "Pinpoint.Plugin.OperatingSystem\Pinpoint.Plugin.OperatingSystem.csproj", "{B0963373-8E94-42B9-8EF5-3262931A0640}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.ProcessManager", "Pinpoint.Plugin.ProcessManager\Pinpoint.Plugin.ProcessManager.csproj", "{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.ProcessManager", "Pinpoint.Plugin.ProcessManager\Pinpoint.Plugin.ProcessManager.csproj", "{CC02F3D3-F7D0-4E99-84B7-290D81B75AE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -76,18 +74,6 @@ Global
 		{81559AE7-3A5C-4953-B02E-EE2CD32EED9B}.Release|x64.Build.0 = Release|Any CPU
 		{81559AE7-3A5C-4953-B02E-EE2CD32EED9B}.Release|x86.ActiveCfg = Release|Any CPU
 		{81559AE7-3A5C-4953-B02E-EE2CD32EED9B}.Release|x86.Build.0 = Release|Any CPU
-		{10B15234-FF11-4294-B1DF-780691454A9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{10B15234-FF11-4294-B1DF-780691454A9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{10B15234-FF11-4294-B1DF-780691454A9F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{10B15234-FF11-4294-B1DF-780691454A9F}.Debug|x64.Build.0 = Debug|Any CPU
-		{10B15234-FF11-4294-B1DF-780691454A9F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{10B15234-FF11-4294-B1DF-780691454A9F}.Debug|x86.Build.0 = Debug|Any CPU
-		{10B15234-FF11-4294-B1DF-780691454A9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{10B15234-FF11-4294-B1DF-780691454A9F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{10B15234-FF11-4294-B1DF-780691454A9F}.Release|x64.ActiveCfg = Release|Any CPU
-		{10B15234-FF11-4294-B1DF-780691454A9F}.Release|x64.Build.0 = Release|Any CPU
-		{10B15234-FF11-4294-B1DF-780691454A9F}.Release|x86.ActiveCfg = Release|Any CPU
-		{10B15234-FF11-4294-B1DF-780691454A9F}.Release|x86.Build.0 = Release|Any CPU
 		{F78E1679-338A-431E-AB89-13D5F47C5888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F78E1679-338A-431E-AB89-13D5F47C5888}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F78E1679-338A-431E-AB89-13D5F47C5888}.Debug|x64.ActiveCfg = Debug|Any CPU
