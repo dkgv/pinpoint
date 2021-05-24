@@ -88,7 +88,7 @@ namespace Pinpoint.Plugin.Currency
         private async Task CacheFiatRatesEurBase()
         {
             // Load exchange rates
-            var url = "http://getpinpoint.herokuapp.com/api/currency";
+            var url = "https://usepinpoint.com/api/currency";
             try
             {
                 using var httpClient = new HttpClient();

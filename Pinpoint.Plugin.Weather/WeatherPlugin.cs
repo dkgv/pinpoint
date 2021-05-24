@@ -59,7 +59,7 @@ namespace Pinpoint.Plugin.Weather
 
         private async Task<List<WeatherDayModel>> LookupWeather(string location)
         {
-            var url = $"http://getpinpoint.herokuapp.com/api/weather/{location}";
+            var url = $"https://usepinpoint.com/api/weather/{location}";
             var httpResponse = await SendGet(url);
             if (string.IsNullOrEmpty(httpResponse))
             {
