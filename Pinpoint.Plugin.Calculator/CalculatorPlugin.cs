@@ -24,22 +24,24 @@ namespace Pinpoint.Plugin.Calculator
 
         public async Task<bool> Activate(Query query)
         {
+            var trimmedQuery = query.RawQuery.Replace(" ", "");
             // Ensure query ends with 0-9 or )
-            var lastChar = query.RawQuery[^1];
+            var lastChar = trimmedQuery[^1];
             if (!char.IsDigit(lastChar) && lastChar != ')')
             {
                 return false;
             }
 
+
             // Ensure query has same num open as close brackets
-            var opens = query.RawQuery.Count(c => c == '(');
-            var closes = query.RawQuery.Count(c => c == ')');
+            var opens = trimmedQuery.Count(c => c == '(');
+            var closes = trimmedQuery.Count(c => c == ')');
             if (opens != closes)
             {
                 return false;
             }
 
-            return MathPattern.IsMatch(query.RawQuery);
+            return MathPattern.IsMatch(trimmedQuery);
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
