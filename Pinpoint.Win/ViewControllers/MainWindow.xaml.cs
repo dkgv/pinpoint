@@ -588,9 +588,10 @@ namespace Pinpoint.Win.ViewControllers
             }
 
             CancelRunningSearch();
+            var selection = Model.Results[LstResults.SelectedIndex];
+
             TxtQuery.Clear();
 
-            var selection = Model.Results[LstResults.SelectedIndex];
             switch (selection)
             {
                 case ClipboardResult _:
