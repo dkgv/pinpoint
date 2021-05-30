@@ -7,7 +7,7 @@ on:
 
 jobs:
   create_release:
-    name: Create GitHub Release
+    name: Create New Release
     runs-on: windows-2019
     
     steps:
@@ -21,24 +21,30 @@ jobs:
           dotnet-version: '5.0.202'
       - uses: actions/checkout@v2
       
-      - name: Fix nuget problems
-        run: dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org --configfile $env:APPDATA\NuGet\NuGet.Config
-      
-      - name: Restore Packages
-        run: dotnet restore
-      
-      - name: Build Artifact
-        run: dotnet publish -c Release Pinpoint.Win/Pinpoint.Win.csproj -o ./ -p:PublishSingleFile=true --self-contained false --runtime win-x64
-      
       - name: Extract Tag Version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
         shell: bash
 
-      - name: Zip Artifact
-        run: 7z a -tzip Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip Pinpoint.exe
+      - name: Fix NuGet problems
+        run: dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org --configfile $env:APPDATA\NuGet\NuGet.Config
       
-      - name: Create Release
+      - name: Restore Packages
+        run: dotnet restore
+      
+      - name: Build Artifacts
+        run: |
+          mkdir a
+          dotnet publish -c Release Pinpoint.Win/Pinpoint.Win.csproj -o ./a -r win-x64 --self-contained false -p:PublishSingleFile=true
+          mkdir b
+          dotnet publish -c Release Pinpoint.Win/Pinpoint.Win.csproj -o ./b -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeAllContentForSelfExtract=true
+      
+      - name: Zip Artifacts
+        run: |
+          7z a -tzip Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip ./a/Pinpoint.exe
+          7z a -tzip Pinpoint-Standalone-${{ steps.get_version.outputs.VERSION }}.zip ./b/Pinpoint.exe
+
+      - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@latest
         env:
@@ -47,17 +53,14 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
           body: |
-            Alpha ${{ steps.get_version.outputs.VERSION }}
+            **News:**
+            **Improvements:**
           draft: false
           prerelease: true
       
-      - name: Upload Release Asset
-        id: upload-release-asset-x64
-        uses: actions/upload-release-asset@v1
+      - name: Upload Assets
+        uses: actions/upload-artifact@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
-          asset_name: Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
-          asset_content_type: application/zip
+          path: Pinpoint-*.zip
