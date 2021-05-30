@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -11,38 +10,28 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using MarkdownSharp;
-using Microsoft.Win32;
 using Newtonsoft.Json;
 using NHotkey.Wpf;
 using Pinpoint.Core;
 using Pinpoint.Win.ViewModels;
 
-namespace Pinpoint.Win.ViewControllers
+namespace Pinpoint.Win.Views
 {
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
     public partial class SettingsWindow : Window, IPluginListener<IPlugin, object>
     {
-        private readonly MainWindow _mainWindow;
-        private readonly PluginEngine _pluginEngine;
-        
-        public SettingsWindow(MainWindow mainWindow, PluginEngine pluginEngine)
+        public SettingsWindow()
         {
             InitializeComponent();
-            Model = new SettingsWindowModel();
 
-            _mainWindow = mainWindow;
-            _pluginEngine = pluginEngine;
+            DataContext = App.Current.SettingsViewModel;
 
             _ = Dispatcher.InvokeAsync(async () => await PopulateUpdateLog());
         }
 
-        internal SettingsWindowModel Model
-        {
-            get => (SettingsWindowModel) DataContext;
-            set => DataContext = value;
-        }
+        public SettingsViewModel Model => (SettingsViewModel) DataContext;
 
         private async Task PopulateUpdateLog()
         {
@@ -96,7 +85,7 @@ namespace Pinpoint.Win.ViewControllers
             e.Cancel = true;
 
             AppSettings.Put("plugins", Model.Plugins.ToArray());
-            AppSettings.Put("theme", _mainWindow.Model.Theme);
+            AppSettings.Put("theme", App.Current.MainViewModel.Theme);
             AppSettings.Save();
 
             Hide();
@@ -136,7 +125,7 @@ namespace Pinpoint.Win.ViewControllers
 
             // Save and set new hotkey
             Model.HotkeyPasteClipboard = new HotkeyModel(key, modifiers);
-            HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyPasteId, Model.HotkeyPasteClipboard.Key, Model.HotkeyPasteClipboard.Modifiers, _mainWindow.OnSystemClipboardPaste);
+            HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyPasteId, Model.HotkeyPasteClipboard.Key, Model.HotkeyPasteClipboard.Modifiers, App.Current.MainWindow.OnSystemClipboardPaste);
             AppSettings.PutAndSave("hotkey_paste_clipboard", Model.HotkeyPasteClipboard);
         }
 
@@ -174,7 +163,7 @@ namespace Pinpoint.Win.ViewControllers
 
             // Save and set new hotkey
             Model.HotkeyToggleVisibility = new HotkeyModel(key, modifiers);
-            HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyToggleVisibilityId, Model.HotkeyToggleVisibility.Key, Model.HotkeyToggleVisibility.Modifiers, _mainWindow.OnToggleVisibility);
+            HotkeyManager.Current.AddOrReplace(AppConstants.HotkeyToggleVisibilityId, Model.HotkeyToggleVisibility.Key, Model.HotkeyToggleVisibility.Modifiers, App.Current.MainWindow.OnToggleVisibility);
             AppSettings.PutAndSave("hotkey_toggle_visibility", Model.HotkeyToggleVisibility);
         }
 
@@ -197,14 +186,14 @@ namespace Pinpoint.Win.ViewControllers
         private void CbTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var selected = (ThemeModel) CbTheme.SelectedItem;
-            _mainWindow.Model.Theme = selected;
+            App.Current.MainWindow.Model.Theme = selected;
         }
 
         private void BtnReCenterWindow_OnClick(object sender, RoutedEventArgs e)
         {
-            _mainWindow.MoveWindowToDefaultPosition();
+            App.Current.MainWindow.MoveWindowToDefaultPosition();
             Close();
-            _mainWindow.Show();
+            App.Current.MainWindow.Show();
         }
     }
 }

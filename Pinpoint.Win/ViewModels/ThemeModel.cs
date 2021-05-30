@@ -2,7 +2,7 @@ using System.Windows.Media;
 
 namespace Pinpoint.Win.ViewModels
 {
-    internal class ThemeModel
+    public class ThemeModel
     {
         public string Name { get; set; }
 

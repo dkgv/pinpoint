@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,11 +37,10 @@ using Pinpoint.Plugin.UrlLauncher;
 using Pinpoint.Plugin.Weather;
 using Pinpoint.Win.Annotations;
 using WK.Libraries.SharpClipboardNS;
-using Application = System.Windows.Application;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
 
-namespace Pinpoint.Win.ViewControllers
+namespace Pinpoint.Win.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -51,31 +51,21 @@ namespace Pinpoint.Win.ViewControllers
         private int _showingOptionsForIndex = -1;
         private double _offsetFromDefaultX = 0, _offsetFromDefaultY = 0;
         private Point _defaultWindowPosition;
-        private string _prevQuery = string.Empty;
 
-        private readonly SettingsWindow _settingsWindow;
-        private readonly PluginEngine _pluginEngine;
-        private readonly QueryHistory _queryHistory;
-        private readonly List<AbstractQueryResult> _searchResults = new List<AbstractQueryResult>();
-        private readonly SharpClipboard _clipboard = new SharpClipboard();
-        
         public MainWindow()
         {
             InitializeComponent();
 
-            Model = new MainWindowModel();
-            
-            _pluginEngine = new PluginEngine();
-            _queryHistory = new QueryHistory(10);
-            _settingsWindow = new SettingsWindow(this, _pluginEngine);
+            DataContext = App.Current.MainViewModel;
 
-            _pluginEngine.Listeners.Add(_settingsWindow);
+            RegisterHotkey(AppConstants.HotkeyToggleVisibilityId, App.Current.SettingsViewModel.HotkeyToggleVisibility, OnToggleVisibility);
+            RegisterHotkey(AppConstants.HotkeyPasteId, App.Current.SettingsViewModel.HotkeyPasteClipboard, OnSystemClipboardPaste);
 
-            RegisterHotkey(AppConstants.HotkeyToggleVisibilityId, _settingsWindow.Model.HotkeyToggleVisibility, OnToggleVisibility);
-            RegisterHotkey(AppConstants.HotkeyPasteId, _settingsWindow.Model.HotkeyPasteClipboard, OnSystemClipboardPaste);
-
-            _clipboard.ClipboardChanged += ClipboardOnClipboardChanged;
+            Model.Clipboard.ClipboardChanged += ClipboardOnClipboardChanged;
+            Model.PluginEngine.Listeners.Add(App.Current.SettingsWindow);
         }
+
+        public MainViewModel Model => (MainViewModel) DataContext;
 
         private void ClipboardOnClipboardChanged([CanBeNull] object sender, SharpClipboard.ClipboardChangedEventArgs e)
         {
@@ -83,20 +73,20 @@ namespace Pinpoint.Win.ViewControllers
             {
                 SharpClipboard.ContentTypes.Text => new TextClipboardEntry
                 {
-                    Title = _clipboard.ClipboardText.Trim().Replace("\n", "").Replace("\r", ""), 
-                    Content = _clipboard.ClipboardText
+                    Title = Model.Clipboard.ClipboardText.Trim().Replace("\n", "").Replace("\r", ""), 
+                    Content = Model.Clipboard.ClipboardText
                 },
                 SharpClipboard.ContentTypes.Image => new ImageClipboardEntry
                 {
                     Title = $"Image - Copied {DateTime.Now.ToShortDateString()}", 
-                    Content = _clipboard.ClipboardImage
+                    Content = Model.Clipboard.ClipboardImage
                 },
                 _ => null
             };
 
             if (entry != null)
             {
-                _pluginEngine.PluginByType<ClipboardManagerPlugin>().ClipboardHistory.AddFirst(entry);
+                Model.PluginEngine.PluginByType<ClipboardManagerPlugin>().ClipboardHistory.AddFirst(entry);
             }
         }
 
@@ -108,7 +98,7 @@ namespace Pinpoint.Win.ViewControllers
             }
             catch (HotkeyAlreadyRegisteredException)
             {
-                var msg = $"Failed to register Pinpoint hotkey, {_settingsWindow.Model.HotkeyToggleVisibility.Text} seems to already be bound. You can pick another one in settings.";
+                var msg = $"Failed to register Pinpoint hotkey, {App.Current.SettingsViewModel.HotkeyToggleVisibility.Text} seems to already be bound. You can pick another one in settings.";
                 MessageBox.Show(msg, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -117,29 +107,29 @@ namespace Pinpoint.Win.ViewControllers
         {
             var addPluginTasks = new List<Task>
             {
-                _pluginEngine.AddPlugin(new EverythingPlugin()),
-                _pluginEngine.AddPlugin(new AppSearchPlugin()),
-                _pluginEngine.AddPlugin(new ControlPanelPlugin()),
-                _pluginEngine.AddPlugin(new CalculatorPlugin()),
-                _pluginEngine.AddPlugin(new CurrencyPlugin()),
-                _pluginEngine.AddPlugin(new MetricConverterPlugin()),
-                _pluginEngine.AddPlugin(new BangsPlugin()),
-                _pluginEngine.AddPlugin(new DictionaryPlugin()),
-                _pluginEngine.AddPlugin(new CommandLinePlugin()),
-                _pluginEngine.AddPlugin(new SpotifyPlugin()),
-                _pluginEngine.AddPlugin(new EncodeDecodePlugin()),
-                _pluginEngine.AddPlugin(new FinancePlugin()),
-                _pluginEngine.AddPlugin(new HackerNewsPlugin()),
-                _pluginEngine.AddPlugin(new BookmarksPlugin()),
-                _pluginEngine.AddPlugin(new RedditPlugin()),
-                _pluginEngine.AddPlugin(new NotesPlugin()),
-                _pluginEngine.AddPlugin(new ColorConverterPlugin()),
-                _pluginEngine.AddPlugin(new UrlLauncherPlugin()),
-                _pluginEngine.AddPlugin(new PasswordGeneratorPlugin()),
-                _pluginEngine.AddPlugin(new ClipboardManagerPlugin()),
-                _pluginEngine.AddPlugin(new WeatherPlugin()),
-                _pluginEngine.AddPlugin(new OperatingSystemPlugin()),
-                _pluginEngine.AddPlugin(new ProcessManagerPlugin())
+                Model.PluginEngine.AddPlugin(new EverythingPlugin()),
+                Model.PluginEngine.AddPlugin(new AppSearchPlugin()),
+                Model.PluginEngine.AddPlugin(new ControlPanelPlugin()),
+                Model.PluginEngine.AddPlugin(new CalculatorPlugin()),
+                Model.PluginEngine.AddPlugin(new CurrencyPlugin()),
+                Model.PluginEngine.AddPlugin(new MetricConverterPlugin()),
+                Model.PluginEngine.AddPlugin(new BangsPlugin()),
+                Model.PluginEngine.AddPlugin(new DictionaryPlugin()),
+                Model.PluginEngine.AddPlugin(new CommandLinePlugin()),
+                Model.PluginEngine.AddPlugin(new SpotifyPlugin()),
+                Model.PluginEngine.AddPlugin(new EncodeDecodePlugin()),
+                Model.PluginEngine.AddPlugin(new FinancePlugin()),
+                Model.PluginEngine.AddPlugin(new HackerNewsPlugin()),
+                Model.PluginEngine.AddPlugin(new BookmarksPlugin()),
+                Model.PluginEngine.AddPlugin(new RedditPlugin()),
+                Model.PluginEngine.AddPlugin(new NotesPlugin()),
+                Model.PluginEngine.AddPlugin(new ColorConverterPlugin()),
+                Model.PluginEngine.AddPlugin(new UrlLauncherPlugin()),
+                Model.PluginEngine.AddPlugin(new PasswordGeneratorPlugin()),
+                Model.PluginEngine.AddPlugin(new ClipboardManagerPlugin()),
+                Model.PluginEngine.AddPlugin(new WeatherPlugin()),
+                Model.PluginEngine.AddPlugin(new OperatingSystemPlugin()),
+                Model.PluginEngine.AddPlugin(new ProcessManagerPlugin())
             };
 
             await Task.WhenAll(addPluginTasks).ConfigureAwait(false);
@@ -147,18 +137,13 @@ namespace Pinpoint.Win.ViewControllers
             {
                 TxtQuery.Watermark = "Pinpoint";
                 TxtQuery.IsEnabled = true;
+                TxtQuery.Focus();
             });
-        }
-
-        internal MainWindowModel Model
-        {
-            get => (MainWindowModel)DataContext;
-            set => DataContext = value;
         }
 
         public async void OnSystemClipboardPaste([CanBeNull] object sender, HotkeyEventArgs e)
         {
-            var plugin = _pluginEngine.PluginByType<ClipboardManagerPlugin>();
+            var plugin = Model.PluginEngine.PluginByType<ClipboardManagerPlugin>();
             if (plugin.ClipboardHistory.Count == 0)
             {
                 return;
@@ -176,7 +161,7 @@ namespace Pinpoint.Win.ViewControllers
 
         public void OnToggleVisibility([CanBeNull] object sender, HotkeyEventArgs e)
         {
-            if (_settingsWindow.Visibility == Visibility.Visible)
+            if (App.Current.SettingsWindow.Visibility == Visibility.Visible)
             {
                 return;
             }
@@ -221,7 +206,7 @@ namespace Pinpoint.Win.ViewControllers
 
         private Point ComputeDefaultWindowPosition() => new Point(SystemParameters.PrimaryScreenWidth / 2 - Width / 2, SystemParameters.PrimaryScreenHeight / 5);
 
-        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        protected override void OnClosing(CancelEventArgs e)
         {
             NotifyIcon.Dispose();
             base.OnClosing(e);
@@ -327,14 +312,14 @@ namespace Pinpoint.Win.ViewControllers
                     break;
 
                 default:
-                    if (!_prevQuery.Equals(TxtQuery.Text))
+                    if (!Model.PreviousQuery.Equals(TxtQuery.Text))
                     {
                         _ = Dispatcher.Invoke(async () => await UpdateResults());
                     }
                     break;
             }
 
-            _prevQuery = TxtQuery.Text;
+            Model.PreviousQuery = TxtQuery.Text;
         }
 
         private void TxtQuery_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -360,7 +345,7 @@ namespace Pinpoint.Win.ViewControllers
             // Cache actual search results
             foreach (var searchResult in Model.Results)
             {
-                _searchResults.Add(searchResult);
+                Model.CacheResults.Add(searchResult);
             }
 
             // Remove search results
@@ -387,11 +372,11 @@ namespace Pinpoint.Win.ViewControllers
             Model.Results.Clear();
 
             // Add actual search results
-            foreach (var searchResult in _searchResults)
+            foreach (var searchResult in Model.CacheResults)
             {
                 Model.Results.TryAdd(searchResult);
             }
-            _searchResults.Clear();
+            Model.CacheResults.Clear();
 
             // Set selected index to owner of options
             LstResults.SelectedIndex = _showingOptionsForIndex;
@@ -423,9 +408,9 @@ namespace Pinpoint.Win.ViewControllers
             Model.Results.Clear();
 
             _cts = new CancellationTokenSource();
-            await AwaitAddEnumerable(_pluginEngine.Process(query, _cts.Token));
+            await AwaitAddEnumerable(Model.PluginEngine.Process(query, _cts.Token));
 
-            _queryHistory.Add(query);
+            Model.QueryHistory.Add(query);
 
             if (Model.Results.Count > 0 && LstResults.SelectedIndex == -1)
             {
@@ -546,11 +531,13 @@ namespace Pinpoint.Win.ViewControllers
 
         private void AdjustQueryToHistory(bool older)
         {
-            var next = older ? _queryHistory.Current?.Next : _queryHistory.Current?.Previous;
+            var next = older
+                ? Model.QueryHistory.Current?.Next 
+                : Model.QueryHistory.Current?.Previous;
             if (next != null)
             {
-                _queryHistory.Current = next;
-                TxtQuery.Text = _queryHistory.Current.Value.RawQuery;
+                Model.QueryHistory.Current = next;
+                TxtQuery.Text = Model.QueryHistory.Current.Value.RawQuery;
                 TxtQuery.CaretIndex = TxtQuery.Text.Length;
             }
         }
@@ -614,11 +601,11 @@ namespace Pinpoint.Win.ViewControllers
 
         private void ShowSettingsWindow()
         {
-            _settingsWindow.Show();
+            App.Current.SettingsWindow.Show();
             Hide();
         }
 
-        private void ItmExit_Click(object sender, RoutedEventArgs e) => Application.Current.Shutdown();
+        private void ItmExit_Click(object sender, RoutedEventArgs e) => App.Current.Shutdown();
 
         private void MainWindow_OnMouseDown(object sender, MouseButtonEventArgs e)
         {

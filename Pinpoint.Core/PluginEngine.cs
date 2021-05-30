@@ -14,35 +14,27 @@ namespace Pinpoint.Core
 
         public List<IPluginListener<IPlugin, object>> Listeners { get; } = new List<IPluginListener<IPlugin, object>>();
 
-        public async Task AddPlugin(IPlugin toAdd)
+        public async Task AddPlugin(IPlugin @new)
         {
-            // Disallow duplicate plugins
-            if (Plugins.Contains(toAdd))
+            // Ensure plugin hasn't been added and that it was able to load
+            if (Plugins.Contains(@new) || !await @new.TryLoad())
             {
                 return;
             }
 
-            var pluginCouldLoad = await toAdd.TryLoad();
-            // Don't add plugin if it fails to load
-            if (!pluginCouldLoad)
-            {
-                return;
-            }
-
-            var plugins = AppSettings.GetOrDefault("plugins", new EmptyPlugin[0]);
-            var match = plugins.FirstOrDefault(p => p.Meta.Name.Equals(toAdd.Meta.Name));
+            var plugins = AppSettings.GetOrDefault("plugins", Array.Empty<EmptyPlugin>());
+            var match = plugins.FirstOrDefault(p => p.Meta.Name.Equals(@new.Meta.Name));
             if (match != null)
             {
-                toAdd.UserSettings = match.UserSettings;
-                toAdd.Meta.Enabled = match.Meta.Enabled;
+                @new.UserSettings = match.UserSettings;
+                @new.Meta.Enabled = match.Meta.Enabled;
             }
 
-            Plugins.Add(toAdd);
-
             // Ensure order of plugin execution is correct
+            Plugins.Add(@new);
             Plugins.Sort();
 
-            Listeners.ForEach(listener => listener.PluginChange_Added(this, toAdd, null));
+            Listeners.ForEach(listener => listener.PluginChange_Added(this, @new, null));
         }
 
         public void RemovePlugin(IPlugin plugin)
