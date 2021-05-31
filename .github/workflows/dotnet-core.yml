@@ -25,18 +25,13 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
         shell: bash
-
-      - name: Fix NuGet problems
-        run: dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org --configfile $env:APPDATA\NuGet\NuGet.Config
       
       - name: Restore Packages
         run: dotnet restore
       
       - name: Build Artifacts
         run: |
-          mkdir a
-          dotnet publish -c Release Pinpoint.Win/Pinpoint.Win.csproj -o ./a -r win-x64 --self-contained false -p:PublishSingleFile=true
-          mkdir b
+          dotnet publish -c Release Pinpoint.Win/Pinpoint.Win.csproj -o ./a -r win-x64 --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
           dotnet publish -c Release Pinpoint.Win/Pinpoint.Win.csproj -o ./b -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeAllContentForSelfExtract=true
       
       - name: Zip Artifacts
@@ -57,10 +52,23 @@ jobs:
             **Improvements:**
           draft: false
           prerelease: true
-      
-      - name: Upload Assets
-        uses: actions/upload-artifact@v2
+
+      - name: Upload Release Asset (self-contained)
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          path: Pinpoint-*.zip
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./Pinpoint-Standalone-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_name: Pinpoint-Standalone-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_content_type: application/zip
+      
+      - name: Upload Release Asset (not self-contained)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_name: Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_content_type: application/zip
