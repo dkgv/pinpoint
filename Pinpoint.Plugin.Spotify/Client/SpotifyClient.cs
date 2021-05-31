@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using FontAwesome5;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Pinpoint.Core;
@@ -17,6 +18,7 @@ namespace Pinpoint.Plugin.Spotify.Client
         private static SpotifyClient _instance;
         private  readonly HttpClient _spotifyHttpClient = new HttpClient();
         private string _accessToken;
+        private const string SpotifyApiBaseUrl = "https://api.spotify.com/v1";
 
         public static SpotifyClient GetInstance()
         {
@@ -36,7 +38,7 @@ namespace Pinpoint.Plugin.Spotify.Client
         public async Task<List<SpotifyResultEntity>> Search(string query, string type)
         {
             var message = CreateRequestMessage(HttpMethod.Get,
-                $"https://api.spotify.com/v1/search?q={query}&type={type}&limit=5");
+                $"{SpotifyApiBaseUrl}/search?q={query}&type={type}&limit=5");
 
             var response = await SendWithRetry(message);
 
@@ -72,10 +74,22 @@ namespace Pinpoint.Plugin.Spotify.Client
                     : new PlayRequest {ContextUri = uri};
             }
 
-            var message = CreateRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/play",
+            var message = CreateRequestMessage(HttpMethod.Put, $"{SpotifyApiBaseUrl}/me/player/play",
                 uri != null ? request : null);
 
-            var _ = await SendWithRetry(message);
+            var response = await SendWithRetry(message);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var availableDevices = await GetAvailableDevices();
+
+                var deviceToPlayOn = availableDevices.FirstOrDefault();
+                if (deviceToPlayOn == null) return;
+
+                var newMessage = CreateRequestMessage(HttpMethod.Put,
+                    $"{SpotifyApiBaseUrl}/me/player/play?device_id={deviceToPlayOn.Id}");
+                await _spotifyHttpClient.SendAsync(newMessage);
+            }
         }
 
         public async Task PlayPauseCurrentTrack()
@@ -84,7 +98,7 @@ namespace Pinpoint.Plugin.Spotify.Client
 
             if (isPlaying)
             {
-                var message = CreateRequestMessage(HttpMethod.Put, "https://api.spotify.com/v1/me/player/pause");
+                var message = CreateRequestMessage(HttpMethod.Put, $"{SpotifyApiBaseUrl}/me/player/pause");
 
                 var _ = await SendWithRetry(message);
             }
@@ -97,31 +111,45 @@ namespace Pinpoint.Plugin.Spotify.Client
         public async Task QueueItem(string uri)
         {
             var message =
-                CreateRequestMessage(HttpMethod.Post, $"https://api.spotify.com/v1/me/player/queue?uri={uri}");
+                CreateRequestMessage(HttpMethod.Post, $"{SpotifyApiBaseUrl}/me/player/queue?uri={uri}");
             var _ = await SendWithRetry(message);
         }
 
         public async Task NextTrack()
         {
-            var message = CreateRequestMessage(HttpMethod.Post, "https://api.spotify.com/v1/me/player/next");
+            var message = CreateRequestMessage(HttpMethod.Post, $"{SpotifyApiBaseUrl}/me/player/next");
             var _ = await SendWithRetry(message);
         }
 
         public async Task PreviousTrack()
         {
-            var message = CreateRequestMessage(HttpMethod.Post, "https://api.spotify.com/v1/me/player/previous");
+            var message = CreateRequestMessage(HttpMethod.Post, $"{SpotifyApiBaseUrl}/me/player/previous");
             var _ = await SendWithRetry(message);
+        }
+
+        private async Task<List<PlayerDevice>> GetAvailableDevices()
+        {
+            var message = CreateRequestMessage(HttpMethod.Get, $"{SpotifyApiBaseUrl}/me/player/devices");
+            var response = await SendWithRetry(message);
+
+            if (!response.IsSuccessStatusCode) return new List<PlayerDevice>();
+
+            var responseJson = await response.Content.ReadAsStringAsync();
+
+            var result = JsonConvert.DeserializeObject<AvailableDevicesResult>(responseJson);
+
+            return result.Devices;
         }
 
         private async Task<bool> SpotifyCurrentlyPlaying()
         {
-            var message = CreateRequestMessage(HttpMethod.Get, "https://api.spotify.com/v1/me/player");
+            var message = CreateRequestMessage(HttpMethod.Get, $"{SpotifyApiBaseUrl}/me/player");
             var response = await SendWithRetry(message);
 
             var responseContent = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<PlaybackInfoResult>(responseContent);
 
-            return result.IsPlaying;
+            return result != null && result.IsPlaying;
         }
 
         private async Task ExchangeRefreshToken()
@@ -187,5 +215,17 @@ namespace Pinpoint.Plugin.Spotify.Client
     {
         [JsonProperty("is_playing")]
         public bool IsPlaying { get; set; }
+    }
+
+    public class AvailableDevicesResult
+    {
+        [JsonProperty("devices")]
+        public List<PlayerDevice> Devices { get; set; }
+    }
+
+    public class PlayerDevice
+    {
+        [JsonProperty("id")]
+        public string Id { get; set; }
     }
 }
