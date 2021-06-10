@@ -33,6 +33,7 @@ using Pinpoint.Plugin.ProcessManager;
 using Pinpoint.Plugin.Reddit;
 using Pinpoint.Win.ViewModels;
 using PinPoint.Plugin.Spotify;
+using Pinpoint.Plugin.Text;
 using Pinpoint.Plugin.UrlLauncher;
 using Pinpoint.Plugin.Weather;
 using Pinpoint.Win.Annotations;
@@ -129,7 +130,8 @@ namespace Pinpoint.Win.Views
                 Model.PluginEngine.AddPlugin(new ClipboardManagerPlugin()),
                 Model.PluginEngine.AddPlugin(new WeatherPlugin()),
                 Model.PluginEngine.AddPlugin(new OperatingSystemPlugin()),
-                Model.PluginEngine.AddPlugin(new ProcessManagerPlugin())
+                Model.PluginEngine.AddPlugin(new ProcessManagerPlugin()),
+                Model.PluginEngine.AddPlugin(new TextPlugin())
             };
 
             await Task.WhenAll(addPluginTasks).ConfigureAwait(false);
