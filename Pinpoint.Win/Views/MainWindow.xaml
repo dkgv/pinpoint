@@ -173,7 +173,7 @@
                                        Grid.Column="1"
                                        MaxWidth="450"
                                        HorizontalAlignment="Left"
-                                       TextTrimming="WordEllipsis"
+                                       TextTrimming="CharacterEllipsis"
                                        ToolTip="{Binding Subtitle}"
                                        Text="{Binding Subtitle}"/>
 
