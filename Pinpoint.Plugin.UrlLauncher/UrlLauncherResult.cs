@@ -8,7 +8,7 @@ namespace Pinpoint.Plugin.UrlLauncher
     {
         private readonly string _url;
 
-        public UrlLauncherResult(string url): base($"Launch {url}")
+        public UrlLauncherResult(string url): base($"Launch URL {url}")
         {
             _url = url;
         }
