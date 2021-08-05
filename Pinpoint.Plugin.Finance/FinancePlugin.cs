@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
@@ -28,7 +30,7 @@ namespace Pinpoint.Plugin.Finance
             return ticker.All(ch => char.IsLetter(ch) || ch == '.' || ch == '^') && ticker.Count(char.IsLetter) >= 2;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             // $GME => GME
             var ticker = query.Parts[0][1..];

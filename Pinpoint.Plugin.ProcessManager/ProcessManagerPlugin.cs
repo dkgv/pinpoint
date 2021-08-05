@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using FontAwesome5;
 using Pinpoint.Core;
@@ -20,7 +22,7 @@ namespace Pinpoint.Plugin.ProcessManager
             return query.RawQuery.Length >= 2 && query.Prefix(2).Equals("ps") && query.Parts.Length > 1;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var term = string.Join(' ', query.Parts[1..]).ToLower();
             var visited = new HashSet<string>();

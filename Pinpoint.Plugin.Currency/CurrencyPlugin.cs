@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
@@ -90,7 +92,7 @@ namespace Pinpoint.Plugin.Currency
             return hasNumber && isConverting && correctParts;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var from = IdentifyFrom(query);
             var value = IdentifyValue(query);

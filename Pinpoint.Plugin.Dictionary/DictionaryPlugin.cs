@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -30,7 +32,7 @@ namespace Pinpoint.Plugin.Dictionary
             return query.Parts.Length == 2 && DefineRegex.IsMatch(query.Parts[^1]);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var url = $"https://api.dictionaryapi.dev/api/v2/entries/en_US/{query.Parts[0]}";
 

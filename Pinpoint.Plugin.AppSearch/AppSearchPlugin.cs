@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
 using Pinpoint.Core;
@@ -82,12 +84,9 @@ namespace Pinpoint.Plugin.AppSearch
             AppSearchFrequency.Reset();
         }
 
-        public async Task<bool> Activate(Query query)
-        {
-            return query.RawQuery.Length >= 2;
-        }
+        public async Task<bool> Activate(Query query) =>  query.RawQuery.Length >= 2;
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var rawQuery = query.RawQuery.ToLower();
             LastQuery = rawQuery;

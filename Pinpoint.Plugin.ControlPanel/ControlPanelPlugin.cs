@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
 using Microsoft.Win32;
@@ -64,7 +66,7 @@ namespace Pinpoint.Plugin.ControlPanel
             return query.RawQuery.Length >= 3;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             foreach (var item in _controlPanelItems.Retrieve(query.RawQuery.ToLower()).Where(i => i.RegistryKey != null))
             {

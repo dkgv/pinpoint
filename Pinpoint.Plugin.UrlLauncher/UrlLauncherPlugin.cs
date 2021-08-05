@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
@@ -49,7 +51,7 @@ namespace Pinpoint.Plugin.UrlLauncher
             return split.Length > 0 && Tlds.Contains(split[^1]);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var url = query.RawQuery;
             if (!query.RawQuery.StartsWith(HttpsProtocolPrefix))

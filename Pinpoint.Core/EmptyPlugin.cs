@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core.Results;
 
@@ -21,7 +23,7 @@ namespace Pinpoint.Core
             throw new NotImplementedException();
         }
 
-        public IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             throw new NotImplementedException();
         }

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FontAwesome5;
@@ -29,7 +31,7 @@ namespace Pinpoint.Plugin.OperatingSystem
             return query.Parts.Length == 1 && Commands.Contains(query.RawQuery);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             switch (query.RawQuery)
             {

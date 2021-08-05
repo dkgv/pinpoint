@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
 using Pinpoint.Core;
@@ -40,9 +42,9 @@ namespace Pinpoint.Plugin.Bookmarks
         {
         }
 
-        public async Task<bool> Activate(Query query) => true;
+        public async Task<bool> Activate(Query query) => query.RawQuery.Length >= 2;
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var seen = new HashSet<string>();
             foreach (var bookmarkModel in _trie.Retrieve(query.RawQuery.ToLower()))

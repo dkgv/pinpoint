@@ -14,7 +14,6 @@ namespace Pinpoint.Plugin.Everything.API
         public async IAsyncEnumerable<QueryResultItem> GetCurrentResult([EnumeratorCancellation] CancellationToken ct = default)
         {
             var numResults = EverythingDll.Everything_GetNumResults();
-
             if (numResults == 0)
             {
                 yield break;
@@ -55,7 +54,7 @@ namespace Pinpoint.Plugin.Everything.API
                   collection.CompleteAdding();
               }, ct);
 
-            foreach (var result in collection.GetConsumingEnumerable())
+            foreach (var result in collection.GetConsumingEnumerable(ct))
             {
                 yield return result;
             }

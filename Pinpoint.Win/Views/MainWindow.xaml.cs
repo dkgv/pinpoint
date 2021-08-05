@@ -153,7 +153,7 @@ namespace Pinpoint.Win.Views
 
             // Remove old results and add clipboard history content
             Model.Results.Clear();
-            await AwaitAddEnumerable(plugin.Process(null));
+            await AwaitAddEnumerable(plugin.Process(null, _cts.Token));
 
             if (Visibility != Visibility.Visible)
             {
@@ -195,7 +195,7 @@ namespace Pinpoint.Win.Views
             MoveWindowToDefaultPosition();
 
             AppSettings.Load();
-            LoadPlugins();
+            _ = LoadPlugins();
         }
 
         public void MoveWindowToDefaultPosition()
@@ -370,10 +370,10 @@ namespace Pinpoint.Win.Views
                 return;
             }
 
-            // Remove options
+            // Clear options of selected result
             Model.Results.Clear();
 
-            // Add actual search results
+            // Add back actual search results
             foreach (var searchResult in Model.CacheResults)
             {
                 Model.Results.TryAdd(searchResult);
@@ -387,20 +387,8 @@ namespace Pinpoint.Win.Views
             _showingOptionsForIndex = -1;
         }
 
-        private async Task<bool> IsUserStillTyping()
-        {
-            var text = TxtQuery.Text;
-            await Task.Delay(150);
-            return !TxtQuery.Text.Equals(text);
-        }
-
         private async Task UpdateResults()
         {
-            if (await IsUserStillTyping())
-            {
-                return;
-            }
-
             var query = new Query(TxtQuery.Text.Trim());
             if (query.IsEmpty)
             {
@@ -409,7 +397,6 @@ namespace Pinpoint.Win.Views
 
             Model.Results.Clear();
 
-            _cts = new CancellationTokenSource();
             await AwaitAddEnumerable(Model.PluginEngine.Process(query, _cts.Token));
 
             Model.QueryHistory.Add(query);
@@ -422,16 +409,13 @@ namespace Pinpoint.Win.Views
 
         private async Task AwaitAddEnumerable(IAsyncEnumerable<AbstractQueryResult> enumerable)
         {
-            var shortcutIndex = 0;
-
+            var shortcutKey = 0;
             await foreach (var result in enumerable)
             {
-                var didAdd = Model.Results.TryAdd(result);
-
                 // If one of first 9 results, set keyboard shortcut for result
-                if (didAdd && shortcutIndex < 9)
+                if (Model.Results.TryAdd(result) && shortcutKey < 9)
                 {
-                    result.Shortcut = "CTRL+" + ++shortcutIndex;
+                    result.Shortcut = "CTRL+" + ++shortcutKey;
                 }
             }
         }
@@ -552,7 +536,10 @@ namespace Pinpoint.Win.Views
 
         private bool IsAltKeyDown() => Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
 
-        private void CancelRunningSearch() => _cts?.Cancel();
+        private void CancelRunningSearch() {
+            _cts?.Cancel();
+            _cts = new CancellationTokenSource();
+        }
 
         private void TryOpenPrimaryOption()
         {

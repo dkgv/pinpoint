@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using FontAwesome5;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
-using Pinpoint.Plugin.Everything;
 using Pinpoint.Plugin.Everything.API;
 
 namespace Pinpoint.Plugin.Everything
@@ -48,9 +48,9 @@ namespace Pinpoint.Plugin.Everything
             return query.RawQuery.Length >= 3 && query.ResultCount < 3 && !query.RawQuery.Any(ch => InvalidFileNameChars.Contains(ch));
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            await foreach (var result in _everything.SearchAsync(query.RawQuery, new CancellationToken()))
+            await foreach (var result in _everything.SearchAsync(query.RawQuery, ct))
             {
                 if (result == null)
                 {

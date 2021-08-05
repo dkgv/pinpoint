@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core.Results;
 using Pinpoint.Core;
@@ -24,7 +26,7 @@ namespace Pinpoint.Plugin.EncodeDecode
             return Task.FromResult(match);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var prefix = _prefixes.FirstOrDefault(pre => query.RawQuery.StartsWith(pre));
 

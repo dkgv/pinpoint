@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using FontAwesome5;
@@ -18,7 +20,7 @@ namespace Pinpoint.Plugin.Text
 
         public async Task<bool> Activate(Query query) => query.RawQuery.Length > 2 && query.RawQuery.StartsWith("\"") && query.RawQuery.EndsWith("\"");
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var text = query.RawQuery[1..^1];
             yield return new URLOption(HttpUtility.UrlEncode(text), true);

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
@@ -25,7 +27,7 @@ namespace Pinpoint.Plugin.HackerNews
             return raw.Length >= 10 && (raw.Equals("hackernews") || raw.Equals("hacker news") || raw.Equals("hnews"));
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var stories = await _hackerNewsApi.TopSubmissions();
             for (var i = 0; i < stories.Count; i++)

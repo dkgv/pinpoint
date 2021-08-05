@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Pinpoint.Core;
@@ -38,7 +40,7 @@ namespace Pinpoint.Plugin.Reddit
             return queryParts.Length != 0 && SubRedditRegex.IsMatch(queryParts[0]);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var subReddit = query.Parts[0];
 
