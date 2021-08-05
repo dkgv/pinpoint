@@ -17,7 +17,7 @@ namespace Pinpoint.Plugin.ProcessManager
         
         public async Task<bool> Activate(Query query)
         {
-            return query.Prefix(2).Equals("ps") && query.Parts.Length > 1;
+            return query.RawQuery.Length >= 2 && query.Prefix(2).Equals("ps") && query.Parts.Length > 1;
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
