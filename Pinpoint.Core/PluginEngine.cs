@@ -49,21 +49,21 @@ namespace Pinpoint.Core
 
         public T PluginByType<T>() where T : IPlugin => Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
 
-        public IPlugin PluginByType(Type type) => Plugins.First(plugin => plugin.GetType() == type);
-
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var enabledPlugins = Plugins.Where(p => p.Meta.Enabled && p.IsLoaded).ToList();
-            for (int i = 0, numResults = 0; i < enabledPlugins.Count && numResults < 20 && !ct.IsCancellationRequested; i++)
+            for (int i = 0; i < enabledPlugins.Count && query.ResultCount < 20 && !ct.IsCancellationRequested; i++)
             {
                 var plugin = enabledPlugins[i];
-                if (await plugin.Activate(query))
+                if (!await plugin.Activate(query))
                 {
-                    await foreach (var result in plugin.Process(query).WithCancellation(ct))
-                    {
-                        numResults++;
-                        yield return result;
-                    }
+                    continue;
+                }
+
+                await foreach (var result in plugin.Process(query, ct))
+                {
+                    query.ResultCount++;
+                    yield return result;
                 }
             }
         }

@@ -13,17 +13,12 @@
             return RawQuery.Substring(0, n);
         }
 
-        public string Bang()
-        {
-            return !Prefix().Equals("!") ? string.Empty : Parts[0];
-        }
-
-        public bool HasBang => !string.IsNullOrEmpty(Bang());
-
         public bool IsEmpty => RawQuery.Length == 0;
 
         public string RawQuery { get; }
 
         public string[] Parts { get; }
+
+        public int ResultCount { get; set; }
     }
 }

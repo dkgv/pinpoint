@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace Pinpoint.Plugin.Everything
         private static readonly Regex TextRegex = new Regex(@"txt|md|rtf");
         private static readonly Regex CodeRegex = new Regex(@"java|cs|py|cpp|cc|rs|php|js|css|html|rb|pl|h|c|m|swift|xaml");
         private static readonly Regex SpreadsheetRegex = new Regex(@"xls|xlsm|xlsx|numbers|ots|xlr");
+        private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Everything (File Search)", Description, PluginPriority.Lowest);
 
@@ -36,18 +38,14 @@ namespace Pinpoint.Plugin.Everything
         public Task<bool> TryLoad()
         {
             _everything = new EverythingClient(new DefaultSearchConfig());
-            IsLoaded = true;
-            return Task.FromResult(IsLoaded);
+            return Task.FromResult(IsLoaded = true);
         }
 
-        public void Unload()
-        {
-            _everything.Dispose();
-        }
+        public void Unload() => _everything.Dispose();
 
         public async Task<bool> Activate(Query query)
         {
-            return query.RawQuery.Length >= 3;
+            return query.RawQuery.Length >= 3 && query.ResultCount < 3 && !query.RawQuery.Any(ch => InvalidFileNameChars.Contains(ch));
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
