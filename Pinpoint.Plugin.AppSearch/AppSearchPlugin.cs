@@ -67,12 +67,10 @@ namespace Pinpoint.Plugin.AppSearch
                 $@"C:\Users\{Environment.UserName}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs"
             };
 
-            foreach (var path in paths)
+            foreach (var path in paths.Where(Directory.Exists))
             {
-                if (Directory.Exists(path))
-                {
-                    files.AddRange(Directory.GetFiles(path, "*.lnk", SearchOption.AllDirectories));
-                }
+                var shortcuts = Directory.GetFiles(path, "*.lnk", SearchOption.AllDirectories);
+                files.AddRange(shortcuts);
             }
 
             return files;
