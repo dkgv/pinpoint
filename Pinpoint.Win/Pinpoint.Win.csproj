@@ -49,7 +49,6 @@
     <ProjectReference Include="..\Pinpoint.Plugin.Reddit\Pinpoint.Plugin.Reddit.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Calculator\Pinpoint.Plugin.Calculator.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Spotify\Pinpoint.Plugin.Spotify.csproj" />
-    <ProjectReference Include="..\Pinpoint.Plugin.Strings\Pinpoint.Plugin.Text.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Text\Pinpoint.Plugin.Text.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.UrlLauncher\Pinpoint.Plugin.UrlLauncher.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Weather\Pinpoint.Plugin.Weather.csproj" />
