@@ -10,14 +10,14 @@ namespace Pinpoint.Plugin.Weather
 
         public static Bitmap Get(string url)
         {
-            if (Icons.ContainsKey(url))
-            {
-                return Icons[url];
-            }
-
             if (!url.StartsWith("http"))
             {
                 url = "https:" + url;
+            }
+
+            if (Icons.ContainsKey(url))
+            {
+                return Icons[url];
             }
 
             var request = WebRequest.Create(url);
