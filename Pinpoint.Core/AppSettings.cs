@@ -43,19 +43,6 @@ namespace Pinpoint.Core
             }
         }
 
-        public static bool TryGetOrDefault<T>(string key, T defaultValue, out T settings) where T : class
-        {
-            TryGet(key, out settings);
-
-            if (settings != null)
-            {
-                return true;
-            }
-
-            settings = defaultValue;
-            return false;
-        }
-
         public static void Put(string key, object value, bool overwrite = true)
         {
             JToken token;

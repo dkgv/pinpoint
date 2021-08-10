@@ -26,7 +26,10 @@ namespace Pinpoint.Core
             var match = plugins.FirstOrDefault(p => p.Meta.Name.Equals(@new.Meta.Name));
             if (match != null)
             {
-                @new.UserSettings = match.UserSettings;
+                if (@new.UserSettings.Count <= match.UserSettings.Count)
+                {
+                    @new.UserSettings = match.UserSettings;
+                }
                 @new.Meta.Enabled = match.Meta.Enabled;
             }
 
