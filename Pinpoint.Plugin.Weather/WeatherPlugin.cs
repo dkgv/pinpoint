@@ -15,25 +15,54 @@ namespace Pinpoint.Plugin.Weather
 {
     public class WeatherPlugin : IPlugin
     {
-        private const string Description = "Look up weather forecasts.\n\nExamples: \"weather <location>\"";
+        private const string DefaultCityKey = "Default city";
+        private const string Description = "Look up weather forecasts.\n\nExamples: \"weather <location>\" or \"weather\" if default location is set";
         private readonly Dictionary<string, List<WeatherDayModel>> _weatherCache = new Dictionary<string, List<WeatherDayModel>>();
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Weather", Description, PluginPriority.Highest);
 
         public PluginSettings UserSettings { get; set; } = new PluginSettings();
         
+        public async Task<bool> TryLoad()
+        {
+            UserSettings.Put(DefaultCityKey, string.Empty);
+            return true;
+        }
+
         public void Unload()
         {
         }
 
         public async Task<bool> Activate(Query query)
         {
-            return query.Parts.Length >= 2 && query.Parts[0].ToLower().Equals("weather");
+            var hasWeatherPrefix = query.Parts[0].ToLower().Equals("weather");
+            if (!hasWeatherPrefix)
+            {
+                return false;
+            }
+
+            var defaultCity = UserSettings.Str(DefaultCityKey);
+            if (!string.IsNullOrEmpty(defaultCity))
+            {
+                // "weather"
+                return query.Parts.Length == 1;
+            }
+
+            // "weather <location>"
+            return query.Parts.Length >= 2;
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var location = string.Join(" ", query.Parts[1..]).Trim();
+            string location;
+            if (query.Parts.Length == 1)
+            {
+                location = UserSettings.Str(DefaultCityKey);
+            }
+            else
+            {
+                location = string.Join(" ", query.Parts[1..]).Trim();
+            }
 
             if (_weatherCache.ContainsKey(location))
             {
