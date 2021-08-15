@@ -25,10 +25,49 @@ namespace Pinpoint.Plugin.Text
             var text = query.RawQuery[1..^1];
             yield return new URLOption(HttpUtility.UrlEncode(text), true);
             yield return new URLOption(HttpUtility.UrlDecode(text), false);
-            yield return new CaseOption(text.ToUpper(), true);
-            yield return new CaseOption(text.ToLower(), false);
+
+            if (text.Any(char.IsLower))
+            {
+                yield return new CaseOption(text.ToUpper(), true);
+            }
+
+            if (text.Any(char.IsUpper))
+            {
+                yield return new CaseOption(text.ToLower(), false);
+            }
+
             yield return new ReverseOption(new string(text.Reverse().ToArray()));
-            yield return new UniqueOption(new string(text.ToCharArray().Distinct().ToArray()));
+
+            var distinct = new string(text.ToCharArray().Distinct().ToArray());
+            if (!text.Equals(distinct))
+            {
+                yield return new UniqueOption(distinct);
+            }
+
+            if (text.Contains(" "))
+            {
+                yield return new NoSpacesOption(text.Replace(" ", ""));
+            }
+
+            yield return new CharCountOption(text.Length.ToString());
+        }
+
+        private class CharCountOption : CopyabableQueryOption
+        {
+            public CharCountOption(string content) : base($"Char count: {content}", content)
+            {
+            }
+
+            public override EFontAwesomeIcon FontAwesomeIcon { get; } = EFontAwesomeIcon.Solid_RulerHorizontal;
+        }
+
+        private class NoSpacesOption : CopyabableQueryOption
+        {
+            public NoSpacesOption(string content) : base($"No spaces: {content}", content)
+            {
+            }
+
+            public override EFontAwesomeIcon FontAwesomeIcon { get; } = EFontAwesomeIcon.Solid_Backspace;
         }
 
         private class ReverseOption : CopyabableQueryOption
