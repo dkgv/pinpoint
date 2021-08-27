@@ -32,6 +32,7 @@
     <ProjectReference Include="..\Pinpoint.Plugin.Bangs\Pinpoint.Plugin.Bangs.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Bookmarks\Pinpoint.Plugin.Bookmarks.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.ClipboardManager\Pinpoint.Plugin.ClipboardManager.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.ClipboardUploader\Pinpoint.Plugin.ClipboardUploader.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.ColorConverter\Pinpoint.Plugin.ColorConverter.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.CommandLine\Pinpoint.Plugin.CommandLine.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.ControlPanel\Pinpoint.Plugin.ControlPanel.csproj" />

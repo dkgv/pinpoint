@@ -1,9 +1,16 @@
 ﻿using System.Collections.Generic;
 
-namespace Pinpoint.Plugin.ClipboardManager
+namespace Pinpoint.Core.Clipboard
 {
     public class ClipboardHistory : LinkedList<IClipboardEntry>
     {
+        private readonly int _capacity;
+
+        public ClipboardHistory(int capacity = 20)
+        {
+            _capacity = capacity;
+        }
+
         public new void AddFirst(IClipboardEntry entry)
         {
             if (Contains(entry))
@@ -11,7 +18,7 @@ namespace Pinpoint.Plugin.ClipboardManager
                 return;
             }
 
-            if (Count > 10)
+            if (Count > _capacity)
             {
                 RemoveLast();
             }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Drawing;
 
-namespace Pinpoint.Plugin.ClipboardManager
+namespace Pinpoint.Core.Clipboard
 {
     public class ImageClipboardEntry : IClipboardEntry
     {

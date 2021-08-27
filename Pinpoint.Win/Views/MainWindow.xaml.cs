@@ -7,9 +7,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Resources;
 using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Core;
+using Pinpoint.Core.Clipboard;
 using Pinpoint.Plugin.Currency;
 using Pinpoint.Plugin.Everything;
 using Pinpoint.Core.Results;
@@ -18,6 +20,7 @@ using Pinpoint.Plugin.Bangs;
 using Pinpoint.Plugin.Bookmarks;
 using Pinpoint.Plugin.Calculator;
 using Pinpoint.Plugin.ClipboardManager;
+using Pinpoint.Plugin.ClipboardUploader;
 using Pinpoint.Plugin.ColorConverter;
 using Pinpoint.Plugin.CommandLine;
 using Pinpoint.Plugin.ControlPanel;
@@ -88,6 +91,11 @@ namespace Pinpoint.Win.Views
             if (entry != null)
             {
                 Model.PluginEngine.PluginByType<ClipboardManagerPlugin>().ClipboardHistory.AddFirst(entry);
+
+                if (entry is TextClipboardEntry)
+                {
+                    Model.PluginEngine.PluginByType<ClipboardUploaderPlugin>().ClipboardHistory.AddFirst(entry);
+                }
             }
         }
 
@@ -131,7 +139,8 @@ namespace Pinpoint.Win.Views
                 Model.PluginEngine.AddPlugin(new WeatherPlugin()),
                 Model.PluginEngine.AddPlugin(new OperatingSystemPlugin()),
                 Model.PluginEngine.AddPlugin(new ProcessManagerPlugin()),
-                Model.PluginEngine.AddPlugin(new TextPlugin())
+                Model.PluginEngine.AddPlugin(new TextPlugin()),
+                Model.PluginEngine.AddPlugin(new ClipboardUploaderPlugin())
             };
 
             await Task.WhenAll(addPluginTasks).ConfigureAwait(false);

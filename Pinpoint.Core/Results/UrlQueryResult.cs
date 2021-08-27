@@ -4,8 +4,6 @@ namespace Pinpoint.Core.Results
 {
     public class UrlQueryResult : AbstractFontAwesomeQueryResult
     {
-        private readonly string _url;
-
         public UrlQueryResult(string url) : this("", url)
         {
         }
@@ -13,15 +11,14 @@ namespace Pinpoint.Core.Results
         public UrlQueryResult(string title, string url)
         {
             Title = title;
-            _url = url;
+            Url = url;
             Subtitle = url;
         }
 
+        public string Url { get; set; }
+
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_ExternalLinkAlt;
 
-        public override void OnSelect()
-        {
-            ProcessHelper.OpenUrl(_url);
-        }
+        public override void OnSelect() => ProcessHelper.OpenUrl(Url);
     }
 }

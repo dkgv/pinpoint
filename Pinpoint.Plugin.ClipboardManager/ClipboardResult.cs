@@ -1,9 +1,8 @@
-﻿using System.Threading.Tasks;
-using FontAwesome5;
+﻿using FontAwesome5;
 using Pinpoint.Core.Results;
 using System.Windows.Forms;
-using System.Windows.Input;
 using Pinpoint.Core;
+using Pinpoint.Core.Clipboard;
 
 namespace Pinpoint.Plugin.ClipboardManager
 {

@@ -1,5 +1,6 @@
 ﻿using FontAwesome5;
 using Pinpoint.Core;
+using Pinpoint.Core.Clipboard;
 using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.PasswordGenerator

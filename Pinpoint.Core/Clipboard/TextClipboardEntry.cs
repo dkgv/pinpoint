@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pinpoint.Plugin.ClipboardManager
+namespace Pinpoint.Core.Clipboard
 {
     public class TextClipboardEntry : IClipboardEntry
     {
