@@ -51,7 +51,7 @@ namespace Pinpoint.Win.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private CancellationTokenSource _cts;
+        private CancellationTokenSource _cts = new CancellationTokenSource();
         private int _showingOptionsForIndex = -1;
         private double _offsetFromDefaultX = 0, _offsetFromDefaultY = 0;
         private Point _defaultWindowPosition;
