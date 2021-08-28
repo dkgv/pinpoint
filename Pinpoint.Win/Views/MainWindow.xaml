@@ -132,7 +132,7 @@
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Border Margin="5">
+                            <Border Margin="3">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
