@@ -62,6 +62,8 @@ namespace Pinpoint.Win.Views
 
             DataContext = App.Current.MainViewModel;
 
+            AppSettings.Load();
+
             RegisterHotkey(AppConstants.HotkeyToggleVisibilityId, App.Current.SettingsViewModel.HotkeyToggleVisibility, OnToggleVisibility);
             RegisterHotkey(AppConstants.HotkeyPasteId, App.Current.SettingsViewModel.HotkeyPasteClipboard, OnSystemClipboardPaste);
 
@@ -196,14 +198,12 @@ namespace Pinpoint.Win.Views
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // Auto-focus query field
             TxtQuery.Clear();
             TxtQuery.Focus();
 
             _defaultWindowPosition = ComputeDefaultWindowPosition();
             MoveWindowToDefaultPosition();
 
-            AppSettings.Load();
             _ = LoadPlugins();
         }
 
