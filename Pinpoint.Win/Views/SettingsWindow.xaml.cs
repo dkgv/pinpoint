@@ -28,58 +28,24 @@ namespace Pinpoint.Win.Views
 
             DataContext = App.Current.SettingsViewModel;
 
-            _ = Dispatcher.InvokeAsync(async () => await PopulateUpdateLog());
+            _ = Dispatcher.InvokeAsync(async () => await DownloadChangelog());
         }
 
         public SettingsViewModel Model => (SettingsViewModel) DataContext;
 
-        private async Task PopulateUpdateLog()
+        private async Task DownloadChangelog()
         {
             try
             {
                 using var httpClient = new HttpClient();
-                httpClient.DefaultRequestHeaders.Add("User-Agent", "Pinpoint");
-                var json = await httpClient.GetStringAsync("https://api.github.com/repos/dkgv/pinpoint/releases");
-                var releases = JsonConvert.DeserializeObject<List<Release>>(json);
-                var sb = new StringBuilder();
-                sb.Append("# Changelog\n");
-                foreach (var release in releases)
-                {
-                    sb.Append("## [Pinpoint ").Append(release.TagName).Append("](").Append(release.Assets[0].BrowserDownloadUrl).Append(")\n");
-                    sb.Append("*Released on ").Append(DateTime.Parse(release.PublishedAt, new DateTimeFormatInfo())).Append(".*\n\n");
-                    sb.Append(release.Body.Replace("\r\n", "<br>")).Append("\n\n");
-                }
-
-                var md = new Markdown();
-                var html = md.Transform(sb.ToString());
+                var html = await httpClient.GetStringAsync("https://usepinpoint.com/api/github_changelog");
                 Dispatcher.Invoke(() => UpdateLog.NavigateToString(html));
             }
             catch (HttpRequestException)
             {
             }
         }
-
-        private class Release
-        {
-            [JsonProperty("tag_name")]
-            public string TagName { get; set; }
-
-            [JsonProperty("published_at")]
-            public string PublishedAt { get; set; }
-
-            [JsonProperty("body")]
-            public string Body { get; set; }
-
-            [JsonProperty("assets")]
-            public Asset[] Assets { get; set; }
-
-            public class Asset
-            {
-                [JsonProperty("browser_download_url")]
-                public string BrowserDownloadUrl { get; set; }
-            }
-        }
-
+        
         protected override void OnClosing(CancelEventArgs e)
         {
             e.Cancel = true;
