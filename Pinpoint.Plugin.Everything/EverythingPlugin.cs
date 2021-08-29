@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -14,6 +15,8 @@ namespace Pinpoint.Plugin.Everything
 {
     public class EverythingPlugin : IPlugin
     {
+        private const string KeyIgnoreTempFolder = "Ignore temp folder items";
+        private const string KeyIgnoreHiddenFolders = "Ignore hidden folder items";
         private const string Description = "Search for files on your computer via Everything by David Carpenter.";
 
         private static readonly Regex ImageRegex = new Regex(@"png|jpg|gif|psd|svg|raw|jpeg|bmp|tiff");
@@ -38,6 +41,8 @@ namespace Pinpoint.Plugin.Everything
         public Task<bool> TryLoad()
         {
             _everything = new EverythingClient(new DefaultSearchConfig());
+            UserSettings.Put(KeyIgnoreTempFolder, true);
+            UserSettings.Put(KeyIgnoreHiddenFolders, true);
             return Task.FromResult(IsLoaded = true);
         }
 
@@ -56,23 +61,51 @@ namespace Pinpoint.Plugin.Everything
                 {
                     continue;
                 }
-                yield return new EverythingResult(result, BestFittingIcon(result));
+
+                if (UserSettings.Bool(KeyIgnoreTempFolder) && IsInTempFolder(result.FullPath))
+                {
+                    continue;
+                }
+
+                if (UserSettings.Bool(KeyIgnoreHiddenFolders) && IsInHiddenFolder(result.FullPath))
+                {
+                    continue;
+                }
+
+                yield return new EverythingResult(result, MapResultTypeToIcon(result));
             }
         }
 
-        private EFontAwesomeIcon BestFittingIcon(QueryResultItem result)
+        private bool IsInHiddenFolder(string path)
+        {
+            var parts = path.Split(Path.DirectorySeparatorChar);
+            return parts.Any(part => part.StartsWith("."));
+        }
+
+        private bool IsInTempFolder(string path)
+        {
+            var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToLower();
+            if (appData.Contains("roaming"))
+            {
+                appData = Path.GetFullPath(Path.Combine(appData, @"..\"));
+            }
+
+            return path.ToLower().Contains(appData);
+        }
+
+        private EFontAwesomeIcon MapResultTypeToIcon(QueryResultItem result)
         {
             return result.ResultType switch
             {
                 ResultType.Directory => EFontAwesomeIcon.Regular_Folder,
-                ResultType.File => BestFileIcon(result),
+                ResultType.File => MapFileTypeToIcon(result),
                 ResultType.Unknown => EFontAwesomeIcon.Solid_Question,
                 ResultType.Volume => EFontAwesomeIcon.Regular_Hdd,
                 _ => EFontAwesomeIcon.Solid_Question
             };
         }
 
-        private EFontAwesomeIcon BestFileIcon(QueryResultItem result)
+        private EFontAwesomeIcon MapFileTypeToIcon(QueryResultItem result)
         {
             var extension = Path.GetExtension(result.FullPath);
 
@@ -81,7 +114,7 @@ namespace Pinpoint.Plugin.Everything
                 return EFontAwesomeIcon.Regular_File;
             }
 
-            extension = extension.Substring(1);
+            extension = extension[1..];
 
             if (ImageRegex.IsMatch(extension))
             {

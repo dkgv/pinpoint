@@ -4,7 +4,7 @@
     {
         public void Search(string query, ISearchConfig config)
         {
-            EverythingDll.Everything_SetSearchW(query);
+            _ = EverythingDll.Everything_SetSearchW(query);
             ConfigureDll(config);
             EverythingDll.Everything_QueryW(true);
         }

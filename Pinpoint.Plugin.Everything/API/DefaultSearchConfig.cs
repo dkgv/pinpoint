@@ -6,7 +6,7 @@
 
         public bool MatchCase { get; set; } = false;
 
-        public uint MaxResults { get; set; } = 12;
+        public uint MaxResults { get; set; } = 16;
 
         public RequestFlag RequestFlag { get; set; } = RequestFlag.FileName | RequestFlag.Path | RequestFlag.Extension;
         

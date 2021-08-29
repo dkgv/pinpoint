@@ -15,7 +15,7 @@ namespace Pinpoint.Plugin.Weather
 {
     public class WeatherPlugin : IPlugin
     {
-        private const string DefaultCityKey = "Default city";
+        private const string KeyDefaultCity = "Default city";
         private const string Description = "Look up weather forecasts.\n\nExamples: \"weather <location>\" or \"weather\" if default location is set";
         private readonly Dictionary<string, List<WeatherDayModel>> _weatherCache = new Dictionary<string, List<WeatherDayModel>>();
 
@@ -25,7 +25,7 @@ namespace Pinpoint.Plugin.Weather
         
         public async Task<bool> TryLoad()
         {
-            UserSettings.Put(DefaultCityKey, string.Empty);
+            UserSettings.Put(KeyDefaultCity, string.Empty);
             return true;
         }
 
@@ -41,7 +41,7 @@ namespace Pinpoint.Plugin.Weather
                 return false;
             }
 
-            var defaultCity = UserSettings.Str(DefaultCityKey);
+            var defaultCity = UserSettings.Str(KeyDefaultCity);
             if (!string.IsNullOrEmpty(defaultCity))
             {
                 // "weather"
@@ -57,7 +57,7 @@ namespace Pinpoint.Plugin.Weather
             string location;
             if (query.Parts.Length == 1)
             {
-                location = UserSettings.Str(DefaultCityKey);
+                location = UserSettings.Str(KeyDefaultCity);
             }
             else
             {

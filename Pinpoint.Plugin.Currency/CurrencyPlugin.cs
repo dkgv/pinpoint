@@ -16,7 +16,7 @@ namespace Pinpoint.Plugin.Currency
         private const string Description = "Convert between currencies and cryptocurrencies.\n\nExamples: \"5 usd to jpy\", \"1 btc to cad\", \"1 eth to btc\"";
 
         private CurrencyRepository _currencyRepo;
-        private const string BaseCurrencyKey = "Base currency";
+        private const string KeyBaseCurrency = "Base currency";
         private const string Symbols = "$£€¥";
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Currency Converter", Description, PluginPriority.Highest);
@@ -38,7 +38,7 @@ namespace Pinpoint.Plugin.Currency
             {
                 baseCurrency = "USD";
             }
-            UserSettings.Put(BaseCurrencyKey, baseCurrency);
+            UserSettings.Put(KeyBaseCurrency, baseCurrency);
 
             _currencyRepo = new CurrencyRepository();
             await _currencyRepo.LoadCurrenciesInitial().ConfigureAwait(false);
@@ -139,7 +139,7 @@ namespace Pinpoint.Plugin.Currency
             // Handles queries like 100 usd, 100 eur
             if (!query.RawQuery.Contains("in") && !query.RawQuery.Contains("to"))
             {
-                return UserSettings.Str(BaseCurrencyKey);
+                return UserSettings.Str(KeyBaseCurrency);
             }
 
             // Get last part

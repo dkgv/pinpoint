@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Pinpoint.Core
 {
@@ -14,16 +15,14 @@ namespace Pinpoint.Core
             Add(setting);
         }
 
-        public string Str(string name)
+        public bool Bool(string key)
         {
-            foreach (var setting in this)
-            {
-                if (setting.Name.Equals(name))
-                {
-                    return setting.Value.ToString();
-                }
-            }
-            return null;
+            var setting = Str(key).ToLower();
+            return setting.Equals("yes") || setting.Equals("true");
         }
+
+        public string Str(string key) => Get(key).Value.ToString();
+
+        private PluginSetting Get(string key) => this.FirstOrDefault(setting => setting.Name.Equals(key));
     }
 }
