@@ -8,7 +8,7 @@
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         mc:Ignorable="d"
         Title="{Binding WindowTitle}" 
-        Height="549" MinHeight="549" 
+        Height="566" MinHeight="549" 
         Width="587" MinWidth="470" 
         WindowStartupLocation="CenterScreen" 
         Icon="/Icons/Icon.ico">
