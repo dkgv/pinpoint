@@ -42,14 +42,7 @@ namespace Pinpoint.Plugin.Weather
             }
 
             var defaultCity = UserSettings.Str(KeyDefaultCity);
-            if (!string.IsNullOrEmpty(defaultCity))
-            {
-                // "weather"
-                return query.Parts.Length == 1;
-            }
-
-            // "weather <location>"
-            return query.Parts.Length >= 2;
+            return !string.IsNullOrEmpty(defaultCity) || query.Parts.Length >= 2;
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
