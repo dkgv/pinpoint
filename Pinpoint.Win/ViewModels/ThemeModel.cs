@@ -19,7 +19,7 @@ namespace Pinpoint.Win.ViewModels
         public static readonly ThemeModel DarkTheme = new ThemeModel
         {
             Name = "Dark",
-            Background = ToBrush("#E5343434"),
+            Background = ToBrush("#E52A2A2A"),
             TxtQueryForeground = ToBrush("#FFD8D8D8"),
             TxtQueryCaretBrush = ToBrush("#FFD8D8D8"),
             TxtResultSubtitleForeground = ToBrush("#FF9E9E9E"),
