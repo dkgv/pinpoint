@@ -7,6 +7,7 @@ Pinpoint is an extensible keystroke launcher written in C# (.NET Core).
 - [Installation](#installation)
 - [Plugins](#plugins)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
+- [Contributing](#contributing)
 
 ## Installation
 
@@ -58,3 +59,11 @@ Pinpoint is an extensible keystroke launcher written in C# (.NET Core).
 | <kbd>ALT</kbd>/<kbd>ESC</kbd>                                                                                                          | View result options / go back                |
 | <kbd>TAB</kbd>                                                                                                                         | Auto-complete query according to results     |
 | <kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>V</kbd>                                                                                            | Paste an entry from your clipboard history   |
+
+## Contributing
+
+- Fork and clone the repository
+- Feel free to add new functionality or improve existing functionality
+	- Browse the [open issues](https://github.com/dkgv/pinpoint/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) if you need inspiration
+- Create one branch and PR per major change you make
+- Thanks ❤️
