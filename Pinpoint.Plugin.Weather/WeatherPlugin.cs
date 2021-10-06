@@ -87,11 +87,6 @@ namespace Pinpoint.Plugin.Weather
             var result = await HttpRequestHandler.SendGet(url, 
                 s => s.Contains("error") ? null : JObject.Parse(s)["forecast"]["forecastday"]);
 
-            if (result == null)
-            {
-                return new List<WeatherDayModel>();
-            }
-
             return result.Select(token =>
             {
                 var weatherDayModel = JsonConvert.DeserializeObject<WeatherDayModel>(token["day"].ToString());
