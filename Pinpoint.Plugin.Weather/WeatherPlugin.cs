@@ -85,7 +85,7 @@ namespace Pinpoint.Plugin.Weather
         {
             var url = $"https://usepinpoint.com/api/weather/{location}";
             var result = await HttpRequestHandler.SendGet(url, 
-                s => JObject.Parse(s)["forecast"]["forecastday"]);
+                s => s.Contains("error") ? null : JObject.Parse(s)["forecast"]["forecastday"]);
 
             return result.Select(token =>
             {

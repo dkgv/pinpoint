@@ -13,7 +13,7 @@ namespace Pinpoint.Core
             try
             {
                 var response = await HttpClient.GetStringAsync(url);
-                return string.IsNullOrEmpty(response) || response.Contains("error") ? default : parse(response);
+                return string.IsNullOrEmpty(response) ? default : parse(response);
             }
             catch (HttpRequestException)
             {
