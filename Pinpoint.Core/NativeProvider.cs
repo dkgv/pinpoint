@@ -32,7 +32,6 @@ namespace Pinpoint.Core
         {
             // See https://docs.microsoft.com/en-us/windows/win32/winmsg/wm-geticon
             const uint wmGeticon = 0x007f;
-
             var iconSmall2 = new IntPtr(2);
             var idiApplication = new IntPtr(0x7F00);
             var gclHicon = -14;
