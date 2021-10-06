@@ -12,22 +12,19 @@ namespace Pinpoint.Plugin.ClipboardManager
     {
         private const string Description = "Copy as you normally would with CTRL+C and paste from your clipboard history via CTRL+ALT+V.";
 
-        public readonly ClipboardHistory ClipboardHistory = new ClipboardHistory();
+        public PluginMeta Meta { get; set; } = new("Clipboard Manager", Description, PluginPriority.Standard);
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Clipboard Manager", Description, PluginPriority.Standard);
-
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public void Unload()
         {
-            ClipboardHistory.Clear();
         }
 
         public async Task<bool> Activate(Query query) => false;
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            foreach (var clipboardEntry in ClipboardHistory)
+            foreach (var clipboardEntry in ClipboardHelper.History)
             {
                 yield return new ClipboardResult(clipboardEntry);
             }
