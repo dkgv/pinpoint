@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.Finance
 {
@@ -28,13 +29,9 @@ namespace Pinpoint.Plugin.Finance
                 return _searchCache[ticker];
             }
 
-            var httpResponse = await SendGet(string.Format(SearchUrl, ticker));
-            if (string.IsNullOrEmpty(httpResponse))
-            {
-                return null;
-            }
-
-            var quotes = JObject.Parse(httpResponse)["quotes"].ToArray();
+            var quotes = await HttpRequestHandler.SendGet(string.Format(SearchUrl, ticker),
+                s => JObject.Parse(s)["quotes"].ToArray());
+            
             if (quotes.Length == 0)
             {
                 return null;
@@ -52,13 +49,9 @@ namespace Pinpoint.Plugin.Finance
                 return response;
             }
 
-            var httpResponse = await SendGet(string.Format(PriceUrl, ticker));
-            if (string.IsNullOrEmpty(httpResponse))
-            {
-                return null;
-            }
-
-            var result = JObject.Parse(httpResponse)["chart"]["result"].ToArray();
+            var result = await HttpRequestHandler.SendGet(string.Format(PriceUrl, ticker), 
+                s => JObject.Parse(s)["chart"]["result"].ToArray());
+            
             if (result.Length == 0)
             {
                 return null;
@@ -76,19 +69,6 @@ namespace Pinpoint.Plugin.Finance
             // Cache ticker response
             PriceRepository.Put(ticker, response);
             return response;
-        }
-
-        private async Task<string> SendGet(string url)
-        {
-            try
-            {
-                using var httpClient = new HttpClient();
-                return await httpClient.GetStringAsync(url);
-            }
-            catch (HttpRequestException)
-            {
-                return null;
-            }
         }
     }
 }

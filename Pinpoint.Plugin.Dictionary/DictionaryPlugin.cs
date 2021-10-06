@@ -36,13 +36,7 @@ namespace Pinpoint.Plugin.Dictionary
         {
             var url = $"https://api.dictionaryapi.dev/api/v2/entries/en_US/{query.Parts[0]}";
 
-            var httpResponse = await SendGet(url);
-            if (string.IsNullOrEmpty(httpResponse))
-            {
-                yield break;
-            }
-
-            var matches = JArray.Parse(httpResponse);
+            var matches = await HttpRequestHandler.SendGet(url, JArray.Parse);
 
             if (matches == null || matches.Count == 0)
             {
@@ -59,19 +53,6 @@ namespace Pinpoint.Plugin.Dictionary
                     model.PartOfSpeech = meaning["partOfSpeech"].ToString();
                     yield return new DictionaryResult(model);
                 }
-            }
-        }
-
-        private async Task<string> SendGet(string url)
-        {
-            try
-            {
-                using var httpClient = new HttpClient();
-                return await httpClient.GetStringAsync(url);
-            }
-            catch (HttpRequestException)
-            {
-                return null;
             }
         }
     }

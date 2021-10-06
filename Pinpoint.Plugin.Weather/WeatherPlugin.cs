@@ -84,18 +84,10 @@ namespace Pinpoint.Plugin.Weather
         private async Task<List<WeatherDayModel>> LookupWeather(string location)
         {
             var url = $"https://usepinpoint.com/api/weather/{location}";
-            var httpResponse = await SendGet(url);
-            if (string.IsNullOrEmpty(httpResponse))
-            {
-                return null;
-            }
+            var result = await HttpRequestHandler.SendGet(url, 
+                s => JObject.Parse(s)["forecast"]["forecastday"]);
 
-            if (httpResponse.Contains("error"))
-            {
-                return null;
-            }
-
-            return JObject.Parse(httpResponse)["forecast"]["forecastday"].Select(token =>
+            return result.Select(token =>
             {
                 var weatherDayModel = JsonConvert.DeserializeObject<WeatherDayModel>(token["day"].ToString());
                 weatherDayModel.DayOfWeek = DateTime.Parse(token["date"].ToString()).ToString("ddd").Substring(0, 2);
@@ -104,20 +96,6 @@ namespace Pinpoint.Plugin.Weather
                     .ToArray();
                 return weatherDayModel;
             }).ToList();
-        }
-
-
-        private async Task<string> SendGet(string url)
-        {
-            try
-            {
-                using var httpClient = new HttpClient();
-                return await httpClient.GetStringAsync(url);
-            }
-            catch (HttpRequestException)
-            {
-                return null;
-            }
         }
     }
 }

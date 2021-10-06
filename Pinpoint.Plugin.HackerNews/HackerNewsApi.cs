@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.HackerNews
 {
@@ -17,14 +18,14 @@ namespace Pinpoint.Plugin.HackerNews
         public async Task<List<HackerNewsSubmission>> TopSubmissions(int n = 30)
         {
             // Fetch submission ids
-            var entries = JArray.Parse(await SendGet(TopStoriesUrl));
+            var entries = await HttpRequestHandler.SendGet(TopStoriesUrl, JArray.Parse);
 
             // Start tasks to fetch details about each submission
             var submissions = new List<HackerNewsSubmission>();
             var tasks = entries.Take(n).Select(id => Task.Run(async () =>
                 {
-                    var json = await SendGet(string.Format(SubmissionUrl, id));
-                    var submission = JsonConvert.DeserializeObject<HackerNewsSubmission>(json);
+                    var submission = await HttpRequestHandler.SendGet(string.Format(SubmissionUrl, id),
+                        JsonConvert.DeserializeObject<HackerNewsSubmission>);
                     lock (submissions)
                     {
                         submissions.Add(submission);
@@ -36,19 +37,6 @@ namespace Pinpoint.Plugin.HackerNews
             Task.WaitAll(tasks);
 
             return submissions;
-        }
-
-        private async Task<string> SendGet(string url)
-        {
-            try
-            {
-                using var httpClient = new HttpClient();
-                return await httpClient.GetStringAsync(url);
-            }
-            catch (HttpRequestException)
-            {
-                return null;
-            }
         }
     }
 }
