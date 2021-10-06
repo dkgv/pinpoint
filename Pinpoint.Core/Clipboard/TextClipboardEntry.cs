@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 
 namespace Pinpoint.Core.Clipboard
 {
@@ -14,5 +15,7 @@ namespace Pinpoint.Core.Clipboard
         public string Content { get; set; }
         
         public DateTime Copied { get; set; }
+
+        public Bitmap Icon { get; set; }
     }
 }
