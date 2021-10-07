@@ -12,7 +12,7 @@ namespace Pinpoint.Plugin.ClipboardUploader
         public override async Task<string> Upload(string content)
         {
             var httpContent = new StringContent(content);
-            var response = await HttpRequestHandler.SendPost(Name, httpContent, async message =>
+            var response = await HttpHelper.SendPost(Name, httpContent, async message =>
             {
                 if (message.StatusCode != HttpStatusCode.Created)
                 {

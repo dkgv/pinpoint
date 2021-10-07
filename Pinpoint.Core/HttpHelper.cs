@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Pinpoint.Core
 {
-    public static class HttpRequestHandler
+    public static class HttpHelper
     {
         private static readonly HttpClient HttpClient = new();
 

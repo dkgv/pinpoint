@@ -36,7 +36,7 @@ namespace Pinpoint.Plugin.Dictionary
         {
             var url = $"https://api.dictionaryapi.dev/api/v2/entries/en_US/{query.Parts[0]}";
 
-            var matches = await HttpRequestHandler.SendGet(url, JArray.Parse);
+            var matches = await HttpHelper.SendGet(url, JArray.Parse);
 
             if (matches == null || matches.Count == 0)
             {

@@ -84,7 +84,7 @@ namespace Pinpoint.Plugin.Weather
         private async Task<List<WeatherDayModel>> LookupWeather(string location)
         {
             var url = $"https://usepinpoint.com/api/weather/{location}";
-            var result = await HttpRequestHandler.SendGet(url, 
+            var result = await HttpHelper.SendGet(url, 
                 s => s.Contains("error") ? null : JObject.Parse(s)["forecast"]["forecastday"]);
 
             return result.Select(token =>

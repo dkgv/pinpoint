@@ -29,7 +29,7 @@ namespace Pinpoint.Plugin.Finance
                 return _searchCache[ticker];
             }
 
-            var quotes = await HttpRequestHandler.SendGet(string.Format(SearchUrl, ticker),
+            var quotes = await HttpHelper.SendGet(string.Format(SearchUrl, ticker),
                 s => JObject.Parse(s)["quotes"].ToArray());
             
             if (quotes.Length == 0)
@@ -49,7 +49,7 @@ namespace Pinpoint.Plugin.Finance
                 return response;
             }
 
-            var result = await HttpRequestHandler.SendGet(string.Format(PriceUrl, ticker), 
+            var result = await HttpHelper.SendGet(string.Format(PriceUrl, ticker), 
                 s => JObject.Parse(s)["chart"]["result"].ToArray());
             
             if (result.Length == 0)

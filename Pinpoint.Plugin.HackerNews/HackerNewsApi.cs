@@ -18,13 +18,13 @@ namespace Pinpoint.Plugin.HackerNews
         public async Task<List<HackerNewsSubmission>> TopSubmissions(int n = 30)
         {
             // Fetch submission ids
-            var entries = await HttpRequestHandler.SendGet(TopStoriesUrl, JArray.Parse);
+            var entries = await HttpHelper.SendGet(TopStoriesUrl, JArray.Parse);
 
             // Start tasks to fetch details about each submission
             var submissions = new List<HackerNewsSubmission>();
             var tasks = entries.Take(n).Select(id => Task.Run(async () =>
                 {
-                    var submission = await HttpRequestHandler.SendGet(string.Format(SubmissionUrl, id),
+                    var submission = await HttpHelper.SendGet(string.Format(SubmissionUrl, id),
                         JsonConvert.DeserializeObject<HackerNewsSubmission>);
                     lock (submissions)
                     {
