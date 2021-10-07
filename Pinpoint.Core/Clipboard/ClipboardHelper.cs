@@ -1,11 +1,23 @@
 ﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using FontAwesome5;
+using Pinpoint.Core.Results;
 
 namespace Pinpoint.Core.Clipboard
 {
     public static class ClipboardHelper
     {
+        public static readonly ClipboardHistory History = new();
+
+        public static void PrependToHistory(IClipboardEntry entry)
+        {
+            var icon = NativeProvider.GetActiveWindowIcon();
+            entry.Icon = icon ?? FontAwesomeBitmapRepository.GetOrMake(EFontAwesomeIcon.Regular_Copy);
+
+            History.AddFirst(entry);
+        }
+
         public static void PasteClipboard()
         {
             Task.Run(async () =>

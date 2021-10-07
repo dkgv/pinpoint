@@ -51,7 +51,7 @@ namespace Pinpoint.Win.Views
     /// </summary>
     public partial class MainWindow : Window
     {
-        private CancellationTokenSource _cts = new CancellationTokenSource();
+        private CancellationTokenSource _cts = new();
         private int _showingOptionsForIndex = -1;
         private double _offsetFromDefaultX = 0, _offsetFromDefaultY = 0;
         private Point _defaultWindowPosition;
@@ -80,25 +80,23 @@ namespace Pinpoint.Win.Views
                 SharpClipboard.ContentTypes.Text => new TextClipboardEntry
                 {
                     Title = Model.Clipboard.ClipboardText.Trim().Replace("\n", "").Replace("\r", ""), 
-                    Content = Model.Clipboard.ClipboardText
+                    Content = Model.Clipboard.ClipboardText,
+                    Copied = DateTime.Now
                 },
                 SharpClipboard.ContentTypes.Image => new ImageClipboardEntry
                 {
                     Title = $"Image - Copied {DateTime.Now.ToShortDateString()}", 
-                    Content = Model.Clipboard.ClipboardImage
+                    Content = Model.Clipboard.ClipboardImage,
+                    Copied = DateTime.Now
                 },
                 _ => null
             };
-
-            if (entry != null)
+            if (entry == null)
             {
-                Model.PluginEngine.PluginByType<ClipboardManagerPlugin>().ClipboardHistory.AddFirst(entry);
-
-                if (entry is TextClipboardEntry)
-                {
-                    Model.PluginEngine.PluginByType<ClipboardUploaderPlugin>().ClipboardHistory.AddFirst(entry);
-                }
+                return;
             }
+
+            ClipboardHelper.PrependToHistory(entry);
         }
 
         private void RegisterHotkey(string identifier, HotkeyModel hotkey, EventHandler<HotkeyEventArgs> handler)
@@ -145,7 +143,7 @@ namespace Pinpoint.Win.Views
                 Model.PluginEngine.AddPlugin(new ClipboardUploaderPlugin())
             };
 
-            await Task.WhenAll(addPluginTasks).ConfigureAwait(false);
+            await Task.WhenAll(addPluginTasks);
             Dispatcher.Invoke(() =>
             {
                 TxtQuery.Watermark = "Pinpoint";
@@ -157,7 +155,7 @@ namespace Pinpoint.Win.Views
         public async void OnSystemClipboardPaste([CanBeNull] object sender, HotkeyEventArgs e)
         {
             var plugin = Model.PluginEngine.PluginByType<ClipboardManagerPlugin>();
-            if (plugin.ClipboardHistory.Count == 0)
+            if (ClipboardHelper.History.Count == 0)
             {
                 return;
             }

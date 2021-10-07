@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using FontAwesome5;
 using Pinpoint.Core;
 using Pinpoint.Core.Clipboard;
@@ -17,23 +13,22 @@ namespace Pinpoint.Plugin.ClipboardUploader
     {
         private const string Description = "Upload your clipboard content to a pastebin and receive the resulting URL directly to your clipboard.\n\nExamples: \"paste\"";
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Clipboard Uploader", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("Clipboard Uploader", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
-
-        public ClipboardHistory ClipboardHistory = new ClipboardHistory(1);
+        public PluginSettings UserSettings { get; set; } = new();
 
         public async Task<bool> Activate(Query query) => query.RawQuery.ToLower().Equals("paste");
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            if (ClipboardHistory.First == null)
+            var item = ClipboardHelper.History.First;
+            if (item == null)
             {
                 yield break;
             }
 
-            var entry = ClipboardHistory.First.Value as TextClipboardEntry;
-            yield return new UploadToResult(new PastersUploader(), entry.Content);
+            var textEntry = item.Value as TextClipboardEntry;
+            yield return new UploadToResult(new PastersUploader(), textEntry.Content);
         }
     }
 

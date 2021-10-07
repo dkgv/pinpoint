@@ -14,5 +14,7 @@ namespace Pinpoint.Core.Clipboard
         public Image Content { get; set; }
         
         public DateTime Copied { get; set; }
+
+        public Bitmap Icon { get; set; }
     }
 }
