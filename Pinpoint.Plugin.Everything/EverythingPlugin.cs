@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -72,8 +73,25 @@ namespace Pinpoint.Plugin.Everything
                     continue;
                 }
 
-                yield return new EverythingResult(result, MapResultTypeToIcon(result));
+                AssignIcon(result);
+
+                yield return new EverythingResult(result);
             }
+        }
+
+        private void AssignIcon(QueryResultItem result)
+        {
+            Bitmap icon;
+            if (File.Exists(result.FullPath))
+            {
+                icon = Icon.ExtractAssociatedIcon(result.FullPath).ToBitmap();
+            }
+            else
+            {
+                icon = FontAwesomeBitmapRepository.Get(MapResultTypeToIcon(result));
+            }
+
+            result.Icon = icon;
         }
 
         private bool IsInHiddenFolder(string path)

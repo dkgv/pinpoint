@@ -1,4 +1,6 @@
-﻿namespace Pinpoint.Plugin.Everything.API
+﻿using System.Drawing;
+
+namespace Pinpoint.Plugin.Everything.API
 {
     public class QueryResultItem
     {
@@ -7,5 +9,7 @@
         public string Name { get; set; }
 
         public string FullPath { get; set; }
+
+        public Bitmap Icon { get; set; }
     }
 }

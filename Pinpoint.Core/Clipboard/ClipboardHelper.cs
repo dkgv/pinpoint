@@ -13,7 +13,7 @@ namespace Pinpoint.Core.Clipboard
         public static void PrependToHistory(IClipboardEntry entry)
         {
             var icon = NativeProvider.GetActiveWindowIcon();
-            entry.Icon = icon ?? FontAwesomeBitmapRepository.GetOrMake(EFontAwesomeIcon.Regular_Copy);
+            entry.Icon = icon ?? FontAwesomeBitmapRepository.Get(EFontAwesomeIcon.Regular_Copy);
 
             History.AddFirst(entry);
         }

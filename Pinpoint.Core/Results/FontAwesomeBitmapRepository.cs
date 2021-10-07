@@ -11,7 +11,7 @@ namespace Pinpoint.Core.Results
     {
         private static readonly Dictionary<EFontAwesomeIcon, Bitmap> IconCache = new();
 
-        public static Bitmap GetOrMake(EFontAwesomeIcon icon)
+        public static Bitmap Get(EFontAwesomeIcon icon)
         {
             // Check if we already converted FA icon -> Bitmap and if not, do it
             if (!IconCache.ContainsKey(icon))

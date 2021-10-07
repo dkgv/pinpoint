@@ -15,6 +15,6 @@ namespace Pinpoint.Core.Results
 
         public abstract EFontAwesomeIcon FontAwesomeIcon { get; }
 
-        public override Bitmap Icon => FontAwesomeBitmapRepository.GetOrMake(FontAwesomeIcon);
+        public override Bitmap Icon => FontAwesomeBitmapRepository.Get(FontAwesomeIcon);
     }
 }

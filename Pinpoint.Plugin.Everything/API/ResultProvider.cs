@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -83,7 +84,7 @@ namespace Pinpoint.Plugin.Everything.API
             {
                 ResultType = ResultType.File,
                 Name = Path.GetFileNameWithoutExtension(fullPath),
-                FullPath = fullPath,
+                FullPath = fullPath
             };
         }
 
