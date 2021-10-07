@@ -43,10 +43,11 @@ namespace Pinpoint.Plugin.UrlLauncher
 
         public async Task<bool> Activate(Query query)
         {
-            if (query.RawQuery.Length < 3 || !query.RawQuery.Contains("."))
+            if (query.RawQuery.Length < 3 || query.RawQuery[0] == '.' || !query.RawQuery.Contains("."))
             {
                 return false;
             }
+
             var split = query.RawQuery.Split(".");
             return split.Length > 0 && Tlds.Contains(split[^1]);
         }
@@ -59,8 +60,20 @@ namespace Pinpoint.Plugin.UrlLauncher
                 url = HttpsProtocolPrefix + url;
             }
 
-            var uri = new Uri(url);
-            yield return new UrlLauncherResult(uri.ToString());
+            Uri uri = null;
+            try
+            {
+                uri = new Uri(url);
+            }
+            catch (UriFormatException)
+            {
+                // invalid hostname
+            }
+
+            if (uri != null)
+            {
+                yield return new UrlLauncherResult(uri.ToString());
+            }
         }
     }
 }
