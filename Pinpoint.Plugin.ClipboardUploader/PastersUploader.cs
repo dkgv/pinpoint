@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.ClipboardUploader
 {
@@ -11,13 +12,15 @@ namespace Pinpoint.Plugin.ClipboardUploader
         public override async Task<string> Upload(string content)
         {
             var httpContent = new StringContent(content);
-            var response = await SendPost(Name, httpContent);
-            if (response.StatusCode != HttpStatusCode.Created)
+            var response = await HttpHelper.SendPost(Name, httpContent, async message =>
             {
-                return string.Empty;
-            }
-
-            return await response.Content.ReadAsStringAsync();
+                if (message.StatusCode != HttpStatusCode.Created)
+                {
+                    return string.Empty;
+                }
+                return await message.Content.ReadAsStringAsync();
+            });
+            return await response;
         }
     }
 }
