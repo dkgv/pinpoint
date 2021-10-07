@@ -10,9 +10,9 @@ namespace Pinpoint.Core
 {
     public class PluginEngine
     {
-        public List<IPlugin> Plugins { get; } = new List<IPlugin>();
+        public List<IPlugin> Plugins { get; } = new();
 
-        public List<IPluginListener<IPlugin, object>> Listeners { get; } = new List<IPluginListener<IPlugin, object>>();
+        public List<IPluginListener<IPlugin, object>> Listeners { get; } = new();
 
         public async Task AddPlugin(IPlugin @new)
         {

@@ -15,19 +15,19 @@ namespace Pinpoint.Plugin.Reddit
 {
     public class RedditPlugin: IPlugin
     {
-        private readonly Dictionary<string, CacheValue> _resultCache = new Dictionary<string, CacheValue>();
-        private static readonly Regex SubRedditRegex = new Regex(@"^r\/[0-9a-zA-z]+$");
+        private readonly Dictionary<string, CacheValue> _resultCache = new();
+        private static readonly Regex SubRedditRegex = new(@"^r\/[0-9a-zA-z]+$");
         private const int CacheExpirationTimeInMinutes = 5;
         private const string Description = "Browse your favorite subreddits.\n\nExamples: \"r/news\", \"r/news top\", \"r/news top week\"";
 
-        private readonly HttpClient _httpClient = new HttpClient
+        private readonly HttpClient _httpClient = new()
         {
             BaseAddress = new Uri("https://reddit.com", UriKind.Absolute)
         };
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Reddit Browser", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("Reddit Browser", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public void Unload()
         {

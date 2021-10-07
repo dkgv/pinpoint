@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,7 +12,7 @@ namespace Pinpoint.Plugin.Finance
     {
         private const string PriceUrl = "https://query1.finance.yahoo.com/v8/finance/chart/{0}?interval=2m&useYfid=true&range=1d";
         private const string SearchUrl = "https://query2.finance.yahoo.com/v1/finance/search?q={0}&quotesCount=1&enableFuzzyQuery=false&newsCount=0";
-        private readonly Dictionary<string, YahooFinanceSearchResponse> _searchCache = new Dictionary<string, YahooFinanceSearchResponse>();
+        private readonly Dictionary<string, YahooFinanceSearchResponse> _searchCache = new();
 
         public YahooFinanceApi(TimeSpan cacheTimeout)
         {

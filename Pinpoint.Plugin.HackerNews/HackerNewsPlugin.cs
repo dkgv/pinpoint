@@ -11,11 +11,11 @@ namespace Pinpoint.Plugin.HackerNews
     {
         private const string Description = "Browse the frontpage of Hacker News.\n\nExamples: \"hackernews\", \"hacker news\", \"hnews\"";
 
-        private readonly HackerNewsApi _hackerNewsApi = new HackerNewsApi();
+        private readonly HackerNewsApi _hackerNewsApi = new();
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Hacker News Browser", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("Hacker News Browser", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public void Unload()
         {

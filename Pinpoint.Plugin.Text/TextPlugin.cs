@@ -14,9 +14,9 @@ namespace Pinpoint.Plugin.Text
     {
         private const string Description = "Easily perform various transformative text actions. Wrap your text in \" and select and option.\n\nExamples: \"this is some text\"";
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Text Plugin", Description, PluginPriority.NextHighest);
+        public PluginMeta Meta { get; set; } = new("Text Plugin", Description, PluginPriority.NextHighest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public async Task<bool> Activate(Query query) => query.RawQuery.Length > 2 && query.RawQuery.StartsWith("\"") && query.RawQuery.EndsWith("\"");
 

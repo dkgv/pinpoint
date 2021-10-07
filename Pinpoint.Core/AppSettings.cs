@@ -8,7 +8,7 @@ namespace Pinpoint.Core
 {
     public static class AppSettings
     {
-        private static readonly Dictionary<string, object> Settings = new Dictionary<string, object>();
+        private static readonly Dictionary<string, object> Settings = new();
 
         public static T Get<T>(string key) where T : class
         {

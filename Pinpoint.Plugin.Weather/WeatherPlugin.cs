@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -17,11 +16,11 @@ namespace Pinpoint.Plugin.Weather
     {
         private const string KeyDefaultCity = "Default city";
         private const string Description = "Look up weather forecasts.\n\nExamples: \"weather <location>\" or \"weather\" if default location is set";
-        private readonly Dictionary<string, List<WeatherDayModel>> _weatherCache = new Dictionary<string, List<WeatherDayModel>>();
+        private readonly Dictionary<string, List<WeatherDayModel>> _weatherCache = new();
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Weather", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("Weather", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
         
         public async Task<bool> TryLoad()
         {

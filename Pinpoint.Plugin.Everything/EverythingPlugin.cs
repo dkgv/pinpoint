@@ -19,20 +19,20 @@ namespace Pinpoint.Plugin.Everything
         private const string KeyIgnoreHiddenFolders = "Ignore hidden folder items";
         private const string Description = "Search for files on your computer via Everything by David Carpenter.";
 
-        private static readonly Regex ImageRegex = new Regex(@"png|jpg|gif|psd|svg|raw|jpeg|bmp|tiff");
-        private static readonly Regex VideoRegex = new Regex(@"mp4|avi|mkv|flv|webm|mov|wmv|mpg|m4v|mpeg|wmv");
-        private static readonly Regex AudioRegex = new Regex(@"mp3|flac|wma|alac");
-        private static readonly Regex ZipRegex = new Regex(@"zip|tar|rar|gx|7z|apk|dmg|tar\.(gz|lz|xz)|zz");
-        private static readonly Regex WordRegex = new Regex(@"doc|docx");
-        private static readonly Regex PowerPointRegex = new Regex(@"ppt|pptx");
-        private static readonly Regex TextRegex = new Regex(@"txt|md|rtf");
-        private static readonly Regex CodeRegex = new Regex(@"java|cs|py|cpp|cc|rs|php|js|css|html|rb|pl|h|c|m|swift|xaml");
-        private static readonly Regex SpreadsheetRegex = new Regex(@"xls|xlsm|xlsx|numbers|ots|xlr");
+        private static readonly Regex ImageRegex = new(@"png|jpg|gif|psd|svg|raw|jpeg|bmp|tiff");
+        private static readonly Regex VideoRegex = new(@"mp4|avi|mkv|flv|webm|mov|wmv|mpg|m4v|mpeg|wmv");
+        private static readonly Regex AudioRegex = new(@"mp3|flac|wma|alac");
+        private static readonly Regex ZipRegex = new(@"zip|tar|rar|gx|7z|apk|dmg|tar\.(gz|lz|xz)|zz");
+        private static readonly Regex WordRegex = new(@"doc|docx");
+        private static readonly Regex PowerPointRegex = new(@"ppt|pptx");
+        private static readonly Regex TextRegex = new(@"txt|md|rtf");
+        private static readonly Regex CodeRegex = new(@"java|cs|py|cpp|cc|rs|php|js|css|html|rb|pl|h|c|m|swift|xaml");
+        private static readonly Regex SpreadsheetRegex = new(@"xls|xlsm|xlsx|numbers|ots|xlr");
         private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Everything (File Search)", Description, PluginPriority.Lowest);
+        public PluginMeta Meta { get; set; } = new("Everything (File Search)", Description, PluginPriority.Lowest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 

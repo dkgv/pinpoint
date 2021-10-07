@@ -79,7 +79,7 @@ namespace Pinpoint.Plugin.Everything.API
 
         private QueryResultItem MakeFile(string fullPath)
         {
-            return new QueryResultItem
+            return new()
             {
                 ResultType = ResultType.File,
                 Name = Path.GetFileNameWithoutExtension(fullPath),
@@ -89,7 +89,7 @@ namespace Pinpoint.Plugin.Everything.API
 
         private QueryResultItem MakeDir(string fullPath)
         {
-            return new QueryResultItem
+            return new()
             {
                 ResultType = ResultType.Directory,
                 Name = Path.GetDirectoryName(fullPath),

@@ -12,7 +12,7 @@ namespace Pinpoint.Plugin.Currency
 {
     public class CurrencyRepository
     {
-        private readonly HashSet<string> _validIsos = new HashSet<string>();
+        private readonly HashSet<string> _validIsos = new();
 
         public async Task LoadCurrenciesInitial()
         {
@@ -33,7 +33,7 @@ namespace Pinpoint.Plugin.Currency
 
         public bool IsIsoValid(string iso) => _validIsos.Contains(iso.ToLower());
 
-        public Dictionary<string, CurrencyModel> CurrencyModels { get; } = new Dictionary<string, CurrencyModel>();
+        public Dictionary<string, CurrencyModel> CurrencyModels { get; } = new();
 
         // Convert all values for USD
         
@@ -94,9 +94,6 @@ namespace Pinpoint.Plugin.Currency
                 using var httpClient = new HttpClient();
                 var response = await httpClient.GetAsync(url).ConfigureAwait(false);
                 var json = await response.Content.ReadAsStringAsync();
-
-                //using var client = new WebClient();
-                //var json = client.DownloadString(url);
                 CurrencyModels["EUR"] = JsonConvert.DeserializeObject<CurrencyModel>(json);
             }
             catch (WebException)

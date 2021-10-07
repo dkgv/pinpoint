@@ -19,9 +19,9 @@ namespace Pinpoint.Plugin.Currency
         private const string KeyBaseCurrency = "Base currency";
         private const string Symbols = "$£€¥";
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Currency Converter", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("Currency Converter", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 

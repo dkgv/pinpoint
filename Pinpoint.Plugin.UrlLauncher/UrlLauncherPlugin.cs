@@ -14,12 +14,12 @@ namespace Pinpoint.Plugin.UrlLauncher
     public class UrlLauncherPlugin: IPlugin
     {
         private const string HttpsProtocolPrefix = "https://";
-        private static readonly HashSet<string> Tlds = new HashSet<string>(1577);
+        private static readonly HashSet<string> Tlds = new(1577);
         private const string Description = "Launch URLs.\n\nExamples: \"google.com\", \"images.google.com\"";
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Url Launcher", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("Url Launcher", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 

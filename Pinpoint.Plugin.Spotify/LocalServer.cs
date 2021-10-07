@@ -7,7 +7,7 @@ namespace PinPoint.Plugin.Spotify
     {
         private readonly byte[] _buffer =
             Encoding.UTF8.GetBytes(@"<html><body><h2>Spotify authentication was succesful - you can safely close this window now.</h2></body></html>");
-        private readonly HttpListener _listener = new HttpListener
+        private readonly HttpListener _listener = new()
         {
             Prefixes = { "http://localhost:5001/" }
         };

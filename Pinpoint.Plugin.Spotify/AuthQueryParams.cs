@@ -14,7 +14,7 @@ namespace PinPoint.Plugin.Spotify
         public IReadOnlyList<string> Scopes { get; set; }
 
         public static AuthQueryParams CreatePkceParams(string clientId, string redirectUri, string codeChallenge,
-            IReadOnlyList<string> scopes, string state = null) => new AuthQueryParams
+            IReadOnlyList<string> scopes, string state = null) => new()
         {
             ClientId = clientId,
             ResponseType = "code",

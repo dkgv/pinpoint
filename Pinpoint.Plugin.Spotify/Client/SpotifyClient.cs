@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using FontAwesome5;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Pinpoint.Core;
 using PinPoint.Plugin.Spotify;
 
@@ -16,7 +13,7 @@ namespace Pinpoint.Plugin.Spotify.Client
     public class SpotifyClient: IDisposable
     {
         private static SpotifyClient _instance;
-        private  readonly HttpClient _spotifyHttpClient = new HttpClient();
+        private static readonly HttpClient SpotifyHttpClient = new();
         private string _accessToken;
         private const string SpotifyApiBaseUrl = "https://api.spotify.com/v1";
 
@@ -88,7 +85,7 @@ namespace Pinpoint.Plugin.Spotify.Client
 
                 var newMessage = CreateRequestMessage(HttpMethod.Put,
                     $"{SpotifyApiBaseUrl}/me/player/play?device_id={deviceToPlayOn.Id}");
-                await _spotifyHttpClient.SendAsync(newMessage);
+                await SpotifyHttpClient.SendAsync(newMessage);
             }
         }
 
@@ -164,7 +161,7 @@ namespace Pinpoint.Plugin.Spotify.Client
             });
             var request = new HttpRequestMessage(HttpMethod.Post, "https://accounts.spotify.com/api/token") { Content = content };
 
-            var response = await _spotifyHttpClient.SendAsync(request);
+            var response = await SpotifyHttpClient.SendAsync(request);
             if(!response.IsSuccessStatusCode)
             {
                 return;
@@ -185,7 +182,7 @@ namespace Pinpoint.Plugin.Spotify.Client
 
         public void Dispose()
         {
-            _spotifyHttpClient.Dispose();
+            SpotifyHttpClient.Dispose();
         }
 
         private HttpRequestMessage CreateRequestMessage(HttpMethod httpMethod, string requestUri, object requestContent = null)
@@ -197,16 +194,20 @@ namespace Pinpoint.Plugin.Spotify.Client
 
         private async Task<HttpResponseMessage> SendWithRetry(HttpRequestMessage message)
         {
-            var response = await _spotifyHttpClient.SendAsync(message);
+            var response = await SpotifyHttpClient.SendAsync(message);
 
             if (response.IsSuccessStatusCode) return response;
 
             await ExchangeRefreshToken();
 
             var retryMessage = new HttpRequestMessage(message.Method, message.RequestUri)
-            { Headers = { { "Authorization", $"Bearer {_accessToken}" }, { "Accept", "application/json" } }, Content = message.Method != HttpMethod.Get ? message.Content : null};
+            {
+                Headers = {
+                    { "Authorization", $"Bearer {_accessToken}" },
+                    { "Accept", "application/json" }
+            }, Content = message.Method != HttpMethod.Get ? message.Content : null};
 
-            return await _spotifyHttpClient.SendAsync(retryMessage);
+            return await SpotifyHttpClient.SendAsync(retryMessage);
 
         }
     }

@@ -13,15 +13,15 @@ namespace Pinpoint.Plugin.AppSearch
 {
     public class AppSearchPlugin : IPlugin
     {
-        private UkkonenTrie<string> _trie = new UkkonenTrie<string>();
+        private UkkonenTrie<string> _trie = new();
         private const string Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\"";
 
         // Hacky
         public static string LastQuery;
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("App Search", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("App Search", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 

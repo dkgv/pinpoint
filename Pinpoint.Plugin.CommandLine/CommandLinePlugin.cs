@@ -11,9 +11,9 @@ namespace Pinpoint.Plugin.CommandLine
     {
         private const string Description = "Launch CLI programs directly in cmd.\n\nExamples: \">ipconfig\"";
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Command Line", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("Command Line", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public void Unload()
         {

@@ -2,6 +2,6 @@
 {
     public class RedditApiResult
     {
-        public RedditApiResultData Data { get; set; } = new RedditApiResultData();
+        public RedditApiResultData Data { get; set; } = new();
     }
 }
