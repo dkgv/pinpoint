@@ -58,16 +58,14 @@ namespace Pinpoint.Plugin.Timezone
             {
                 // Bit of a mess - handling all the different types of input strings.
                 var queryTime = splitQuery[0];
+                
                 var sourceTimezone = ConvertTimezoneCode(splitQuery[1]);
                 var targetTimezone = ConvertTimezoneCode(splitQuery[^1]);
-                
-                var isOnTwelveHourForm = 
-                    splitQuery[1] == "am" || splitQuery[1] == "pm" ||
-                    splitQuery[1] == "AM" || splitQuery[1] == "PM";
-                
-                if (isOnTwelveHourForm)
+
+                var potentialAmOrPm = splitQuery[1].ToUpper();
+                if (potentialAmOrPm is "AM" or "PM")
                 {
-                    queryTime = $"{splitQuery[0]} {splitQuery[1]}";
+                    queryTime = $"{queryTime} {potentialAmOrPm}";
                     sourceTimezone = ConvertTimezoneCode(splitQuery[2]);
                 }
 
