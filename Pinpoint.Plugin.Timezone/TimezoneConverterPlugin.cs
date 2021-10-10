@@ -25,6 +25,11 @@ namespace Pinpoint.Plugin.Timezone
             { "CEST", "Central European Standard Time" },
             { "CET", "Central European Standard Time" },
             { "JST", "Tokyo Standard Time" },
+            { "BST", "GMT Standard Time" },
+            { "AET", "AUS Eastern Standard Time" },
+            { "CPST", "Central Pacific Standard Time" },
+            { "CST", "China Standard Time" },
+            { "WAT", "W. Central Africa Standard Time" }
         };
 
         private static readonly string Timezone = string.Join("|", TimezoneIdConversion.Keys);
