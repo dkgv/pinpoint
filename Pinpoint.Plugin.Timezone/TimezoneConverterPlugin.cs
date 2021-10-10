@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Net.Http.Json;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
 
@@ -48,7 +47,7 @@ namespace Pinpoint.Plugin.Timezone
                 var targetTimezone = ConvertTimezoneCode(splitQuery[2]);
                 var time = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById(targetTimezone));
 
-                yield return new TimezoneConversionResult(time.ToShortTimeString());
+                yield return new TimezoneConversionResult(time.ToString("t", CultureInfo.CurrentCulture));
             }
             else
             {
@@ -71,8 +70,7 @@ namespace Pinpoint.Plugin.Timezone
                     TimeZoneInfo.FindSystemTimeZoneById(sourceTimezone), 
                     TimeZoneInfo.FindSystemTimeZoneById(targetTimezone));
                 
-                var formattedTime = isOnTwelveHourForm ? time.ToString("h:mm tt") : time.ToShortTimeString();
-                yield return new TimezoneConversionResult(formattedTime);
+                yield return new TimezoneConversionResult(time.ToString("t", CultureInfo.CurrentCulture));
             }
         }
 
