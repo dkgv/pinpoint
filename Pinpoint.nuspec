@@ -6,7 +6,7 @@
     <version>0.0.0</version>
     <authors>Gustav V. Y.</authors>
     <owners>Gustav V. Y.</owners>
-    <summary>Pinpoint is a keystroke launcher akin to macOS Spotlight but for Windows.</summary>
+    <summary>Pinpoint is a keystroke launcher for Windows, much like Spotlight for macOS</summary>
     <projectUrl>https://github.com/dkgv/pinpoint</projectUrl>
     <tags>keystroke launcher, clipboard manager</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
