@@ -83,7 +83,7 @@ jobs:
       - name: Overwrite version in Nuspec
         shell: bash
         run: |
-          sed -i "s/<Version>.*<\/Version>/<Version>${{ steps.get_version.outputs.VERSION }}<\/Version>/g" Pinpoint.nuspec
+          sed -i "s/<version>.*<\/version>/<version>${{ steps.get_version.outputs.VERSION }}<\/version>/g" Pinpoint.nuspec
 
       - name: Package and push to Chocolatey
         run: |
