@@ -4,8 +4,7 @@
     <id>Pinpoint</id>
     <title>Pinpoint</title>
     <version>0.0.0</version>
-    <authors>Gustav V. Y.</authors>
-    <owners>Gustav V. Y.</owners>
+    <authors>dkgv</authors>
     <description>Pinpoint is a keystroke launcher for Windows, much like Spotlight for macOS</description>
     <projectUrl>https://github.com/dkgv/pinpoint</projectUrl>
     <tags>keystroke launcher, clipboard manager</tags>
