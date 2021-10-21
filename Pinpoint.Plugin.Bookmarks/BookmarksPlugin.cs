@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
 using Pinpoint.Core;
@@ -10,11 +12,13 @@ namespace Pinpoint.Plugin.Bookmarks
 {
     public class BookmarksPlugin : IPlugin
     {
-        private readonly UkkonenTrie<Tuple<BrowserType, AbstractBookmarkModel>> _trie = new UkkonenTrie<Tuple<BrowserType, AbstractBookmarkModel>>();
+        private const string Description = "Search for browser bookmarks from Brave, Chrome, Firefox.";
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Bookmarks Plugin", PluginPriority.NextHighest);
+        private readonly UkkonenTrie<Tuple<BrowserType, AbstractBookmarkModel>> _trie = new();
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginMeta Meta { get; set; } = new("Bookmarks Plugin", Description, PluginPriority.NextHighest);
+
+        public PluginSettings UserSettings { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 
@@ -38,9 +42,9 @@ namespace Pinpoint.Plugin.Bookmarks
         {
         }
 
-        public async Task<bool> Activate(Query query) => true;
+        public async Task<bool> Activate(Query query) => query.RawQuery.Length >= 2;
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var seen = new HashSet<string>();
             foreach (var bookmarkModel in _trie.Retrieve(query.RawQuery.ToLower()))

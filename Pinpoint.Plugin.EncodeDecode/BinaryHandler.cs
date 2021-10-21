@@ -7,8 +7,8 @@ namespace Pinpoint.Plugin.EncodeDecode
 {
     public class BinaryHandler: IEncodeDecodeHandler
     {
-        private readonly Regex _encodeRegex = new Regex(@"^[0-9]+$");
-        private readonly Regex _decodeRegex = new Regex(@"^[0-1]+$");
+        private readonly Regex _encodeRegex = new(@"^[0-9]+$");
+        private readonly Regex _decodeRegex = new(@"^[0-1]+$");
 
         //Blatantly stolen from this answer: https://stackoverflow.com/a/15447131/7230001
         public string Encode(string number)

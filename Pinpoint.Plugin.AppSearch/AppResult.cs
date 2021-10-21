@@ -9,7 +9,7 @@ namespace Pinpoint.Plugin.AppSearch
     public class AppResult : AbstractQueryResult
     {
         private readonly string _filePath;
-        private static readonly Dictionary<string, Bitmap> IconCache = new Dictionary<string, Bitmap>();
+        private static readonly Dictionary<string, Bitmap> IconCache = new();
 
         public AppResult(string filePath) : base(Path.GetFileName(filePath).Split(".")[0], filePath)
         {
@@ -36,6 +36,12 @@ namespace Pinpoint.Plugin.AppSearch
         {
             AppSearchFrequency.Track(AppSearchPlugin.LastQuery, _filePath);
             Process.Start("explorer.exe", "\"" + _filePath + "\"");
+        }
+
+        public override bool OnPrimaryOptionSelect()
+        {
+            Process.Start("explorer.exe", Path.GetDirectoryName(_filePath));
+            return true;
         }
     }
 }

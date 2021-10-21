@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core.Results;
 
@@ -15,11 +17,13 @@ namespace Pinpoint.Core
 
         public Task<bool> TryLoad() => Task.FromResult(true);
 
-        public void Unload();
+        public void Unload()
+        {
+        }
 
         public Task<bool> Activate(Query query);
 
-        public IAsyncEnumerable<AbstractQueryResult> Process(Query query);
+        public IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct);
 
         int IComparable<IPlugin>.CompareTo(IPlugin other)
         {

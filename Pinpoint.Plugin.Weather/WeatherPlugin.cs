@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -13,25 +14,47 @@ namespace Pinpoint.Plugin.Weather
 {
     public class WeatherPlugin : IPlugin
     {
-        private const string Description = "Look up weather forecasts.\n\nExamples: \"weather <location>\"";
-        private readonly Dictionary<string, List<WeatherDayModel>> _weatherCache = new Dictionary<string, List<WeatherDayModel>>();
+        private const string KeyDefaultCity = "Default city";
+        private const string Description = "Look up weather forecasts.\n\nExamples: \"weather <location>\" or \"weather\" if default location is set";
+        private readonly Dictionary<string, List<WeatherDayModel>> _weatherCache = new();
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Weather", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("Weather", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
         
+        public async Task<bool> TryLoad()
+        {
+            UserSettings.Put(KeyDefaultCity, string.Empty);
+            return true;
+        }
+
         public void Unload()
         {
         }
 
         public async Task<bool> Activate(Query query)
         {
-            return query.Parts.Length >= 2 && query.Parts[0].ToLower().Equals("weather");
+            var hasWeatherPrefix = query.Parts[0].ToLower().Equals("weather");
+            if (!hasWeatherPrefix)
+            {
+                return false;
+            }
+
+            var defaultCity = UserSettings.Str(KeyDefaultCity);
+            return !string.IsNullOrEmpty(defaultCity) || query.Parts.Length >= 2;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var location = string.Join(" ", query.Parts[1..]).Trim();
+            string location;
+            if (query.Parts.Length == 1)
+            {
+                location = UserSettings.Str(KeyDefaultCity);
+            }
+            else
+            {
+                location = string.Join(" ", query.Parts[1..]).Trim();
+            }
 
             if (_weatherCache.ContainsKey(location))
             {
@@ -59,19 +82,11 @@ namespace Pinpoint.Plugin.Weather
 
         private async Task<List<WeatherDayModel>> LookupWeather(string location)
         {
-            var url = $"http://getpinpoint.herokuapp.com/api/weather/{location}";
-            var httpResponse = await SendGet(url);
-            if (string.IsNullOrEmpty(httpResponse))
-            {
-                return null;
-            }
+            var url = $"https://usepinpoint.com/api/weather/{location}";
+            var result = await HttpHelper.SendGet(url, 
+                s => s.Contains("error") ? null : JObject.Parse(s)["forecast"]["forecastday"]);
 
-            if (httpResponse.Contains("error"))
-            {
-                return null;
-            }
-
-            return JObject.Parse(httpResponse)["forecast"]["forecastday"].Select(token =>
+            return result.Select(token =>
             {
                 var weatherDayModel = JsonConvert.DeserializeObject<WeatherDayModel>(token["day"].ToString());
                 weatherDayModel.DayOfWeek = DateTime.Parse(token["date"].ToString()).ToString("ddd").Substring(0, 2);
@@ -80,20 +95,6 @@ namespace Pinpoint.Plugin.Weather
                     .ToArray();
                 return weatherDayModel;
             }).ToList();
-        }
-
-
-        private async Task<string> SendGet(string url)
-        {
-            try
-            {
-                using var httpClient = new HttpClient();
-                return await httpClient.GetStringAsync(url);
-            }
-            catch (HttpRequestException)
-            {
-                return null;
-            }
         }
     }
 }

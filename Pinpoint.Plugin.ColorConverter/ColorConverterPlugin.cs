@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
@@ -9,14 +11,16 @@ namespace Pinpoint.Plugin.ColorConverter
 {
     public class ColorConverterPlugin : IPlugin
     {
+        private const string Description = "Convert colors from RGB <-> Hex.\n\nExamples: \"#FF5555\", \"rgb(255,100,50)\"";
+
         private const string RgbPattern =
             @"^rgb\(([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5]),( ?)([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5]),( ?)([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\)$";
         private const string HexPattern = @"^(#)([0-9A-Fa-f]{8}|[0-9A-Fa-f]{6})$";
-        private static readonly Regex Pattern = new Regex($@"({HexPattern})|({RgbPattern})");
+        private static readonly Regex Pattern = new($@"({HexPattern})|({RgbPattern})");
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Color Converter", PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("Color Converter", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public void Unload()
         {
@@ -27,7 +31,7 @@ namespace Pinpoint.Plugin.ColorConverter
             return Pattern.IsMatch(query.RawQuery);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var content = query.RawQuery;
             if (query.RawQuery.Contains("rgb"))

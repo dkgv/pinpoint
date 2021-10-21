@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,8 +7,8 @@ namespace Pinpoint.Plugin.Everything.API
 {
     public class EverythingClient : IEverythingClient
     {
-        private readonly SearchProvider _searchProvider = new SearchProvider();
-        private readonly ResultProvider _resultProvider = new ResultProvider();
+        private readonly SearchProvider _searchProvider = new();
+        private readonly ResultProvider _resultProvider = new();
 
         public EverythingClient(ISearchConfig config)
         {

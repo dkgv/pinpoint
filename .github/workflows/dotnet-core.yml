@@ -6,75 +6,86 @@ on:
             - "*"
 
 jobs:
-    create_release:
-        name: Create Release
-        runs-on: windows-2019
+  create_release:
+    name: Create New Release
+    runs-on: windows-2019
+    
+    steps:
+      - name: Install 7Zip PowerShell Module
+        shell: powershell
+        run: Install-Module 7Zip4PowerShell -Force
+      
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: '5.0.202'
+      - uses: actions/checkout@v2
+      
+      - name: Extract Tag Version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        shell: bash
+      
+      - name: Restore Packages
+        run: dotnet restore
+      
+      - name: Build Artifacts
+        run: |
+          dotnet publish -c Release Pinpoint.Win/Pinpoint.Win.csproj -o ./a -r win-x64 --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
+          dotnet publish -c Release Pinpoint.Win/Pinpoint.Win.csproj -o ./b -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeAllContentForSelfExtract=true
+      
+      - name: Zip Artifacts
+        run: |
+          7z a -tzip Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip ./a/Pinpoint.exe
+          7z a -tzip Pinpoint-Standalone-${{ steps.get_version.outputs.VERSION }}.zip ./b/Pinpoint.exe
 
-        steps:
-            - name: Install 7Zip PowerShell Module
-              shell: powershell
-              run: Install-Module 7Zip4PowerShell -Force
+      - name: Create GitHub Release
+        if: ${{ !env.ACT }}
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          body: |
+            **News:**
+            **Improvements:**
+          draft: false
+          prerelease: true
 
-            - name: Setup dotnet
-              uses: actions/setup-dotnet@v1.7.2
-              with:
-                  dotnet-version: "5.0.202"
-            - uses: actions/checkout@v2
+      - name: Upload Release Asset (self-contained)
+        if: ${{ !env.ACT }}
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./Pinpoint-Standalone-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_name: Pinpoint-Standalone-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_content_type: application/zip
+      
+      - name: Upload Release Asset (not self-contained)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_name: Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
+          asset_content_type: application/zip
 
-            - name: Fix nuget problems
-              run: dotnet nuget add source https://api.nuget.org/v3/index.json -n nuget.org --configfile $env:APPDATA\NuGet\NuGet.Config
+      - name: Prepare Chocolatey
+        uses: crazy-max/ghaction-chocolatey@v1.6.0
+        with:
+          args: apikey --key ${{ secrets.CHOCOLATEY_API_KEY }} --source https://push.chocolatey.org/
 
-            - name: Restore Packages
-              run: dotnet restore
+      - name: Overwrite version in Nuspec
+        shell: bash
+        run: |
+          sed -i "s/<Version>.*<\/Version>/<Version>${{ steps.get_version.outputs.VERSION }}<\/Version>/g" Pinpoint.nuspec
 
-            - name: Build Artifact
-              run: dotnet publish -c Release Pinpoint.Win/Pinpoint.Win.csproj -o ./ -p:PublishSingleFile=true --self-contained false --runtime win-x64
-
-            - name: Extract Tag Version
-              id: get_version
-              run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-              shell: bash
-
-            - name: Zip Artifact
-              run: 7z a -tzip Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip Pinpoint.exe
-
-            - name: Create Release
-              if: ${{ !env.ACT }}
-              id: create_release
-              uses: actions/create-release@latest
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  tag_name: ${{ github.ref }}
-                  release_name: ${{ github.ref }}
-                  body: |
-                      Alpha ${{ steps.get_version.outputs.VERSION }}
-                  draft: false
-                  prerelease: true
-
-            - name: Upload Release Asset
-              if: ${{ !env.ACT }}
-              id: upload-release-asset-x64
-              uses: actions/upload-release-asset@v1
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              with:
-                  upload_url: ${{ steps.create_release.outputs.upload_url }}
-                  asset_path: ./Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
-                  asset_name: Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
-                  asset_content_type: application/zip
-
-            - name: Prepare Chocolatey
-              uses: crazy-max/ghaction-chocolatey@v1.6.0
-              with:
-                  args: apikey --key ${{ secrets.CHOCOLATEY_API_KEY }} --source https://push.chocolatey.org/
-
-            - name: Overwrite version in Nuspec
-              shell: bash
-              run: |
-                  sed -i "s/<Version>.*<\/Version>/<Version>${{ steps.get_version.outputs.VERSION }}<\/Version>/g" Pinpoint.nuspec
-
-            - name: Package and push to Chocolatey
-              run: |
-                  choco pack
-                  choco push Pinpoint.${{ steps.get_version.outputs.VERSION }}.nupkg --source https://push.chocolatey.org/
+      - name: Package and push to Chocolatey
+        run: |
+          choco pack
+          choco push Pinpoint.${{ steps.get_version.outputs.VERSION }}.nupkg --source https://push.chocolatey.org/

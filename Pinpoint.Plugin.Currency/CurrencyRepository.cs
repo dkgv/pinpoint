@@ -12,7 +12,7 @@ namespace Pinpoint.Plugin.Currency
 {
     public class CurrencyRepository
     {
-        private readonly HashSet<string> _validIsos = new HashSet<string>();
+        private readonly HashSet<string> _validIsos = new();
 
         public async Task LoadCurrenciesInitial()
         {
@@ -33,7 +33,7 @@ namespace Pinpoint.Plugin.Currency
 
         public bool IsIsoValid(string iso) => _validIsos.Contains(iso.ToLower());
 
-        public Dictionary<string, CurrencyModel> CurrencyModels { get; } = new Dictionary<string, CurrencyModel>();
+        public Dictionary<string, CurrencyModel> CurrencyModels { get; } = new();
 
         // Convert all values for USD
         
@@ -88,15 +88,12 @@ namespace Pinpoint.Plugin.Currency
         private async Task CacheFiatRatesEurBase()
         {
             // Load exchange rates
-            var url = "http://getpinpoint.herokuapp.com/api/currency";
+            var url = "https://usepinpoint.com/api/currency";
             try
             {
                 using var httpClient = new HttpClient();
                 var response = await httpClient.GetAsync(url).ConfigureAwait(false);
                 var json = await response.Content.ReadAsStringAsync();
-
-                //using var client = new WebClient();
-                //var json = client.DownloadString(url);
                 CurrencyModels["EUR"] = JsonConvert.DeserializeObject<CurrencyModel>(json);
             }
             catch (WebException)
@@ -128,8 +125,12 @@ namespace Pinpoint.Plugin.Currency
             const string url = "https://coinmarketcap.com/";
             var doc = await htmlWeb.LoadFromWebAsync(url).ConfigureAwait(false);
 
-            const string xpath = "/html/body/div[1]/div/div[2]/div/div/div[2]/table";
+            const string xpath = "/html/body/div/div/div[1]/div[2]/div/div[1]/div[4]/table";
             var table = doc.DocumentNode.SelectSingleNode(xpath);
+            if (table == null)
+            {
+                return;
+            }
 
             var rows = table.Descendants("tr").ToArray();
             for (var i = 1; i < rows.Length; i++)

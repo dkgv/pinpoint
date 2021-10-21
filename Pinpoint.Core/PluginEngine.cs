@@ -10,38 +10,34 @@ namespace Pinpoint.Core
 {
     public class PluginEngine
     {
-        public List<IPlugin> Plugins { get; } = new List<IPlugin>();
+        public List<IPlugin> Plugins { get; } = new();
 
-        public List<IPluginListener<IPlugin, object>> Listeners { get; } = new List<IPluginListener<IPlugin, object>>();
+        public List<IPluginListener<IPlugin, object>> Listeners { get; } = new();
 
-        public async Task AddPlugin(IPlugin toAdd)
+        public async Task AddPlugin(IPlugin @new)
         {
-            // Disallow duplicate plugins
-            if (Plugins.Contains(toAdd))
+            // Ensure plugin hasn't been added and that it was able to load
+            if (Plugins.Contains(@new) || !await @new.TryLoad())
             {
                 return;
             }
 
-            var pluginCouldLoad = await toAdd.TryLoad();
-            // Don't add plugin if it fails to load
-            if (!pluginCouldLoad)
+            var plugins = AppSettings.GetOrDefault("plugins", Array.Empty<EmptyPlugin>());
+            var match = plugins.FirstOrDefault(p => p.Meta.Name.Equals(@new.Meta.Name));
+            if (match != null)
             {
-                return;
+                if (@new.UserSettings.Count <= match.UserSettings.Count)
+                {
+                    @new.UserSettings = match.UserSettings;
+                }
+                @new.Meta.Enabled = match.Meta.Enabled;
             }
-
-            var plugins = AppSettings.GetOrDefault("plugins", new EmptyPlugin[0]);
-            var match = plugins.FirstOrDefault(p => p.Meta.Name.Equals(toAdd.Meta.Name));
-            if (match != default)
-            {
-                toAdd.UserSettings = match.UserSettings;
-            }
-
-            Plugins.Add(toAdd);
 
             // Ensure order of plugin execution is correct
+            Plugins.Add(@new);
             Plugins.Sort();
 
-            Listeners.ForEach(listener => listener.PluginChange_Added(this, toAdd, null));
+            Listeners.ForEach(listener => listener.PluginChange_Added(this, @new, null));
         }
 
         public void RemovePlugin(IPlugin plugin)
@@ -56,26 +52,21 @@ namespace Pinpoint.Core
 
         public T PluginByType<T>() where T : IPlugin => Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
 
-        public IPlugin PluginByType(Type type) => Plugins.First(plugin => plugin.GetType() == type);
-
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var numResults = 0;
-
-            foreach (var plugin in Plugins.Where(p => p.Meta.Enabled && p.IsLoaded))
+            var enabledPlugins = Plugins.Where(p => p.Meta.Enabled && p.IsLoaded).ToList();
+            for (int i = 0; i < enabledPlugins.Count && query.ResultCount < 20 && !ct.IsCancellationRequested; i++)
             {
-                if (numResults >= 30)
+                var plugin = enabledPlugins[i];
+                if (!await plugin.Activate(query))
                 {
-                    yield break;
+                    continue;
                 }
 
-                if (await plugin.Activate(query))
+                await foreach (var result in plugin.Process(query, ct))
                 {
-                    await foreach (var result in plugin.Process(query).WithCancellation(ct))
-                    {
-                        numResults++;
-                        yield return result;
-                    }
+                    query.ResultCount++;
+                    yield return result;
                 }
             }
         }

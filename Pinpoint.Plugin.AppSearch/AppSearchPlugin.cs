@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
 using Pinpoint.Core;
@@ -11,15 +13,15 @@ namespace Pinpoint.Plugin.AppSearch
 {
     public class AppSearchPlugin : IPlugin
     {
-        private UkkonenTrie<string> _trie = new UkkonenTrie<string>();
+        private UkkonenTrie<string> _trie = new();
         private const string Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\"";
 
         // Hacky
         public static string LastQuery;
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("App Search", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("App Search", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 
@@ -67,12 +69,10 @@ namespace Pinpoint.Plugin.AppSearch
                 $@"C:\Users\{Environment.UserName}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs"
             };
 
-            foreach (var path in paths)
+            foreach (var path in paths.Where(Directory.Exists))
             {
-                if (Directory.Exists(path))
-                {
-                    files.AddRange(Directory.GetFiles(path, "*.lnk", SearchOption.AllDirectories));
-                }
+                var shortcuts = Directory.GetFiles(path, "*.lnk", SearchOption.AllDirectories);
+                files.AddRange(shortcuts);
             }
 
             return files;
@@ -84,12 +84,9 @@ namespace Pinpoint.Plugin.AppSearch
             AppSearchFrequency.Reset();
         }
 
-        public async Task<bool> Activate(Query query)
-        {
-            return query.RawQuery.Length >= 2;
-        }
+        public async Task<bool> Activate(Query query) =>  query.RawQuery.Length >= 2;
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var rawQuery = query.RawQuery.ToLower();
             LastQuery = rawQuery;

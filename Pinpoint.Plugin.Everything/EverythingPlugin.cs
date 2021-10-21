@@ -1,31 +1,39 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using FontAwesome5;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
-using Pinpoint.Plugin.Everything;
 using Pinpoint.Plugin.Everything.API;
 
 namespace Pinpoint.Plugin.Everything
 {
     public class EverythingPlugin : IPlugin
     {
-        private static readonly Regex ImageRegex = new Regex(@"png|jpg|gif|psd|svg|raw|jpeg|bmp|tiff");
-        private static readonly Regex VideoRegex = new Regex(@"mp4|avi|mkv|flv|webm|mov|wmv|mpg|m4v|mpeg|wmv");
-        private static readonly Regex AudioRegex = new Regex(@"mp3|flac|wma|alac");
-        private static readonly Regex ZipRegex = new Regex(@"zip|tar|rar|gx|7z|apk|dmg|tar\.(gz|lz|xz)|zz");
-        private static readonly Regex WordRegex = new Regex(@"doc|docx");
-        private static readonly Regex PowerPointRegex = new Regex(@"ppt|pptx");
-        private static readonly Regex TextRegex = new Regex(@"txt|md|rtf");
-        private static readonly Regex CodeRegex = new Regex(@"java|cs|py|cpp|cc|rs|php|js|css|html|rb|pl|h|c|m|swift|xaml");
-        private static readonly Regex SpreadsheetRegex = new Regex(@"xls|xlsm|xlsx|numbers|ots|xlr");
+        private const string KeyIgnoreTempFolder = "Ignore temp folder items";
+        private const string KeyIgnoreHiddenFolders = "Ignore hidden folder items";
+        private const string Description = "Search for files on your computer via Everything by David Carpenter.";
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Everything (File Search)", PluginPriority.Lowest);
+        private static readonly Regex ImageRegex = new(@"png|jpg|gif|psd|svg|raw|jpeg|bmp|tiff");
+        private static readonly Regex VideoRegex = new(@"mp4|avi|mkv|flv|webm|mov|wmv|mpg|m4v|mpeg|wmv");
+        private static readonly Regex AudioRegex = new(@"mp3|flac|wma|alac");
+        private static readonly Regex ZipRegex = new(@"zip|tar|rar|gx|7z|apk|dmg|tar\.(gz|lz|xz)|zz");
+        private static readonly Regex WordRegex = new(@"doc|docx");
+        private static readonly Regex PowerPointRegex = new(@"ppt|pptx");
+        private static readonly Regex TextRegex = new(@"txt|md|rtf");
+        private static readonly Regex CodeRegex = new(@"java|cs|py|cpp|cc|rs|php|js|css|html|rb|pl|h|c|m|swift|xaml");
+        private static readonly Regex SpreadsheetRegex = new(@"xls|xlsm|xlsx|numbers|ots|xlr");
+        private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginMeta Meta { get; set; } = new("Everything (File Search)", Description, PluginPriority.Lowest);
+
+        public PluginSettings UserSettings { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 
@@ -34,45 +42,88 @@ namespace Pinpoint.Plugin.Everything
         public Task<bool> TryLoad()
         {
             _everything = new EverythingClient(new DefaultSearchConfig());
-            IsLoaded = true;
-            return Task.FromResult(IsLoaded);
+            UserSettings.Put(KeyIgnoreTempFolder, true);
+            UserSettings.Put(KeyIgnoreHiddenFolders, true);
+            return Task.FromResult(IsLoaded = true);
         }
 
-        public void Unload()
-        {
-            _everything.Dispose();
-        }
+        public void Unload() => _everything.Dispose();
 
         public async Task<bool> Activate(Query query)
         {
-            return query.RawQuery.Length >= 3;
+            return query.RawQuery.Length >= 3 && query.ResultCount < 3 && !query.RawQuery.Any(ch => InvalidFileNameChars.Contains(ch));
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            await foreach (var result in _everything.SearchAsync(query.RawQuery, new CancellationToken()))
+            await foreach (var result in _everything.SearchAsync(query.RawQuery, ct))
             {
                 if (result == null)
                 {
                     continue;
                 }
-                yield return new EverythingResult(result, BestFittingIcon(result));
+
+                if (UserSettings.Bool(KeyIgnoreTempFolder) && IsInTempFolder(result.FullPath))
+                {
+                    continue;
+                }
+
+                if (UserSettings.Bool(KeyIgnoreHiddenFolders) && IsInHiddenFolder(result.FullPath))
+                {
+                    continue;
+                }
+
+                AssignIcon(result);
+
+                yield return new EverythingResult(result);
             }
         }
 
-        private EFontAwesomeIcon BestFittingIcon(QueryResultItem result)
+        private void AssignIcon(QueryResultItem result)
+        {
+            Bitmap icon;
+            if (File.Exists(result.FullPath))
+            {
+                icon = Icon.ExtractAssociatedIcon(result.FullPath).ToBitmap();
+            }
+            else
+            {
+                icon = FontAwesomeBitmapRepository.Get(MapResultTypeToIcon(result));
+            }
+
+            result.Icon = icon;
+        }
+
+        private bool IsInHiddenFolder(string path)
+        {
+            var parts = path.Split(Path.DirectorySeparatorChar);
+            return parts.Any(part => part.StartsWith("."));
+        }
+
+        private bool IsInTempFolder(string path)
+        {
+            var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData).ToLower();
+            if (appData.Contains("roaming"))
+            {
+                appData = Path.GetFullPath(Path.Combine(appData, @"..\"));
+            }
+
+            return path.ToLower().Contains(appData);
+        }
+
+        private EFontAwesomeIcon MapResultTypeToIcon(QueryResultItem result)
         {
             return result.ResultType switch
             {
                 ResultType.Directory => EFontAwesomeIcon.Regular_Folder,
-                ResultType.File => BestFileIcon(result),
+                ResultType.File => MapFileTypeToIcon(result),
                 ResultType.Unknown => EFontAwesomeIcon.Solid_Question,
                 ResultType.Volume => EFontAwesomeIcon.Regular_Hdd,
                 _ => EFontAwesomeIcon.Solid_Question
             };
         }
 
-        private EFontAwesomeIcon BestFileIcon(QueryResultItem result)
+        private EFontAwesomeIcon MapFileTypeToIcon(QueryResultItem result)
         {
             var extension = Path.GetExtension(result.FullPath);
 
@@ -81,7 +132,7 @@ namespace Pinpoint.Plugin.Everything
                 return EFontAwesomeIcon.Regular_File;
             }
 
-            extension = extension.Substring(1);
+            extension = extension[1..];
 
             if (ImageRegex.IsMatch(extension))
             {

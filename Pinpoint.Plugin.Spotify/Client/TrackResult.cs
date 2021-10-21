@@ -5,7 +5,7 @@ namespace Pinpoint.Plugin.Spotify.Client
 {
     public class TrackResult: SpotifyResultEntity
     {
-        public List<SpotifyResultEntity> Artists { get; set; } = new List<SpotifyResultEntity>();
+        public List<SpotifyResultEntity> Artists { get; set; } = new();
 
         public override string DisplayString
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 
 namespace Pinpoint.Plugin.Everything.API
@@ -8,6 +9,6 @@ namespace Pinpoint.Plugin.Everything.API
     {
         public ISearchConfig Config { get; set; }
 
-        public IAsyncEnumerable<QueryResultItem> SearchAsync(string query, CancellationToken ct);
+        public IAsyncEnumerable<QueryResultItem> SearchAsync(string query, [EnumeratorCancellation] CancellationToken ct);
     }
 }

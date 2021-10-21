@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -14,7 +15,6 @@ namespace Pinpoint.Plugin.Everything.API
         public async IAsyncEnumerable<QueryResultItem> GetCurrentResult([EnumeratorCancellation] CancellationToken ct = default)
         {
             var numResults = EverythingDll.Everything_GetNumResults();
-
             if (numResults == 0)
             {
                 yield break;
@@ -55,7 +55,7 @@ namespace Pinpoint.Plugin.Everything.API
                   collection.CompleteAdding();
               }, ct);
 
-            foreach (var result in collection.GetConsumingEnumerable())
+            foreach (var result in collection.GetConsumingEnumerable(ct))
             {
                 yield return result;
             }
@@ -80,17 +80,17 @@ namespace Pinpoint.Plugin.Everything.API
 
         private QueryResultItem MakeFile(string fullPath)
         {
-            return new QueryResultItem
+            return new()
             {
                 ResultType = ResultType.File,
                 Name = Path.GetFileNameWithoutExtension(fullPath),
-                FullPath = fullPath,
+                FullPath = fullPath
             };
         }
 
         private QueryResultItem MakeDir(string fullPath)
         {
-            return new QueryResultItem
+            return new()
             {
                 ResultType = ResultType.Directory,
                 Name = Path.GetDirectoryName(fullPath),

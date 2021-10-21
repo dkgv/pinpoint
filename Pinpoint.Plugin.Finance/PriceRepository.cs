@@ -12,9 +12,9 @@ namespace Pinpoint.Plugin.Finance
 
         public TimeSpan CacheTimeout { get; set; }
 
-        public Dictionary<string, YahooFinancePriceResponse> ResponseCache = new Dictionary<string, YahooFinancePriceResponse>();
+        public Dictionary<string, YahooFinancePriceResponse> ResponseCache = new();
         
-        public Dictionary<string, long> UpdateTimeCache = new Dictionary<string, long>();
+        public Dictionary<string, long> UpdateTimeCache = new();
 
         public bool TryGet(string ticker, out YahooFinancePriceResponse priceResponse)
         {

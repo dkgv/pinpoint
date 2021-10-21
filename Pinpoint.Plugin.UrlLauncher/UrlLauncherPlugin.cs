@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
@@ -12,12 +14,12 @@ namespace Pinpoint.Plugin.UrlLauncher
     public class UrlLauncherPlugin: IPlugin
     {
         private const string HttpsProtocolPrefix = "https://";
-        private static readonly HashSet<string> Tlds = new HashSet<string>(1577);
+        private static readonly HashSet<string> Tlds = new(1577);
         private const string Description = "Launch URLs.\n\nExamples: \"google.com\", \"images.google.com\"";
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Url Launcher", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("Url Launcher", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 
@@ -41,15 +43,16 @@ namespace Pinpoint.Plugin.UrlLauncher
 
         public async Task<bool> Activate(Query query)
         {
-            if (query.RawQuery.Length < 3 || !query.RawQuery.Contains("."))
+            if (query.RawQuery.Length < 3 || query.RawQuery[0] == '.' || !query.RawQuery.Contains("."))
             {
                 return false;
             }
+
             var split = query.RawQuery.Split(".");
             return split.Length > 0 && Tlds.Contains(split[^1]);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var url = query.RawQuery;
             if (!query.RawQuery.StartsWith(HttpsProtocolPrefix))
@@ -57,8 +60,20 @@ namespace Pinpoint.Plugin.UrlLauncher
                 url = HttpsProtocolPrefix + url;
             }
 
-            var uri = new Uri(url);
-            yield return new UrlLauncherResult(uri.ToString());
+            Uri uri = null;
+            try
+            {
+                uri = new Uri(url);
+            }
+            catch (UriFormatException)
+            {
+                // invalid hostname
+            }
+
+            if (uri != null)
+            {
+                yield return new UrlLauncherResult(uri.ToString());
+            }
         }
     }
 }

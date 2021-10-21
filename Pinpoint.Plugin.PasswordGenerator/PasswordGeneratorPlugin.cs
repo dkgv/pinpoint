@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
@@ -25,7 +27,7 @@ namespace Pinpoint.Plugin.PasswordGenerator
             return Task.FromResult(shouldActivate);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var couldParseLength = int.TryParse(query.Parts[1], out var length);
             if (!couldParseLength || length < 1 || length > 100)

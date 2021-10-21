@@ -12,7 +12,7 @@ namespace PinPoint.Plugin.Spotify
 {
     public class AuthenticationManager : IDisposable
     {
-        private static readonly HttpClient AuthHttpClient = new HttpClient();
+        private static readonly HttpClient AuthHttpClient = new();
         private readonly string _codeVerifier;
         private readonly string _codeChallenge;
 

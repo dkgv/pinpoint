@@ -8,7 +8,7 @@ namespace Pinpoint.Core
 {
     public static class AppSettings
     {
-        private static readonly Dictionary<string, object> Settings = new Dictionary<string, object>();
+        private static readonly Dictionary<string, object> Settings = new();
 
         public static T Get<T>(string key) where T : class
         {
@@ -41,19 +41,6 @@ namespace Pinpoint.Core
             {
                 return false;
             }
-        }
-
-        public static bool TryGetOrDefault<T>(string key, T defaultValue, out T settings) where T : class
-        {
-            TryGet(key, out settings);
-
-            if (settings != null)
-            {
-                return true;
-            }
-
-            settings = defaultValue;
-            return false;
         }
 
         public static void Put(string key, object value, bool overwrite = true)

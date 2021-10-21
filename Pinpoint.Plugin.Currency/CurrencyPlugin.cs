@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
@@ -14,12 +16,13 @@ namespace Pinpoint.Plugin.Currency
         private const string Description = "Convert between currencies and cryptocurrencies.\n\nExamples: \"5 usd to jpy\", \"1 btc to cad\", \"1 eth to btc\"";
 
         private CurrencyRepository _currencyRepo;
-        private const string BaseCurrencyId = "Base currency";
+        private const string KeyBaseCurrency = "Base currency";
         private const string Symbols = "$£€¥";
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Currency Converter", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("Currency Converter", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
+
         public bool IsLoaded { get; set; }
 
         public async Task<bool> TryLoad()
@@ -35,13 +38,12 @@ namespace Pinpoint.Plugin.Currency
             {
                 baseCurrency = "USD";
             }
-            UserSettings.Put(BaseCurrencyId, baseCurrency);
+            UserSettings.Put(KeyBaseCurrency, baseCurrency);
 
             _currencyRepo = new CurrencyRepository();
             await _currencyRepo.LoadCurrenciesInitial().ConfigureAwait(false);
 
-            IsLoaded = true;
-            return IsLoaded;
+            return IsLoaded = true;
         }
 
         public void Unload()
@@ -90,7 +92,7 @@ namespace Pinpoint.Plugin.Currency
             return hasNumber && isConverting && correctParts;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var from = IdentifyFrom(query);
             var value = IdentifyValue(query);
@@ -137,7 +139,7 @@ namespace Pinpoint.Plugin.Currency
             // Handles queries like 100 usd, 100 eur
             if (!query.RawQuery.Contains("in") && !query.RawQuery.Contains("to"))
             {
-                return UserSettings.Str(BaseCurrencyId);
+                return UserSettings.Str(KeyBaseCurrency);
             }
 
             // Get last part

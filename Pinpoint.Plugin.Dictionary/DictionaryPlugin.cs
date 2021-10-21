@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -15,11 +17,11 @@ namespace Pinpoint.Plugin.Dictionary
     {
         private const string Description = "Find word definitions.\n\nExamples: \"cool meaning\", \"nice def\", \"sweet definition\"";
 
-        private static readonly Regex DefineRegex = new Regex(@"(meaning|def|define|definition)$");
+        private static readonly Regex DefineRegex = new(@"(meaning|def|define|definition)$");
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Dictionary", Description, PluginPriority.Standard);
+        public PluginMeta Meta { get; set; } = new("Dictionary", Description, PluginPriority.Standard);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public void Unload()
         {
@@ -30,17 +32,11 @@ namespace Pinpoint.Plugin.Dictionary
             return query.Parts.Length == 2 && DefineRegex.IsMatch(query.Parts[^1]);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var url = $"https://api.dictionaryapi.dev/api/v2/entries/en_US/{query.Parts[0]}";
 
-            var httpResponse = await SendGet(url);
-            if (string.IsNullOrEmpty(httpResponse))
-            {
-                yield break;
-            }
-
-            var matches = JArray.Parse(httpResponse);
+            var matches = await HttpHelper.SendGet(url, JArray.Parse);
 
             if (matches == null || matches.Count == 0)
             {
@@ -57,19 +53,6 @@ namespace Pinpoint.Plugin.Dictionary
                     model.PartOfSpeech = meaning["partOfSpeech"].ToString();
                     yield return new DictionaryResult(model);
                 }
-            }
-        }
-
-        private async Task<string> SendGet(string url)
-        {
-            try
-            {
-                using var httpClient = new HttpClient();
-                return await httpClient.GetStringAsync(url);
-            }
-            catch (HttpRequestException)
-            {
-                return null;
             }
         }
     }

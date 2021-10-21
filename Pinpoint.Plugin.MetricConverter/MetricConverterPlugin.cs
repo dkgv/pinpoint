@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core;
 using Pinpoint.Core.MetricConverter.Converters;
@@ -46,7 +48,7 @@ namespace Pinpoint.Plugin.MetricConverter
             return _match != default && _match.Success;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var tuple = ConvertQuery(query);
             yield return new ConversionResult(tuple.Item1, tuple.Item2);

@@ -5,8 +5,6 @@ namespace Pinpoint.Core.Results
 {
     public class CopyabableQueryOption : AbstractFontAwesomeQueryResult
     {
-        public readonly string Content;
-        
         public CopyabableQueryOption(string title, string content) : base(title, "Copy content to clipboard")
         {
             Content = content;
@@ -16,7 +14,9 @@ namespace Pinpoint.Core.Results
         {
             Content = content;
         }
-        
+
+        public string Content { get; set; }
+
         public override EFontAwesomeIcon FontAwesomeIcon { get; } = EFontAwesomeIcon.Regular_Copy;
 
         public override void OnSelect()

@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
@@ -8,19 +10,19 @@ namespace PinPoint.Plugin.Spotify
 {
     public class SpotifyPlugin : IPlugin
     {
-        private readonly HashSet<string> _keywords = new HashSet<string>
+        private readonly HashSet<string> _keywords = new()
         {
             "album", "artist", "episode", "play", "playlist", "show", "skip", "next", "prev", "back", "pause"
         };
-        private readonly AuthenticationManager _authManager = new AuthenticationManager();
+        private readonly AuthenticationManager _authManager = new();
         private readonly SpotifyClient _spotifyClient = SpotifyClient.GetInstance();
         private bool _isAuthenticated;
 
-        private const string Description = "Control Spotify without leaving your workflow. Requires sign-in on first use.\n\nExamples: \"album <name>\", \"artist <name>\", \"episode <name>\", \"play <name>\", \"playlist <name>\", \"show <name>\", \"skip\", \"next\", \"prev\", \"back\", \"pause\"";
+        private const string Description = "Control Spotify without leaving your workflow. Requires sign-in on first use. Requires Spotify to be running on any device you are signed in to.\n\nExamples: \"album <name>\", \"artist <name>\", \"episode <name>\", \"play <name>\", \"playlist <name>\", \"show <name>\", \"skip\", \"next\", \"prev\", \"back\", \"pause\"";
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Spotify Controller", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("Spotify Controller", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 
@@ -65,7 +67,7 @@ namespace PinPoint.Plugin.Spotify
             return _isAuthenticated;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var queryParts = query.RawQuery.Split(new[] { ' ' }, 2);
 

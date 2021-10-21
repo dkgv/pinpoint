@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
 using Microsoft.Win32;
@@ -14,12 +16,14 @@ namespace Pinpoint.Plugin.ControlPanel
 {
     public class ControlPanelPlugin : IPlugin
     {
-        private UkkonenTrie<ControlPanelItem> _controlPanelItems = new UkkonenTrie<ControlPanelItem>();
+        private const string Description = "Search for Windows control panel items.";
+
+        private UkkonenTrie<ControlPanelItem> _controlPanelItems = new();
         private const string ControlPanelRegistryPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel\NameSpace";
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Control Panel Search", PluginPriority.Standard);
+        public PluginMeta Meta { get; set; } = new("Control Panel Search", Description, PluginPriority.Standard);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginSettings UserSettings { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 
@@ -62,7 +66,7 @@ namespace Pinpoint.Plugin.ControlPanel
             return query.RawQuery.Length >= 3;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             foreach (var item in _controlPanelItems.Retrieve(query.RawQuery.ToLower()).Where(i => i.RegistryKey != null))
             {

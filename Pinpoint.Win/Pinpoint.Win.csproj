@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <StartupObject>Pinpoint.Win.App</StartupObject>
     <AssemblyName>Pinpoint</AssemblyName>
@@ -18,10 +18,12 @@
     <PackageReference Include="AvalonEdit" Version="6.1.0-preview1" />
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.0.1" />
     <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="1.0.8" />
+    <PackageReference Include="MarkdownSharp" Version="2.0.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
+    <PackageReference Include="Microsoft.Toolkit.Mvvm" Version="7.0.2" />
     <PackageReference Include="NHotkey.Wpf" Version="2.1.0" />
     <PackageReference Include="Pranas.ScreenshotCapture" Version="1.0.11" />
     <PackageReference Include="SharpClipboard" Version="3.5.2" />
-    <PackageReference Include="Tesseract" Version="4.1.0-beta1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +32,7 @@
     <ProjectReference Include="..\Pinpoint.Plugin.Bangs\Pinpoint.Plugin.Bangs.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Bookmarks\Pinpoint.Plugin.Bookmarks.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.ClipboardManager\Pinpoint.Plugin.ClipboardManager.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.ClipboardUploader\Pinpoint.Plugin.ClipboardUploader.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.ColorConverter\Pinpoint.Plugin.ColorConverter.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.CommandLine\Pinpoint.Plugin.CommandLine.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.ControlPanel\Pinpoint.Plugin.ControlPanel.csproj" />
@@ -41,12 +44,14 @@
     <ProjectReference Include="..\Pinpoint.Plugin.HackerNews\Pinpoint.Plugin.HackerNews.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.MetricConverter\Pinpoint.Plugin.MetricConverter.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Notes\Pinpoint.Plugin.Notes.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.OperatingSystem\Pinpoint.Plugin.OperatingSystem.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.PasswordGenerator\Pinpoint.Plugin.PasswordGenerator.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.ProcessManager\Pinpoint.Plugin.ProcessManager.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Reddit\Pinpoint.Plugin.Reddit.csproj" />
-    <ProjectReference Include="..\Pinpoint.Plugin.Snippets\Pinpoint.Plugin.Snippets.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Calculator\Pinpoint.Plugin.Calculator.csproj" />
-    <ProjectReference Include="..\Pinpoint.Plugin.Snippets\Pinpoint.Plugin.Snippets.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Spotify\Pinpoint.Plugin.Spotify.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.Text\Pinpoint.Plugin.Text.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.Timezone\Pinpoint.Plugin.Timezone.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.UrlLauncher\Pinpoint.Plugin.UrlLauncher.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Weather\Pinpoint.Plugin.Weather.csproj" />
   </ItemGroup>
@@ -56,11 +61,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
-
-  <ItemGroup>
-    <None Update="tessdata\eng.traineddata">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>
