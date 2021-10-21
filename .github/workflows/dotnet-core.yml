@@ -39,6 +39,7 @@ jobs:
               run: 7z a -tzip Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip Pinpoint.exe
 
             - name: Create Release
+              if: ${{ !env.ACT }}
               id: create_release
               uses: actions/create-release@latest
               env:
@@ -52,6 +53,7 @@ jobs:
                   prerelease: true
 
             - name: Upload Release Asset
+              if: ${{ !env.ACT }}
               id: upload-release-asset-x64
               uses: actions/upload-release-asset@v1
               env:
