@@ -1,9 +1,9 @@
-name: Build release
+name: Build and Upload Release
 
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
   create_release:
@@ -40,6 +40,7 @@ jobs:
           7z a -tzip Pinpoint-Standalone-${{ steps.get_version.outputs.VERSION }}.zip ./b/Pinpoint.exe
 
       - name: Create GitHub Release
+        if: ${{ !env.ACT }}
         id: create_release
         uses: actions/create-release@latest
         env:
@@ -54,6 +55,7 @@ jobs:
           prerelease: true
 
       - name: Upload Release Asset (self-contained)
+        if: ${{ !env.ACT }}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -72,3 +74,18 @@ jobs:
           asset_path: ./Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
           asset_name: Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip
           asset_content_type: application/zip
+
+      - name: Prepare Chocolatey
+        uses: crazy-max/ghaction-chocolatey@v1.6.0
+        with:
+          args: apikey --key ${{ secrets.CHOCOLATEY_API_KEY }} --source https://push.chocolatey.org/
+
+      - name: Overwrite version in Nuspec
+        shell: bash
+        run: |
+          sed -i "s/<version>.*<\/version>/<version>${{ steps.get_version.outputs.VERSION }}<\/version>/g" Pinpoint.nuspec
+
+      - name: Package and push to Chocolatey
+        run: |
+          choco pack
+          choco push Pinpoint.${{ steps.get_version.outputs.VERSION }}.nupkg
