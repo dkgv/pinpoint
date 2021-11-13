@@ -51,6 +51,7 @@ namespace PinPoint.Plugin.Spotify
             {
                 case false:
                     return false;
+
                 case true when !_isAuthenticated:
                 {
                     var tokens = await _authManager.Authenticate();

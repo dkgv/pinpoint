@@ -16,8 +16,13 @@ namespace PinPoint.Plugin.Spotify
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Brands_Spotify;
 
         public string Uri { get; }
-        public override void OnSelect()
+
+        public override async void OnSelect()
         {
+            if (!await SpotifyClient.GetInstance().IsCurrentlyPlaying())
+            {
+                await SpotifyClient.GetInstance().PlayPauseCurrentTrack();
+            }
             SpotifyClient.GetInstance().PlayItem(Uri);
         }
     }
