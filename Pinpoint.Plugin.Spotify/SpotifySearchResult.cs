@@ -9,7 +9,6 @@ namespace PinPoint.Plugin.Spotify
         public SpotifySearchResult(string result, string uri) : base(result)
         {
             Uri = uri;
-
             Options.Add(new QueueOption("Queue", uri));
         }
 
@@ -23,7 +22,7 @@ namespace PinPoint.Plugin.Spotify
             {
                 await SpotifyClient.GetInstance().PlayPauseCurrentTrack();
             }
-            SpotifyClient.GetInstance().PlayItem(Uri);
+            _ = SpotifyClient.GetInstance().PlayItem(Uri);
         }
     }
 
@@ -38,7 +37,7 @@ namespace PinPoint.Plugin.Spotify
 
         public override void OnSelect()
         {
-            SpotifyClient.GetInstance().PlayPauseCurrentTrack();
+            _ = SpotifyClient.GetInstance().PlayPauseCurrentTrack();
         }
     }
 
@@ -48,10 +47,12 @@ namespace PinPoint.Plugin.Spotify
         {
             Uri = uri;
         }
+
         public string Uri { get; }
+
         public override void OnSelect()
         {
-            SpotifyClient.GetInstance().QueueItem(Uri);
+            _ = SpotifyClient.GetInstance().QueueItem(Uri);
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_List;

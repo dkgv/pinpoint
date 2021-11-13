@@ -10,10 +10,12 @@ namespace Pinpoint.Plugin.AppSearch
     {
         private readonly string _filePath;
         private static readonly Dictionary<string, Bitmap> IconCache = new();
+        private readonly string _query;
 
-        public AppResult(string filePath) : base(Path.GetFileName(filePath).Split(".")[0], filePath)
+        public AppResult(string filePath, string query) : base(Path.GetFileName(filePath).Split(".")[0], filePath)
         {
             _filePath = filePath;
+            _query = query;
 
             Options.Add(new RunAsAdminOption(filePath));
             Options.Add(new OpenLocationOption(filePath));
@@ -34,7 +36,7 @@ namespace Pinpoint.Plugin.AppSearch
 
         public override void OnSelect()
         {
-            AppSearchFrequency.Track(AppSearchPlugin.LastQuery, _filePath);
+            AppSearchFrequency.Track(_query, _filePath);
             Process.Start("explorer.exe", "\"" + _filePath + "\"");
         }
 

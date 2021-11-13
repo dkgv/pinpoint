@@ -16,10 +16,7 @@ namespace Pinpoint.Plugin.AppSearch
         private UkkonenTrie<string> _trie = new();
         private const string Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\"";
 
-        // Hacky
-        public static string LastQuery;
-
-        public PluginMeta Meta { get; set; } = new("App Search", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("App Search", Description, PluginPriority.NextHighest);
 
         public PluginSettings UserSettings { get; set; } = new();
 
@@ -89,12 +86,11 @@ namespace Pinpoint.Plugin.AppSearch
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var rawQuery = query.RawQuery.ToLower();
-            LastQuery = rawQuery;
 
             foreach (var result in _trie.Retrieve(rawQuery)
                 .OrderByDescending(entry => AppSearchFrequency.FrequencyOfFor(rawQuery, entry)))
             {
-                yield return new AppResult(result);
+                yield return new AppResult(result, rawQuery);
             }
         }
     }
