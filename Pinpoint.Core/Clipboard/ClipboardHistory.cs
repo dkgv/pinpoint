@@ -15,10 +15,10 @@ namespace Pinpoint.Core.Clipboard
         {
             if (Contains(entry))
             {
-                return;
+                Remove(entry);
             }
 
-            if (Count > _capacity)
+            if (Count >= _capacity)
             {
                 RemoveLast();
             }

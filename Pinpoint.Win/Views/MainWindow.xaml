@@ -18,37 +18,36 @@
         MouseDown="MainWindow_OnMouseDown">
 
     <Window.Resources>
-        <Style TargetType="ListBox">
-            <Style.Triggers>
-                <Trigger Property="IsFocused" Value="True">
-                    <Setter Property="BorderThickness" Value="0"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-        <Style TargetType="ListBoxItem">
-            <Style.Triggers>
-                <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="BorderThickness" Value="0"/>
-                </Trigger>
+        <conv:BitmapToImageSourceConverter x:Key="BitmapToImageSourceConverter" />
 
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderThickness" Value="0"/>
-                </Trigger>
-
-                <Trigger Property="IsFocused" Value="True">
-                    <Setter Property="BorderThickness" Value="0"/>
-                </Trigger>
-
-                <Trigger Property="IsFocused" Value="False">
-                    <Setter Property="BorderThickness" Value="0"/>
-                </Trigger>
-            </Style.Triggers>
+        <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border Name="_Border">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter TargetName="_Border" Property="Background">
+                                    <Setter.Value>
+                                        <SolidColorBrush>
+                                            <SolidColorBrush.Color>
+                                                <Color R="39" G="87" B="125" A="100"/>
+                                            </SolidColorBrush.Color>
+                                        </SolidColorBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Foreground" Value="RoyalBlue"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
 
             <Setter Property="Padding" Value="0"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         </Style>
-
-        <conv:BitmapToImageSourceConverter x:Key="BitmapToImageSourceConverter" />
     </Window.Resources>
 
     <Border CornerRadius="5" Background="{Binding Theme.Background, UpdateSourceTrigger=PropertyChanged}">
@@ -112,7 +111,7 @@
                                                CaretBrush="{Binding Theme.TxtQueryCaretBrush}" 
                                                KeyUp="TxtQuery_OnKeyUp" 
                                                KeyDown="TxtQuery_OnKeyDown" 
-                                               TextChanged="TxtQuery_TextChanged"/>
+                                               TextChanged="TxtQuery_TextChanged" AutoMoveFocus="True"/>
                     </Grid>
                 </Border>
 
@@ -128,8 +127,8 @@
                          Background="{x:Null}" 
                          BorderBrush="{x:Null}" 
                          BorderThickness="0"
-                         MouseDoubleClick="LstResults_MouseDoubleClick">
-
+                         MouseDoubleClick="LstResults_MouseDoubleClick"
+                         ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border Margin="3">

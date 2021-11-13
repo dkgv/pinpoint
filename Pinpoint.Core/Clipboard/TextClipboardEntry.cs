@@ -17,5 +17,10 @@ namespace Pinpoint.Core.Clipboard
         public DateTime Copied { get; set; }
 
         public Bitmap Icon { get; set; }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is TextClipboardEntry text && text.Content.Equals(Content);
+        }
     }
 }

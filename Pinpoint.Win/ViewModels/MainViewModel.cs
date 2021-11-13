@@ -7,17 +7,17 @@ namespace Pinpoint.Win.ViewModels
 {
     public class MainViewModel : ObservableObject
     {
-        public ObservableUniqueCollection<AbstractQueryResult> Results { get; } = new ObservableUniqueCollection<AbstractQueryResult>();
+        public ObservableUniqueCollection<AbstractQueryResult> Results { get; } = new();
 
-        public ObservableUniqueCollection<AbstractQueryResult> CacheResults { get; set; } = new ObservableUniqueCollection<AbstractQueryResult>();
+        public ObservableUniqueCollection<AbstractQueryResult> CacheResults { get; set; } = new();
 
         public ThemeModel Theme { get; set; } = AppSettings.GetOrDefault("theme", ThemeModel.DarkTheme);
 
-        public PluginEngine PluginEngine { get; set; } = new PluginEngine();
+        public PluginEngine PluginEngine { get; set; } = new();
 
-        public QueryHistory QueryHistory { get; } = new QueryHistory(10);
+        public QueryHistory QueryHistory { get; } = new(20);
 
-        public SharpClipboard Clipboard { get; } = new SharpClipboard();
+        public SharpClipboard Clipboard { get; } = new();
 
         public string PreviousQuery { get; set; } = string.Empty;
     }
