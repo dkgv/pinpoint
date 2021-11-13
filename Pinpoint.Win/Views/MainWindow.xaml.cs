@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Resources;
+using System.Windows.Interop;
 using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Core;
@@ -76,17 +77,22 @@ namespace Pinpoint.Win.Views
 
         private void ClipboardOnClipboardChanged([CanBeNull] object sender, SharpClipboard.ClipboardChangedEventArgs e)
         {
+            if (NativeProvider.GetForegroundWindow() == new WindowInteropHelper(this).Handle)
+            {
+                return;
+            }
+
             IClipboardEntry entry = e.ContentType switch
             {
                 SharpClipboard.ContentTypes.Text => new TextClipboardEntry
                 {
-                    Title = Model.Clipboard.ClipboardText.Trim().Replace("\n", "").Replace("\r", ""), 
+                    Title = Model.Clipboard.ClipboardText.Trim().Replace("\n", "").Replace("\r", ""),
                     Content = Model.Clipboard.ClipboardText,
                     Copied = DateTime.Now
                 },
                 SharpClipboard.ContentTypes.Image => new ImageClipboardEntry
                 {
-                    Title = $"Image - Copied {DateTime.Now.ToShortDateString()}", 
+                    Title = $"Image - Copied {DateTime.Now.ToShortDateString()}",
                     Content = Model.Clipboard.ClipboardImage,
                     Copied = DateTime.Now
                 },
@@ -186,8 +192,8 @@ namespace Pinpoint.Win.Views
             else
             {
                 var screen = Screen.FromPoint(System.Windows.Forms.Cursor.Position);
-                Left = (screen.Bounds.Left + screen.Bounds.Width / 2 - Width / 2) + _offsetFromDefaultX;
-                Top = (screen.Bounds.Top + screen.Bounds.Height / 5) + _offsetFromDefaultY;
+                Left = screen.Bounds.Left + (screen.Bounds.Width / 2) - (Width / 2) + _offsetFromDefaultX;
+                Top = screen.Bounds.Top + (screen.Bounds.Height / 5) + _offsetFromDefaultY;
 
                 Show();
                 Activate();

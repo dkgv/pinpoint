@@ -9,7 +9,7 @@ namespace Pinpoint.Core.Clipboard
     public static class ClipboardHelper
     {
         public static readonly ClipboardHistory History = new();
-
+        
         public static void PrependToHistory(IClipboardEntry entry)
         {
             var icon = NativeProvider.GetActiveWindowIcon();
@@ -20,11 +20,11 @@ namespace Pinpoint.Core.Clipboard
 
         public static void PasteClipboard()
         {
-            Task.Run(async () =>
-            {
-                await Task.Delay(100);
-                SendKeys.SendWait("^{v}");
-            });
+            _ = Task.Run(async () =>
+              {
+                  await Task.Delay(100);
+                  SendKeys.SendWait("^{v}");
+              });
         }
 
         public static void Copy(string content)
