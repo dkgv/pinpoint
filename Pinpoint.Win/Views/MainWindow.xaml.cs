@@ -307,13 +307,6 @@ namespace Pinpoint.Win.Views
                         Hide();
                     }
                     break;
-
-                case Key.Down:
-                    if (Model.Results.Count > 0)
-                    {
-                        TxtQuery.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
-                    }
-                    break;
             }
         }
 
