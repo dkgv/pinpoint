@@ -91,7 +91,7 @@ namespace Pinpoint.Plugin.Spotify.Client
 
         public async Task PlayPauseCurrentTrack()
         {
-            var isPlaying = await SpotifyCurrentlyPlaying();
+            var isPlaying = await IsCurrentlyPlaying();
 
             if (isPlaying)
             {
@@ -138,7 +138,7 @@ namespace Pinpoint.Plugin.Spotify.Client
             return result.Devices;
         }
 
-        private async Task<bool> SpotifyCurrentlyPlaying()
+        public async Task<bool> IsCurrentlyPlaying()
         {
             var message = CreateRequestMessage(HttpMethod.Get, $"{SpotifyApiBaseUrl}/me/player");
             var response = await SendWithRetry(message);
