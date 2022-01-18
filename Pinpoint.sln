@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29911.84
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Win", "Pinpoint.Win\Pinpoint.Win.csproj", "{81559AE7-3A5C-4953-B02E-EE2CD32EED9B}"
 EndProject
@@ -54,9 +54,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.ProcessMana
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Text", "Pinpoint.Plugin.Text\Pinpoint.Plugin.Text.csproj", "{C53269BE-0D5C-4123-88C1-E962A4B66738}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.ClipboardUploader", "Pinpoint.Plugin.ClipboardUploader\Pinpoint.Plugin.ClipboardUploader.csproj", "{E90E2836-B1B8-4B7F-91CE-10DF7DF66318}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.ClipboardUploader", "Pinpoint.Plugin.ClipboardUploader\Pinpoint.Plugin.ClipboardUploader.csproj", "{E90E2836-B1B8-4B7F-91CE-10DF7DF66318}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.Timezone", "Pinpoint.Plugin.Timezone\Pinpoint.Plugin.Timezone.csproj", "{44D64A86-4965-4937-A077-5C1065ED2298}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Timezone", "Pinpoint.Plugin.Timezone\Pinpoint.Plugin.Timezone.csproj", "{44D64A86-4965-4937-A077-5C1065ED2298}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Translate", "Pinpoint.Plugin.Translate\Pinpoint.Plugin.Translate.csproj", "{8D3C61AC-B7F2-482D-94AD-25CB94193ADF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -404,6 +406,18 @@ Global
 		{44D64A86-4965-4937-A077-5C1065ED2298}.Release|x64.Build.0 = Release|Any CPU
 		{44D64A86-4965-4937-A077-5C1065ED2298}.Release|x86.ActiveCfg = Release|Any CPU
 		{44D64A86-4965-4937-A077-5C1065ED2298}.Release|x86.Build.0 = Release|Any CPU
+		{8D3C61AC-B7F2-482D-94AD-25CB94193ADF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D3C61AC-B7F2-482D-94AD-25CB94193ADF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D3C61AC-B7F2-482D-94AD-25CB94193ADF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8D3C61AC-B7F2-482D-94AD-25CB94193ADF}.Debug|x64.Build.0 = Debug|Any CPU
+		{8D3C61AC-B7F2-482D-94AD-25CB94193ADF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8D3C61AC-B7F2-482D-94AD-25CB94193ADF}.Debug|x86.Build.0 = Debug|Any CPU
+		{8D3C61AC-B7F2-482D-94AD-25CB94193ADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D3C61AC-B7F2-482D-94AD-25CB94193ADF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D3C61AC-B7F2-482D-94AD-25CB94193ADF}.Release|x64.ActiveCfg = Release|Any CPU
+		{8D3C61AC-B7F2-482D-94AD-25CB94193ADF}.Release|x64.Build.0 = Release|Any CPU
+		{8D3C61AC-B7F2-482D-94AD-25CB94193ADF}.Release|x86.ActiveCfg = Release|Any CPU
+		{8D3C61AC-B7F2-482D-94AD-25CB94193ADF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

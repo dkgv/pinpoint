@@ -39,6 +39,7 @@ using Pinpoint.Win.ViewModels;
 using PinPoint.Plugin.Spotify;
 using Pinpoint.Plugin.Text;
 using Pinpoint.Plugin.Timezone;
+using Pinpoint.Plugin.Translate;
 using Pinpoint.Plugin.UrlLauncher;
 using Pinpoint.Plugin.Weather;
 using Pinpoint.Win.Annotations;
@@ -148,7 +149,8 @@ namespace Pinpoint.Win.Views
                 Model.PluginEngine.AddPlugin(new ProcessManagerPlugin()),
                 Model.PluginEngine.AddPlugin(new TextPlugin()),
                 Model.PluginEngine.AddPlugin(new ClipboardUploaderPlugin()),
-                Model.PluginEngine.AddPlugin(new TimezoneConverterPlugin())
+                Model.PluginEngine.AddPlugin(new TimezoneConverterPlugin()),
+                Model.PluginEngine.AddPlugin(new TranslatePlugin()),
             };
 
             await Task.WhenAll(addPluginTasks);
