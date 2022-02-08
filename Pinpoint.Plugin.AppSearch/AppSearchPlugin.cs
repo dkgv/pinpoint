@@ -47,8 +47,11 @@ namespace Pinpoint.Plugin.AppSearch
                 // Support "Visual Studio Code" -> "VSC"
                 if (variations.Length > 1)
                 {
-                    var fuzz = string.Join(',', variations.Select(part => part[0]).ToArray()).Replace(",", "");
-                    _trie.Add(fuzz, file);
+                    var appAcronymLetters = variations.Where(part => part.Length > 0)
+                        .Select(part => part[0])
+                        .ToArray();
+                    var acronym = string.Join(',', appAcronymLetters).Replace(",", "");
+                    _trie.Add(acronym, file);
                 }
             }
 
@@ -81,7 +84,7 @@ namespace Pinpoint.Plugin.AppSearch
             AppSearchFrequency.Reset();
         }
 
-        public async Task<bool> Activate(Query query) =>  query.RawQuery.Length >= 2;
+        public async Task<bool> Activate(Query query) => query.RawQuery.Length >= 2;
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
