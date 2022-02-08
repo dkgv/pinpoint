@@ -12,7 +12,6 @@ namespace Pinpoint.Plugin.UWPSearch
         {
             _shellExecution = appValue.Split("#")[1];
             Options.Add(new RunAsAdminOption(_shellExecution));
-            Options.Add(new OpenLocationOption(_shellExecution));
         }
 
         //TODO: Figure out how to get icon for app.
