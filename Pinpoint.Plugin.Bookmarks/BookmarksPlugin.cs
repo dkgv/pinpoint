@@ -16,7 +16,7 @@ namespace Pinpoint.Plugin.Bookmarks
 
         private readonly UkkonenTrie<Tuple<BrowserType, AbstractBookmarkModel>> _trie = new();
 
-        public PluginMeta Meta { get; set; } = new("Bookmarks Plugin", Description, PluginPriority.NextHighest);
+        public PluginMeta Meta { get; set; } = new("Bookmarks Plugin", Description, PluginPriority.Standard);
 
         public PluginSettings UserSettings { get; set; } = new();
 

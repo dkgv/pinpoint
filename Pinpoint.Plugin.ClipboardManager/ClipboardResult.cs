@@ -41,6 +41,7 @@ namespace Pinpoint.Plugin.ClipboardManager
                     break;
             }
 
+            ClipboardHelper.History.AddFirst(_clipboardEntry);
             ClipboardHelper.PasteClipboard();
         }
 
