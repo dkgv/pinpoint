@@ -9,7 +9,8 @@ namespace Pinpoint.Plugin.AppSearch
     {
         private static readonly string[] Paths = {
             @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs",
-            $@"C:\Users\{Environment.UserName}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs"
+            $@"C:\Users\{Environment.UserName}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs",
+            $@"C:\Users\{Environment.UserName}\Desktop"
         };
 
         public IEnumerable<IApp> Provide()
@@ -19,9 +20,10 @@ namespace Pinpoint.Plugin.AppSearch
                 var shortcuts = Directory.GetFiles(path, "*.lnk", SearchOption.AllDirectories);
                 foreach (var shortcut in shortcuts)
                 {
+                    var name = Path.GetFileName(shortcut);
                     yield return new StandardApp
                     {
-                        Name = Path.GetFileName(shortcut),
+                        Name = name[..name.IndexOf(".")],
                         FilePath = shortcut,
                     };
                 }
