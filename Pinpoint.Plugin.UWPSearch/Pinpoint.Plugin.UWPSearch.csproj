@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0-windows</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Pinpoint.Core\Pinpoint.Core.csproj" />
+      <ProjectReference Include="..\Pinpoint.Plugin.AppSearch\Pinpoint.Plugin.AppSearch.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.PowerShell.SDK" Version="7.1.5" />
+      <PackageReference Include="System.Management.Automation" Version="7.1.5" />
+    </ItemGroup>
+
+</Project>

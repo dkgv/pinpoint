@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
+﻿using System.Drawing;
+using FontAwesome5;
 using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.AppSearch
@@ -10,40 +7,30 @@ namespace Pinpoint.Plugin.AppSearch
     public class AppResult : AbstractQueryResult
     {
         private readonly string _filePath;
-        private static readonly Dictionary<string, Bitmap> IconCache = new();
+        private readonly IApp _app;
         private readonly string _query;
 
-        public AppResult(string filePath, string query) : base(Path.GetFileName(filePath).Split(".")[0], filePath)
+        public AppResult(IApp app, string query) : base(app.Name, app.FilePath)
         {
-            _filePath = filePath;
+            _app = app;
+            _filePath = app.FilePath;
             _query = query;
 
-            Options.Add(new RunAsAdminOption(filePath));
-            Options.Add(new OpenLocationOption(filePath));
+            Options.Add(new RunAsAdminOption(app.FilePath));
+            Options.Add(new OpenLocationOption(app.FilePath));
         }
 
-        public override Bitmap Icon
-        {
-            get
-            {
-                if (!IconCache.ContainsKey(_filePath))
-                {
-                    IconCache[_filePath] = System.Drawing.Icon.ExtractAssociatedIcon(_filePath).ToBitmap();
-                }
-
-                return IconCache[_filePath];
-            }
-        }
-
+        public override Bitmap Icon => IconRepository.GetIcon(_filePath) ?? FontAwesomeBitmapRepository.Get(EFontAwesomeIcon.Solid_Rocket);
+        
         public override void OnSelect()
         {
             AppSearchFrequency.Track(_query, _filePath);
-            Process.Start("explorer.exe", "\"" + _filePath + "\"");
+            _app.Open();
         }
 
         public override bool OnPrimaryOptionSelect()
         {
-            Process.Start("explorer.exe", Path.GetDirectoryName(_filePath));
+            _app.OpenDirectory();
             return true;
         }
     }
