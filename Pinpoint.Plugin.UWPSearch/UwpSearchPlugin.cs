@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
@@ -28,25 +27,7 @@ namespace Pinpoint.Plugin.UWPSearch
         {
             AppSearchFrequency.Load();
 
-            var powerShell = PowerShell.Create();
-            powerShell.AddScript("Get-StartApps | Where-Object { $_.AppID.Contains(\"!\") }");
-            var result = powerShell.Invoke();
-            foreach (var psObject in result)
-            {
-                var name = psObject.Members["Name"].Value.ToString();
-                var appid = psObject.Members["AppID"].Value.ToString();
-            
-                if (appid == null || name == null) continue;
-                
-                var appValue = $"{name}#{appid}";
-                _trie.Add(name.ToLower(), appValue);
-                
-                var variations = name.ToLower().Split(" ");
-                foreach (var variation in variations)
-                {
-                    _trie.Add(variation, appValue);
-                }
-            }
+           
 
             IsLoaded = true;
             return Task.FromResult(IsLoaded);

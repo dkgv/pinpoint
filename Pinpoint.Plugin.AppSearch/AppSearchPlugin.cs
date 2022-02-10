@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -13,7 +11,13 @@ namespace Pinpoint.Plugin.AppSearch
 {
     public class AppSearchPlugin : IPlugin
     {
-        private UkkonenTrie<string> _trie = new();
+        private UkkonenTrie<IApp> _trie = new();
+
+        private static readonly IAppProvider[] AppProviders = {
+            new StandardAppProvider(),
+            new UwpAppProvider()
+        };
+
         private const string Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\"";
 
         public PluginMeta Meta { get; set; } = new("App Search", Description, PluginPriority.NextHighest);
@@ -22,60 +26,16 @@ namespace Pinpoint.Plugin.AppSearch
 
         public bool IsLoaded { get; set; }
 
-        public Task<bool> TryLoad()
+        public async Task<bool> TryLoad()
         {
             AppSearchFrequency.Load();
 
-            foreach (var file in LoadFileList())
+            foreach (var provider in AppProviders)
             {
-                var name = Path.GetFileName(file.ToLower());
-
-                _trie.Add(name, file);
-
-                if (!file.Contains(" "))
-                {
-                    continue;
-                }
-
-                // Support search for "Mozilla Firefox" through both "Mozilla" and "Firefox"
-                var variations = name.Split(" ");
-                foreach (var variation in variations)
-                {
-                    _trie.Add(variation, file);
-                }
-
-                // Support "Visual Studio Code" -> "VSC"
-                if (variations.Length > 1)
-                {
-                    var appAcronymLetters = variations.Where(part => part.Length > 0)
-                        .Select(part => part[0])
-                        .ToArray();
-                    var acronym = string.Join(',', appAcronymLetters).Replace(",", "");
-                    _trie.Add(acronym, file);
-                }
+                PopulateFromProvider(provider);
             }
 
-            IsLoaded = true;
-            return Task.FromResult(IsLoaded);
-        }
-
-        private List<string> LoadFileList()
-        {
-            var files = new List<string>();
-
-            var paths = new[]
-            {
-                @"C:\ProgramData\Microsoft\Windows\Start Menu\Programs",
-                $@"C:\Users\{Environment.UserName}\AppData\Roaming\Microsoft\Windows\Start Menu\Programs"
-            };
-
-            foreach (var path in paths.Where(Directory.Exists))
-            {
-                var shortcuts = Directory.GetFiles(path, "*.lnk", SearchOption.AllDirectories);
-                files.AddRange(shortcuts);
-            }
-
-            return files;
+            return IsLoaded = true;
         }
 
         public void Unload()
@@ -90,10 +50,40 @@ namespace Pinpoint.Plugin.AppSearch
         {
             var rawQuery = query.RawQuery.ToLower();
 
-            foreach (var result in _trie.Retrieve(rawQuery)
-                .OrderByDescending(entry => AppSearchFrequency.FrequencyOfFor(rawQuery, entry)))
+            foreach (var app in _trie.Retrieve(rawQuery)
+                .OrderByDescending(entry => AppSearchFrequency.FrequencyOfFor(rawQuery, entry.FilePath)))
             {
-                yield return new AppResult(result, rawQuery);
+                yield return new AppResult(app, rawQuery);
+            }
+        }
+
+        private void PopulateFromProvider(IAppProvider provider)
+        {
+            foreach (var app in provider.Provide())
+            {
+                _trie.Add(app.Name.ToLower(), app);
+
+                if (!app.Name.Contains(" "))
+                {
+                    continue;
+                }
+
+                // Support search for "Mozilla Firefox" through both "Mozilla" and "Firefox"
+                var variations = app.Name.ToLower().Split(" ");
+                foreach (var variation in variations)
+                {
+                    _trie.Add(variation, app);
+                }
+
+                // Support "visual studio code" -> "vsc"
+                if (variations.Length > 1)
+                {
+                    var appAcronymLetters = variations.Where(part => part.Length > 0)
+                        .Select(part => part[0])
+                        .ToArray();
+                    var acronym = string.Join(',', appAcronymLetters).Replace(",", "");
+                    _trie.Add(acronym, app);
+                }
             }
         }
     }
