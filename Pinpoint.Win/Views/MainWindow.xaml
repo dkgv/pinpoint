@@ -120,7 +120,7 @@
                          ItemsSource="{Binding Results}" 
                          HorizontalContentAlignment="Stretch"
                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
-                         KeyDown="LstResults_OnKeyDown" 
+                         KeyDown="LstResults_OnKeyDown"
                          KeyUp="LstResults_OnKeyUp"
                          SelectionMode="Single" 
                          Background="{x:Null}" 

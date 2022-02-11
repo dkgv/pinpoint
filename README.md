@@ -55,7 +55,6 @@ Pinpoint is an extensible keystroke launcher and productivity tool written in C#
 | <kbd>ESC</kbd>                                                                                                                         | Close query box if empty                     |
 | <kbd>Enter</kbd>                                                                                                                       | Execute selected query result                |
 | <kbd>ALT</kbd>+<kbd>ENTER</kbd>                                                                                                        | Open primary option of selected query result |
-| <kbd>↑</kbd>,<kbd>↓</kbd>                                                                                                              | Select item above or below                   |
 | <kbd>CTRL</kbd>+[<kbd>↑</kbd>,<kbd>↓</kbd>]                                                                                            | Navigate history older/newer                 |
 | <kbd>CTRL</kbd>+<kbd>,</kbd>                                                                                                           | Open settings panel                          |
 | <kbd>CTRL</kbd>+<kbd>L</kbd>                                                                                                           | Focus query box and its contents             |
