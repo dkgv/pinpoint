@@ -64,14 +64,17 @@ namespace Pinpoint.Plugin.Everything.API
             {
                 return ResultType.File;
             }
+
             if (EverythingDll.Everything_IsFolderResult(index))
             {
                 return ResultType.Directory;
             }
+
             if (EverythingDll.Everything_IsVolumeResult(index))
             {
                 return ResultType.Volume;
             }
+
             return ResultType.Unknown;
         }
 
