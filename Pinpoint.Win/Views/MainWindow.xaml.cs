@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,6 +44,7 @@ using Pinpoint.Plugin.UrlLauncher;
 using Pinpoint.Plugin.Weather;
 using Pinpoint.Win.Annotations;
 using WK.Libraries.SharpClipboardNS;
+using Xceed.Wpf.Toolkit;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
 
@@ -261,16 +263,6 @@ namespace Pinpoint.Win.Views
                 {
                     ShowSettingsWindow();
                 }
-
-                // Check if CTRL+UP or CTRL+DOWN was pressed
-                if (e.Key == Key.Up)
-                {
-                    AdjustQueryToHistory(true);
-                }
-                else if (e.Key == Key.Down)
-                {
-                    AdjustQueryToHistory(false);
-                }
             }
             else if (IsAltKeyDown())
             {
@@ -315,28 +307,6 @@ namespace Pinpoint.Win.Views
             }
         }
 
-        private void TxtQuery_OnKeyUp(object sender, KeyEventArgs e)
-        {
-            switch (e.Key)
-            {
-                case Key.Down:
-                    if (Model.Results.Count > 0)
-                    {
-                        TxtQuery.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
-                    }
-                    break;
-
-                default:
-                    if (!Model.PreviousQuery.Equals(TxtQuery.Text))
-                    {
-                        _ = Dispatcher.Invoke(async () => await UpdateResults());
-                    }
-                    break;
-            }
-
-            Model.PreviousQuery = TxtQuery.Text;
-        }
-
         private void TxtQuery_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             CancelRunningSearch();
@@ -345,6 +315,13 @@ namespace Pinpoint.Win.Views
             {
                 Model.Results.Clear();
             }
+
+            if (!Model.PreviousQuery.Equals(TxtQuery.Text))
+            {
+                _ = Dispatcher.Invoke(async () => await UpdateResults());
+            }
+
+            Model.PreviousQuery = TxtQuery.Text;
         }
 
         private void ShowQueryResultOptions(int listIndex)
@@ -408,7 +385,6 @@ namespace Pinpoint.Win.Views
                 return;
             }
 
-            Model.QueryHistory.Add(query);
             Model.Results.Clear();
 
             var results = await Model.PluginEngine.Process(query, _cts.Token);
@@ -435,17 +411,21 @@ namespace Pinpoint.Win.Views
 
         private void LstResults_OnKeyUp(object sender, KeyEventArgs e)
         {
-            switch (e.Key)
+            if (e.Key == Key.System && IsAltKeyDown())
             {
-                case Key.LeftAlt:
-                case Key.RightAlt:
-                case Key.System:
-                    if (LstResults.SelectedIndex != -1)
-                    {
-                        ShowQueryResultOptions(LstResults.SelectedIndex);
-                        e.Handled = true;
-                    }
-                    break;
+                TryOpenPrimaryOption();
+                return;
+            }
+
+            if (e.Key is not (Key.LeftAlt or Key.RightAlt or Key.System))
+            {
+                return;
+            }
+
+            if (LstResults.SelectedIndex != -1)
+            {
+                ShowQueryResultOptions(LstResults.SelectedIndex);
+                e.Handled = true;
             }
         }
 
@@ -457,37 +437,15 @@ namespace Pinpoint.Win.Views
                     TryOpenSelectedResult();
                     break;
 
-                case Key.System:
-                    if (IsAltKeyDown() && Keyboard.IsKeyDown(Key.Enter))
-                    {
-                        TryOpenPrimaryOption();
-                    }
-                    break;
-
-                case Key.Down:
-                    if (IsCtrlKeyDown())
-                    {
-                        AdjustQueryToHistory(false);
-                    }
-                    break;
-
                 case Key.Up:
-                    if (IsCtrlKeyDown())
+                    if (LstResults.SelectedIndex == 0)
                     {
-                        AdjustQueryToHistory(true);
+                        // First item of list is already selected so focus query field
+                        TxtQuery.Focus();
+                        return;
                     }
-                    else
-                    {
-                        if (LstResults.SelectedIndex == 0)
-                        {
-                            // First item of list is already selected so focus query field
-                            TxtQuery.Focus();
-                        }
-                        else
-                        {
-                            LstResults.SelectedIndex = Math.Max(LstResults.SelectedIndex - 1, 0);
-                        }
-                    }
+
+                    LstResults.SelectedIndex = Math.Max(LstResults.SelectedIndex - 1, 0);
                     break;
 
                 case Key.Back:
@@ -528,26 +486,13 @@ namespace Pinpoint.Win.Views
             }
         }
 
-        private void AdjustQueryToHistory(bool older)
-        {
-            var next = older
-                ? Model.QueryHistory.Current?.Next 
-                : Model.QueryHistory.Current?.Previous;
-            if (next != null)
-            {
-                Model.QueryHistory.Current = next;
-                TxtQuery.Text = Model.QueryHistory.Current.Value.RawQuery;
-                TxtQuery.CaretIndex = TxtQuery.Text.Length;
-            }
-        }
-
         private static readonly Key[] Digits = {Key.D1, Key.D2, Key.D3, Key.D4, Key.D5, Key.D6, Key.D7, Key.D8, Key.D9};
 
         private static Key GetDigitDown() => Digits.FirstOrDefault(Keyboard.IsKeyDown);
 
         private static bool IsCtrlKeyDown() => (Control.ModifierKeys & Keys.Control) == Keys.Control;
 
-        private static bool IsAltKeyDown() => Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
+        private static bool IsAltKeyDown() => Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt) || Keyboard.IsKeyDown(Key.System);
 
         private void CancelRunningSearch() {
             _cts?.Cancel();
@@ -617,6 +562,17 @@ namespace Pinpoint.Win.Views
                 _offsetFromDefaultX = Left - _defaultWindowPosition.X;
                 _offsetFromDefaultY = Top - _defaultWindowPosition.Y;
             }
+        }
+
+        private void TxtQuery_OnPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key != Key.Down || Model.Results.Count == 0)
+            {
+                return;
+            }
+
+            TxtQuery.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
+            LstResults.SelectedIndex++;
         }
     }
 }
