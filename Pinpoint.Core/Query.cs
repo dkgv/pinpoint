@@ -10,7 +10,7 @@
 
         public string Prefix(int n = 1)
         {
-            return RawQuery.Substring(0, n);
+            return RawQuery[..n];
         }
 
         public bool IsEmpty => RawQuery.Length == 0;
@@ -19,6 +19,6 @@
 
         public string[] Parts { get; }
 
-        public int ResultCount { get; set; }
+        public int ResultCount = 0;
     }
 }

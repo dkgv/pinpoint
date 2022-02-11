@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -30,45 +31,53 @@ namespace Pinpoint.Core
                 {
                     @new.UserSettings = match.UserSettings;
                 }
+
                 @new.Meta.Enabled = match.Meta.Enabled;
             }
 
-            // Ensure order of plugin execution is correct
             Plugins.Add(@new);
-            Plugins.Sort();
 
             Listeners.ForEach(listener => listener.PluginChange_Added(this, @new, null));
         }
 
-        public void RemovePlugin(IPlugin plugin)
+        public T GetPluginByType<T>() where T : IPlugin => Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
+
+        public async Task<List<AbstractQueryResult>> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            if (Plugins.Contains(plugin))
+            var activePlugins = new BlockingCollection<IPlugin>();
+            _ = Task.Run(() =>
             {
-                plugin.Unload();
-                Plugins.Remove(plugin);
-                Listeners.ForEach(listener => listener.PluginChange_Removed(this, plugin, null));
-            }
-        }
+                Parallel.ForEach(Plugins.Where(p => p.Meta.Enabled && p.IsLoaded), async plugin =>
+                {
+                    if (await plugin.Activate(query))
+                    {
+                        activePlugins.Add(plugin, ct);
+                    }
+                });
 
-        public T PluginByType<T>() where T : IPlugin => Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
+                activePlugins.CompleteAdding();
+            }, ct);
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
-        {
-            var enabledPlugins = Plugins.Where(p => p.Meta.Enabled && p.IsLoaded).ToList();
-            for (int i = 0; i < enabledPlugins.Count && query.ResultCount < 20 && !ct.IsCancellationRequested; i++)
+            var results = new List<AbstractQueryResult>(20);
+            var tasks = new List<Task>();
+            while (activePlugins.TryTake(out var plugin, TimeSpan.FromSeconds(1)) && query.ResultCount < 20)
             {
-                var plugin = enabledPlugins[i];
-                if (!await plugin.Activate(query))
+                tasks.Add(Task.Run(async () =>
                 {
-                    continue;
-                }
-
-                await foreach (var result in plugin.Process(query, ct))
-                {
-                    query.ResultCount++;
-                    yield return result;
-                }
+                    await foreach (var result in plugin.Process(query, ct))
+                    {
+                        query.ResultCount++;
+                        lock (results)
+                        {
+                            results.Add(result);
+                        }
+                    }
+                }, ct));
             }
+
+            await Task.WhenAll(tasks);
+
+            return results;
         }
     }
 }
