@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,6 +44,7 @@ using Pinpoint.Plugin.UrlLauncher;
 using Pinpoint.Plugin.Weather;
 using Pinpoint.Win.Annotations;
 using WK.Libraries.SharpClipboardNS;
+using Xceed.Wpf.Toolkit;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
 
@@ -312,29 +314,9 @@ namespace Pinpoint.Win.Views
                         Hide();
                     }
                     break;
-            }
-        }
-
-        private void TxtQuery_OnKeyUp(object sender, KeyEventArgs e)
-        {
-            switch (e.Key)
-            {
                 case Key.Down:
-                    if (Model.Results.Count > 0)
-                    {
-                        TxtQuery.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
-                    }
-                    break;
-
-                default:
-                    if (!Model.PreviousQuery.Equals(TxtQuery.Text))
-                    {
-                        _ = Dispatcher.Invoke(async () => await UpdateResults());
-                    }
                     break;
             }
-
-            Model.PreviousQuery = TxtQuery.Text;
         }
 
         private void TxtQuery_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -345,6 +327,13 @@ namespace Pinpoint.Win.Views
             {
                 Model.Results.Clear();
             }
+
+            if (!Model.PreviousQuery.Equals(TxtQuery.Text))
+            {
+                _ = Dispatcher.Invoke(async () => await UpdateResults());
+            }
+
+            Model.PreviousQuery = TxtQuery.Text;
         }
 
         private void ShowQueryResultOptions(int listIndex)
@@ -437,9 +426,16 @@ namespace Pinpoint.Win.Views
         {
             switch (e.Key)
             {
+                case Key.Enter:
+                case Key.System:
+                    if (IsAltKeyDown())
+                    {
+                        TryOpenPrimaryOption();
+                    }
+                    break;
+
                 case Key.LeftAlt:
                 case Key.RightAlt:
-                case Key.System:
                     if (LstResults.SelectedIndex != -1)
                     {
                         ShowQueryResultOptions(LstResults.SelectedIndex);
@@ -455,13 +451,6 @@ namespace Pinpoint.Win.Views
             {
                 case Key.Enter:
                     TryOpenSelectedResult();
-                    break;
-
-                case Key.System:
-                    if (IsAltKeyDown() && Keyboard.IsKeyDown(Key.Enter))
-                    {
-                        TryOpenPrimaryOption();
-                    }
                     break;
 
                 case Key.Down:
