@@ -12,6 +12,7 @@ namespace Pinpoint.Plugin.AppSearch
     public class AppSearchPlugin : IPlugin
     {
         private UkkonenTrie<IApp> _trie = new();
+        private readonly HashSet<string> _appNames = new();
 
         private static readonly IAppProvider[] AppProviders = {
             new StandardAppProvider(),
@@ -61,15 +62,17 @@ namespace Pinpoint.Plugin.AppSearch
         {
             foreach (var app in provider.Provide())
             {
-                _trie.Add(app.Name.ToLower(), app);
+                var appName = app.Name.ToLower();
 
-                if (!app.Name.Contains(" "))
-                {
-                    continue;
-                }
+                //Checking for duplicates
+                if (!_appNames.Add(appName)) continue;
+
+                _trie.Add(appName, app);
+
+                if (!app.Name.Contains(" ")) continue;
 
                 // Support search for "Mozilla Firefox" through both "Mozilla" and "Firefox"
-                var variations = app.Name.ToLower().Split(" ");
+                var variations = appName.Split(" ");
                 foreach (var variation in variations)
                 {
                     _trie.Add(variation, app);
