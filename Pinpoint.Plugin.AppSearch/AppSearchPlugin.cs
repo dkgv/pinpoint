@@ -61,7 +61,8 @@ namespace Pinpoint.Plugin.AppSearch
         {
             foreach (var app in provider.Provide())
             {
-                _trie.Add(app.Name.ToLower(), app);
+                var appName = app.Name.ToLower();
+                _trie.Add(appName, app);
 
                 if (!app.Name.Contains(" "))
                 {
@@ -69,7 +70,7 @@ namespace Pinpoint.Plugin.AppSearch
                 }
 
                 // Support search for "Mozilla Firefox" through both "Mozilla" and "Firefox"
-                var variations = app.Name.ToLower().Split(" ");
+                var variations = appName.Split(" ");
                 foreach (var variation in variations)
                 {
                     _trie.Add(variation, app);
