@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Pinpoint.Plugin.Everything.API
 {
     public class ResultProvider
     {
-        public async IAsyncEnumerable<QueryResultItem> GetCurrentResult([EnumeratorCancellation] CancellationToken ct = default)
+        public async IAsyncEnumerable<QueryResultItem> GetCurrentResult()
         {
             var numResults = EverythingDll.Everything_GetNumResults();
             if (numResults == 0)
@@ -49,13 +46,13 @@ namespace Pinpoint.Plugin.Everything.API
                               throw new ArgumentOutOfRangeException();
                       }
 
-                      collection.Add(item, ct);
-                  }, parallelOptions: new ParallelOptions { CancellationToken = ct });
+                      collection.Add(item);
+                  });
 
                   collection.CompleteAdding();
-              }, ct);
+              });
 
-            foreach (var result in collection.GetConsumingEnumerable(ct))
+            foreach (var result in collection.GetConsumingEnumerable())
             {
                 yield return result;
             }

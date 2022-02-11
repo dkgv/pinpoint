@@ -24,6 +24,7 @@
     <PackageReference Include="NHotkey.Wpf" Version="2.1.0" />
     <PackageReference Include="Pranas.ScreenshotCapture" Version="1.0.11" />
     <PackageReference Include="SharpClipboard" Version="3.5.2" />
+    <PackageReference Include="System.Linq.Async" Version="6.0.1" />
   </ItemGroup>
 
   <ItemGroup>

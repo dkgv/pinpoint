@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -154,6 +153,8 @@ namespace Pinpoint.Win.Views
             };
 
             await Task.WhenAll(addPluginTasks);
+            Model.PluginEngine.Plugins.Sort();
+
             Dispatcher.Invoke(() =>
             {
                 TxtQuery.Watermark = "Pinpoint";
@@ -164,15 +165,17 @@ namespace Pinpoint.Win.Views
 
         public async void OnSystemClipboardPaste([CanBeNull] object sender, HotkeyEventArgs e)
         {
-            var plugin = Model.PluginEngine.PluginByType<ClipboardManagerPlugin>();
+            var plugin = Model.PluginEngine.GetPluginByType<ClipboardManagerPlugin>();
             if (ClipboardHelper.History.Count == 0)
             {
                 return;
             }
 
-            // Remove old results and add clipboard history content
             Model.Results.Clear();
-            await AwaitAddEnumerable(plugin.Process(null, _cts.Token));
+
+            // Fetch clipboard results
+            var results = await plugin.Process(null, _cts.Token).ToListAsync();
+            AddResults(results);
 
             if (Visibility != Visibility.Visible)
             {
@@ -223,7 +226,7 @@ namespace Pinpoint.Win.Views
             _offsetFromDefaultX = _offsetFromDefaultY = 0;
         }
 
-        private Point ComputeDefaultWindowPosition() => new Point(SystemParameters.PrimaryScreenWidth / 2 - Width / 2, SystemParameters.PrimaryScreenHeight / 5);
+        private Point ComputeDefaultWindowPosition() => new(SystemParameters.PrimaryScreenWidth / 2 - Width / 2, SystemParameters.PrimaryScreenHeight / 5);
 
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -405,28 +408,28 @@ namespace Pinpoint.Win.Views
                 return;
             }
 
+            Model.QueryHistory.Add(query);
             Model.Results.Clear();
 
-            await AwaitAddEnumerable(Model.PluginEngine.Process(query, _cts.Token));
-
-            Model.QueryHistory.Add(query);
-
-            if (Model.Results.Count > 0 && LstResults.SelectedIndex == -1)
-            {
-                LstResults.SelectedIndex = 0;
-            }
+            var results = await Model.PluginEngine.Process(query, _cts.Token);
+            AddResults(results);
         }
 
-        private async Task AwaitAddEnumerable(IAsyncEnumerable<AbstractQueryResult> enumerable)
+        private void AddResults(List<AbstractQueryResult> results)
         {
             var shortcutKey = 0;
-            await foreach (var result in enumerable)
+            foreach (var result in results)
             {
                 // If one of first 9 results, set keyboard shortcut for result
                 if (Model.Results.TryAdd(result) && shortcutKey < 9)
                 {
                     result.Shortcut = "CTRL+" + ++shortcutKey;
                 }
+            }
+
+            if (Model.Results.Count > 0 && LstResults.SelectedIndex == -1)
+            {
+                LstResults.SelectedIndex = 0;
             }
         }
 
@@ -540,11 +543,11 @@ namespace Pinpoint.Win.Views
 
         private static readonly Key[] Digits = {Key.D1, Key.D2, Key.D3, Key.D4, Key.D5, Key.D6, Key.D7, Key.D8, Key.D9};
 
-        private Key GetDigitDown() => Digits.FirstOrDefault(Keyboard.IsKeyDown);
+        private static Key GetDigitDown() => Digits.FirstOrDefault(Keyboard.IsKeyDown);
 
-        private bool IsCtrlKeyDown() => (Control.ModifierKeys & Keys.Control) == Keys.Control;
+        private static bool IsCtrlKeyDown() => (Control.ModifierKeys & Keys.Control) == Keys.Control;
 
-        private bool IsAltKeyDown() => Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
+        private static bool IsAltKeyDown() => Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt);
 
         private void CancelRunningSearch() {
             _cts?.Cancel();
