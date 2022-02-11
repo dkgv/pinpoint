@@ -20,10 +20,9 @@ namespace Pinpoint.Plugin.AppSearch
                 var shortcuts = Directory.GetFiles(path, "*.lnk", SearchOption.AllDirectories);
                 foreach (var shortcut in shortcuts)
                 {
-                    var name = Path.GetFileName(shortcut);
                     yield return new StandardApp
                     {
-                        Name = name[..name.IndexOf(".")],
+                        Name = Path.GetFileNameWithoutExtension(shortcut),
                         FilePath = shortcut,
                     };
                 }
