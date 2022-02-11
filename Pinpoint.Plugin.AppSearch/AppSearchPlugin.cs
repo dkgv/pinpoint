@@ -62,7 +62,6 @@ namespace Pinpoint.Plugin.AppSearch
             foreach (var app in provider.Provide())
             {
                 var appName = app.Name.ToLower();
-
                 _trie.Add(appName, app);
 
                 if (!app.Name.Contains(" "))
