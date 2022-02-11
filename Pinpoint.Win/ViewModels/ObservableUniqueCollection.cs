@@ -5,13 +5,7 @@ namespace Pinpoint.Win.ViewModels
 {
     public class ObservableUniqueCollection<T> : ObservableCollection<T>
     {
-        private readonly HashSet<T> _hashSet;
-
-        public ObservableUniqueCollection() : this(EqualityComparer<T>.Default)
-        {
-        }
-
-        public ObservableUniqueCollection(IEqualityComparer<T> equalityComparer) => _hashSet = new HashSet<T>(equalityComparer);
+        private readonly HashSet<T> _hashSet = new();
 
         public void AddRange(IEnumerable<T> items)
         {

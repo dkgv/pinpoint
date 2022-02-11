@@ -29,7 +29,7 @@ namespace Pinpoint.Plugin.Everything.API
                 _searchProvider.Search(query, Config);
             }, ct);
 
-            await foreach (var item in _resultProvider.GetCurrentResult(ct))
+            await foreach (var item in _resultProvider.GetCurrentResult().WithCancellation(ct))
             {
                 yield return item;
             }

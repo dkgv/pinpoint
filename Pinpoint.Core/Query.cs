@@ -19,6 +19,6 @@
 
         public string[] Parts { get; }
 
-        public int ResultCount { get; set; }
+        public int ResultCount = 0;
     }
 }

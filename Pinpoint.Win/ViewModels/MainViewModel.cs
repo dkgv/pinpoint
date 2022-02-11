@@ -15,7 +15,7 @@ namespace Pinpoint.Win.ViewModels
 
         public PluginEngine PluginEngine { get; set; } = new();
 
-        public QueryHistory QueryHistory { get; } = new(20);
+        public QueryHistory QueryHistory { get; } = new();
 
         public SharpClipboard Clipboard { get; } = new();
 

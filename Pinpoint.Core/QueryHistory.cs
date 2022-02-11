@@ -6,12 +6,12 @@ namespace Pinpoint.Core
     {
         private readonly int _maxHistorySize;
 
-        public QueryHistory(int maxHistorySize)
+        public QueryHistory(int maxHistorySize = 20)
         {
             _maxHistorySize = maxHistorySize;
         }
 
-        private LinkedList<Query> Queries { get; } = new LinkedList<Query>();
+        private LinkedList<Query> Queries { get; } = new();
 
         public LinkedListNode<Query> Current { get; set; }
 
