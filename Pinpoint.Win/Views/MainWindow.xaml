@@ -110,7 +110,8 @@
                                                Background="{x:Null}" 
                                                CaretBrush="{Binding Theme.TxtQueryCaretBrush}" 
                                                KeyDown="TxtQuery_OnKeyDown" 
-                                               TextChanged="TxtQuery_TextChanged" AutoMoveFocus="True"/>
+                                               PreviewKeyDown="TxtQuery_OnPreviewKeyDown"
+                                               TextChanged="TxtQuery_TextChanged" />
                     </Grid>
                 </Border>
 
