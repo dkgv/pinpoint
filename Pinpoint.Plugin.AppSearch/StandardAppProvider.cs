@@ -15,14 +15,21 @@ namespace Pinpoint.Plugin.AppSearch
 
         public IEnumerable<IApp> Provide()
         {
+            var uniqueAppNames = new HashSet<string>();
             foreach (var path in Paths.Where(Directory.Exists))
             {
                 var shortcuts = Directory.GetFiles(path, "*.lnk", SearchOption.AllDirectories);
                 foreach (var shortcut in shortcuts)
                 {
+                    var nameWithoutExtension = Path.GetFileNameWithoutExtension(shortcut);
+                    if (!uniqueAppNames.Add(nameWithoutExtension))
+                    {
+                        continue;
+                    }
+
                     yield return new StandardApp
                     {
-                        Name = Path.GetFileNameWithoutExtension(shortcut),
+                        Name = nameWithoutExtension,
                         FilePath = shortcut,
                     };
                 }
