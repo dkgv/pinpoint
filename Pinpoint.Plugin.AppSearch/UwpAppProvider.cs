@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 
 namespace Pinpoint.Plugin.AppSearch
@@ -47,39 +48,17 @@ namespace Pinpoint.Plugin.AppSearch
         private static void FetchAndSetAppIcons(List<UwpApp> apps)
         {
             const string args =
-                "Get-AppxPackage -PackageTypeFilter Main | ForEach-Object -Process { $manifest = Get-AppxPackageManifest $_.PackageFullName; $app = $manifest.Package.Applications.Application; $iconLocation = $app.VisualElements.Square44x44Logo; if ($iconLocation -eq $null) {$iconLocation = $app.VisualElements.Square30x30Logo}; if ($iconLocation -eq $null) {$iconLocation = $app.VisualElements.Logo}; return [PSCustomObject]@{PackageFamilyName = $_.PackageFamilyName; InstallLocation = $_.InstallLocation; IconLocation = $iconLocation} } | ConvertTo-Json";
+                "Get-AppxPackage -PackageTypeFilter Main | ForEach-Object -Process { $manifest = Get-AppxPackageManifest $_.PackageFullName; $app = $manifest.Package.Applications.Application; $iconLocation = $app.VisualElements.Square44x44Logo | Select-Object -First 1; if ($iconLocation -eq $null) {$iconLocation = $app.VisualElements.Square30x30Logo}; if ($iconLocation -eq $null) {$iconLocation = $app.VisualElements.Logo}; return [PSCustomObject]@{PackageFamilyName = $_.PackageFamilyName; InstallLocation = $_.InstallLocation; IconLocation = $iconLocation} } | ConvertTo-Json";
             var appxPackages = RunProcess<List<AppxPackage>>(args);
             foreach (var app in apps)
             {
                 var appFamilyName = app.FilePath[..app.FilePath.IndexOf("!")];
                 foreach (var package in appxPackages.Where(package => appFamilyName == package.PackageFamilyName))
                 {
-                    string iconName, iconLocation;
-                    if (package.IconLocation is string location)
-                    {
-                        var idxOfLastDir = location.LastIndexOf("\\");
-                        iconName = location[(idxOfLastDir + 1)..];
-                        iconLocation = location[..idxOfLastDir];
-                    }
-                    else
-                    {
-                        // TODO: This somehow stalls the loading of the plugin - even though no exception is thrown
-                        // try
-                        // {
-                        //     var fullLocation = (package.IconLocation as JArray).First().ToObject<string>();
-                        //     var idxOfLastDir = fullLocation.LastIndexOf("\\");
-                        //     iconName = fullLocation[(idxOfLastDir + 1)..];
-                        //     iconLocation = fullLocation[..idxOfLastDir];
-                        // }
-                        // catch (Exception e)
-                        // {
-                        //     Console.WriteLine(e);
-                        //     throw;
-                        // }
-
-                        iconName = "";
-                        iconLocation = "";
-                    }
+                    var location = package.IconLocation as string;
+                    var idxOfLastDir = location.LastIndexOf("\\");
+                    var iconName = location[(idxOfLastDir + 1)..];
+                    var iconLocation = location[..idxOfLastDir];
 
                     iconLocation = package.InstallLocation + "\\" + iconLocation;
                     app.IconLocation = FindCorrectIconPath(iconLocation, iconName.Split(".").First());
@@ -89,11 +68,31 @@ namespace Pinpoint.Plugin.AppSearch
 
         private static string FindCorrectIconPath(string iconLocation, string name)
         {
+            if (!Directory.Exists(iconLocation)) return "";
+
             var files = Directory.GetFiles(iconLocation, $"{name}.*", SearchOption.TopDirectoryOnly);
             foreach (var file in files)
             {
                 if (!file.Contains(".png")) continue;
-                if (!file.Contains(".scale-") && !file.Contains(".targetsize-")) continue;
+
+                if (file.Contains(".scale-"))
+                {
+                    if (Regex.IsMatch(file, @".*\.scale-(800|400|200|150)\.png"))
+                    {
+                        return file;
+                    }
+                    continue;
+                }
+
+                if (file.Contains(".targetsize-"))
+                {
+                    if (Regex.IsMatch(file, @".*\.targetsize-((48)|(49)|(([5-9]\d|[1-9]\d{2,})))\.png"))
+                    {
+                        return file;
+                    }
+                    continue;
+                }
+
                 return file;
             }
             return "";
