@@ -11,6 +11,8 @@ namespace Pinpoint.Plugin.AppSearch
         [JsonProperty("AppID")]
         public string FilePath { get; set; }
 
+        public string IconLocation { get; set; } = "";
+
         public void Open()
         {
             Process.Start("explorer.exe", $"shell:AppsFolder\\{FilePath}");

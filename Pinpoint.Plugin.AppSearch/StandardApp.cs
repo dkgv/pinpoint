@@ -9,6 +9,8 @@ namespace Pinpoint.Plugin.AppSearch
 
         public string FilePath { get; set; }
 
+        public string IconLocation { get; set; }
+
         public void Open()
         {
             Process.Start("explorer.exe", "\"" + FilePath + "\"");

@@ -6,6 +6,8 @@
 
         string FilePath { get; set; }
 
+        string IconLocation { get; set; }
+
         void Open();
 
         void OpenDirectory();
