@@ -31,6 +31,7 @@ namespace Pinpoint.Plugin.AppSearch
                     {
                         Name = nameWithoutExtension,
                         FilePath = shortcut,
+                        IconLocation = shortcut
                     };
                 }
             }

@@ -76,28 +76,8 @@ namespace Pinpoint.Plugin.ControlPanel
 
         private List<ControlPanelItem> LoadControlPanelItems()
         {
-            const string args = "-NonInteractive -NoProfile -Command \"Get-ControlPanelItem | ConvertTo-Json\"";
-
-            var process = new Process
-            {
-                StartInfo =
-                {
-                    FileName = "powershell",
-                    Arguments = args,
-                    UseShellExecute = false,
-                    RedirectStandardOutput = true,
-                    CreateNoWindow = true
-                }
-            };
-            process.Start();
-
-            var sb = new StringBuilder();
-            while (!process.StandardOutput.EndOfStream)
-            {
-                sb.Append(process.StandardOutput.ReadLine());
-            }
-            
-            return JsonConvert.DeserializeObject<List<ControlPanelItem>>(sb.ToString());
+            const string args = "-NonInteractive -NoProfile -Command \"Get-ControlPanelItem\"";
+            return ProcessHelper.PowerShellToJson<List<ControlPanelItem>>(args);
         }
     }
 }

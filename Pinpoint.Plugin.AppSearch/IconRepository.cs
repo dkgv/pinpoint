@@ -17,7 +17,14 @@ namespace Pinpoint.Plugin.AppSearch
 
             if (!IconCache.ContainsKey(path))
             {
-                IconCache[path] = Icon.ExtractAssociatedIcon(path)?.ToBitmap();
+                if (path.Contains(".png"))
+                {
+                    IconCache[path] = new Bitmap(path);
+                }
+                else
+                {
+                    IconCache[path] = Icon.ExtractAssociatedIcon(path)?.ToBitmap();
+                }
             }
 
             return IconCache[path];
