@@ -17,7 +17,7 @@ namespace Pinpoint.Plugin.Translate
 
         public PluginMeta Meta { get; set; } = new("Translate Plugin", Description, PluginPriority.NextHighest);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public async Task<bool> Activate(Query query)
         {

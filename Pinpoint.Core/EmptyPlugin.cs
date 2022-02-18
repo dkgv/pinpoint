@@ -12,7 +12,7 @@ namespace Pinpoint.Core
     {
         public PluginMeta Meta { get; set; }
 
-        public PluginSettings UserSettings { get; set; }
+        public PluginStorage Storage { get; set; }
 
         public void Unload()
         {

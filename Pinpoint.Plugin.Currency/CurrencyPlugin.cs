@@ -21,24 +21,28 @@ namespace Pinpoint.Plugin.Currency
 
         public PluginMeta Meta { get; set; } = new("Currency Converter", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 
         public async Task<bool> TryLoad()
         {
-            string baseCurrency;
-            try
+            if (Storage.UserSettings.Count == 0)
             {
-                // Find base currency
-                var ri = new RegionInfo(CultureInfo.CurrentCulture.Name);
-                baseCurrency = ri.ISOCurrencySymbol;
+                string baseCurrency;
+                try
+                {
+                    // Find base currency
+                    var ri = new RegionInfo(CultureInfo.CurrentCulture.Name);
+                    baseCurrency = ri.ISOCurrencySymbol;
+                }
+                catch (ArgumentException)
+                {
+                    baseCurrency = "USD";
+                }
+
+                Storage.UserSettings.Put(KeyBaseCurrency, baseCurrency);
             }
-            catch (ArgumentException)
-            {
-                baseCurrency = "USD";
-            }
-            UserSettings.Put(KeyBaseCurrency, baseCurrency);
 
             _currencyRepo = new CurrencyRepository();
             await _currencyRepo.LoadCurrenciesInitial().ConfigureAwait(false);
@@ -139,7 +143,7 @@ namespace Pinpoint.Plugin.Currency
             // Handles queries like 100 usd, 100 eur
             if (!query.RawQuery.Contains("in") && !query.RawQuery.Contains("to"))
             {
-                return UserSettings.Str(KeyBaseCurrency);
+                return Storage.UserSettings.Str(KeyBaseCurrency);
             }
 
             // Get last part

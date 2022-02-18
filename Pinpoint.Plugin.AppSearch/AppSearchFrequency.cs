@@ -3,23 +3,24 @@ using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.AppSearch
 {
-    public static class AppSearchFrequency
+    public class AppSearchFrequency
     {
-        private static Dictionary<string, Dictionary<string, int>> _database = new Dictionary<string, Dictionary<string, int>>();
+        public Dictionary<string, Dictionary<string, int>> Database = new();
+        private readonly IPlugin _plugin;
 
-        public static void Load()
+        public AppSearchFrequency(IPlugin plugin)
         {
-            _database = AppSettings.GetOrDefault("app_search", new Dictionary<string, Dictionary<string, int>>());
+            _plugin = plugin;
         }
 
-        public static void Track(string query, string exactMatch)
+        public void Track(string query, string exactMatch)
         {
-            if (!_database.ContainsKey(query))
+            if (!Database.ContainsKey(query))
             {
-                _database[query] = new Dictionary<string, int>();
+                Database[query] = new Dictionary<string, int>();
             }
 
-            var frequency = _database[query];
+            var frequency = Database[query];
             if (!frequency.ContainsKey(exactMatch))
             {
                 frequency[exactMatch] = 1;
@@ -29,28 +30,24 @@ namespace Pinpoint.Plugin.AppSearch
                 frequency[exactMatch]++;
             }
 
-            AppSettings.PutAndSave("app_search", _database);
+            _plugin.Storage.InternalSettings["database"] = Database;
+            _plugin.Save();
         }
 
-        public static int FrequencyOfFor(string of, string @for)
+        public int FrequencyOfFor(string of, string @for)
         {
-            if (!_database.ContainsKey(of))
+            if (!Database.ContainsKey(of))
             {
                 return 0;
             }
 
-            var frequency = _database[of];
-            if (!frequency.ContainsKey(@for))
-            {
-                return 0;
-            }
-
-            return frequency[@for];
+            var frequency = Database[of];
+            return !frequency.ContainsKey(@for) ? 0 : frequency[@for];
         }
 
-        public static void Reset()
+        public void Reset()
         {
-            _database.Clear();
+            Database.Clear();
         }
     }
 }

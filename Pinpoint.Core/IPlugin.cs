@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Pinpoint.Core.Results;
 
 namespace Pinpoint.Core
@@ -11,7 +13,7 @@ namespace Pinpoint.Core
     {
         public PluginMeta Meta { get; set; }
 
-        public PluginSettings UserSettings { get; set; }
+        public PluginStorage Storage { get; set; }
 
         bool IsLoaded => true;
 
@@ -29,5 +31,28 @@ namespace Pinpoint.Core
         {
             return other.Meta.Priority.CompareTo(Meta.Priority);
         }
+
+        private string FilePath => Path.Combine(AppConstants.MainDirectory, $"{string.Concat(Meta.Name.Split(Path.GetInvalidFileNameChars()))}.json");
+
+        public void Save()
+        {
+            var json = JsonConvert.SerializeObject(new PluginState(Meta, Storage));
+            File.WriteAllText(FilePath, json);
+        }
+
+        public void Restore()
+        {
+            if (!File.Exists(FilePath))
+            {
+                return;
+            }
+
+            var json = File.ReadAllText(FilePath);
+            var (meta, storage) = JsonConvert.DeserializeObject<PluginState>(json);
+            Storage = storage;
+            Meta = meta;
+        }
+
+        private record PluginState(PluginMeta Meta, PluginStorage Storage);
     }
 }

@@ -15,7 +15,7 @@ namespace Pinpoint.Plugin.ProcessManager
     {
         public PluginMeta Meta { get; set; } = new("Process Manager", PluginPriority.Highest);
         
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
         
         public async Task<bool> Activate(Query query)
         {

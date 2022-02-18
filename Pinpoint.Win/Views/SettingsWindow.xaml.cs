@@ -50,9 +50,13 @@ namespace Pinpoint.Win.Views
         {
             e.Cancel = true;
 
-            AppSettings.Put("plugins", Model.Plugins.ToArray());
             AppSettings.Put("theme", App.Current.MainViewModel.Theme);
             AppSettings.Save();
+
+            foreach (var plugin in Model.Plugins)
+            {
+                plugin.Save();
+            }
 
             Hide();
         }
@@ -139,10 +143,11 @@ namespace Pinpoint.Win.Views
 
             // Add to tab control
             var pluginTabItem = new PluginTabItem(plugin);
-            if (plugin.UserSettings.Count == 0)
+            if (plugin.Storage.UserSettings.Count == 0)
             {
                 pluginTabItem.LblSettings.Visibility = pluginTabItem.PluginSettings.Visibility = Visibility.Hidden;
             }
+
             Model.PluginTabItems.Add(pluginTabItem);
             Model.PluginTabItems = Model.PluginTabItems.OrderBy(p => p.Model.Plugin.Meta.Name).ToList();
         }

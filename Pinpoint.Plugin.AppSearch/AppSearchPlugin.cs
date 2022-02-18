@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
+using Newtonsoft.Json;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
 
@@ -13,22 +14,33 @@ namespace Pinpoint.Plugin.AppSearch
     {
         private UkkonenTrie<IApp> _trie = new();
 
+        public AppSearchFrequency AppSearchFrequency;
+
         private static readonly IAppProvider[] AppProviders = {
             new StandardAppProvider(),
             new UwpAppProvider()
         };
 
+        public AppSearchPlugin()
+        {
+            AppSearchFrequency = new AppSearchFrequency(this);
+        }
+
         private const string Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\"";
 
         public PluginMeta Meta { get; set; } = new("App Search", Description, PluginPriority.NextHighest);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 
         public async Task<bool> TryLoad()
         {
-            AppSearchFrequency.Load();
+            if (Storage.InternalSettings.ContainsKey("database"))
+            {
+                AppSearchFrequency.Database =
+                    JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, int>>>(Storage.InternalSettings["database"].ToString());
+            }
 
             foreach (var provider in AppProviders)
             {
@@ -51,9 +63,9 @@ namespace Pinpoint.Plugin.AppSearch
             var rawQuery = query.RawQuery.ToLower();
 
             foreach (var app in _trie.Retrieve(rawQuery)
-                .OrderByDescending(entry => AppSearchFrequency.FrequencyOfFor(rawQuery, entry.FilePath)))
+                .OrderByDescending(entry =>AppSearchFrequency.FrequencyOfFor(rawQuery, entry.FilePath)))
             {
-                yield return new AppResult(app, rawQuery);
+                yield return new AppResult(this, app, rawQuery);
             }
         }
 

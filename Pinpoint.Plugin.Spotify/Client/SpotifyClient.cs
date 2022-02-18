@@ -13,6 +13,7 @@ namespace Pinpoint.Plugin.Spotify.Client
     public class SpotifyClient: IDisposable
     {
         private static SpotifyClient _instance;
+        public static IPlugin Plugin;
         private static readonly HttpClient SpotifyHttpClient = new();
         private string _accessToken;
         private const string SpotifyApiBaseUrl = "https://api.spotify.com/v1";
@@ -25,11 +26,9 @@ namespace Pinpoint.Plugin.Spotify.Client
         public void InitializeClientWithTokens(TokenResult tokens)
         {
             _accessToken = tokens.access_token;
-            var settings = new SpotifyPluginSettings
-            {
-                RefreshToken = tokens.refresh_token, 
-            };
-            AppSettings.PutAndSave("spotify", settings);
+
+            Plugin.Storage.InternalSettings["refresh_token"] = tokens.refresh_token;
+            Plugin.Save();
         }
 
         public async Task<List<SpotifyResultEntity>> Search(string query, string type)
@@ -146,21 +145,21 @@ namespace Pinpoint.Plugin.Spotify.Client
             var responseContent = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<PlaybackInfoResult>(responseContent);
 
-            return result != null && result.IsPlaying;
+            return result is {IsPlaying: true};
         }
 
         private async Task ExchangeRefreshToken()
         {
-            var settings = AppSettings.GetOrDefault("spotify", new SpotifyPluginSettings());
+            var refreshToken = Plugin.Storage.InternalSettings["refresh_token"].ToString();
 
             var content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 { "grant_type", "refresh_token" },
-                { "refresh_token", settings.RefreshToken },
+                { "refresh_token", refreshToken },
                 { "client_id", SpotifyConstants.ClientId }
             });
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://accounts.spotify.com/api/token") { Content = content };
 
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://accounts.spotify.com/api/token") { Content = content };
             var response = await SpotifyHttpClient.SendAsync(request);
             if(!response.IsSuccessStatusCode)
             {
@@ -174,10 +173,11 @@ namespace Pinpoint.Plugin.Spotify.Client
             if (renewedTokens?.access_token != null && renewedTokens?.refresh_token != null)
             {
                 _accessToken = renewedTokens.access_token;
-                settings.RefreshToken = renewedTokens.refresh_token;
+                refreshToken = renewedTokens.refresh_token;
             }
 
-            AppSettings.PutAndSave("spotify", settings);
+            Plugin.Storage.InternalSettings["refresh_token"] = refreshToken;
+            Plugin.Save();
         }
 
         public void Dispose()

@@ -28,9 +28,9 @@ namespace Pinpoint.Plugin.Notes
             _notesManager = NotesManager.GetInstance();
         }
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Notes Plugin", Description, PluginPriority.Highest);
+        public PluginMeta Meta { get; set; } = new("Notes Plugin", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginStorage Storage { get; set; } = new();
 
         public void Unload() { }
 

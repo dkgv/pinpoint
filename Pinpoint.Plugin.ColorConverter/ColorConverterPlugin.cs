@@ -20,7 +20,7 @@ namespace Pinpoint.Plugin.ColorConverter
 
         public PluginMeta Meta { get; set; } = new("Color Converter", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public void Unload()
         {

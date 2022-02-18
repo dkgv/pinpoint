@@ -17,7 +17,7 @@ namespace Pinpoint.Plugin.PasswordGenerator
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Password Generator", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginStorage Storage { get; set; } = new();
 
         public void Unload() { }
 

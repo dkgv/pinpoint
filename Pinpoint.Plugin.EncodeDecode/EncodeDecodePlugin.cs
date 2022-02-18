@@ -14,7 +14,7 @@ namespace Pinpoint.Plugin.EncodeDecode
         
         public PluginMeta Meta { get; set; } = new("Encode/Decode Plugin", PluginPriority.NextHighest);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public void Unload()
         {

@@ -23,7 +23,7 @@ namespace Pinpoint.Plugin.ControlPanel
 
         public PluginMeta Meta { get; set; } = new("Control Panel Search", Description, PluginPriority.Standard);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 

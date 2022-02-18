@@ -19,7 +19,7 @@ namespace Pinpoint.Plugin.MetricConverter
 
         public PluginMeta Meta { get; set; } = new PluginMeta("Metric Converter", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new PluginSettings();
+        public PluginStorage Storage { get; set; } = new();
 
         public void Unload()
         {

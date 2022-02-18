@@ -20,11 +20,15 @@ namespace Pinpoint.Plugin.Weather
 
         public PluginMeta Meta { get; set; } = new("Weather", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
         
         public async Task<bool> TryLoad()
         {
-            UserSettings.Put(KeyDefaultCity, string.Empty);
+            if (Storage.UserSettings.Count == 0)
+            {
+                Storage.UserSettings.Put(KeyDefaultCity, string.Empty);
+            }
+            
             return true;
         }
 
@@ -40,7 +44,7 @@ namespace Pinpoint.Plugin.Weather
                 return false;
             }
 
-            var defaultCity = UserSettings.Str(KeyDefaultCity);
+            var defaultCity = Storage.UserSettings.Str(KeyDefaultCity);
             return !string.IsNullOrEmpty(defaultCity) || query.Parts.Length >= 2;
         }
 
@@ -49,7 +53,7 @@ namespace Pinpoint.Plugin.Weather
             string location;
             if (query.Parts.Length == 1)
             {
-                location = UserSettings.Str(KeyDefaultCity);
+                location = Storage.UserSettings.Str(KeyDefaultCity);
             }
             else
             {
@@ -85,6 +89,11 @@ namespace Pinpoint.Plugin.Weather
             var url = $"https://usepinpoint.com/api/weather/{location}";
             var result = await HttpHelper.SendGet(url, 
                 s => s.Contains("error") ? null : JObject.Parse(s)["forecast"]["forecastday"]);
+
+            if (result == null)
+            {
+                return new();
+            }
 
             return result.Select(token =>
             {

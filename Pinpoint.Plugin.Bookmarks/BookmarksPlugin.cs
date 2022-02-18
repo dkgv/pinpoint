@@ -18,7 +18,7 @@ namespace Pinpoint.Plugin.Bookmarks
 
         public PluginMeta Meta { get; set; } = new("Bookmarks Plugin", Description, PluginPriority.Standard);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 

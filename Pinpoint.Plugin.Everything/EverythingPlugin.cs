@@ -33,7 +33,7 @@ namespace Pinpoint.Plugin.Everything
 
         public PluginMeta Meta { get; set; } = new("Everything (File Search)", Description, PluginPriority.Lowest);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 
@@ -42,8 +42,13 @@ namespace Pinpoint.Plugin.Everything
         public Task<bool> TryLoad()
         {
             _everything = new EverythingClient(new DefaultSearchConfig());
-            UserSettings.Put(KeyIgnoreTempFolder, true);
-            UserSettings.Put(KeyIgnoreHiddenFolders, true);
+
+            if (Storage.UserSettings.Count == 0)
+            {
+                Storage.UserSettings.Put(KeyIgnoreTempFolder, true);
+                Storage.UserSettings.Put(KeyIgnoreHiddenFolders, true);
+            }
+
             return Task.FromResult(IsLoaded = true);
         }
 
@@ -63,12 +68,12 @@ namespace Pinpoint.Plugin.Everything
                     continue;
                 }
 
-                if (UserSettings.Bool(KeyIgnoreTempFolder) && IsInTempFolder(result.FullPath))
+                if (Storage.UserSettings.Bool(KeyIgnoreTempFolder) && IsInTempFolder(result.FullPath))
                 {
                     continue;
                 }
 
-                if (UserSettings.Bool(KeyIgnoreHiddenFolders) && IsInHiddenFolder(result.FullPath))
+                if (Storage.UserSettings.Bool(KeyIgnoreHiddenFolders) && IsInHiddenFolder(result.FullPath))
                 {
                     continue;
                 }

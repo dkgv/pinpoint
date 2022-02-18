@@ -19,7 +19,7 @@ namespace Pinpoint.Plugin.UrlLauncher
 
         public PluginMeta Meta { get; set; } = new("Url Launcher", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 

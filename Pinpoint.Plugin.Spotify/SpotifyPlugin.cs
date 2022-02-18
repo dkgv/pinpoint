@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Data.SqlTypes;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,18 +24,20 @@ namespace PinPoint.Plugin.Spotify
 
         public PluginMeta Meta { get; set; } = new("Spotify Controller", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public bool IsLoaded { get; set; }
 
         public Task<bool> TryLoad()
         {
-            var settings = AppSettings.GetOrDefault("spotify", new SpotifyPluginSettings());
+            if (Storage.InternalSettings.ContainsKey("refresh_token"))
+            {
+                _isAuthenticated = !string.IsNullOrWhiteSpace(Storage.InternalSettings["refresh_token"].ToString());
+            }
 
-            _isAuthenticated = !string.IsNullOrWhiteSpace(settings.RefreshToken);
+            SpotifyClient.Plugin = this; // Dirty hack
 
-            IsLoaded = true;
-            return Task.FromResult(IsLoaded);
+            return Task.FromResult(IsLoaded = true);
         }
 
         public void Unload()
