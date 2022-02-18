@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core;
@@ -28,17 +29,7 @@ namespace Pinpoint.Plugin.Shortcuts
 
         public async Task<bool> Activate(Query query)
         {
-            bool activate;
-            try
-            {
-                activate = !string.IsNullOrEmpty(UserSettings.Str(query.RawQuery));
-            }
-            catch (NullReferenceException)
-            {
-                activate = false;
-            }
-
-            return activate;
+            return UserSettings.Any(setting => setting.Name.Equals(query.RawQuery));
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, CancellationToken ct)
