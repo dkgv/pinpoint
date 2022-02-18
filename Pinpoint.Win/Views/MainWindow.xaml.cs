@@ -35,6 +35,7 @@ using Pinpoint.Plugin.OperatingSystem;
 using Pinpoint.Plugin.PasswordGenerator;
 using Pinpoint.Plugin.ProcessManager;
 using Pinpoint.Plugin.Reddit;
+using Pinpoint.Plugin.Shortcuts;
 using Pinpoint.Win.ViewModels;
 using PinPoint.Plugin.Spotify;
 using Pinpoint.Plugin.Text;
@@ -155,6 +156,7 @@ namespace Pinpoint.Win.Views
                 Model.PluginEngine.AddPlugin(new ClipboardUploaderPlugin()),
                 Model.PluginEngine.AddPlugin(new TimezoneConverterPlugin()),
                 Model.PluginEngine.AddPlugin(new TranslatePlugin()),
+                Model.PluginEngine.AddPlugin(new ShortcutsPlugin()),
             };
 
             await Task.WhenAll(addPluginTasks);
