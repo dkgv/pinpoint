@@ -15,7 +15,7 @@ namespace Pinpoint.Core
 
         public PluginStorage Storage { get; set; }
 
-        string ModifiableSettings => "False";
+        bool ModifiableSettings => false;
 
         bool IsLoaded => true;
 

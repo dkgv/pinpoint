@@ -15,13 +15,13 @@ namespace Pinpoint.Plugin.Shortcuts
 
         public PluginSettings UserSettings { get; set; } = new();
 
-        public string ModifiableSettings { get; set; }
+        public bool ModifiableSettings { get; set; }
 
         public bool IsLoaded { get; set; }
 
         public async Task<bool> TryLoad()
         {
-            ModifiableSettings = "True";
+            ModifiableSettings = true;
             UserSettings.Put("", "");
             return IsLoaded = true;
         }
