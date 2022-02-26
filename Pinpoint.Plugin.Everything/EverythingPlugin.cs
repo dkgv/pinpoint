@@ -18,6 +18,7 @@ namespace Pinpoint.Plugin.Everything
     {
         private const string KeyIgnoreTempFolder = "Ignore temp folder items";
         private const string KeyIgnoreHiddenFolders = "Ignore hidden folder items";
+        private const string KeyIgnoreWindows = "Ignore items in Windows folder";
         private const string Description = "Search for files on your computer via Everything by David Carpenter.";
 
         private static readonly Regex ImageRegex = new(@"png|jpg|gif|psd|svg|raw|jpeg|bmp|tiff");
@@ -43,10 +44,11 @@ namespace Pinpoint.Plugin.Everything
         {
             _everything = new EverythingClient(new DefaultSearchConfig());
 
-            if (Storage.UserSettings.Count == 0)
+            if (Storage.UserSettings.Count != 3)
             {
                 Storage.UserSettings.Put(KeyIgnoreTempFolder, true);
                 Storage.UserSettings.Put(KeyIgnoreHiddenFolders, true);
+                Storage.UserSettings.Put(KeyIgnoreWindows, true);
             }
 
             return Task.FromResult(IsLoaded = true);
@@ -69,6 +71,11 @@ namespace Pinpoint.Plugin.Everything
                 }
 
                 if (Storage.UserSettings.Bool(KeyIgnoreTempFolder) && IsInTempFolder(result.FullPath))
+                {
+                    continue;
+                }
+
+                if (Storage.UserSettings.Bool(KeyIgnoreWindows) && result.FullPath.StartsWith(@"C:\Windows"))
                 {
                     continue;
                 }
