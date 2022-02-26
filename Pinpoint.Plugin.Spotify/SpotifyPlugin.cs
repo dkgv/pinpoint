@@ -85,12 +85,19 @@ namespace PinPoint.Plugin.Spotify
                                 queryParts[1].Length > 3 && 
                                 queryParts[0] != "pause";
 
-            if(!isSearchQuery) yield break;
+            if (!isSearchQuery)
+            {
+                yield break;
+            }
 
             var queryType = MapToSpotifySearchType(queryParts[0]);
             var searchQuery = queryParts[1];
 
             var searchResults = await _spotifyClient.Search(searchQuery, queryType);
+            if (searchResults == null || searchResults.Count == 0)
+            {
+                yield break;
+            }
 
             foreach (var searchResult in searchResults)
             {

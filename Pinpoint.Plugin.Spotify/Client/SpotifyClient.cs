@@ -46,7 +46,7 @@ namespace Pinpoint.Plugin.Spotify.Client
                 var result = JsonConvert.DeserializeObject<SearchResult>(bodyJson);
                 return type switch
                 {
-                    "track" => result.Tracks.Items.Cast<SpotifyResultEntity>().ToList(),
+                    "track" => result.Tracks?.Items.Cast<SpotifyResultEntity>().ToList(),
                     "album" => result.Albums.Items,
                     "artist" => result.Artists.Items,
                     "playlist" => result.Playlists.Items,
