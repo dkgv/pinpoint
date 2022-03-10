@@ -15,7 +15,7 @@ namespace Pinpoint.Plugin.ClipboardUploader
 
         public PluginMeta Meta { get; set; } = new("Clipboard Uploader", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public async Task<bool> Activate(Query query) => query.RawQuery.ToLower().Equals("paste");
 

@@ -38,7 +38,7 @@ namespace Pinpoint.Plugin.Timezone
             new($"^(time|({TwentyFourHourTime}) ?({Timezone})?|({TwelveHourTime}) ?({Timezone})?) (to|in) ({Timezone})$");
 
         public PluginMeta Meta { get; set; } = new("Timezone Converter", Description, PluginPriority.Highest);
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
         public async Task<bool> Activate(Query query)
         {
              return Pattern.IsMatch(query.RawQuery);

@@ -22,7 +22,7 @@ namespace Pinpoint.Core.Results
                 IconCache[icon] = document.Draw();
             }
 
-            return IconCache[icon];
+            return IconCache.ContainsKey(icon) ? IconCache[icon] : default;
         }
 
         private static string CreateXmlDocument(int width, int height, string path)

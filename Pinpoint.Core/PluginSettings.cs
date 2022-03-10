@@ -1,19 +1,27 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Pinpoint.Core
 {
-    public class PluginSettings : ObservableCollection<PluginSetting>
+    public class PluginStorage
     {
-        public void Put(string name, object value)
+        public PluginStorage()
         {
-            var setting = new PluginSetting
-            {
-                Name = name,
-                Value = value
-            };
-            Add(setting);
+            UserSettings = new PluginSettings();
+            InternalSettings = new Dictionary<string, object>();
         }
+
+        public PluginSettings UserSettings { get; set; }
+
+        public Dictionary<string, object> InternalSettings { get; set; }
+    }
+
+    public class PluginSettings : ObservableCollection<StorageEntry>
+    {
+        public bool Contains(string key) => this.Any(entry => entry.Name == key);
+
+        public void Put(string name, object value) => Add(new StorageEntry(name, value));
 
         public bool Bool(string key)
         {
@@ -23,6 +31,6 @@ namespace Pinpoint.Core
 
         public string Str(string key) => Get(key).Value.ToString();
 
-        private PluginSetting Get(string key) => this.FirstOrDefault(setting => setting.Name.Equals(key));
+        private StorageEntry Get(string key) => this.FirstOrDefault(setting => setting.Name.Equals(key));
     }
 }

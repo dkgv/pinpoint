@@ -18,7 +18,7 @@ namespace Pinpoint.Plugin.Calculator
         
         public PluginMeta Meta { get; set; } = new("Calculator", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public void Unload()
         {

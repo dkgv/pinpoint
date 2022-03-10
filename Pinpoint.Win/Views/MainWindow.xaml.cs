@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -44,7 +43,6 @@ using Pinpoint.Plugin.UrlLauncher;
 using Pinpoint.Plugin.Weather;
 using Pinpoint.Win.Annotations;
 using WK.Libraries.SharpClipboardNS;
-using Xceed.Wpf.Toolkit;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
 

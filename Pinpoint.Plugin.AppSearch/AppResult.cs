@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using FontAwesome5;
+using Pinpoint.Core;
 using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.AppSearch
@@ -8,9 +9,11 @@ namespace Pinpoint.Plugin.AppSearch
     {
         private readonly IApp _app;
         private readonly string _query;
+        private readonly AppSearchPlugin _plugin;
 
-        public AppResult(IApp app, string query) : base(app.Name, app.FilePath)
+        public AppResult(AppSearchPlugin plugin, IApp app, string query) : base(app.Name, app.FilePath)
         {
+            _plugin = plugin;
             _app = app;
             _query = query;
 
@@ -22,7 +25,8 @@ namespace Pinpoint.Plugin.AppSearch
         
         public override void OnSelect()
         {
-            AppSearchFrequency.Track(_query, _app.FilePath);
+            _plugin.AppSearchFrequency.Track(_query, _app.FilePath);
+            (_plugin as IPlugin).Save();
             _app.Open();
         }
 

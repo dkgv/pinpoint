@@ -17,22 +17,12 @@ namespace Pinpoint.Core
 
         public async Task AddPlugin(IPlugin @new)
         {
+            @new.Restore();
+
             // Ensure plugin hasn't been added and that it was able to load
             if (Plugins.Contains(@new) || !await @new.TryLoad())
             {
                 return;
-            }
-
-            var plugins = AppSettings.GetOrDefault("plugins", Array.Empty<EmptyPlugin>());
-            var match = plugins.FirstOrDefault(p => p.Meta.Name.Equals(@new.Meta.Name));
-            if (match != null)
-            {
-                if (@new.UserSettings.Count <= match.UserSettings.Count)
-                {
-                    @new.UserSettings = match.UserSettings;
-                }
-
-                @new.Meta.Enabled = match.Meta.Enabled;
             }
 
             Plugins.Add(@new);

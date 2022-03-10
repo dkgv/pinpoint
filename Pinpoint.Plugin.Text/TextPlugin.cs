@@ -16,7 +16,7 @@ namespace Pinpoint.Plugin.Text
 
         public PluginMeta Meta { get; set; } = new("Text Plugin", Description, PluginPriority.NextHighest);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public async Task<bool> Activate(Query query) => query.RawQuery.Length > 2 && query.RawQuery.StartsWith("\"") && query.RawQuery.EndsWith("\"");
 

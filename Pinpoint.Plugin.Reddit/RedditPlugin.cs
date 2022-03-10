@@ -27,7 +27,7 @@ namespace Pinpoint.Plugin.Reddit
 
         public PluginMeta Meta { get; set; } = new("Reddit Browser", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public void Unload()
         {

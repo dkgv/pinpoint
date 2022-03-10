@@ -13,7 +13,7 @@ namespace Pinpoint.Plugin.Bangs
 
         public PluginMeta Meta { get; set; } = new("DuckDuckGo !Bangs", Description, PluginPriority.Highest);
 
-        public PluginSettings UserSettings { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new();
 
         public void Unload()
         {
