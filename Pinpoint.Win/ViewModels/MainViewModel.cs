@@ -11,8 +11,6 @@ namespace Pinpoint.Win.ViewModels
 
         public ObservableUniqueCollection<AbstractQueryResult> CacheResults { get; set; } = new();
 
-        public ThemeModel Theme { get; set; } = AppSettings.GetOrDefault("theme", ThemeModel.DarkTheme);
-
         public PluginEngine PluginEngine { get; set; } = new();
 
         public SharpClipboard Clipboard { get; } = new();

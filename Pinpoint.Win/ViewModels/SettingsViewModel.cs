@@ -18,12 +18,6 @@ namespace Pinpoint.Win.ViewModels
             ? new HotkeyModel(AppSettings.Get<HotkeyModel>("hotkey_toggle_visibility").Text)
             : new HotkeyModel("Alt + Space");
 
-        public ObservableCollection<ThemeModel> Themes { get; } = new ObservableCollection<ThemeModel>(new []
-        {
-            ThemeModel.LightTheme, 
-            ThemeModel.DarkTheme, 
-        });
-
         public HotkeyModel HotkeyToggleVisibility
         {
             get => _hotkeyToggleVisibility;
@@ -36,7 +30,7 @@ namespace Pinpoint.Win.ViewModels
             set => SetProperty(ref _hotkeyPasteClipboard, value);
         }
 
-        public ObservableCollection<IPlugin> Plugins { get; } = new ObservableCollection<IPlugin>();
+        public ObservableCollection<IPlugin> Plugins { get; } = new();
 
         public List<PluginTabItem> PluginTabItems
         {
