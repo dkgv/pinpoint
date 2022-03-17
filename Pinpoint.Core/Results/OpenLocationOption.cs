@@ -8,7 +8,7 @@ namespace Pinpoint.Core.Results
     {
         private readonly string _filePath;
 
-        public OpenLocationOption(string filePath) : base("Open File Location", Path.GetDirectoryName(filePath))
+        public OpenLocationOption(string filePath) : base("Open file location", Path.GetDirectoryName(filePath))
         {
             _filePath = Path.GetDirectoryName(filePath);
         }

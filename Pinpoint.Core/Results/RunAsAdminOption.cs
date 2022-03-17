@@ -8,7 +8,7 @@ namespace Pinpoint.Core.Results
     {
         private readonly string _filePath;
 
-        public RunAsAdminOption(string filePath) : base("Run as Administrator", filePath)
+        public RunAsAdminOption(string filePath) : base("Run as administrator", filePath)
         {
             _filePath = filePath;
         }
