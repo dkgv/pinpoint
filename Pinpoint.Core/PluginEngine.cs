@@ -20,9 +20,22 @@ namespace Pinpoint.Core
             @new.Restore();
 
             // Ensure plugin hasn't been added and that it was able to load
-            if (Plugins.Contains(@new) || !await @new.TryLoad())
+            if (Plugins.Contains(@new))
             {
-                return;
+                try
+                {
+                    var pluginLoaded = await @new.TryLoad();
+
+                    if (!pluginLoaded)
+                    {
+                        return;
+                    }
+                }   
+                catch
+                {
+                    // Plugin threw an exception while loading, so don't add it.
+                    return;
+                }
             }
 
             Plugins.Add(@new);
