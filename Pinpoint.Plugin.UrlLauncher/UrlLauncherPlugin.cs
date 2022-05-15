@@ -25,7 +25,6 @@ namespace Pinpoint.Plugin.UrlLauncher
 
         public Task<bool> TryLoad()
         {
-            throw new NotImplementedException();
             var asm = GetType().Assembly;
 
             using var stream = asm.GetManifestResourceStream("Pinpoint.Plugin.UrlLauncher.tlds.txt");
