@@ -37,11 +37,15 @@ namespace Pinpoint.Plugin.AppSearch
                 // Separate the folder and the icon name
                 var location = package.IconLocation as string;
                 var idxOfLastDir = location.LastIndexOf("\\");
-                var iconName = location[(idxOfLastDir + 1)..];
-                var iconLocation = location[..idxOfLastDir];
 
-                iconLocation = package.InstallLocation + "\\" + iconLocation;
-                app.IconLocation = FindCorrectIconPath(iconLocation, iconName[..iconName.IndexOf(".")]);
+                if (idxOfLastDir >= 0)
+                {
+                    var iconName = location[(idxOfLastDir + 1)..];
+                    var iconLocation = location[..idxOfLastDir];
+
+                    iconLocation = package.InstallLocation + "\\" + iconLocation;
+                    app.IconLocation = FindCorrectIconPath(iconLocation, iconName[..iconName.IndexOf(".")]);
+                }
             }
         }
 
