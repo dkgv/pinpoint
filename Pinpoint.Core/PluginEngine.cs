@@ -22,22 +22,24 @@ namespace Pinpoint.Core
             // Ensure plugin hasn't been added and that it was able to load
             if (Plugins.Contains(@new))
             {
-                try
-                {
-                    var pluginLoaded = await @new.TryLoad();
-
-                    if (!pluginLoaded)
-                    {
-                        return;
-                    }
-                }   
-                catch
-                {
-                    // Plugin threw an exception while loading, so don't add it.
-                    return;
-                }
+                return;
             }
 
+            try
+            {
+                var pluginLoaded = await @new.TryLoad();
+
+                if (!pluginLoaded)
+                {
+                    return;
+                }
+            }   
+            catch
+            {
+                // Plugin threw an exception while loading, so don't add it.
+                return;
+            }
+            
             Plugins.Add(@new);
 
             Listeners.ForEach(listener => listener.PluginChange_Added(this, @new, null));
