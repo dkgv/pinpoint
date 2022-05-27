@@ -14,7 +14,6 @@
         Topmost="True" 
         Loaded="Window_Loaded" 
         Background="{x:Null}"
-        Name="MainWindowName"
         MouseDown="MainWindow_OnMouseDown">
 
     <Window.Resources>
@@ -105,7 +104,7 @@
                                          MousePressedBorderBrush="{x:Null}"
                                          MousePressedBackground="{x:Null}">
                             <xctk:IconButton.Icon>
-                                <fa5:ImageAwesome Height="26" Icon="Solid_Search" Foreground="#FF707479"></fa5:ImageAwesome>
+                                <fa5:ImageAwesome Height="26" Icon="Solid_Search" Foreground="{StaticResource SecondaryTextColor}"></fa5:ImageAwesome>
                             </xctk:IconButton.Icon>
                         </xctk:IconButton>
 
@@ -113,7 +112,6 @@
                                                Margin="40 0 0 0" 
                                                x:Name="TxtQuery" 
                                                HorizontalAlignment="Left" 
-                                               Watermark="Loading plugins..." 
                                                IsEnabled="False"
                                                BorderThickness="0" 
                                                KeepWatermarkOnGotFocus="True" 
@@ -124,7 +122,14 @@
                                                CaretBrush="{StaticResource PrimaryTextColor}" 
                                                KeyDown="TxtQuery_OnKeyDown" 
                                                PreviewKeyDown="TxtQuery_OnPreviewKeyDown"
-                                               TextChanged="TxtQuery_TextChanged" />
+                                               TextChanged="TxtQuery_TextChanged">
+                            <xctk:WatermarkTextBox.WatermarkTemplate>
+                                <DataTemplate>
+                                    <ContentControl Content="{Binding DataContext.Watermark, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                    Foreground="{StaticResource SecondaryTextColor}"></ContentControl>
+                                </DataTemplate>
+                            </xctk:WatermarkTextBox.WatermarkTemplate>
+                        </xctk:WatermarkTextBox>
                     </Grid>
                 </Border>
 
