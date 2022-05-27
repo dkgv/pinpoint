@@ -45,6 +45,7 @@ using Pinpoint.Win.Annotations;
 using WK.Libraries.SharpClipboardNS;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace Pinpoint.Win.Views
 {
@@ -540,7 +541,7 @@ namespace Pinpoint.Win.Views
             Hide();
         }
 
-        private void LstResults_MouseDoubleClick(object sender, MouseButtonEventArgs e) => TryOpenSelectedResult();
+        private void LstResults_MouseUp(object sender, MouseButtonEventArgs e) => TryOpenSelectedResult();
 
         private void ItmSettings_Click(object sender, RoutedEventArgs e) => ShowSettingsWindow();
 

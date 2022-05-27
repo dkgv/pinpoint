@@ -127,7 +127,7 @@
                          Background="{x:Null}" 
                          BorderBrush="{x:Null}" 
                          BorderThickness="0"
-                         MouseDoubleClick="LstResults_MouseDoubleClick"
+                         MouseUp="LstResults_MouseUp"
                          ItemContainerStyle="{DynamicResource ListBoxItemStyle}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
