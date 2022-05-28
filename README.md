@@ -1,4 +1,10 @@
-# pinpoint
+<h1>
+    <sub>
+        <img src="https://usepinpoint.com/static/icon.ico" height="38" width="38" />
+    </sub>
+    Pinpoint
+</h1>
+
 
 Pinpoint is an extensible keystroke launcher and productivity tool written in C# (.NET Core).
 
