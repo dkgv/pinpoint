@@ -1,17 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
 using Newtonsoft.Json;
 using NHotkey;
 using NHotkey.Wpf;
@@ -47,13 +43,10 @@ using Pinpoint.Plugin.Translate;
 using Pinpoint.Plugin.UrlLauncher;
 using Pinpoint.Plugin.Weather;
 using Pinpoint.Win.Annotations;
-using Pinpoint.Win.Extensions;
 using WK.Libraries.SharpClipboardNS;
-using Xceed.Wpf.Toolkit;
 using Control = System.Windows.Forms.Control;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace Pinpoint.Win.Views
 {
