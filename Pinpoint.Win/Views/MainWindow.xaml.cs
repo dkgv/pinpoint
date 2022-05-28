@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,6 +12,7 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using Newtonsoft.Json;
 using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Core;
@@ -213,12 +216,32 @@ namespace Pinpoint.Win.Views
 
             await LoadPlugins();
             
-            Dispatcher.Invoke(() =>
+            Model.Watermark = "Pinpoint";
+            TxtQuery.IsEnabled = true;
+            TxtQuery.Focus();
+
+            await CheckForUpdates();
+        }
+
+        private async Task CheckForUpdates()
+        {
+            var currentVersion = AppConstants.Version;
+            var newestVersion = await HttpHelper.SendGet("https://usepinpoint.com/api/app_version", s =>
             {
-                Model.Watermark = "Pinpoint";
-                TxtQuery.IsEnabled = true;
-                TxtQuery.Focus();
+                var json = JsonConvert.DeserializeObject<dynamic>(s);
+                return json["version"].ToString();
             });
+
+            if (currentVersion == newestVersion)
+            {
+                return;
+            }
+
+            var response = MessageBox.Show("A newer version of Pinpoint is available. Do you want to download it?", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (response == MessageBoxResult.Yes)
+            {
+                Process.Start("https://github.com/dkgv/pinpoint");
+            }
         }
 
         public void MoveWindowToDefaultPosition()
