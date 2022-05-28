@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
+using Size = System.Drawing.Size;
 
 namespace Pinpoint.Win.Extensions
 {

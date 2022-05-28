@@ -14,11 +14,14 @@
         Topmost="True" 
         Loaded="Window_Loaded" 
         Background="{x:Null}"
-        Name="MainWindowName"
         MouseDown="MainWindow_OnMouseDown">
 
     <Window.Resources>
         <conv:BitmapToImageSourceConverter x:Key="BitmapToImageSourceConverter" />
+
+        <SolidColorBrush x:Key="BackgroundColor" Color="#FF1C2228" Opacity="0.98" />
+        <SolidColorBrush x:Key="PrimaryTextColor" Color="#ADBAC7" />
+        <SolidColorBrush x:Key="SecondaryTextColor" Color="#768390" />
 
         <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
             <Setter Property="Template">
@@ -50,7 +53,7 @@
         </Style>
     </Window.Resources>
 
-    <Border CornerRadius="5" Background="{Binding Theme.Background, UpdateSourceTrigger=PropertyChanged}">
+    <Border CornerRadius="5" Background="{StaticResource BackgroundColor}">
         <Grid>
             <!-- Tray icon -->
             <tb:TaskbarIcon x:Name="NotifyIcon"
@@ -88,10 +91,20 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        
-                        <xctk:IconButton Focusable="False" Grid.Column="0" Margin="5 0 0 0" x:Name="SearchLogo" HorizontalAlignment="Left" Background="{x:Null}" BorderBrush="{x:Null}" MouseOverBackground="{x:Null}" MouseOverBorderBrush="{x:Null}" MousePressedBorderBrush="{x:Null}" MousePressedBackground="{x:Null}">
+
+                        <xctk:IconButton Focusable="False"
+                                         Grid.Column="0"
+                                         Margin="5 0 0 0" 
+                                         x:Name="SearchLogo" 
+                                         HorizontalAlignment="Left" 
+                                         Background="{x:Null}" 
+                                         BorderBrush="{x:Null}" 
+                                         MouseOverBackground="{x:Null}" 
+                                         MouseOverBorderBrush="{x:Null}" 
+                                         MousePressedBorderBrush="{x:Null}"
+                                         MousePressedBackground="{x:Null}">
                             <xctk:IconButton.Icon>
-                                <fa5:ImageAwesome Height="26" Icon="Solid_Search" Foreground="#FF575757"></fa5:ImageAwesome>
+                                <fa5:ImageAwesome Height="26" Icon="Solid_Search" Foreground="{StaticResource SecondaryTextColor}"></fa5:ImageAwesome>
                             </xctk:IconButton.Icon>
                         </xctk:IconButton>
 
@@ -99,19 +112,24 @@
                                                Margin="40 0 0 0" 
                                                x:Name="TxtQuery" 
                                                HorizontalAlignment="Left" 
-                                               Watermark="Loading plugins..." 
                                                IsEnabled="False"
                                                BorderThickness="0" 
                                                KeepWatermarkOnGotFocus="True" 
                                                FontSize="26" 
                                                BorderBrush="{x:Null}" 
-                                               SelectionTextBrush="#FFD8D8D8"
-                                               Foreground="{Binding Theme.TxtQueryForeground}"
+                                               Foreground="{StaticResource PrimaryTextColor}"
                                                Background="{x:Null}" 
-                                               CaretBrush="{Binding Theme.TxtQueryCaretBrush}" 
+                                               CaretBrush="{StaticResource PrimaryTextColor}" 
                                                KeyDown="TxtQuery_OnKeyDown" 
                                                PreviewKeyDown="TxtQuery_OnPreviewKeyDown"
-                                               TextChanged="TxtQuery_TextChanged" />
+                                               TextChanged="TxtQuery_TextChanged">
+                            <xctk:WatermarkTextBox.WatermarkTemplate>
+                                <DataTemplate>
+                                    <ContentControl Content="{Binding DataContext.Watermark, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                    Foreground="{StaticResource SecondaryTextColor}"></ContentControl>
+                                </DataTemplate>
+                            </xctk:WatermarkTextBox.WatermarkTemplate>
+                        </xctk:WatermarkTextBox>
                     </Grid>
                 </Border>
 
@@ -145,7 +163,6 @@
                                     </Grid.RowDefinitions>
 
                                     <!-- Result icon -->
-                                    <!-- Source="{Binding DataContext.Theme.TxtQueryForeground, ElementName=MainWindowName}"-->
                                     <Border Margin="0 0 10 0" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" MinWidth="30">
                                         <Image x:Name="ResultIcon" 
                                                HorizontalAlignment="Center"
@@ -156,18 +173,18 @@
                                     </Border>
 
                                     <!-- Result title -->
-                                    <TextBlock Foreground="{Binding DataContext.Theme.TxtQueryForeground, ElementName=MainWindowName}"
+                                    <TextBlock Foreground="{StaticResource PrimaryTextColor}"
                                        Grid.Row="0" 
                                        Grid.Column="1"
-                                       MaxWidth="450"
+                                       MaxWidth="470"
                                        HorizontalAlignment="Left"
                                        TextTrimming="WordEllipsis"
                                        Text="{Binding Title}" 
                                        ToolTip="{Binding Title}"
-                                       FontSize="15" FontWeight="SemiBold"/>
+                                       FontSize="15" FontWeight="Medium"/>
 
                                     <!-- Result subtitle -->
-                                    <TextBlock Foreground="{Binding DataContext.Theme.TxtResultSubtitleForeground, ElementName=MainWindowName}"
+                                    <TextBlock Foreground="{StaticResource SecondaryTextColor}"
                                        Grid.Row="1"
                                        Grid.Column="1"
                                        MaxWidth="450"
@@ -178,7 +195,7 @@
 
                                     <!-- Result shortcut if applicable -->
                                     <Label x:Name="LblShortcut"
-                                       Foreground="{Binding DataContext.Theme.TxtResultSubtitleForeground, ElementName=MainWindowName}"
+                                       Foreground="{StaticResource SecondaryTextColor}"
                                        Grid.Row="0"
                                        Grid.RowSpan="2"
                                        Grid.Column="2"

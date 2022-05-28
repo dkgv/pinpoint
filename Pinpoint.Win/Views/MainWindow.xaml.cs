@@ -5,9 +5,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Core;
@@ -42,7 +44,10 @@ using Pinpoint.Plugin.Translate;
 using Pinpoint.Plugin.UrlLauncher;
 using Pinpoint.Plugin.Weather;
 using Pinpoint.Win.Annotations;
+using Pinpoint.Win.Extensions;
 using WK.Libraries.SharpClipboardNS;
+using Xceed.Wpf.Toolkit;
+using Control = System.Windows.Forms.Control;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
@@ -155,15 +160,8 @@ namespace Pinpoint.Win.Views
 
             await Task.WhenAll(addPluginTasks);
             Model.PluginEngine.Plugins.Sort();
-
-            Dispatcher.Invoke(() =>
-            {
-                TxtQuery.Watermark = "Pinpoint";
-                TxtQuery.IsEnabled = true;
-                TxtQuery.Focus();
-            });
         }
-
+        
         public async void OnSystemClipboardPaste([CanBeNull] object sender, HotkeyEventArgs e)
         {
             var plugin = Model.PluginEngine.GetPluginByType<ClipboardManagerPlugin>();
@@ -208,15 +206,19 @@ namespace Pinpoint.Win.Views
             }
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            TxtQuery.Clear();
-            TxtQuery.Focus();
-
             _defaultWindowPosition = ComputeDefaultWindowPosition();
             MoveWindowToDefaultPosition();
 
-            _ = LoadPlugins();
+            await LoadPlugins();
+            
+            Dispatcher.Invoke(() =>
+            {
+                Model.Watermark = "Pinpoint";
+                TxtQuery.IsEnabled = true;
+                TxtQuery.Focus();
+            });
         }
 
         public void MoveWindowToDefaultPosition()

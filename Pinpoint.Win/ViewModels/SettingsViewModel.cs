@@ -8,7 +8,7 @@ namespace Pinpoint.Win.ViewModels
 {
     public class SettingsViewModel : ObservableObject
     {
-        private List<PluginTabItem> _pluginTabItems = new List<PluginTabItem>();
+        private List<PluginTabItem> _pluginTabItems = new();
 
         private HotkeyModel _hotkeyPasteClipboard = AppSettings.Contains("hotkey_paste_clipboard")
             ? new HotkeyModel(AppSettings.Get<HotkeyModel>("hotkey_paste_clipboard").Text)
@@ -17,12 +17,6 @@ namespace Pinpoint.Win.ViewModels
         private HotkeyModel _hotkeyToggleVisibility = AppSettings.Contains("hotkey_toggle_visibility")
             ? new HotkeyModel(AppSettings.Get<HotkeyModel>("hotkey_toggle_visibility").Text)
             : new HotkeyModel("Alt + Space");
-
-        public ObservableCollection<ThemeModel> Themes { get; } = new ObservableCollection<ThemeModel>(new []
-        {
-            ThemeModel.LightTheme, 
-            ThemeModel.DarkTheme, 
-        });
 
         public HotkeyModel HotkeyToggleVisibility
         {
@@ -36,7 +30,7 @@ namespace Pinpoint.Win.ViewModels
             set => SetProperty(ref _hotkeyPasteClipboard, value);
         }
 
-        public ObservableCollection<IPlugin> Plugins { get; } = new ObservableCollection<IPlugin>();
+        public ObservableCollection<IPlugin> Plugins { get; } = new();
 
         public List<PluginTabItem> PluginTabItems
         {

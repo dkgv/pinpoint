@@ -73,12 +73,6 @@
                                  IsUndoEnabled="False"
                                  Text="{Binding HotkeyPasteClipboard, Mode=OneWay}"></TextBox>
                         
-                        <Label Grid.Row="3" Grid.Column="1" HorizontalAlignment="Right">Theme:</Label>
-                        <ComboBox Grid.Row="3" Grid.Column="2" x:Name="CbTheme"
-                                  ItemsSource="{Binding Themes}"
-                                  SelectionChanged="CbTheme_SelectionChanged">
-                        </ComboBox>
-                        
                         <Label Grid.Row="4"
                                Grid.Column="1" 
                                HorizontalAlignment="Right">Window Location:</Label>

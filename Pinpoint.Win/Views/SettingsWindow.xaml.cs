@@ -50,9 +50,6 @@ namespace Pinpoint.Win.Views
         {
             e.Cancel = true;
 
-            AppSettings.Put("theme", App.Current.MainViewModel.Theme);
-            AppSettings.Save();
-
             foreach (var plugin in Model.Plugins)
             {
                 plugin.Save();
@@ -153,12 +150,6 @@ namespace Pinpoint.Win.Views
         }
 
         public void PluginChange_Removed(object sender, IPlugin plugin, object target) => Model.Plugins.Remove(plugin);
-
-        private void CbTheme_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var selected = (ThemeModel) CbTheme.SelectedItem;
-            App.Current.MainWindow.Model.Theme = selected;
-        }
 
         private void BtnReCenterWindow_OnClick(object sender, RoutedEventArgs e)
         {
