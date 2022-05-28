@@ -240,7 +240,7 @@ namespace Pinpoint.Win.Views
             var response = MessageBox.Show("A newer version of Pinpoint is available. Do you want to download it?", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Information);
             if (response == MessageBoxResult.Yes)
             {
-                Process.Start("https://github.com/dkgv/pinpoint");
+                ProcessHelper.OpenUrl("https://github.com/dkgv/pinpoint");
             }
         }
 
