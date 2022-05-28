@@ -231,7 +231,6 @@ namespace Pinpoint.Win.Views
                 var json = JsonConvert.DeserializeObject<dynamic>(s);
                 return json["version"].ToString();
             });
-
             if (currentVersion == newestVersion)
             {
                 return;
