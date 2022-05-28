@@ -5,11 +5,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
+using Newtonsoft.Json;
 using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Core;
@@ -44,13 +43,10 @@ using Pinpoint.Plugin.Translate;
 using Pinpoint.Plugin.UrlLauncher;
 using Pinpoint.Plugin.Weather;
 using Pinpoint.Win.Annotations;
-using Pinpoint.Win.Extensions;
 using WK.Libraries.SharpClipboardNS;
-using Xceed.Wpf.Toolkit;
 using Control = System.Windows.Forms.Control;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace Pinpoint.Win.Views
 {
@@ -213,12 +209,31 @@ namespace Pinpoint.Win.Views
 
             await LoadPlugins();
             
-            Dispatcher.Invoke(() =>
+            Model.Watermark = "Pinpoint";
+            TxtQuery.IsEnabled = true;
+            TxtQuery.Focus();
+
+            await CheckForUpdates();
+        }
+
+        private async Task CheckForUpdates()
+        {
+            var currentVersion = AppConstants.Version;
+            var newestVersion = await HttpHelper.SendGet("https://usepinpoint.com/api/app_version", s =>
             {
-                Model.Watermark = "Pinpoint";
-                TxtQuery.IsEnabled = true;
-                TxtQuery.Focus();
+                var json = JsonConvert.DeserializeObject<dynamic>(s);
+                return json["version"].ToString();
             });
+            if (currentVersion == newestVersion)
+            {
+                return;
+            }
+
+            var response = MessageBox.Show("A newer version of Pinpoint is available. Do you want to download it?", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (response == MessageBoxResult.Yes)
+            {
+                ProcessHelper.OpenUrl("https://github.com/dkgv/pinpoint");
+            }
         }
 
         public void MoveWindowToDefaultPosition()
