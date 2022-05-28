@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -44,13 +43,10 @@ using Pinpoint.Plugin.Translate;
 using Pinpoint.Plugin.UrlLauncher;
 using Pinpoint.Plugin.Weather;
 using Pinpoint.Win.Annotations;
-using Pinpoint.Win.Extensions;
 using WK.Libraries.SharpClipboardNS;
-using Xceed.Wpf.Toolkit;
 using Control = System.Windows.Forms.Control;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
-using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace Pinpoint.Win.Views
 {
@@ -208,17 +204,15 @@ namespace Pinpoint.Win.Views
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _defaultWindowPosition = ComputeDefaultWindowPosition();
+            _defaultWindowPosition = ComputeDpiAwareWindowCenterPosition();
+
             MoveWindowToDefaultPosition();
 
             await LoadPlugins();
             
-            Dispatcher.Invoke(() =>
-            {
-                Model.Watermark = "Pinpoint";
-                TxtQuery.IsEnabled = true;
-                TxtQuery.Focus();
-            });
+            Model.Watermark = "Pinpoint";
+            TxtQuery.IsEnabled = true;
+            TxtQuery.Focus();
         }
 
         public void MoveWindowToDefaultPosition()
@@ -226,10 +220,25 @@ namespace Pinpoint.Win.Views
             // Locate window horizontal center near top of screen
             Left = _defaultWindowPosition.X;
             Top = _defaultWindowPosition.Y;
-            _offsetFromDefaultX = _offsetFromDefaultY = 0;
+            _offsetFromDefaultX = 0;
+            _offsetFromDefaultY = 0;
         }
 
-        private Point ComputeDefaultWindowPosition() => new(SystemParameters.PrimaryScreenWidth / 2 - Width / 2, SystemParameters.PrimaryScreenHeight / 5);
+        private Point ComputeDpiAwareWindowCenterPosition()
+        {
+            var dpi = VisualTreeHelper.GetDpi(this);
+
+            var screenWidth = SystemParameters.PrimaryScreenWidth;
+            var screenHeight = SystemParameters.PrimaryScreenHeight;
+
+            var windowWidth = (int)(Width * dpi.DpiScaleX);
+            var windowHeight = (int)(Height * dpi.DpiScaleY);
+
+            var x = (screenWidth / 2) - (windowWidth / 2);
+            var y = (screenHeight / 5) + (windowHeight / 2);
+
+            return new Point(x, y);
+        }
 
         protected override void OnClosing(CancelEventArgs e)
         {
