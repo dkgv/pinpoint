@@ -57,7 +57,7 @@ namespace Pinpoint.Win.Views
     {
         private CancellationTokenSource _cts = new();
         private int _showingOptionsForIndex = -1;
-        private double _offsetFromDefaultX = 0, _offsetFromDefaultY = 0;
+        private double _leftOffsetRatio = 0, _topOffsetRatio = 0;
         private Point _defaultWindowPosition;
 
         public MainWindow()
@@ -191,9 +191,16 @@ namespace Pinpoint.Win.Views
             }
             else
             {
-                var screen = Screen.FromPoint(System.Windows.Forms.Cursor.Position);
-                Left = screen.Bounds.Left + (screen.Bounds.Width / 2) - (Width / 2) + _offsetFromDefaultX;
-                Top = screen.Bounds.Top + (screen.Bounds.Height / 5) + _offsetFromDefaultY;
+                var activeScreen = Screen.FromPoint(System.Windows.Forms.Cursor.Position);
+
+                var activeScreenLeftOffset = activeScreen.Bounds.Width * _leftOffsetRatio;
+                var totalLeftOffset = activeScreen.Bounds.Left + activeScreenLeftOffset;
+
+                var activeScreenTopOffset = activeScreen.Bounds.Height * _topOffsetRatio;
+                var totalTopOffset = activeScreen.Bounds.Top + activeScreenTopOffset;
+
+                Left = totalLeftOffset;
+                Top = totalTopOffset;
 
                 Show();
                 Activate();
@@ -220,16 +227,19 @@ namespace Pinpoint.Win.Views
             // Locate window horizontal center near top of screen
             Left = _defaultWindowPosition.X;
             Top = _defaultWindowPosition.Y;
-            _offsetFromDefaultX = 0;
-            _offsetFromDefaultY = 0;
+            _leftOffsetRatio = 0.5;
+            _topOffsetRatio = 0.5;
         }
 
-        private Point ComputeDpiAwareWindowCenterPosition()
+        private Point ComputeDpiAwareWindowCenterPosition(Screen screen = null)
         {
+            if (screen == null)
+                screen = Screen.PrimaryScreen;
+
             var dpi = VisualTreeHelper.GetDpi(this);
 
-            var screenWidth = SystemParameters.PrimaryScreenWidth;
-            var screenHeight = SystemParameters.PrimaryScreenHeight;
+            var screenWidth = screen.Bounds.Width;
+            var screenHeight = screen.Bounds.Height;
 
             var windowWidth = (int)(Width * dpi.DpiScaleX);
             var windowHeight = (int)(Height * dpi.DpiScaleY);
@@ -569,8 +579,17 @@ namespace Pinpoint.Win.Views
             if (e.ChangedButton == MouseButton.Left)
             {
                 DragMove();
-                _offsetFromDefaultX = Left - _defaultWindowPosition.X;
-                _offsetFromDefaultY = Top - _defaultWindowPosition.Y;
+
+                var activeScreen = Screen.FromPoint(System.Windows.Forms.Cursor.Position);
+
+                var deltaWidth = Math.Abs(Math.Abs(activeScreen.Bounds.Right) - Math.Abs(Left));
+                var deltaHeight = Math.Abs(Math.Abs(activeScreen.Bounds.Bottom) - Math.Abs(Top));
+
+                var leftOffsetRatio = deltaWidth / activeScreen.Bounds.Width;
+                var topOffsetRatio = deltaHeight / activeScreen.Bounds.Height;
+
+                _leftOffsetRatio = 1 - leftOffsetRatio;
+                _topOffsetRatio = 1 - topOffsetRatio;
             }
         }
 
