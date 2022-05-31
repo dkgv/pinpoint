@@ -47,6 +47,7 @@ using WK.Libraries.SharpClipboardNS;
 using Control = System.Windows.Forms.Control;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
+using Pinpoint.Win.Utils;
 
 namespace Pinpoint.Win.Views
 {
@@ -59,6 +60,7 @@ namespace Pinpoint.Win.Views
         private int _showingOptionsForIndex = -1;
         private double _leftOffsetRatio = 0, _topOffsetRatio = 0;
         private Point _defaultWindowPosition;
+        private WindowPositionHelper _windowPositionHelper = new WindowPositionHelper();
 
         public MainWindow()
         {
@@ -191,16 +193,10 @@ namespace Pinpoint.Win.Views
             }
             else
             {
-                var activeScreen = Screen.FromPoint(System.Windows.Forms.Cursor.Position);
+                var windowOffset = _windowPositionHelper.CalculateWindowOffsetFromOffsetRatios(new WindowOffsetRatio(_leftOffsetRatio, _topOffsetRatio));
 
-                var activeScreenLeftOffset = activeScreen.Bounds.Width * _leftOffsetRatio;
-                var totalLeftOffset = activeScreen.Bounds.Left + activeScreenLeftOffset;
-
-                var activeScreenTopOffset = activeScreen.Bounds.Height * _topOffsetRatio;
-                var totalTopOffset = activeScreen.Bounds.Top + activeScreenTopOffset;
-
-                Left = totalLeftOffset;
-                Top = totalTopOffset;
+                Left = windowOffset.Left;
+                Top = windowOffset.Top;
 
                 Show();
                 Activate();
@@ -227,8 +223,11 @@ namespace Pinpoint.Win.Views
             // Locate window horizontal center near top of screen
             Left = _defaultWindowPosition.X;
             Top = _defaultWindowPosition.Y;
-            _leftOffsetRatio = 0.5;
-            _topOffsetRatio = 0.5;
+
+            var defaultOffsetRatio = _windowPositionHelper.CalculateWindowOffsetRatioFromPoint(_defaultWindowPosition);
+
+            _leftOffsetRatio = defaultOffsetRatio.LeftOffsetRatio;
+            _topOffsetRatio = defaultOffsetRatio.TopOffsetRatio;
         }
 
         private Point ComputeDpiAwareWindowCenterPosition(Screen screen = null)
@@ -580,16 +579,10 @@ namespace Pinpoint.Win.Views
             {
                 DragMove();
 
-                var activeScreen = Screen.FromPoint(System.Windows.Forms.Cursor.Position);
+                var windowOffsetRatio = _windowPositionHelper.CalculateWindowOffsetRatioFromWindowBounds(new WindowBounds(Left, Top));
 
-                var deltaWidth = Math.Abs(Math.Abs(activeScreen.Bounds.Right) - Math.Abs(Left));
-                var deltaHeight = Math.Abs(Math.Abs(activeScreen.Bounds.Bottom) - Math.Abs(Top));
-
-                var leftOffsetRatio = deltaWidth / activeScreen.Bounds.Width;
-                var topOffsetRatio = deltaHeight / activeScreen.Bounds.Height;
-
-                _leftOffsetRatio = 1 - leftOffsetRatio;
-                _topOffsetRatio = 1 - topOffsetRatio;
+                _leftOffsetRatio = windowOffsetRatio.LeftOffsetRatio;
+                _topOffsetRatio = windowOffsetRatio.TopOffsetRatio;
             }
         }
 
