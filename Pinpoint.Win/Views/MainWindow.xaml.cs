@@ -61,7 +61,7 @@ namespace Pinpoint.Win.Views
         private int _showingOptionsForIndex = -1;
         private double _leftOffsetRatio = 0, _topOffsetRatio = 0;
         private Point _defaultWindowPosition;
-        private WindowPositionHelper _windowPositionHelper = new WindowPositionHelper();
+        private readonly WindowPositionHelper _windowPositionHelper = new();
 
         public MainWindow()
         {

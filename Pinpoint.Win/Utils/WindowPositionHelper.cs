@@ -49,7 +49,7 @@ namespace Pinpoint.Win.Utils
         }
     }
 
-
     public record WindowOffset(double Left, double Top);
+
     public record WindowOffsetRatio(double LeftOffsetRatio, double TopOffsetRatio);
 }
