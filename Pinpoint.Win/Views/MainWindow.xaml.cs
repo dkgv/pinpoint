@@ -8,7 +8,7 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
+using Newtonsoft.Json;
 using NHotkey;
 using NHotkey.Wpf;
 using Pinpoint.Core;
@@ -48,6 +48,7 @@ using Control = System.Windows.Forms.Control;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
 using Pinpoint.Win.Utils;
+using System.Windows.Media;
 
 namespace Pinpoint.Win.Views
 {
@@ -216,6 +217,28 @@ namespace Pinpoint.Win.Views
             Model.Watermark = "Pinpoint";
             TxtQuery.IsEnabled = true;
             TxtQuery.Focus();
+
+            await CheckForUpdates();
+        }
+
+        private async Task CheckForUpdates()
+        {
+            var currentVersion = AppConstants.Version;
+            var newestVersion = await HttpHelper.SendGet("https://usepinpoint.com/api/app_version", s =>
+            {
+                var json = JsonConvert.DeserializeObject<dynamic>(s);
+                return json["version"].ToString();
+            });
+            if (currentVersion == newestVersion)
+            {
+                return;
+            }
+
+            var response = MessageBox.Show("A newer version of Pinpoint is available. Do you want to download it?", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            if (response == MessageBoxResult.Yes)
+            {
+                ProcessHelper.OpenUrl("https://github.com/dkgv/pinpoint");
+            }
         }
 
         public void MoveWindowToDefaultPosition()
