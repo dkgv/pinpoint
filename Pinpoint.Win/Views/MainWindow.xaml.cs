@@ -255,8 +255,7 @@ namespace Pinpoint.Win.Views
 
         private Point ComputeDpiAwareWindowCenterPosition(Screen screen = null)
         {
-            if (screen == null)
-                screen = Screen.PrimaryScreen;
+            screen ??= Screen.PrimaryScreen;
 
             var dpi = VisualTreeHelper.GetDpi(this);
 
