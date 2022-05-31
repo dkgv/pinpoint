@@ -579,7 +579,7 @@ namespace Pinpoint.Win.Views
             {
                 DragMove();
 
-                var windowOffsetRatio = _windowPositionHelper.CalculateWindowOffsetRatioFromWindowBounds(new WindowBounds(Left, Top));
+                var windowOffsetRatio = _windowPositionHelper.CalculateWindowOffsetRatioFromWindowBounds(Left, Top);
 
                 _leftOffsetRatio = windowOffsetRatio.LeftOffsetRatio;
                 _topOffsetRatio = windowOffsetRatio.TopOffsetRatio;
