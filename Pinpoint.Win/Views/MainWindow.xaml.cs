@@ -47,6 +47,8 @@ using WK.Libraries.SharpClipboardNS;
 using Control = System.Windows.Forms.Control;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
+using Pinpoint.Win.Utils;
+using System.Windows.Media;
 
 namespace Pinpoint.Win.Views
 {
@@ -57,8 +59,9 @@ namespace Pinpoint.Win.Views
     {
         private CancellationTokenSource _cts = new();
         private int _showingOptionsForIndex = -1;
-        private double _offsetFromDefaultX = 0, _offsetFromDefaultY = 0;
+        private double _leftOffsetRatio = 0, _topOffsetRatio = 0;
         private Point _defaultWindowPosition;
+        private readonly WindowPositionHelper _windowPositionHelper = new();
 
         public MainWindow()
         {
@@ -191,9 +194,10 @@ namespace Pinpoint.Win.Views
             }
             else
             {
-                var screen = Screen.FromPoint(System.Windows.Forms.Cursor.Position);
-                Left = screen.Bounds.Left + (screen.Bounds.Width / 2) - (Width / 2) + _offsetFromDefaultX;
-                Top = screen.Bounds.Top + (screen.Bounds.Height / 5) + _offsetFromDefaultY;
+                var windowOffset = _windowPositionHelper.CalculateWindowOffsetFromOffsetRatios(new WindowOffsetRatio(_leftOffsetRatio, _topOffsetRatio));
+
+                Left = windowOffset.Left;
+                Top = windowOffset.Top;
 
                 Show();
                 Activate();
@@ -204,7 +208,8 @@ namespace Pinpoint.Win.Views
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _defaultWindowPosition = ComputeDefaultWindowPosition();
+            _defaultWindowPosition = ComputeDpiAwareWindowCenterPosition();
+
             MoveWindowToDefaultPosition();
 
             await LoadPlugins();
@@ -241,10 +246,30 @@ namespace Pinpoint.Win.Views
             // Locate window horizontal center near top of screen
             Left = _defaultWindowPosition.X;
             Top = _defaultWindowPosition.Y;
-            _offsetFromDefaultX = _offsetFromDefaultY = 0;
+
+            var defaultOffsetRatio = _windowPositionHelper.CalculateWindowOffsetRatioFromPoint(_defaultWindowPosition);
+
+            _leftOffsetRatio = defaultOffsetRatio.LeftOffsetRatio;
+            _topOffsetRatio = defaultOffsetRatio.TopOffsetRatio;
         }
 
-        private Point ComputeDefaultWindowPosition() => new(SystemParameters.PrimaryScreenWidth / 2 - Width / 2, SystemParameters.PrimaryScreenHeight / 5);
+        private Point ComputeDpiAwareWindowCenterPosition(Screen screen = null)
+        {
+            screen ??= Screen.PrimaryScreen;
+
+            var dpi = VisualTreeHelper.GetDpi(this);
+
+            var screenWidth = screen.Bounds.Width;
+            var screenHeight = screen.Bounds.Height;
+
+            var windowWidth = (int)(Width * dpi.DpiScaleX);
+            var windowHeight = (int)(Height * dpi.DpiScaleY);
+
+            var x = (screenWidth / 2) - (windowWidth / 2);
+            var y = (screenHeight / 5) + (windowHeight / 2);
+
+            return new Point(x, y);
+        }
 
         protected override void OnClosing(CancelEventArgs e)
         {
@@ -575,8 +600,11 @@ namespace Pinpoint.Win.Views
             if (e.ChangedButton == MouseButton.Left)
             {
                 DragMove();
-                _offsetFromDefaultX = Left - _defaultWindowPosition.X;
-                _offsetFromDefaultY = Top - _defaultWindowPosition.Y;
+
+                var windowOffsetRatio = _windowPositionHelper.CalculateWindowOffsetRatioFromWindowBounds(Left, Top);
+
+                _leftOffsetRatio = windowOffsetRatio.LeftOffsetRatio;
+                _topOffsetRatio = windowOffsetRatio.TopOffsetRatio;
             }
         }
 
