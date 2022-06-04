@@ -50,12 +50,18 @@ namespace Pinpoint.Core
             try
             {
                 var json = File.ReadAllText(FilePath);
+                if (string.IsNullOrEmpty(json))
+                {
+                    return;
+                }
+
                 var (meta, storage) = JsonConvert.DeserializeObject<PluginState>(json);
                 Storage = storage;
                 Meta = meta;
             }
-            catch(NullReferenceException)
+            catch
             {
+                // ignored
             }
         }
 
