@@ -47,10 +47,16 @@ namespace Pinpoint.Core
                 return;
             }
 
-            var json = File.ReadAllText(FilePath);
-            var (meta, storage) = JsonConvert.DeserializeObject<PluginState>(json);
-            Storage = storage;
-            Meta = meta;
+            try
+            {
+                var json = File.ReadAllText(FilePath);
+                var (meta, storage) = JsonConvert.DeserializeObject<PluginState>(json);
+                Storage = storage;
+                Meta = meta;
+            }
+            catch(NullReferenceException)
+            {
+            }
         }
 
         private record PluginState(PluginMeta Meta, PluginStorage Storage);
