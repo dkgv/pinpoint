@@ -32,6 +32,7 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
 
                         <Grid.ColumnDefinitions>
@@ -81,6 +82,15 @@
                                 x:Name="BtnReCenterWindow" 
                                 Content="Reset to Default" 
                                 Click="BtnReCenterWindow_OnClick"></Button>
+                        <Label Grid.Row="5"
+                               Grid.Column="1"
+                               HorizontalAlignment="Right">Launch on startup</Label>
+                        <CheckBox Grid.Row="5"
+                                  Grid.Column="2"
+                                  VerticalAlignment="Center"
+                                  Checked="CheckboxLaunchOnStartupChecked"
+                                  Unchecked="CheckboxLaunchOnStartupUnchecked"></CheckBox>
+
                     </Grid>
                 </Border>
             </TabItem>
