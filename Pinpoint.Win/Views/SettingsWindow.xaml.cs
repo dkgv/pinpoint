@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
@@ -10,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using MarkdownSharp;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using NHotkey.Wpf;
 using Pinpoint.Core;
@@ -151,11 +153,38 @@ namespace Pinpoint.Win.Views
 
         public void PluginChange_Removed(object sender, IPlugin plugin, object target) => Model.Plugins.Remove(plugin);
 
+        private void CheckboxLaunchOnStartupChecked(object sender, RoutedEventArgs evt)
+        {
+            ToggleRunOnStartupSetting(true);
+        }
+
+        private void CheckboxLaunchOnStartupUnchecked(object sender, RoutedEventArgs evt)
+        {
+            ToggleRunOnStartupSetting(false);
+        }
+
         private void BtnReCenterWindow_OnClick(object sender, RoutedEventArgs e)
         {
             App.Current.MainWindow.MoveWindowToDefaultPosition();
             Close();
             App.Current.MainWindow.Show();
+        }
+
+        private void ToggleRunOnStartupSetting(bool shouldRunOnStartup)
+        {
+            var path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+
+            var registryKey = Registry.CurrentUser.OpenSubKey(path, true);
+            var applicationExecutablePath = Process.GetCurrentProcess().MainModule.FileName;
+
+            if (shouldRunOnStartup)
+            {
+                registryKey.SetValue("Pinpoint", applicationExecutablePath);
+            }
+            else
+            {
+                registryKey.DeleteValue("Pinpoint");
+            }
         }
     }
 }
