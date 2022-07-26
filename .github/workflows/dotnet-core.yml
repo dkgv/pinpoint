@@ -88,4 +88,4 @@ jobs:
       - name: Package and push to Chocolatey
         run: |
           choco pack
-          choco push Pinpoint.${{ steps.get_version.outputs.VERSION }}.nupkg
+          choco push Pinpoint.${{ steps.get_version.outputs.VERSION }}.nupkg --source https://push.chocolatey.org/
