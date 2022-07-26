@@ -15,6 +15,8 @@ namespace Pinpoint.Core
 
         public PluginStorage Storage { get; set; }
 
+        bool ModifiableSettings => false;
+
         bool IsLoaded => true;
 
         public Task<bool> TryLoad() => Task.FromResult(true);
