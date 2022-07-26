@@ -63,7 +63,7 @@ namespace Pinpoint.Core
                 activePlugins.CompleteAdding();
             }, ct);
 
-            var results = new List<AbstractQueryResult>(20);
+            var results = new List<Tuple<IPlugin, AbstractQueryResult>>(20);
             var tasks = new List<Task>();
             while (activePlugins.TryTake(out var plugin, TimeSpan.FromSeconds(1)) && query.ResultCount < 20)
             {
@@ -74,7 +74,7 @@ namespace Pinpoint.Core
                         query.ResultCount++;
                         lock (results)
                         {
-                            results.Add(result);
+                            results.Add(new Tuple<IPlugin, AbstractQueryResult>(plugin, result));
                         }
                     }
                 }, ct));
@@ -82,7 +82,10 @@ namespace Pinpoint.Core
 
             await Task.WhenAll(tasks);
 
-            return results;
+            return results
+                .OrderByDescending(tuple => tuple.Item1.Meta.Priority)
+                .Select(tuple => tuple.Item2)
+                .ToList();
         }
     }
 }
