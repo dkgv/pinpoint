@@ -12,8 +12,6 @@ namespace Pinpoint.Plugin.AppSearch
 {
     public class AppSearchPlugin : IPlugin
     {
-        private UkkonenTrie<IApp> _trie = new();
-
         public AppSearchFrequency AppSearchFrequency;
 
         private static readonly IAppProvider[] AppProviders = {
@@ -42,17 +40,11 @@ namespace Pinpoint.Plugin.AppSearch
                     JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, int>>>(Storage.InternalSettings["database"].ToString());
             }
 
-            foreach (var provider in AppProviders)
-            {
-                PopulateFromProvider(provider);
-            }
-
             return IsLoaded = true;
         }
 
         public void Unload()
         {
-            _trie = null;
             AppSearchFrequency.Reset();
         }
 
@@ -60,21 +52,26 @@ namespace Pinpoint.Plugin.AppSearch
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
+            var trie = new UkkonenTrie<IApp>();
+            foreach (var provider in AppProviders)
+            {
+                PopulateFromProvider(trie, provider);
+            }
+            
             var rawQuery = query.RawQuery.ToLower();
-
-            foreach (var app in _trie.Retrieve(rawQuery)
+            foreach (var app in trie.Retrieve(rawQuery)
                 .OrderByDescending(entry =>AppSearchFrequency.FrequencyOfFor(rawQuery, entry.FilePath)))
             {
                 yield return new AppResult(this, app, rawQuery);
             }
         }
 
-        private void PopulateFromProvider(IAppProvider provider)
+        private void PopulateFromProvider(ITrie<IApp> trie, IAppProvider provider)
         {
             foreach (var app in provider.Provide())
             {
                 var appName = app.Name.ToLower();
-                _trie.Add(appName, app);
+                trie.Add(appName, app);
 
                 if (!app.Name.Contains(" "))
                 {
@@ -85,18 +82,20 @@ namespace Pinpoint.Plugin.AppSearch
                 var variations = appName.Split(" ");
                 foreach (var variation in variations)
                 {
-                    _trie.Add(variation, app);
+                    trie.Add(variation, app);
                 }
 
                 // Support "visual studio code" -> "vsc"
-                if (variations.Length > 1)
+                if (variations.Length <= 1)
                 {
-                    var appAcronymLetters = variations.Where(part => part.Length > 0)
-                        .Select(part => part[0])
-                        .ToArray();
-                    var acronym = string.Join(',', appAcronymLetters).Replace(",", "");
-                    _trie.Add(acronym, app);
+                    continue;
                 }
+                
+                var appAcronymLetters = variations.Where(part => part.Length > 0)
+                    .Select(part => part[0])
+                    .ToArray();
+                var acronym = string.Join(',', appAcronymLetters).Replace(",", "");
+                trie.Add(acronym, app);
             }
         }
     }
