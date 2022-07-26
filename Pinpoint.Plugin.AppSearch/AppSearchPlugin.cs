@@ -12,13 +12,12 @@ namespace Pinpoint.Plugin.AppSearch
 {
     public class AppSearchPlugin : IPlugin
     {
-        private UkkonenTrie<IApp> _trie = new();
+        private UkkonenTrie<IApp> _staticAppsTrie = new();
 
         public AppSearchFrequency AppSearchFrequency;
 
-        private static readonly IAppProvider[] AppProviders = {
+        private static readonly IAppProvider[] RuntimeAppProviders = {
             new StandardAppProvider(),
-            new UwpAppProvider()
         };
 
         public AppSearchPlugin()
@@ -41,18 +40,15 @@ namespace Pinpoint.Plugin.AppSearch
                 AppSearchFrequency.Database =
                     JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, int>>>(Storage.InternalSettings["database"].ToString());
             }
-
-            foreach (var provider in AppProviders)
-            {
-                PopulateFromProvider(provider);
-            }
+            
+            PopulateFromProvider(new UwpAppProvider());
 
             return IsLoaded = true;
         }
 
         public void Unload()
         {
-            _trie = null;
+            _staticAppsTrie = new UkkonenTrie<IApp>();
             AppSearchFrequency.Reset();
         }
 
@@ -60,13 +56,22 @@ namespace Pinpoint.Plugin.AppSearch
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var rawQuery = query.RawQuery.ToLower();
+            var queryLower = query.RawQuery.ToLower();
 
-            foreach (var app in _trie.Retrieve(rawQuery)
-                .OrderByDescending(entry =>AppSearchFrequency.FrequencyOfFor(rawQuery, entry.FilePath)))
-            {
-                yield return new AppResult(this, app, rawQuery);
-            }
+            var staticAppMatches = _staticAppsTrie.Retrieve(queryLower);
+
+            var runtimeAppMatches = RuntimeAppProviders.SelectMany(provider => provider.Provide())
+                    .Where(a =>
+                    {
+                        var variations = GenerateNamesFor(a.Name.ToLower());
+                        return variations.Any(v => v.StartsWith(queryLower));
+                    });
+
+           foreach (var app in staticAppMatches.Concat(runtimeAppMatches)
+                        .OrderByDescending(a => AppSearchFrequency.FrequencyOfFor(queryLower, a.FilePath)))
+           {
+               yield return new AppResult(this, app, queryLower);
+           }
         }
 
         private void PopulateFromProvider(IAppProvider provider)
@@ -74,30 +79,46 @@ namespace Pinpoint.Plugin.AppSearch
             foreach (var app in provider.Provide())
             {
                 var appName = app.Name.ToLower();
-                _trie.Add(appName, app);
+                _staticAppsTrie.Add(appName, app);
 
                 if (!app.Name.Contains(" "))
                 {
                     continue;
                 }
 
-                // Support search for "Mozilla Firefox" through both "Mozilla" and "Firefox"
-                var variations = appName.Split(" ");
-                foreach (var variation in variations)
+                foreach (var alternateName in GenerateNamesFor(appName))
                 {
-                    _trie.Add(variation, app);
-                }
-
-                // Support "visual studio code" -> "vsc"
-                if (variations.Length > 1)
-                {
-                    var appAcronymLetters = variations.Where(part => part.Length > 0)
-                        .Select(part => part[0])
-                        .ToArray();
-                    var acronym = string.Join(',', appAcronymLetters).Replace(",", "");
-                    _trie.Add(acronym, app);
+                    _staticAppsTrie.Add(alternateName, app);
                 }
             }
+        }
+
+        private IEnumerable<string> GenerateNamesFor(string appName)
+        {
+            yield return appName;
+
+            if (!appName.Contains(" "))
+            {
+                yield break;
+            }
+           
+            // Support search for "Mozilla Firefox" through both "Mozilla" and "Firefox"
+            var variations = appName.Split(" ");
+            foreach (var variation in variations)
+            {
+                yield return variation;
+            } 
+            
+            // Support "visual studio code" -> "vsc"
+            if (variations.Length <= 1)
+            {
+                yield break;
+            }
+
+            var appAcronymLetters = variations.Where(part => part.Length > 0)
+                .Select(part => part[0])
+                .ToArray();
+            yield return string.Join("", appAcronymLetters);;
         }
     }
 }
