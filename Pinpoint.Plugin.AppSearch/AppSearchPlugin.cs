@@ -118,8 +118,7 @@ namespace Pinpoint.Plugin.AppSearch
             var appAcronymLetters = variations.Where(part => part.Length > 0)
                 .Select(part => part[0])
                 .ToArray();
-            var acronym = string.Join("", appAcronymLetters);
-            yield return acronym;
+            yield return string.Join("", appAcronymLetters);;
         }
     }
 }
