@@ -1,7 +1,9 @@
-﻿namespace Pinpoint.Plugin.Bookmarks
+﻿using System.Collections.Generic;
+
+namespace Pinpoint.Plugin.Bookmarks
 {
     public interface IBookmarkFileLocator
     {
-        string Locate();
+        IEnumerable<string> Locate();
     }
 }

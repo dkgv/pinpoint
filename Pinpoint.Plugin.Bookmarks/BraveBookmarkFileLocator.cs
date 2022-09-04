@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Pinpoint.Plugin.Bookmarks
 {
     public class BraveBookmarkFileLocator: IBookmarkFileLocator
     {        
-        public string Locate()
+        public IEnumerable<string> Locate()
         {
             var path = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -16,7 +17,7 @@ namespace Pinpoint.Plugin.Bookmarks
                 "Bookmarks"
             );
 
-            return path;
+            yield return path;
         }
     }
 }
