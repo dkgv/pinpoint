@@ -72,11 +72,11 @@ namespace Pinpoint.Plugin.Bookmarks
                     yield break;
                 }
                 
-                foreach (var directory in directories)
+                foreach (var variantDirectory in directories)
                 {
                     yield return Path.Combine(
                         profileDirectory, 
-                        directory,
+                        variantDirectory,
                         "places.sqlite"
                     );
                 }
