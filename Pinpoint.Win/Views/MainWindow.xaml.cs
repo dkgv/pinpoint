@@ -325,12 +325,7 @@ namespace Pinpoint.Win.Views
                     break;
 
                 case Key.Tab:
-                    if (Model.Results.Count > 0)
-                    {
-                        TxtQuery.Text = Model.Results.First().Title;
-                        TxtQuery.CaretIndex = TxtQuery.Text.Length;
-                    }
-                    e.Handled = true;
+                    TryAutoCompleteQuery();
                     break;
 
                 case Key.Enter:
@@ -526,6 +521,10 @@ namespace Pinpoint.Win.Views
                         HideQueryResultOptions();
                     }
                     break;
+
+                case Key.Tab:
+                    TryAutoCompleteQuery();
+                    break;
             }
         }
 
@@ -583,6 +582,18 @@ namespace Pinpoint.Win.Views
 
             _showingOptionsForIndex = -1;
             Hide();
+        }
+
+        private void TryAutoCompleteQuery()
+        {
+            if (Model.Results.Count <= 0 || LstResults.SelectedIndex <= -1)
+            {
+                return;
+            }
+
+            TxtQuery.Text = Model.Results[LstResults.SelectedIndex].Title;
+            TxtQuery.CaretIndex = TxtQuery.Text.Length;
+            TxtQuery.Focus();
         }
 
         private void LstResults_MouseUp(object sender, MouseButtonEventArgs e) => TryOpenSelectedResult();

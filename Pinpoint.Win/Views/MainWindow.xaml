@@ -86,7 +86,7 @@
 
                 <!-- Header -->
                 <Border Margin="5" Grid.Row="0" Grid.Column="0">
-                    <Grid>
+                    <Grid KeyboardNavigation.TabNavigation="None">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
@@ -95,7 +95,6 @@
                         <xctk:IconButton Focusable="False"
                                          Grid.Column="0"
                                          Margin="5 0 0 0" 
-                                         x:Name="SearchLogo" 
                                          HorizontalAlignment="Left" 
                                          Background="{x:Null}" 
                                          BorderBrush="{x:Null}" 
@@ -104,7 +103,10 @@
                                          MousePressedBorderBrush="{x:Null}"
                                          MousePressedBackground="{x:Null}">
                             <xctk:IconButton.Icon>
-                                <fa5:ImageAwesome Height="26" Icon="Solid_Search" Foreground="{StaticResource SecondaryTextColor}"></fa5:ImageAwesome>
+                                <fa5:ImageAwesome 
+                                    Height="26" 
+                                    Icon="Solid_Search"
+                                    Foreground="{StaticResource SecondaryTextColor}" />
                             </xctk:IconButton.Icon>
                         </xctk:IconButton>
 
