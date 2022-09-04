@@ -38,7 +38,6 @@ namespace Pinpoint.Plugin.Bookmarks
                 {
                     var name = reader.GetString(0);
                     var url = reader.GetString(1);
-
                     var bookmarkModel = new DefaultBookmarkModel
                     {
                         Name = name,
