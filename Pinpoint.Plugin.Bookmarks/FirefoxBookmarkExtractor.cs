@@ -20,32 +20,33 @@ namespace Pinpoint.Plugin.Bookmarks
         public async Task<IEnumerable<AbstractBookmarkModel>> Extract()
         {
             var result = new List<AbstractBookmarkModel>();
-
-            var databasePath = _locator.Locate();
-            if (string.IsNullOrEmpty(databasePath) || !File.Exists(databasePath))
+            foreach (var dbPath in _locator.Locate())
             {
-                return result;
-            }
-
-            await using var connection = new SqliteConnection("Data Source=" + databasePath);
-            connection.Open();
-
-            var command = connection.CreateCommand();
-            command.CommandText = SqlQuery;
-
-            await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
-            while (reader.Read())
-            {
-                var name = reader.GetString(0);
-                var url = reader.GetString(1);
-
-                var bookmarkModel = new DefaultBookmarkModel
+                if (string.IsNullOrEmpty(dbPath) || !File.Exists(dbPath))
                 {
-                    Name = name,
-                    Url = url
-                };
+                    continue;
+                }
 
-                result.Add(bookmarkModel);
+                await using var connection = new SqliteConnection("Data Source=" + dbPath);
+                connection.Open();
+
+                var command = connection.CreateCommand();
+                command.CommandText = SqlQuery;
+
+                await using var reader = await command.ExecuteReaderAsync().ConfigureAwait(false);
+                while (reader.Read())
+                {
+                    var name = reader.GetString(0);
+                    var url = reader.GetString(1);
+
+                    var bookmarkModel = new DefaultBookmarkModel
+                    {
+                        Name = name,
+                        Url = url
+                    };
+
+                    result.Add(bookmarkModel);
+                }
             }
 
             return result;
@@ -53,7 +54,7 @@ namespace Pinpoint.Plugin.Bookmarks
 
         public class WindowsDatabaseLocator : IBookmarkFileLocator
         {
-            public string Locate()
+            public IEnumerable<string> Locate()
             {
                 var profileDirectory = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -61,23 +62,25 @@ namespace Pinpoint.Plugin.Bookmarks
                     "Firefox",
                     "Profiles"
                 );
-
                 if (!Directory.Exists(profileDirectory))
                 {
-                    return string.Empty;
+                    yield break;
                 }
 
                 var directories = Directory.GetDirectories(profileDirectory);
                 if (!directories.Any())
                 {
-                    return string.Empty;
+                    yield break;
                 }
-
-                return Path.Combine(
-                    profileDirectory, 
-                    directories[0],
-                    "places.sqlite"
-                );
+                
+                foreach (var directory in directories)
+                {
+                    yield return Path.Combine(
+                        profileDirectory, 
+                        directory,
+                        "places.sqlite"
+                    );
+                }
             }
         }
     }

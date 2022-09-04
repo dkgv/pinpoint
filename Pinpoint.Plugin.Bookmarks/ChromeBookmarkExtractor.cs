@@ -19,8 +19,8 @@ namespace Pinpoint.Plugin.Bookmarks
 
         public async Task<IEnumerable<AbstractBookmarkModel>> Extract()
         {
-            var jsonFile = _locator.Locate();
-            if (string.IsNullOrEmpty(jsonFile) || !File.Exists(jsonFile))
+            var jsonFile = _locator.Locate().FirstOrDefault();
+            if (jsonFile == default || string.IsNullOrEmpty(jsonFile) || !File.Exists(jsonFile))
             {
                 return new List<AbstractBookmarkModel>();
             }
@@ -46,7 +46,7 @@ namespace Pinpoint.Plugin.Bookmarks
 
         public class WindowsJSONFileLocator : IBookmarkFileLocator
         {
-            public string Locate()
+            public IEnumerable<string> Locate()
             {
                 var path = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
@@ -57,7 +57,7 @@ namespace Pinpoint.Plugin.Bookmarks
                     "Bookmarks"
                 );
 
-                return path;
+                yield return path;
             }
         }
     }
