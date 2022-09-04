@@ -342,7 +342,7 @@ namespace Pinpoint.Win.Views
                     {
                         HideQueryResultOptions();
                     }
-                    else if (string.IsNullOrEmpty(TxtQuery.Text))
+                    else
                     {
                         Hide();
                     }
