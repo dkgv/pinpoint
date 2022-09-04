@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+﻿using System.Runtime.InteropServices;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
 using WK.Libraries.SharpClipboardNS;
@@ -12,6 +13,13 @@ namespace Pinpoint.Win.ViewModels
         public MainViewModel()
         {
             Watermark = "Loading plugins...";
+            try
+            {
+                Clipboard = new SharpClipboard();
+            }
+            catch (ExternalException)
+            {
+            }
         }
 
         public ObservableUniqueCollection<AbstractQueryResult> Results { get; } = new();
@@ -20,7 +28,7 @@ namespace Pinpoint.Win.ViewModels
 
         public PluginEngine PluginEngine { get; set; } = new();
 
-        public SharpClipboard Clipboard { get; } = new();
+        public SharpClipboard Clipboard { get; }
 
         public string PreviousQuery { get; set; } = string.Empty;
 
