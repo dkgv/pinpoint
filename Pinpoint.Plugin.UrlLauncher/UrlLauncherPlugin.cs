@@ -23,20 +23,18 @@ namespace Pinpoint.Plugin.UrlLauncher
 
         public bool IsLoaded { get; set; }
 
-        public Task<bool> TryLoad()
+        public async Task<bool> TryLoad()
         {
             var asm = GetType().Assembly;
-
-            using var stream = asm.GetManifestResourceStream("Pinpoint.Plugin.UrlLauncher.tlds.txt");
+            await using var stream = asm.GetManifestResourceStream("Pinpoint.Plugin.UrlLauncher.tlds.txt");
             using var reader = new StreamReader(stream, Encoding.UTF8);
-            string line;
-            while ((line = reader.ReadLine()) != null)
+            while (await reader.ReadLineAsync() is { } line)
             {
                 Tlds.Add(line);
             }
 
             IsLoaded = true;
-            return Task.FromResult(IsLoaded);
+            return true;
         }
 
         public void Unload() { }

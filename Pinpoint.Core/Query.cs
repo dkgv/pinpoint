@@ -8,10 +8,7 @@
             Parts = rawQuery.Split(' ');
         }
 
-        public string Prefix(int n = 1)
-        {
-            return RawQuery[..n];
-        }
+        public string Prefix(int n = 1) => RawQuery[..n];
 
         public bool IsEmpty => RawQuery.Length == 0;
 

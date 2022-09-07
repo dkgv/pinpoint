@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FontAwesome5;
@@ -27,13 +28,19 @@ namespace Pinpoint.Core.Clipboard
               });
         }
 
-        public static void Copy(string content)
+        public static void CopyUtf8(string content)
+        {
+            Copy(content, Encoding.UTF8);
+        }
+
+        public static void Copy(string content, Encoding encoding)
         {
             var clipboardExecutable = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     RedirectStandardInput = true,
+                    StandardInputEncoding = encoding,
                     FileName = @"clip",
                 }
             };

@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0-windows</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Pinpoint.Core\Pinpoint.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="GEmojiSharp" Version="2.0.0" />
+      <PackageReference Include="TrieNet" Version="1.0.3.26316" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="emojis.csv" />
+    </ItemGroup>
+
+</Project>
