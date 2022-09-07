@@ -18,7 +18,7 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1.7.2
         with:
-          dotnet-version: '5.0.202'
+          dotnet-version: '6.0.400'
       - uses: actions/checkout@v2
       
       - name: Extract Tag Version
