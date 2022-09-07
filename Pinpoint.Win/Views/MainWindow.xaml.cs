@@ -50,6 +50,7 @@ using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MessageBox = System.Windows.MessageBox;
 using Pinpoint.Win.Utils;
 using System.Windows.Media;
+using Pinpoint.Plugin.Emoji;
 
 namespace Pinpoint.Win.Views
 {
@@ -157,6 +158,7 @@ namespace Pinpoint.Win.Views
                 Model.PluginEngine.AddPlugin(new TimezoneConverterPlugin()),
                 Model.PluginEngine.AddPlugin(new TranslatePlugin()),
                 Model.PluginEngine.AddPlugin(new ShortcutsPlugin()),
+                Model.PluginEngine.AddPlugin(new EmojiPlugin())
             };
 
             await Task.WhenAll(addPluginTasks);

@@ -39,6 +39,7 @@
     <ProjectReference Include="..\Pinpoint.Plugin.ControlPanel\Pinpoint.Plugin.ControlPanel.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Currency\Pinpoint.Plugin.Currency.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Dictionary\Pinpoint.Plugin.Dictionary.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.Emoji\Pinpoint.Plugin.Emoji.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.EncodeDecode\Pinpoint.Plugin.EncodeDecode.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Everything\Pinpoint.Plugin.Everything.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Finance\Pinpoint.Plugin.Finance.csproj" />
