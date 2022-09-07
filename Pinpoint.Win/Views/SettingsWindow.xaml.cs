@@ -153,38 +153,28 @@ namespace Pinpoint.Win.Views
 
         public void PluginChange_Removed(object sender, IPlugin plugin, object target) => Model.Plugins.Remove(plugin);
 
-        private void CheckboxLaunchOnStartupChecked(object sender, RoutedEventArgs evt)
+        private void BtnToggleStartupLaunch_OnClick(object sender, RoutedEventArgs evt)
         {
-            ToggleRunOnStartupSetting(true);
+            var path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
+            var registryKey = Registry.CurrentUser.OpenSubKey(path, true);
+            if (registryKey.GetValue("Pinpoint") == null)
+            {
+                var applicationExecutablePath = Process.GetCurrentProcess().MainModule.FileName;
+                registryKey.SetValue("Pinpoint", applicationExecutablePath);
+                MessageBox.Show("Successfully enabled", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                registryKey.DeleteValue("Pinpoint");
+                MessageBox.Show("Successfully disabled", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
         }
-
-        private void CheckboxLaunchOnStartupUnchecked(object sender, RoutedEventArgs evt)
-        {
-            ToggleRunOnStartupSetting(false);
-        }
-
+        
         private void BtnReCenterWindow_OnClick(object sender, RoutedEventArgs e)
         {
             App.Current.MainWindow.MoveWindowToDefaultPosition();
             Close();
             App.Current.MainWindow.Show();
-        }
-
-        private void ToggleRunOnStartupSetting(bool shouldRunOnStartup)
-        {
-            var path = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Run";
-
-            var registryKey = Registry.CurrentUser.OpenSubKey(path, true);
-            var applicationExecutablePath = Process.GetCurrentProcess().MainModule.FileName;
-
-            if (shouldRunOnStartup)
-            {
-                registryKey.SetValue("Pinpoint", applicationExecutablePath);
-            }
-            else
-            {
-                registryKey.DeleteValue("Pinpoint");
-            }
         }
     }
 }
