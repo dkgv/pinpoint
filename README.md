@@ -5,53 +5,138 @@
     Pinpoint
 </h1>
 
-
-Pinpoint is an extensible keystroke launcher and productivity tool written in C# (.NET Core).
+Pinpoint is an extensible keystroke launcher and productivity tool written in C#.
 
 ## Table of Contents
 
 - [Installation](#installation)
-- [Plugins](#plugins)
+- [Features](#features)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [Contributing](#contributing)
 
 ## Installation
 
-- Download the latest pre-compiled release [here](https://github.com/dkgv/pinpoint/releases) (pick the standalone version if you do not have .NET 5 installed)
+- Download the latest pre-compiled release [here](https://github.com/dkgv/pinpoint/releases) (pick the standalone version if you do not have .NET 6 installed)
 - Extract the `Pinpoint-X.X.X.zip` file
 - Launch `Pinpoint.exe`
 
-## Plugins
+## Features
 
-| Name               | What / Why                                                                                             | Preview                              |
-| ------------------ | ------------------------------------------------------------------------------------------------------ | ------------------------------------ |
-| App Search         | Search for applications on your computer                                                               | ![](https://i.imgur.com/O3BdrxM.png) |
-| Bangs              | Search on websites directly with the 10.000+ [DuckDuckGo !Bang](https://duckduckgo.com/bang) operators | ![](https://i.imgur.com/pbF7sZB.png) |
-| Bookmarks          | Search in bookmarks from your default browser (Brave, Chrome, Firefox)                                 | ![](https://i.imgur.com/M2qvYCs.png) |
-| Calculator         | Calculate mathematical expressions instantly                                                           | ![](https://i.imgur.com/mtsthTj.png) |
-| Clipboard          | Easy-to-use clipboard history manager                                                                  |                                      |
-| Clipboard Share    | Share your clipboard via a pastebin                                                                    |                                      |
-| Color Converter    | Convert hex colors to RGB and vice versa                                                               | ![](https://i.imgur.com/r1NmnZE.png) |
-| Command Line       | Execute CLI queries without breaking your workflow                                                     | ![](https://i.imgur.com/tsPcp1l.png) |
-| Control Panel      | Search for control panel items                                                                         | ![](https://i.imgur.com/GClOIaI.png) |
-| Currency Converter | Convert between currencies (including cryptocurrencies)                                                | ![](https://i.imgur.com/XJUmMNT.png) |
-| Dictionary         | Look up definitions on the fly                                                                         | ![](https://i.imgur.com/eokgopn.png) |
-| Encode/Decode      | Encode and decode hex, binary, and base64.                                                             |                                      |
-| Everything         | Snappy search across all your files using [Everything](https://www.voidtools.com/)                     | ![](https://i.imgur.com/rhovLIX.png) |
-| Finance            | Look up real-time ticker prices via Yahoo Finance                                                      | ![](https://i.imgur.com/dXSv6aQ.png) |
-| Hacker News        | Browse recently popular submissions from [Hacker News](https://news.ycombinator.com/)                  | ![](https://i.imgur.com/neQd1nv.png) |
-| Metric Converter   | Convert between imperial and metric units                                                              | ![](https://i.imgur.com/OqOwZNY.png) |
-| Notes              | Quickly create and save notes                                                                          | ![](https://i.imgur.com/foFfxtv.png) |
-| Operating System   | Shut down, restart/reboot, and sleep your computer                                                     | ![](https://i.imgur.com/5GwwQBg.png) |
-| Password Generator | Generate variable length passwords on the fly                                                          | ![](https://i.imgur.com/zonNyXo.png) |
-| Process Manager    | Find and kill processes by name                                                                        |                                      |
-| reddit             | Quick browse reddit posts with standard sorting options                                                | ![](https://i.imgur.com/sViePHZ.png) |
-| Spotify            | Control Spotify on any device directly from Pinpoint                                                   | ![](https://i.imgur.com/Ol8dBI4.png) |
-| Text               | Easily perform various transformative text actions.                                                    | ![](https://i.imgur.com/FbCQXXX.png) |
-| Time Zone          | Convert from/to different time zones                                                                   |                                      |
-| Translation        | Translate text between any two languages                                                               |                                      |
-| URL Launcher       | Launch URLs in your favorite browser                                                                   | ![](https://i.imgur.com/faRe3zd.png) |
-| Weather Forecast   | Look up weather forecasts (weekly + daily)                                                             | ![](https://i.imgur.com/OC4RBgr.png) |
+### App search
+
+Searches for installed apps.
+
+### Bangs
+
+Allows you to use the 10.000+ [DuckDuckGo !Bang](https://duckduckgo.com/bang) operators to search directly on websites.
+
+### Bookmarks
+
+Indexes bookmarks across browsers (Brave, Chrome, Firefox).
+
+### Calculator
+
+Calculates simple mathematical expressions.
+
+### Clipboard manager
+
+Manages your clipboard contents automatically.
+
+### Clipboard uploader
+
+Uploads your clipboard to a pastebin and providing a shareable link.
+
+### Color converter
+
+Converts hex colors to RGB and vice versa.
+
+### Command line
+
+Launches CLI commands directly from Pinpoint.
+
+### Control panel
+
+Enables you to search for control panel items.
+
+### Currency converter
+
+Converts between currencies and crypto currencies.
+
+### Dictionary
+
+Defines words.
+
+### Emoji searcher
+
+Enables you to search and insert emojis whenever and wherever you need them.i
+
+### Encoder/decoder
+
+Encodes/decodes hex, binary, and base64.
+
+### Everything
+
+Rapidly searches your file system for specific files using [Everything](https://www.voidtools.com/).
+
+### Finances
+
+Looks up stock and ticker prices via Yahoo Finance.
+
+### Hacker News
+
+Fetches recent popular submissions from Hacker News.
+
+### Metric converter
+
+Converts between metric and imperial units.
+
+### Notes
+
+Allows you to create and save notes/snippets.
+
+### Operating system
+
+Allows you to shut down, restart/reboot, and sleep your computer from Pinpoint.
+
+### Password generator
+
+Generates variable length passwords when you need them.
+
+### Process manager
+
+Kills specified processes.
+
+### reddit
+
+Fetches entries from arbitrary subreddits while providing standard sorting options.
+
+### Shortcuts
+
+Lets you create shortcuts to anything, website, files etc.
+
+### Spotify controller
+
+Controls any Spotify session associated with your account on any device from Pinpoint.
+
+### Text manipulator
+
+Performs various transformative text actions.
+
+### Time zone converter
+
+Converts time to/from various time zones.
+
+### Translator
+
+Translates text between specified languages.
+
+### URL launcher
+
+Launches URLs in your default browser.
+
+### Weather forecast
+
+Fetches weather forecasts (daily and weekly) for provided locations.
 
 ## Keyboard Shortcuts
 
@@ -74,6 +159,4 @@ Pinpoint is an extensible keystroke launcher and productivity tool written in C#
 
 All contributions are valued and welcome. You may add new features but naturally also improve existing ones. Feel free to browse current [open issues](https://github.com/dkgv/pinpoint/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) if you need inspiration.
 
-Please create one branch + PR per major change you make.
-
-Thanks 🙏
+Please create one branch + PR per major change you make🙏
