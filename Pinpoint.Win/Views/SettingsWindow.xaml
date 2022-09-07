@@ -51,7 +51,7 @@
                         <Label Grid.Row="1"
                                Grid.Column="1"
                                HorizontalAlignment="Right">
-                            Pinpoint visibility hotkey:
+                            Pinpoint visibility hotkey
                         </Label>
                         <TextBox Grid.Row="1" Grid.Column="2" x:Name="TxtHotkeyToggleVisiblity"
                                  IsReadOnly="True"
@@ -63,7 +63,7 @@
                                  IsUndoEnabled="False"
                                  Text="{Binding HotkeyToggleVisibility, Mode=OneWay}"></TextBox>
                         
-                        <Label Grid.Row="2" Grid.Column="1">Clipboard manager hotkey:</Label>
+                        <Label Grid.Row="2" Grid.Column="1">Clipboard manager hotkey</Label>
                         <TextBox Grid.Row="2" Grid.Column="2" x:Name="TxtHotkeyClipboardManager"
                                  IsReadOnly="True"
                                  PreviewKeyDown="TxtHotkeyClipboardManager_OnPreviewKeyDown"
@@ -76,20 +76,20 @@
                         
                         <Label Grid.Row="4"
                                Grid.Column="1" 
-                               HorizontalAlignment="Right">Window location:</Label>
+                               HorizontalAlignment="Right">Window location</Label>
                         <Button Grid.Row="4" 
                                 Grid.Column="2" 
                                 x:Name="BtnReCenterWindow" 
-                                Content="Reset to Default" 
+                                Content="Reset to default" 
                                 Click="BtnReCenterWindow_OnClick"></Button>
                         <Label Grid.Row="5"
                                Grid.Column="1"
                                HorizontalAlignment="Right">Launch on startup</Label>
-                        <CheckBox Grid.Row="5"
+                        <Button Grid.Row="5"
                                   Grid.Column="2"
                                   VerticalAlignment="Center"
-                                  Checked="CheckboxLaunchOnStartupChecked"
-                                  Unchecked="CheckboxLaunchOnStartupUnchecked"></CheckBox>
+                                  Content="Toggle on/off"
+                                  Click="BtnToggleStartupLaunch_OnClick"></Button>
 
                     </Grid>
                 </Border>
