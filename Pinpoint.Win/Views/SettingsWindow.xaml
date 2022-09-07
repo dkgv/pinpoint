@@ -81,6 +81,7 @@
                                 Grid.Column="2" 
                                 x:Name="BtnReCenterWindow" 
                                 Content="Reset to default" 
+                                VerticalAlignment="Center"
                                 Click="BtnReCenterWindow_OnClick"></Button>
                         <Label Grid.Row="5"
                                Grid.Column="1"
