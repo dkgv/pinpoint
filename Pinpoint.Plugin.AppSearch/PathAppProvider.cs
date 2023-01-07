@@ -7,21 +7,20 @@ namespace Pinpoint.Plugin.AppSearch;
 public class PathAppProvider : IAppProvider
 {
     private List<IApp> _cachedApps = new();
-    private string _path;
+    private string _cachedPath;
     
     public IEnumerable<IApp> Provide()
     {
         var environmentVariable = Environment.GetEnvironmentVariable("PATH");
-        if (_path == environmentVariable)
+        if (_cachedPath == environmentVariable)
         {
             return _cachedApps;
         }
         
-        _path = environmentVariable;
-        
         var paths = environmentVariable?.Split(';') ?? Array.Empty<string>();
-        var apps = new DirectoryAppProvider(paths).Provide();
-        _cachedApps = apps.ToList();
+        _cachedApps = new DirectoryAppProvider(paths).Provide().ToList();
+        _cachedPath = environmentVariable;
+        
         return _cachedApps;
     }
 }
