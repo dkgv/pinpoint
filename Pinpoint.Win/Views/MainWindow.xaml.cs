@@ -427,10 +427,29 @@ namespace Pinpoint.Win.Views
 
             Model.Results.Clear();
 
-            var results = await Model.PluginEngine.Process(query, _cts.Token);
-            AddResults(results);
+            // Remove old results and add clipboard history content
+            Model.Results.Clear();
+            await AwaitAddEnumerable(Model.PluginEngine.Process(query, _cts.Token));
         }
-
+        
+        private async Task AwaitAddEnumerable(IAsyncEnumerable<AbstractQueryResult> enumerable)
+        {
+            var shortcutKey = 0;
+            await foreach (var result in enumerable)
+            {
+                // If one of first 9 results, set keyboard shortcut for result
+                if (Model.Results.TryAdd(result) && shortcutKey < 9)
+                {
+                    result.Shortcut = "CTRL+" + ++shortcutKey;
+                }
+            }
+            
+            if (Model.Results.Count > 0 && LstResults.SelectedIndex == -1)
+            {
+                LstResults.SelectedIndex = 0;
+            }
+        }
+        
         private void AddResults(List<AbstractQueryResult> results)
         {
             var shortcutKey = 0;
