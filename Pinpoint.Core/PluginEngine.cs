@@ -39,53 +39,32 @@ namespace Pinpoint.Core
                 // Plugin threw an exception while loading, so don't add it.
                 return;
             }
-            
+
             Plugins.Add(@new);
+            Plugins.Sort();
 
             Listeners.ForEach(listener => listener.PluginChange_Added(this, @new, null));
         }
 
         public T GetPluginByType<T>() where T : IPlugin => Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
 
-        public async Task<List<AbstractQueryResult>> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var activePlugins = new BlockingCollection<IPlugin>();
-            _ = Task.Run(() =>
+            var enabledPlugins = Plugins.Where(p => p.Meta.Enabled && p.IsLoaded).ToList();
+            for (var i = 0; i < enabledPlugins.Count && query.ResultCount < 20 && !ct.IsCancellationRequested; i++)
             {
-                Parallel.ForEach(Plugins.Where(p => p.Meta.Enabled && p.IsLoaded), async plugin =>
+                var plugin = enabledPlugins[i];
+                if (!await plugin.Activate(query))
                 {
-                    if (await plugin.Activate(query))
-                    {
-                        activePlugins.Add(plugin, ct);
-                    }
-                });
-
-                activePlugins.CompleteAdding();
-            }, ct);
-
-            var results = new List<Tuple<IPlugin, AbstractQueryResult>>(20);
-            var tasks = new List<Task>();
-            while (activePlugins.TryTake(out var plugin, TimeSpan.FromSeconds(1)) && query.ResultCount < 20)
-            {
-                tasks.Add(Task.Run(async () =>
+                    continue;
+                }
+                
+                await foreach (var result in plugin.Process(query, ct))
                 {
-                    await foreach (var result in plugin.Process(query, ct))
-                    {
-                        query.ResultCount++;
-                        lock (results)
-                        {
-                            results.Add(new Tuple<IPlugin, AbstractQueryResult>(plugin, result));
-                        }
-                    }
-                }, ct));
+                    query.ResultCount++;
+                    yield return result;
+                }
             }
-
-            await Task.WhenAll(tasks);
-
-            return results
-                .OrderByDescending(tuple => tuple.Item1.Meta.Priority)
-                .Select(tuple => tuple.Item2)
-                .ToList();
         }
     }
 }
