@@ -18,6 +18,7 @@ namespace Pinpoint.Plugin.AppSearch
 
         private static readonly IAppProvider[] RuntimeAppProviders = {
             new StandardAppProvider(),
+            new PathAppProvider()
         };
 
         public AppSearchPlugin()
