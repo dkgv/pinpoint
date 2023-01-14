@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Pinpoint.Plugin.AppSearch;
 
@@ -18,8 +19,13 @@ public class PathAppProvider : IAppProvider
         }
         
         var paths = environmentVariable?.Split(';') ?? Array.Empty<string>();
-        _cachedApps = new DirectoryAppProvider(paths).Provide().ToList();
         _cachedPath = environmentVariable;
+        
+        var task = Task.Run(() => new DirectoryAppProvider(paths).Provide().ToList());
+        task.ContinueWith(t =>
+        {
+            _cachedApps = t.Result;
+        });
         
         return _cachedApps;
     }
