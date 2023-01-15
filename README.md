@@ -68,7 +68,7 @@ Defines words.
 
 ### Emoji searcher
 
-Enables you to search and insert emojis whenever and wherever you need them.i
+Enables you to search and insert emojis whenever and wherever you need them.
 
 ### Encoder/decoder
 
@@ -157,6 +157,4 @@ Fetches weather forecasts (daily and weekly) for provided locations.
 
 ## Contributing
 
-All contributions are valued and welcome. You may add new features but naturally also improve existing ones. Feel free to browse current [open issues](https://github.com/dkgv/pinpoint/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) if you need inspiration.
-
-Please create one branch + PR per major change you make🙏
+Contributions are valued and welcome. Feel free to add new features but naturally also to improve existing ones. You can browse current [open issues](https://github.com/dkgv/pinpoint/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) if you need inspiration. Please create one branch + PR per major change you make🙏
