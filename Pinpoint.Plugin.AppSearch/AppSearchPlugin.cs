@@ -64,7 +64,7 @@ namespace Pinpoint.Plugin.AppSearch
             var runtimeAppMatches = RuntimeAppProviders.SelectMany(provider => provider.Provide())
                     .Where(a =>
                     {
-                        var variations = GenerateNamesFor(a.Name.ToLower());
+                        var variations = GenerateAliases(a.Name);
                         return variations.Any(v => v.StartsWith(queryLower));
                     });
 
@@ -79,38 +79,39 @@ namespace Pinpoint.Plugin.AppSearch
         {
             foreach (var app in provider.Provide())
             {
-                var appName = app.Name.ToLower();
-                _staticAppsTrie.Add(appName, app);
-
-                if (!app.Name.Contains(" "))
-                {
-                    continue;
-                }
-
-                foreach (var alternateName in GenerateNamesFor(appName))
+                foreach (var alternateName in GenerateAliases(app.Name))
                 {
                     _staticAppsTrie.Add(alternateName, app);
                 }
             }
         }
 
-        private IEnumerable<string> GenerateNamesFor(string appName)
+        private IEnumerable<string> GenerateAliases(string appName)
         {
-            yield return appName;
-
-            if (!appName.Contains(" "))
-            {
-                yield break;
-            }
-           
-            // Support search for "Mozilla Firefox" through both "Mozilla" and "Firefox"
-            var variations = appName.Split(" ");
-            foreach (var variation in variations)
-            {
-                yield return variation;
-            } 
+            yield return appName.ToLower();
             
-            // Support "visual studio code" -> "vsc"
+            var camelCaseAliases = GenerateCamelCaseAliases(appName);
+            foreach (var alias in camelCaseAliases)
+            {
+                yield return alias;
+            }
+            
+            var wordAliases = GenerateWordAliases(appName);
+            foreach (var alias in wordAliases)
+            {
+                yield return alias;
+            }
+
+            var acronymAliases = GenerateAcronymAliases(appName);
+            foreach (var alias in acronymAliases)
+            {
+                yield return alias;
+            }
+        }
+
+        private IEnumerable<string> GenerateAcronymAliases(string appName)
+        {
+            var variations = appName.ToLower().Split(' ');
             if (variations.Length <= 1)
             {
                 yield break;
@@ -119,7 +120,51 @@ namespace Pinpoint.Plugin.AppSearch
             var appAcronymLetters = variations.Where(part => part.Length > 0)
                 .Select(part => part[0])
                 .ToArray();
-            yield return string.Join("", appAcronymLetters);;
+            yield return string.Join("", appAcronymLetters);
+        }
+
+        private IEnumerable<string> GenerateWordAliases(string appName)
+        {
+            if (!appName.Contains(' '))
+            {
+                yield break;
+            }
+            
+            var variations = appName.ToLower().Split(" ");
+            foreach (var variation in variations)
+            {
+                yield return variation;
+            }
+        }
+
+        private IEnumerable<string> GenerateCamelCaseAliases(string appName)
+        {
+            if (appName.All(char.IsLower) || appName.All(char.IsUpper))
+            {
+                yield break;
+            }
+            
+            var subWords = appName.Split(' ');
+            foreach (var subWord in subWords)
+            {
+                var currentVariation = "";
+                foreach (var c in subWord)
+                {
+                    if (char.IsUpper(c) && currentVariation.Length > 1)
+                    {
+                        yield return currentVariation;
+                        currentVariation = c.ToString().ToLower();
+                        continue;
+                    }
+                
+                    currentVariation += c;
+                }
+                
+                if (currentVariation.Length > 1)
+                {
+                    yield return currentVariation.ToLower();
+                }
+            }
         }
     }
 }
