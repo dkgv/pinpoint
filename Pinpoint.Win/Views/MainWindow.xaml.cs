@@ -168,7 +168,6 @@ namespace Pinpoint.Win.Views
         
         public async void OnSystemClipboardPaste([CanBeNull] object sender, HotkeyEventArgs e)
         {
-            var plugin = Model.PluginEngine.GetPluginByType<ClipboardManagerPlugin>();
             if (ClipboardHelper.History.Count == 0)
             {
                 return;
@@ -177,10 +176,12 @@ namespace Pinpoint.Win.Views
             Model.Results.Clear();
 
             // Fetch clipboard results
-            var results = await plugin.Process(null, _cts.Token).ToListAsync();
+            var clipboardManagerPlugin = Model.PluginEngine.GetPluginByType<ClipboardManagerPlugin>();
+            var results = await clipboardManagerPlugin.Process(null, _cts.Token).ToListAsync();
             AddResults(results);
 
             _isClipboardManagerOpen = true;
+            TxtQuery.Focus();
 
             if (Visibility != Visibility.Visible)
             {
@@ -295,14 +296,13 @@ namespace Pinpoint.Win.Views
 
         private void TxtQuery_OnKeyDown(object sender, KeyEventArgs e)
         {
-            // Check if CTRL+0-9 was pressed
-            var isDigitPressed = (int)e.Key >= 35 && (int)e.Key <= 43;
-            var resultIndex = (int)e.Key - 35;
-
             if (IsCtrlKeyDown())
             {
+                // Check if CTRL+0-9 was pressed
+                var isDigitPressed = (int)e.Key >= 35 && (int)e.Key <= 43;
                 if (isDigitPressed)
                 {
+                    var resultIndex = (int)e.Key - 35;
                     LstResults.SelectedIndex = resultIndex;
                     TryOpenSelectedResult();
                 }
@@ -343,15 +343,14 @@ namespace Pinpoint.Win.Views
                     {
                         HideQueryResultOptions();
                     }
+                    else if (_isClipboardManagerOpen)
+                    {
+                        _isClipboardManagerOpen = false;
+                        Model.Results.Clear();
+                        Model.CacheResults.Clear();
+                    } 
                     else
                     {
-                        if (_isClipboardManagerOpen)
-                        {
-                            _isClipboardManagerOpen = false;
-                            Model.Results.Clear();
-                            Model.CacheResults.Clear();
-                        }
-
                         Hide();
                     }
                     break;
@@ -695,6 +694,12 @@ namespace Pinpoint.Win.Views
             if (Model.Results.Count == 0)
             {
                 return;
+            }
+            
+            if (!TxtQuery.IsFocused)
+            {
+                TxtQuery.Focus();
+                TxtQuery.CaretIndex = TxtQuery.Text.Length;
             }
 
             switch ((int) e.Key)
