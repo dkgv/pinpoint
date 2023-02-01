@@ -64,6 +64,7 @@ namespace Pinpoint.Win.Views
         private double _leftOffsetRatio = 0, _topOffsetRatio = 0;
         private Point _defaultWindowPosition;
         private readonly WindowPositionHelper _windowPositionHelper = new();
+        private bool _isClipboardManagerOpen = false;
 
         public MainWindow()
         {
@@ -179,6 +180,8 @@ namespace Pinpoint.Win.Views
             var results = await plugin.Process(null, _cts.Token).ToListAsync();
             AddResults(results);
 
+            _isClipboardManagerOpen = true;
+
             if (Visibility != Visibility.Visible)
             {
                 OnToggleVisibility(sender, e);
@@ -195,6 +198,7 @@ namespace Pinpoint.Win.Views
             if (Visibility == Visibility.Visible)
             {
                 Hide();
+                _isClipboardManagerOpen = false;
             }
             else
             {
@@ -341,6 +345,13 @@ namespace Pinpoint.Win.Views
                     }
                     else
                     {
+                        if (_isClipboardManagerOpen)
+                        {
+                            _isClipboardManagerOpen = false;
+                            Model.Results.Clear();
+                            Model.CacheResults.Clear();
+                        }
+
                         Hide();
                     }
                     break;
@@ -351,17 +362,56 @@ namespace Pinpoint.Win.Views
         {
             CancelRunningSearch();
 
-            if (string.IsNullOrWhiteSpace(TxtQuery.Text))
+            var query = TxtQuery.Text;
+
+            if (_isClipboardManagerOpen)
+            {
+                FilterClipboardHistory(query);
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    Model.Results.Clear();
+                }
+
+                if (!Model.PreviousQuery.Equals(query))
+                {
+                    _ = Dispatcher.Invoke(async () => await UpdateResults());
+                }
+            }
+
+            Model.PreviousQuery = query;
+        }
+
+        private void FilterClipboardHistory(string query)
+        {
+            // Query was cleared
+            if (string.IsNullOrEmpty(query) && Model.CacheResults.Any())
             {
                 Model.Results.Clear();
+                Model.Results.AddRange(Model.CacheResults);
+                Model.CacheResults.Clear();
+                return;
             }
 
-            if (!Model.PreviousQuery.Equals(TxtQuery.Text))
+            bool Predicate(AbstractQueryResult r) => !r.Title.ToLower().Contains(query?.ToLower() ?? string.Empty);
+
+            // Query is shorter than previous (less strict)
+            if (Model.PreviousQuery.Length > query?.Length)
             {
-                _ = Dispatcher.Invoke(async () => await UpdateResults());
+                Model.Results.Clear();
+                Model.Results.AddRange(Model.CacheResults.Where(x => !Predicate(x)));
+                return;
             }
 
-            Model.PreviousQuery = TxtQuery.Text;
+            // First time filtering
+            if (!Model.CacheResults.Any())
+            {
+                Model.CacheResults.AddRange(Model.Results);
+            }
+
+            Model.Results.RemoveWhere(Predicate);
         }
 
         private void ShowQueryResultOptions(int listIndex)
