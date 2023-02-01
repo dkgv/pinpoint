@@ -425,8 +425,6 @@ namespace Pinpoint.Win.Views
                 return;
             }
 
-            Model.Results.Clear();
-
             // Remove old results and add clipboard history content
             Model.Results.Clear();
             await AwaitAddEnumerable(Model.PluginEngine.Process(query, _cts.Token));
@@ -644,13 +642,26 @@ namespace Pinpoint.Win.Views
 
         private void TxtQuery_OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Down || Model.Results.Count == 0)
+            if (Model.Results.Count == 0)
             {
                 return;
             }
 
-            TxtQuery.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
-            LstResults.SelectedIndex++;
+            switch ((int) e.Key)
+            {
+                case (int)Key.Down:
+                    LstResults.SelectedIndex++;
+                    break;
+
+                case (int)Key.Up:
+                    if (LstResults.SelectedIndex > 0)
+                    {
+                        LstResults.SelectedIndex--;
+                    }
+
+                    break;
+            }
+
         }
     }
 }
