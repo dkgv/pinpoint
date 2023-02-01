@@ -64,7 +64,7 @@ namespace Pinpoint.Win.Views
         private double _leftOffsetRatio = 0, _topOffsetRatio = 0;
         private Point _defaultWindowPosition;
         private readonly WindowPositionHelper _windowPositionHelper = new();
-        private bool _isClipboardManagerOpen = false;
+        private bool _isClipboardManagerOpen;
 
         public MainWindow()
         {
@@ -182,6 +182,7 @@ namespace Pinpoint.Win.Views
 
             _isClipboardManagerOpen = true;
             TxtQuery.Focus();
+            Model.Watermark = "Pinpoint (clipboard)";
 
             if (Visibility != Visibility.Visible)
             {
@@ -200,6 +201,7 @@ namespace Pinpoint.Win.Views
             {
                 Hide();
                 _isClipboardManagerOpen = false;
+                Model.Watermark = "Pinpoint";
             }
             else
             {
@@ -348,7 +350,8 @@ namespace Pinpoint.Win.Views
                         _isClipboardManagerOpen = false;
                         Model.Results.Clear();
                         Model.CacheResults.Clear();
-                    } 
+                        Model.Watermark = "Pinpoint";
+                    }
                     else
                     {
                         Hide();
@@ -390,6 +393,11 @@ namespace Pinpoint.Win.Views
             {
                 Model.Results.Clear();
                 Model.Results.AddRange(Model.CacheResults);
+                if (Model.Results.Any())
+                {
+                    LstResults.SelectedIndex = 0;
+                }
+                
                 Model.CacheResults.Clear();
                 return;
             }
@@ -702,21 +710,19 @@ namespace Pinpoint.Win.Views
                 TxtQuery.CaretIndex = TxtQuery.Text.Length;
             }
 
-            switch ((int) e.Key)
+            switch (e.Key)
             {
-                case (int)Key.Down:
+                case Key.Down:
                     LstResults.SelectedIndex++;
                     break;
 
-                case (int)Key.Up:
+                case Key.Up:
                     if (LstResults.SelectedIndex > 0)
                     {
                         LstResults.SelectedIndex--;
                     }
-
                     break;
             }
-
         }
     }
 }
