@@ -64,6 +64,7 @@ namespace Pinpoint.Win.Views
         private double _leftOffsetRatio = 0, _topOffsetRatio = 0;
         private Point _defaultWindowPosition;
         private readonly WindowPositionHelper _windowPositionHelper = new();
+        private bool _isClipboardManagerOpen;
 
         public MainWindow()
         {
@@ -167,7 +168,6 @@ namespace Pinpoint.Win.Views
         
         public async void OnSystemClipboardPaste([CanBeNull] object sender, HotkeyEventArgs e)
         {
-            var plugin = Model.PluginEngine.GetPluginByType<ClipboardManagerPlugin>();
             if (ClipboardHelper.History.Count == 0)
             {
                 return;
@@ -176,8 +176,13 @@ namespace Pinpoint.Win.Views
             Model.Results.Clear();
 
             // Fetch clipboard results
-            var results = await plugin.Process(null, _cts.Token).ToListAsync();
+            var clipboardManagerPlugin = Model.PluginEngine.GetPluginByType<ClipboardManagerPlugin>();
+            var results = await clipboardManagerPlugin.Process(null, _cts.Token).ToListAsync();
             AddResults(results);
+
+            _isClipboardManagerOpen = true;
+            TxtQuery.Focus();
+            Model.Watermark = "Pinpoint (clipboard)";
 
             if (Visibility != Visibility.Visible)
             {
@@ -195,6 +200,8 @@ namespace Pinpoint.Win.Views
             if (Visibility == Visibility.Visible)
             {
                 Hide();
+                _isClipboardManagerOpen = false;
+                Model.Watermark = "Pinpoint";
             }
             else
             {
@@ -291,14 +298,13 @@ namespace Pinpoint.Win.Views
 
         private void TxtQuery_OnKeyDown(object sender, KeyEventArgs e)
         {
-            // Check if CTRL+0-9 was pressed
-            var isDigitPressed = (int)e.Key >= 35 && (int)e.Key <= 43;
-            var resultIndex = (int)e.Key - 35;
-
             if (IsCtrlKeyDown())
             {
+                // Check if CTRL+0-9 was pressed
+                var isDigitPressed = (int)e.Key >= 35 && (int)e.Key <= 43;
                 if (isDigitPressed)
                 {
+                    var resultIndex = (int)e.Key - 35;
                     LstResults.SelectedIndex = resultIndex;
                     TryOpenSelectedResult();
                 }
@@ -339,6 +345,13 @@ namespace Pinpoint.Win.Views
                     {
                         HideQueryResultOptions();
                     }
+                    else if (_isClipboardManagerOpen)
+                    {
+                        _isClipboardManagerOpen = false;
+                        Model.Results.Clear();
+                        Model.CacheResults.Clear();
+                        Model.Watermark = "Pinpoint";
+                    }
                     else
                     {
                         Hide();
@@ -351,17 +364,61 @@ namespace Pinpoint.Win.Views
         {
             CancelRunningSearch();
 
-            if (string.IsNullOrWhiteSpace(TxtQuery.Text))
+            var query = TxtQuery.Text;
+
+            if (_isClipboardManagerOpen)
+            {
+                FilterClipboardHistory(query);
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    Model.Results.Clear();
+                }
+
+                if (!Model.PreviousQuery.Equals(query))
+                {
+                    _ = Dispatcher.Invoke(async () => await UpdateResults());
+                }
+            }
+
+            Model.PreviousQuery = query;
+        }
+
+        private void FilterClipboardHistory(string query)
+        {
+            // Query was cleared
+            if (string.IsNullOrEmpty(query) && Model.CacheResults.Any())
             {
                 Model.Results.Clear();
+                Model.Results.AddRange(Model.CacheResults);
+                if (Model.Results.Any())
+                {
+                    LstResults.SelectedIndex = 0;
+                }
+                
+                Model.CacheResults.Clear();
+                return;
             }
 
-            if (!Model.PreviousQuery.Equals(TxtQuery.Text))
+            bool Predicate(AbstractQueryResult r) => !r.Title.ToLower().Contains(query?.ToLower() ?? string.Empty);
+
+            // Query is shorter than previous (less strict)
+            if (Model.PreviousQuery.Length > query?.Length)
             {
-                _ = Dispatcher.Invoke(async () => await UpdateResults());
+                Model.Results.Clear();
+                Model.Results.AddRange(Model.CacheResults.Where(x => !Predicate(x)));
+                return;
             }
 
-            Model.PreviousQuery = TxtQuery.Text;
+            // First time filtering
+            if (!Model.CacheResults.Any())
+            {
+                Model.CacheResults.AddRange(Model.Results);
+            }
+
+            Model.Results.RemoveWhere(Predicate);
         }
 
         private void ShowQueryResultOptions(int listIndex)
@@ -424,8 +481,6 @@ namespace Pinpoint.Win.Views
             {
                 return;
             }
-
-            Model.Results.Clear();
 
             // Remove old results and add clipboard history content
             Model.Results.Clear();
@@ -644,13 +699,30 @@ namespace Pinpoint.Win.Views
 
         private void TxtQuery_OnPreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key != Key.Down || Model.Results.Count == 0)
+            if (Model.Results.Count == 0)
             {
                 return;
             }
+            
+            if (!TxtQuery.IsFocused)
+            {
+                TxtQuery.Focus();
+                TxtQuery.CaretIndex = TxtQuery.Text.Length;
+            }
 
-            TxtQuery.MoveFocus(new TraversalRequest(FocusNavigationDirection.Down));
-            LstResults.SelectedIndex++;
+            switch (e.Key)
+            {
+                case Key.Down:
+                    LstResults.SelectedIndex++;
+                    break;
+
+                case Key.Up:
+                    if (LstResults.SelectedIndex > 0)
+                    {
+                        LstResults.SelectedIndex--;
+                    }
+                    break;
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Pinpoint.Win.ViewModels
@@ -50,6 +51,19 @@ namespace Pinpoint.Win.ViewModels
                 var oldItem = this[index];
                 _hashSet.Remove(oldItem);
                 base.SetItem(index, item);
+            }
+        }
+
+        public void RemoveWhere(Predicate<T> predicate)
+        {
+            for (var i = Count - 1; i >= 0; i--)
+            {
+                if (!predicate(this[i]))
+                {
+                    continue;
+                }
+
+                RemoveItem(i);
             }
         }
     }
