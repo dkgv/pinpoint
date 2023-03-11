@@ -23,7 +23,7 @@ namespace Pinpoint.Core.Clipboard
         {
             _ = Task.Run(async () =>
               {
-                  await Task.Delay(100);
+                  await Task.Delay(300);
                   SendKeys.SendWait("^{v}");
               });
         }
