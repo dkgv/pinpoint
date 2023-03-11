@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Pinpoint.Plugin.AppSearch;
+namespace Pinpoint.Plugin.AppSearch.Providers;
 
 public class PathAppProvider : IAppProvider
 {

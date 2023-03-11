@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.AppSearch
@@ -11,6 +12,17 @@ namespace Pinpoint.Plugin.AppSearch
         public AppSearchFrequency(IPlugin plugin)
         {
             _plugin = plugin;
+            
+            if (_plugin.Storage.InternalSettings.ContainsKey("database"))
+            {
+                Load();
+            }
+        }
+
+        private void Load()
+        {
+            Database = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, int>>>(
+                _plugin.Storage.InternalSettings["database"].ToString());
         }
 
         public void Track(string query, string exactMatch)
