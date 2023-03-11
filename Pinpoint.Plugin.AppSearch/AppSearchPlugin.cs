@@ -18,12 +18,7 @@ namespace Pinpoint.Plugin.AppSearch
             new PathAppProvider()
         };
 
-        public readonly AppSearchFrequency AppSearchFrequency;
-
-        public AppSearchPlugin()
-        {
-            AppSearchFrequency = new AppSearchFrequency(this);
-        }
+        public AppSearchFrequency AppSearchFrequency;
 
         private const string Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\"";
 
@@ -35,6 +30,8 @@ namespace Pinpoint.Plugin.AppSearch
 
         public async Task<bool> TryLoad()
         {
+            AppSearchFrequency = new AppSearchFrequency(this);
+            
             var tasks = new List<Task>
             {
                 Task.Run(() => PopulateCache(new UwpAppProvider())),
