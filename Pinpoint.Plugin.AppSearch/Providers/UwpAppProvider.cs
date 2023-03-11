@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Pinpoint.Core;
 
-namespace Pinpoint.Plugin.AppSearch
+namespace Pinpoint.Plugin.AppSearch.Providers
 {
     public class UwpAppProvider : IAppProvider
     {

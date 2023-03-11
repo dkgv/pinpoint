@@ -4,27 +4,21 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
-using Newtonsoft.Json;
 using Pinpoint.Core;
 using Pinpoint.Core.Results;
+using Pinpoint.Plugin.AppSearch.Providers;
 
 namespace Pinpoint.Plugin.AppSearch
 {
     public class AppSearchPlugin : IPlugin
     {
-        private UkkonenTrie<IApp> _staticAppsTrie = new();
-
-        public AppSearchFrequency AppSearchFrequency;
-
+        private static readonly UkkonenTrie<IApp> CachedAppsTrie = new();
         private static readonly IAppProvider[] RuntimeAppProviders = {
             new StandardAppProvider(),
             new PathAppProvider()
         };
 
-        public AppSearchPlugin()
-        {
-            AppSearchFrequency = new AppSearchFrequency(this);
-        }
+        public AppSearchFrequency AppSearchFrequency;
 
         private const string Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\"";
 
@@ -36,20 +30,21 @@ namespace Pinpoint.Plugin.AppSearch
 
         public async Task<bool> TryLoad()
         {
-            if (Storage.InternalSettings.ContainsKey("database"))
-            {
-                AppSearchFrequency.Database =
-                    JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, int>>>(Storage.InternalSettings["database"].ToString());
-            }
+            AppSearchFrequency = new AppSearchFrequency(this);
             
-            PopulateFromProvider(new UwpAppProvider());
+            var tasks = new List<Task>
+            {
+                Task.Run(() => PopulateCache(new UwpAppProvider())),
+            }.Concat(
+                RuntimeAppProviders.Select(provider => Task.Run(() => PopulateCache(provider))).ToList()
+            );
+            await Task.WhenAll(tasks);
 
             return IsLoaded = true;
         }
 
         public void Unload()
         {
-            _staticAppsTrie = new UkkonenTrie<IApp>();
             AppSearchFrequency.Reset();
         }
 
@@ -59,29 +54,30 @@ namespace Pinpoint.Plugin.AppSearch
         {
             var queryLower = query.RawQuery.ToLower();
 
-            var staticAppMatches = _staticAppsTrie.Retrieve(queryLower);
-
-            var runtimeAppMatches = RuntimeAppProviders.SelectMany(provider => provider.Provide())
+            var staticMatches = CachedAppsTrie.Retrieve(queryLower);
+            var runtimeMatches = RuntimeAppProviders.SelectMany(provider => provider.Provide())
                     .Where(a =>
                     {
                         var variations = GenerateAliases(a.Name);
                         return variations.Any(v => v.StartsWith(queryLower));
                     });
-
-           foreach (var app in staticAppMatches.Concat(runtimeAppMatches)
-                        .OrderByDescending(a => AppSearchFrequency.FrequencyOfFor(queryLower, a.FilePath)))
+            var allMatches = staticMatches
+                .Concat(runtimeMatches)
+                .OrderByDescending(a => AppSearchFrequency.FrequencyOfFor(queryLower, a.FilePath));
+            
+           foreach (var app in allMatches)
            {
                yield return new AppResult(this, app, queryLower);
            }
         }
 
-        private void PopulateFromProvider(IAppProvider provider)
+        private void PopulateCache(IAppProvider provider)
         {
             foreach (var app in provider.Provide())
             {
                 foreach (var alternateName in GenerateAliases(app.Name))
                 {
-                    _staticAppsTrie.Add(alternateName, app);
+                    CachedAppsTrie.Add(alternateName, app);
                 }
             }
         }

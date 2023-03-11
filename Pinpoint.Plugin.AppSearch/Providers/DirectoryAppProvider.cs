@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Pinpoint.Plugin.AppSearch
+namespace Pinpoint.Plugin.AppSearch.Providers
 {
     public class DirectoryAppProvider : IAppProvider
     {
         private readonly string[] _paths;
+        private readonly Dictionary<string, DateTime> _lastPathWriteCache = new();
+        private readonly List<IApp> _cachedApps = new();
+        private readonly HashSet<string> _uniqueAppNames = new();
 
         public DirectoryAppProvider(string[] paths)
         {
@@ -16,24 +19,29 @@ namespace Pinpoint.Plugin.AppSearch
 
         public IEnumerable<IApp> Provide()
         {
-            var uniqueAppNames = new HashSet<string>();
-            foreach (var path in _paths.Where(Directory.Exists))
+            foreach (var path in GetPathsNeedUpdate())
             {
                 foreach (var shortcut in FindApps(path))
                 {
                     var nameWithoutExtension = Path.GetFileNameWithoutExtension(shortcut);
-                    if (!uniqueAppNames.Add(nameWithoutExtension))
+                    if (!_uniqueAppNames.Add(nameWithoutExtension))
                     {
                         continue;
                     }
 
-                    yield return new StandardApp
+                    var app = new StandardApp
                     {
                         Name = nameWithoutExtension,
                         FilePath = shortcut,
                         IconLocation = shortcut
                     };
+                    _cachedApps.Add(app);
                 }
+            }
+            
+            foreach (var cachedApp in _cachedApps)
+            {
+                yield return cachedApp;
             }
         }
 
@@ -59,6 +67,21 @@ namespace Pinpoint.Plugin.AppSearch
             }
             
             return extensions.SelectMany(SafeGetFiles); 
+        }
+        
+        private IEnumerable<string> GetPathsNeedUpdate()
+        {
+            foreach (var path in _paths.Where(Directory.Exists))
+            {
+                var currentLastWrite = Directory.GetLastWriteTime(path);
+                if (_lastPathWriteCache.ContainsKey(path) && currentLastWrite <= _lastPathWriteCache[path])
+                {
+                    continue;
+                }
+                
+                _lastPathWriteCache[path] = currentLastWrite;
+                yield return path;
+            }
         }
     }
 }

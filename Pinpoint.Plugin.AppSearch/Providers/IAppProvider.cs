@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Pinpoint.Plugin.AppSearch
+namespace Pinpoint.Plugin.AppSearch.Providers
 {
     public interface IAppProvider
     {
