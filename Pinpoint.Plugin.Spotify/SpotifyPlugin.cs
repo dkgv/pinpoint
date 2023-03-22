@@ -61,7 +61,7 @@ namespace PinPoint.Plugin.Spotify
                     var tokens = await _authManager.Authenticate();
                     if (tokens?.access_token != null && tokens.refresh_token != null)
                     {
-                        _spotifyClient.InitializeClientWithTokens(tokens);
+                        await _spotifyClient.InitializeClientWithTokens(tokens);
                         _isAuthenticated = true;
                     }
 

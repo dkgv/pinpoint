@@ -23,12 +23,12 @@ namespace Pinpoint.Plugin.Spotify.Client
             return _instance ??= new SpotifyClient();
         }
 
-        public void InitializeClientWithTokens(TokenResult tokens)
+        public async Task InitializeClientWithTokens(TokenResult tokens)
         {
             _accessToken = tokens.access_token;
 
             Plugin.Storage.InternalSettings["refresh_token"] = tokens.refresh_token;
-            Plugin.Save();
+            await Plugin.Save();
         }
 
         public async Task<List<SpotifyResultEntity>> Search(string query, string type)
@@ -177,7 +177,7 @@ namespace Pinpoint.Plugin.Spotify.Client
             }
 
             Plugin.Storage.InternalSettings["refresh_token"] = refreshToken;
-            Plugin.Save();
+            await Plugin.Save();
         }
 
         public void Dispose()

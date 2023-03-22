@@ -51,6 +51,7 @@ using MessageBox = System.Windows.MessageBox;
 using Pinpoint.Win.Utils;
 using System.Windows.Media;
 using Pinpoint.Plugin.Emoji;
+using Pinpoint.Plugin.OpenAI;
 
 namespace Pinpoint.Win.Views
 {
@@ -159,7 +160,8 @@ namespace Pinpoint.Win.Views
                 Model.PluginEngine.AddPlugin(new TimezoneConverterPlugin()),
                 Model.PluginEngine.AddPlugin(new TranslatePlugin()),
                 Model.PluginEngine.AddPlugin(new ShortcutsPlugin()),
-                Model.PluginEngine.AddPlugin(new EmojiPlugin())
+                Model.PluginEngine.AddPlugin(new EmojiPlugin()),
+                Model.PluginEngine.AddPlugin(new OpenAIPlugin())
             };
 
             await Task.WhenAll(addPluginTasks);
@@ -484,7 +486,7 @@ namespace Pinpoint.Win.Views
 
             // Remove old results and add clipboard history content
             Model.Results.Clear();
-            await AwaitAddEnumerable(Model.PluginEngine.Process(query, _cts.Token));
+            await AwaitAddEnumerable(Model.PluginEngine.EvaluateQuery(_cts.Token, query));
         }
         
         private async Task AwaitAddEnumerable(IAsyncEnumerable<AbstractQueryResult> enumerable)

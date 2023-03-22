@@ -94,6 +94,10 @@ Converts between metric and imperial units.
 
 Allows you to create and save notes/snippets.
 
+### OpenAI
+
+Query ChatGPT directly from your desktop. Requires OpenAI API key.
+
 ### Operating system
 
 Allows you to shut down, restart/reboot, and sleep your computer from Pinpoint.
