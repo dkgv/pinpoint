@@ -52,10 +52,13 @@ namespace Pinpoint.Win.Views
         {
             e.Cancel = true;
 
-            foreach (var plugin in Model.Plugins)
+            Dispatcher.InvokeAsync(async () =>
             {
-                plugin.Save();
-            }
+                foreach (var plugin in Model.Plugins)
+                {
+                    await plugin.Save();
+                }
+            });
 
             Hide();
         }

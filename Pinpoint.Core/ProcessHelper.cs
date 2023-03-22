@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using Newtonsoft.Json;
@@ -66,6 +67,13 @@ namespace Pinpoint.Core
                     throw;
                 }
             }
+        }
+        
+        public static void OpenNotepad(string text)
+        {
+            var tempFile = Path.GetTempFileName();
+            File.WriteAllText(tempFile, text);
+            Process.Start("notepad.exe", tempFile);
         }
     }
 }
