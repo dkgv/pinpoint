@@ -12,7 +12,7 @@ namespace Pinpoint.Core
     {
         public PluginMeta Meta { get; set; }
 
-        public PluginStorage Storage { get; set; } 
+        public PluginStorage Storage { get; set; }
 
         bool ModifiableSettings => false;
 
