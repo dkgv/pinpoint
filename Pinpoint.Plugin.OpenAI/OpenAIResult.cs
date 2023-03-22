@@ -5,7 +5,7 @@ namespace Pinpoint.Plugin.OpenAI;
 
 public class OpenAIResult : OpenInNotepadResult
 {
-    public OpenAIResult(string question, string reply) : base($"Question: {question}{Environment.NewLine}Reply: {reply}")
+    public OpenAIResult(string question, string reply) : base($"Question: {question}{Environment.NewLine}Answer: {reply}")
     {
     }
 
