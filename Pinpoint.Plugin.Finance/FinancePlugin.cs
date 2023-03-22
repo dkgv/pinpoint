@@ -18,7 +18,9 @@ namespace Pinpoint.Plugin.Finance
         public PluginMeta Meta { get; set; } = new("Finance Plugin", Description, PluginPriority.Highest);
 
         public PluginStorage Storage { get; set; } = new();
-        
+
+        public TimeSpan DebounceTime => TimeSpan.FromMilliseconds(200);
+
         public async Task<bool> Activate(Query query)
         {
             if (query.Parts.Length != 1 || !query.Prefix().Equals("$") || query.RawQuery.Length < 3)
