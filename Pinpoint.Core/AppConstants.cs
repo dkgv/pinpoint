@@ -13,6 +13,6 @@ namespace Pinpoint.Core
         public const string HotkeyToggleVisibilityId = "ToggleVisibility";
         public const string HotkeyPasteId = "PasteFromClipboard";
 
-        public const string Version = "0.3.4";
+        public const string Version = "0.3.5";
     }
 }
