@@ -9,10 +9,17 @@ Pinpoint is an extensible keystroke launcher and productivity tool written in C#
 
 ## Table of Contents
 
+- [Media](#media)
 - [Installation](#installation)
 - [Features](#features)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [Contributing](#contributing)
+
+## Media
+
+The following video showcases a subset of the features that Pinpoint offers.
+
+https://user-images.githubusercontent.com/11279580/227036269-3b8be90f-71b6-4fb9-85e0-02361dfd5db2.mp4
 
 ## Installation
 
