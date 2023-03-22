@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -18,6 +19,8 @@ namespace Pinpoint.Plugin.Translate
         public PluginMeta Meta { get; set; } = new("Translate Plugin", Description, PluginPriority.NextHighest);
 
         public PluginStorage Storage { get; set; } = new();
+
+        public TimeSpan DebounceTime => TimeSpan.FromMilliseconds(250);
 
         public async Task<bool> Activate(Query query)
         {

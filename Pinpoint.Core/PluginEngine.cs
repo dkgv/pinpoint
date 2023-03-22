@@ -48,9 +48,11 @@ namespace Pinpoint.Core
 
         public T GetPluginByType<T>() where T : IPlugin => Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public async IAsyncEnumerable<AbstractQueryResult> EvaluateQuery([EnumeratorCancellation] CancellationToken ct,
+            Query query)
         {
             var enabledPlugins = Plugins.Where(p => p.Meta.Enabled && p.IsLoaded).ToList();
+            var debouncedPlugins = enabledPlugins.Where(p => p.DebounceTime > TimeSpan.Zero).ToHashSet();
             for (var i = 0; i < enabledPlugins.Count && query.ResultCount < 20 && !ct.IsCancellationRequested; i++)
             {
                 var plugin = enabledPlugins[i];
@@ -59,11 +61,37 @@ namespace Pinpoint.Core
                     continue;
                 }
                 
-                await foreach (var result in plugin.Process(query, ct))
+                if (debouncedPlugins.Contains(plugin))
                 {
-                    query.ResultCount++;
-                    yield return result;
+                    await foreach (var result in Debounce(ct, plugin, query))
+                    {
+                        query.ResultCount++;
+                        yield return result;
+                    }
                 }
+                else
+                {
+                    await foreach (var result in plugin.Process(query, ct))
+                    {
+                        query.ResultCount++;
+                        yield return result;
+                    }
+                }
+            }
+        }
+        
+        private async IAsyncEnumerable<AbstractQueryResult> Debounce([EnumeratorCancellation] CancellationToken ct, IPlugin plugin, Query query)
+        {
+            await Task.Delay(plugin.DebounceTime, ct);
+            if (ct.IsCancellationRequested)
+            {
+                yield break;
+            }
+
+            await foreach (var result in plugin.Process(query, ct))
+            {
+                query.ResultCount++;
+                yield return result;
             }
         }
     }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -18,16 +17,14 @@ namespace Pinpoint.Core
         bool ModifiableSettings => false;
 
         bool IsLoaded => true;
+        
+        TimeSpan DebounceTime => TimeSpan.Zero;
 
         public Task<bool> TryLoad() => Task.FromResult(true);
 
-        public void Unload()
-        {
-        }
-
         public Task<bool> Activate(Query query);
 
-        public IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct);
+        public IAsyncEnumerable<AbstractQueryResult> Process(Query query, CancellationToken ct);
 
         int IComparable<IPlugin>.CompareTo(IPlugin other)
         {
@@ -36,10 +33,10 @@ namespace Pinpoint.Core
 
         private string FilePath => Path.Combine(AppConstants.MainDirectory, $"{string.Concat(Meta.Name.Split(Path.GetInvalidFileNameChars()))}.json");
 
-        public void Save()
+        public async Task Save()
         {
             var json = JsonConvert.SerializeObject(new PluginState(Meta, Storage));
-            File.WriteAllText(FilePath, json);
+            await File.WriteAllTextAsync(FilePath, json);
         }
 
         public void Restore()
