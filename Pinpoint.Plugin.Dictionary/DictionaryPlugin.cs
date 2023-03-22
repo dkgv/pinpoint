@@ -15,26 +15,22 @@ namespace Pinpoint.Plugin.Dictionary
 {
     public class DictionaryPlugin : IPlugin
     {
-        private const string Description = "Find word definitions.\n\nExamples: \"cool meaning\", \"nice def\", \"sweet definition\"";
+        private const string Description = "Find word definitions.\n\nExamples: \"define ubiquitous\"";
 
-        private static readonly Regex DefineRegex = new(@"(meaning|def|define|definition)$");
+        private static readonly Regex DefineRegex = new(@"^(define)");
 
         public PluginMeta Meta { get; set; } = new("Dictionary", Description, PluginPriority.Standard);
 
         public PluginStorage Storage { get; set; } = new();
 
-        public void Unload()
-        {
-        }
-
         public async Task<bool> Activate(Query query)
         {
-            return query.Parts.Length == 2 && DefineRegex.IsMatch(query.Parts[^1]);
+            return query.Parts.Length == 2 && DefineRegex.IsMatch(query.Parts[0]);
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var url = $"https://api.dictionaryapi.dev/api/v2/entries/en_US/{query.Parts[0]}";
+            var url = $"https://api.dictionaryapi.dev/api/v2/entries/en_US/{query.Parts[^1]}";
 
             var matches = await HttpHelper.SendGet(url, JArray.Parse);
 
