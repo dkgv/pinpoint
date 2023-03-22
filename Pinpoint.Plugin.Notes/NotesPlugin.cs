@@ -10,16 +10,11 @@ namespace Pinpoint.Plugin.Notes
 {
     public class NotesPlugin : IPlugin
     {
-        private const string Description = "Create and view quick notes.\n\nExamples: \"n+ a new note\", \"nls\" or \"notes\" to list existing notes";
+        private const string Description = "Create and view quick notes.\n\nExamples: \"note <new note>\" to create a note, \"notes\" to list existing notes";
 
         private static readonly string[] Actions = {
-            // List notes
-            "nls",
-            "notes",
-
-            // New note
-            "note",
-            "n+"
+            "notes", // List
+            "note" // Create
         };
         private readonly NotesManager _notesManager;
 
@@ -41,11 +36,8 @@ namespace Pinpoint.Plugin.Notes
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var notes = await _notesManager.GetNotes();
-            
             switch (query.Parts[0])
             {
-                case "n+":
                 case "note":
                     if (query.Parts.Length == 1)
                     {
@@ -56,8 +48,8 @@ namespace Pinpoint.Plugin.Notes
                     yield return new AddNoteResult(noteContent);
                     break;
                 
-                case "nls":
                 case "notes":
+                    var notes = await _notesManager.GetNotes();
                     foreach (var note in notes.OrderByDescending(n => n.CreatedAt))
                     {
                         yield return new NoteResult(note);
