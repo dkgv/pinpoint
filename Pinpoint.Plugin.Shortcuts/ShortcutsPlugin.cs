@@ -28,12 +28,7 @@ namespace Pinpoint.Plugin.Shortcuts
 
         public async Task<bool> Activate(Query query)
         {
-            if (query.Parts.Length == 2)
-            {
-                return Storage.UserSettings.Any(s => s.Name.Equals(query.Parts[0]));
-            }
-            
-            return Storage.UserSettings.Any(s => s.Name.Equals(query.RawQuery) && !s.Value.ToString()!.Contains("query"));
+            return Storage.UserSettings.Any(s => s.Name.Equals(query.Parts[0]));
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, CancellationToken ct)
