@@ -16,6 +16,11 @@ namespace Pinpoint.Plugin.Currency
 
             foreach (var (@base, model) in CurrencyModels)
             {
+                if (model == null)
+                {
+                    continue;
+                }
+
                 _validIsos.Add(@base.ToLower());
                 foreach (var (currency, _) in model.Rates)
                 {
