@@ -82,7 +82,7 @@ namespace Pinpoint.Win.Views
             Model.PluginEngine.Listeners.Add(App.Current.SettingsWindow);
         }
 
-        public MainViewModel Model => (MainViewModel) DataContext;
+        public MainViewModel Model => (MainViewModel)DataContext;
 
         private void ClipboardOnClipboardChanged([CanBeNull] object sender, SharpClipboard.ClipboardChangedEventArgs e)
         {
@@ -167,7 +167,7 @@ namespace Pinpoint.Win.Views
             await Task.WhenAll(addPluginTasks);
             Model.PluginEngine.Plugins.Sort();
         }
-        
+
         public async void OnSystemClipboardPaste([CanBeNull] object sender, HotkeyEventArgs e)
         {
             if (ClipboardHelper.History.Count == 0)
@@ -226,7 +226,7 @@ namespace Pinpoint.Win.Views
             MoveWindowToDefaultPosition();
 
             await LoadPlugins();
-            
+
             Model.Watermark = "Pinpoint";
             TxtQuery.IsEnabled = true;
             TxtQuery.Focus();
@@ -399,7 +399,7 @@ namespace Pinpoint.Win.Views
                 {
                     LstResults.SelectedIndex = 0;
                 }
-                
+
                 Model.CacheResults.Clear();
                 return;
             }
@@ -471,7 +471,7 @@ namespace Pinpoint.Win.Views
 
             // Set selected index to owner of options
             LstResults.SelectedIndex = _showingOptionsForIndex;
-            
+
             // Clear selection
             _showingOptionsForIndex = -1;
         }
@@ -488,7 +488,7 @@ namespace Pinpoint.Win.Views
             Model.Results.Clear();
             await AwaitAddEnumerable(Model.PluginEngine.EvaluateQuery(_cts.Token, query));
         }
-        
+
         private async Task AwaitAddEnumerable(IAsyncEnumerable<AbstractQueryResult> enumerable)
         {
             var shortcutKey = 0;
@@ -500,13 +500,13 @@ namespace Pinpoint.Win.Views
                     result.Shortcut = "CTRL+" + ++shortcutKey;
                 }
             }
-            
+
             if (Model.Results.Count > 0 && LstResults.SelectedIndex == -1)
             {
                 LstResults.SelectedIndex = 0;
             }
         }
-        
+
         private void AddResults(List<AbstractQueryResult> results)
         {
             var shortcutKey = 0;
@@ -586,7 +586,7 @@ namespace Pinpoint.Win.Views
             }
         }
 
-        private static readonly Key[] Digits = {Key.D1, Key.D2, Key.D3, Key.D4, Key.D5, Key.D6, Key.D7, Key.D8, Key.D9};
+        private static readonly Key[] Digits = { Key.D1, Key.D2, Key.D3, Key.D4, Key.D5, Key.D6, Key.D7, Key.D8, Key.D9 };
 
         private static Key GetDigitDown() => Digits.FirstOrDefault(Keyboard.IsKeyDown);
 
@@ -594,7 +594,8 @@ namespace Pinpoint.Win.Views
 
         private static bool IsAltKeyDown() => Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt) || Keyboard.IsKeyDown(Key.System);
 
-        private void CancelRunningSearch() {
+        private void CancelRunningSearch()
+        {
             _cts?.Cancel();
             _cts = new CancellationTokenSource();
         }
@@ -705,7 +706,7 @@ namespace Pinpoint.Win.Views
             {
                 return;
             }
-            
+
             if (!TxtQuery.IsFocused)
             {
                 TxtQuery.Focus();
@@ -716,6 +717,7 @@ namespace Pinpoint.Win.Views
             {
                 case Key.Down:
                     LstResults.SelectedIndex++;
+                    LstResults.ScrollIntoView(LstResults.SelectedItem);
                     break;
 
                 case Key.Up:
@@ -723,6 +725,7 @@ namespace Pinpoint.Win.Views
                     {
                         LstResults.SelectedIndex--;
                     }
+                    LstResults.ScrollIntoView(LstResults.SelectedItem);
                     break;
             }
         }
