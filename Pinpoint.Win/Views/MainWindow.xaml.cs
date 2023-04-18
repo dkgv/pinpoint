@@ -525,26 +525,6 @@ namespace Pinpoint.Win.Views
             }
         }
 
-        private void LstResults_OnKeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.System && IsAltKeyDown())
-            {
-                TryOpenPrimaryOption();
-                return;
-            }
-
-            if (e.Key is not (Key.LeftAlt or Key.RightAlt or Key.System))
-            {
-                return;
-            }
-
-            if (LstResults.SelectedIndex != -1)
-            {
-                ShowQueryResultOptions(LstResults.SelectedIndex);
-                e.Handled = true;
-            }
-        }
-
         private void LstResults_OnKeyDown(object sender, KeyEventArgs e)
         {
             switch (e.Key)
@@ -696,6 +676,26 @@ namespace Pinpoint.Win.Views
 
                 _leftOffsetRatio = windowOffsetRatio.LeftOffsetRatio;
                 _topOffsetRatio = windowOffsetRatio.TopOffsetRatio;
+            }
+        }
+
+        private void TxtQuery_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.System && IsAltKeyDown())
+            {
+                TryOpenPrimaryOption();
+                return;
+            }
+
+            if (e.Key is not (Key.LeftAlt or Key.RightAlt or Key.System))
+            {
+                return;
+            }
+
+            if (LstResults.SelectedIndex != -1)
+            {
+                ShowQueryResultOptions(LstResults.SelectedIndex);
+                e.Handled = true;
             }
         }
 

@@ -124,6 +124,7 @@
                                                CaretBrush="{StaticResource PrimaryTextColor}" 
                                                KeyDown="TxtQuery_OnKeyDown" 
                                                PreviewKeyDown="TxtQuery_OnPreviewKeyDown"
+                                               KeyUp="TxtQuery_KeyUp"
                                                TextChanged="TxtQuery_TextChanged">
                             <xctk:WatermarkTextBox.WatermarkTemplate>
                                 <DataTemplate>
@@ -142,7 +143,6 @@
                          HorizontalContentAlignment="Stretch"
                          ScrollViewer.HorizontalScrollBarVisibility="Hidden"
                          KeyDown="LstResults_OnKeyDown"
-                         KeyUp="LstResults_OnKeyUp"
                          SelectionMode="Single" 
                          Background="{x:Null}" 
                          BorderBrush="{x:Null}" 
