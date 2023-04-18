@@ -13,7 +13,7 @@ namespace Pinpoint.Plugin.Shortcuts
         private static readonly string Description = $"Create custom shortcuts to open file locations, settings and even websites.\n\nExamples:\nName: youtube; Value: https://youtube.com,\nName: desktop; Value: C:\\Users\\{Environment.UserName}\\Desktop,\nName: apps; Value: ms-settings:appsfeatures, \nName: desktop; Value: C:\\Users\\{Environment.UserName}\\Desktop,\nName: reddit; Value: https://www.reddit.com/r/{{query}}";
 
         public PluginMeta Meta { get; set; } = new("Shortcuts", Description, PluginPriority.Highest);
-        
+
         public PluginStorage Storage { get; set; } = new();
 
         public bool ModifiableSettings => true;
@@ -33,18 +33,15 @@ namespace Pinpoint.Plugin.Shortcuts
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, CancellationToken ct)
         {
-            ShortcutsResult result;
             if (query.Parts.Length == 1)
             {
-                result = new ShortcutsResult(query.RawQuery, Storage.UserSettings.Str(query.RawQuery));
-            }
-            else
-            {
-                var q = query.Parts;
-                result = new ShortcutsResult(q[0], Storage.UserSettings.Str(q[0]).Replace("{query}", q[1]));
+                yield return new ShortcutsResult(query.RawQuery, Storage.UserSettings.Str(query.RawQuery));
+                yield break;
             }
 
-            yield return result;
+            var q = query.Parts;
+            var shortcut = Storage.UserSettings.Str(q[0]).Replace("{query}", q[1]);
+            yield return new ShortcutsResult(q[0], shortcut);
         }
     }
 }

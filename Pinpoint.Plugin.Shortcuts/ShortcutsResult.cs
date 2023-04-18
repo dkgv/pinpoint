@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Drawing;
 using FontAwesome5;
@@ -18,6 +19,17 @@ namespace Pinpoint.Plugin.Shortcuts
 
         public override void OnSelect()
         {
+            var isUrl = Uri.TryCreate(_shortcut, UriKind.Absolute, out Uri uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            if (isUrl)
+            {
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = uriResult.AbsoluteUri,
+                    UseShellExecute = true
+                });
+                return;
+            }
+
             Process.Start("explorer.exe", _shortcut);
         }
     }
