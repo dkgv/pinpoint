@@ -19,7 +19,7 @@ public class OpenAIPlugin : IPlugin
 
     public PluginStorage Storage { get; set; } = new();
 
-    public TimeSpan DebounceTime => TimeSpan.FromMilliseconds(2000);
+    public TimeSpan DebounceTime => TimeSpan.FromMilliseconds(1250);
 
     public async Task<bool> TryLoad()
     {
