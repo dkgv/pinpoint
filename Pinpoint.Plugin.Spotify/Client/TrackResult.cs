@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Pinpoint.Plugin.Spotify.Client
 {
-    public class TrackResult: SpotifyResultEntity
+    public class TrackResult : SpotifyResultEntity
     {
         public List<SpotifyResultEntity> Artists { get; set; } = new();
 
@@ -16,6 +16,6 @@ namespace Pinpoint.Plugin.Spotify.Client
             }
         }
 
-        public TrackResult(string name, string uri) : base(name, uri) { }
+        public TrackResult(string name, string uri) : base(name, uri, "track") { }
     }
 }

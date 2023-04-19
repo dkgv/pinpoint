@@ -10,7 +10,7 @@ using PinPoint.Plugin.Spotify;
 
 namespace Pinpoint.Plugin.Spotify.Client
 {
-    public class SpotifyClient: IDisposable
+    public class SpotifyClient : IDisposable
     {
         private static SpotifyClient _instance;
         public static IPlugin Plugin;
@@ -31,8 +31,9 @@ namespace Pinpoint.Plugin.Spotify.Client
             await Plugin.Save();
         }
 
-        public async Task<List<SpotifyResultEntity>> Search(string query, string type)
+        public async Task<List<SpotifyResultEntity>> Search(string query, params string[] itemTypes)
         {
+            var type = string.Join(",", itemTypes);
             var message = CreateRequestMessage(HttpMethod.Get,
                 $"{SpotifyApiBaseUrl}/search?q={query}&type={type}&limit=5");
 
@@ -42,17 +43,26 @@ namespace Pinpoint.Plugin.Spotify.Client
 
             try
             {
-                var result = JsonConvert.DeserializeObject<SearchResult>(bodyJson);
-                return type switch
+                var resp = JsonConvert.DeserializeObject<SearchResult>(bodyJson);
+                var results = new List<SpotifyResultEntity>();
+
+                foreach (var itemType in itemTypes)
                 {
-                    "track" => result.Tracks?.Items.Cast<SpotifyResultEntity>().ToList(),
-                    "album" => result.Albums.Items,
-                    "artist" => result.Artists.Items,
-                    "playlist" => result.Playlists.Items,
-                    "show" => result.Shows.Items,
-                    "episode" => result.Episodes.Items,
-                    _ => new List<SpotifyResultEntity>()
-                };
+                    var resultsForType = itemType switch
+                    {
+                        "track" => resp.Tracks?.Items.Cast<SpotifyResultEntity>().ToList(),
+                        "album" => resp.Albums.Items,
+                        "artist" => resp.Artists.Items,
+                        "playlist" => resp.Playlists.Items.Cast<SpotifyResultEntity>().ToList(),
+                        "show" => resp.Shows.Items,
+                        "episode" => resp.Episodes.Items,
+                        _ => new List<SpotifyResultEntity>()
+                    };
+
+                    results.AddRange(resultsForType);
+                }
+
+                return results;
             }
             catch (Exception)
             {
@@ -66,8 +76,8 @@ namespace Pinpoint.Plugin.Spotify.Client
             if (uri != null)
             {
                 request = uri.Contains("track")
-                    ? new PlayRequest {Uris = new List<string> {uri}}
-                    : new PlayRequest {ContextUri = uri};
+                    ? new PlayRequest { Uris = new List<string> { uri } }
+                    : new PlayRequest { ContextUri = uri };
             }
 
             var message = CreateRequestMessage(HttpMethod.Put, $"{SpotifyApiBaseUrl}/me/player/play",
@@ -145,7 +155,7 @@ namespace Pinpoint.Plugin.Spotify.Client
             var responseContent = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<PlaybackInfoResult>(responseContent);
 
-            return result is {IsPlaying: true};
+            return result is { IsPlaying: true };
         }
 
         private async Task ExchangeRefreshToken()
@@ -161,7 +171,7 @@ namespace Pinpoint.Plugin.Spotify.Client
 
             var request = new HttpRequestMessage(HttpMethod.Post, "https://accounts.spotify.com/api/token") { Content = content };
             var response = await SpotifyHttpClient.SendAsync(request);
-            if(!response.IsSuccessStatusCode)
+            if (!response.IsSuccessStatusCode)
             {
                 return;
             }
@@ -205,7 +215,9 @@ namespace Pinpoint.Plugin.Spotify.Client
                 Headers = {
                     { "Authorization", $"Bearer {_accessToken}" },
                     { "Accept", "application/json" }
-            }, Content = message.Method != HttpMethod.Get ? message.Content : null};
+            },
+                Content = message.Method != HttpMethod.Get ? message.Content : null
+            };
 
             return await SpotifyHttpClient.SendAsync(retryMessage);
 

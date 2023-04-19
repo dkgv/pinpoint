@@ -47,7 +47,7 @@ namespace PinPoint.Plugin.Spotify
 
         public async Task<bool> Activate(Query query)
         {
-            var queryParts = query.RawQuery.Split(new[] {' '}, 2);
+            var queryParts = query.RawQuery.Split(new[] { ' ' }, 2);
 
             var shouldActivate = queryParts.Length > 0 && _keywords.Contains(queryParts[0]);
 
@@ -57,16 +57,16 @@ namespace PinPoint.Plugin.Spotify
                     return false;
 
                 case true when !_isAuthenticated:
-                {
-                    var tokens = await _authManager.Authenticate();
-                    if (tokens?.access_token != null && tokens.refresh_token != null)
                     {
-                        await _spotifyClient.InitializeClientWithTokens(tokens);
-                        _isAuthenticated = true;
-                    }
+                        var tokens = await _authManager.Authenticate();
+                        if (tokens?.access_token != null && tokens.refresh_token != null)
+                        {
+                            await _spotifyClient.InitializeClientWithTokens(tokens);
+                            _isAuthenticated = true;
+                        }
 
-                    break;
-                }
+                        break;
+                    }
             }
 
             return _isAuthenticated;
@@ -77,7 +77,7 @@ namespace PinPoint.Plugin.Spotify
             var queryParts = query.RawQuery.Split(new[] { ' ' }, 2);
 
             if (queryParts[0] == "skip" || queryParts[0] == "next" ||
-                queryParts[0] == "prev" || queryParts[0] == "back") 
+                queryParts[0] == "prev" || queryParts[0] == "back")
             {
                 yield return new ChangeTrackResult(queryParts[0]);
                 yield break;
@@ -86,7 +86,7 @@ namespace PinPoint.Plugin.Spotify
             yield return new PlayPauseResult();
 
             var isSearchQuery = queryParts.Length > 1 &&
-                                queryParts[1].Length > 3 && 
+                                queryParts[1].Length > 3 &&
                                 queryParts[0] != "pause";
 
             if (!isSearchQuery)
@@ -94,10 +94,10 @@ namespace PinPoint.Plugin.Spotify
                 yield break;
             }
 
-            var queryType = MapToSpotifySearchType(queryParts[0]);
+            var queryTypes = MapToSpotifySearchType(queryParts[0]);
             var searchQuery = queryParts[1];
 
-            var searchResults = await _spotifyClient.Search(searchQuery, queryType);
+            var searchResults = await _spotifyClient.Search(searchQuery, queryTypes);
             if (searchResults == null || searchResults.Count == 0)
             {
                 yield break;
@@ -105,13 +105,20 @@ namespace PinPoint.Plugin.Spotify
 
             foreach (var searchResult in searchResults)
             {
-                yield return new SpotifySearchResult(searchResult.DisplayString, searchResult.Uri);
+                yield return new SpotifySearchResult(searchResult.DisplayString, searchResult.Uri, searchResult.Type);
             }
         }
 
-        private static string MapToSpotifySearchType(string type)
+        private static string[] MapToSpotifySearchType(string type)
         {
-            return type == "play" ? "track" : type;
+            switch (type)
+            {
+                case "play":
+                    return new[] { "track", "playlist" };
+
+                default:
+                    return new[] { type };
+            }
         }
     }
 }
