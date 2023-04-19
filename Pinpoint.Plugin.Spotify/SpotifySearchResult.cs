@@ -6,10 +6,13 @@ namespace PinPoint.Plugin.Spotify
 {
     public class SpotifySearchResult : AbstractFontAwesomeQueryResult
     {
-        public SpotifySearchResult(string result, string uri) : base(result)
+        private readonly string _type;
+
+        public SpotifySearchResult(string result, string uri, string type) : base(result, $"{char.ToUpper(type[0]) + type[1..]} on Spotify")
         {
             Uri = uri;
             Options.Add(new QueueOption("Queue", uri));
+            _type = type;
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Brands_Spotify;
@@ -28,9 +31,9 @@ namespace PinPoint.Plugin.Spotify
 
     public class PausePlayResult : AbstractFontAwesomeQueryResult
     {
-        public PausePlayResult(): base("Play/pause current track")
+        public PausePlayResult() : base("Play/pause current track")
         {
-            
+
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Brands_Spotify;

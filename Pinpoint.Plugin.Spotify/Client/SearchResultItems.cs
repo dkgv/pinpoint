@@ -2,7 +2,7 @@
 
 namespace Pinpoint.Plugin.Spotify.Client
 {
-    public class SearchResultItems<T> where T: SpotifyResultEntity
+    public class SearchResultItems<T> where T : SpotifyResultEntity
     {
         public List<T> Items { get; set; }
     }
