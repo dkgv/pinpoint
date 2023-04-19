@@ -316,6 +316,13 @@ namespace Pinpoint.Win.Views
                 {
                     ShowSettingsWindow();
                 }
+
+
+                if (e.Key == Key.L)
+                {
+                    TxtQuery.Focus();
+                    TxtQuery.SelectAll();
+                }
             }
             else if (IsAltKeyDown())
             {
@@ -556,14 +563,6 @@ namespace Pinpoint.Win.Views
                 case Key.Left:
                     TxtQuery.CaretIndex = TxtQuery.Text.Length - 1;
                     TxtQuery.Focus();
-                    break;
-
-                case Key.L:
-                    if (IsCtrlKeyDown())
-                    {
-                        TxtQuery.Focus();
-                        TxtQuery.SelectAll();
-                    }
                     break;
 
                 case Key.OemComma:
