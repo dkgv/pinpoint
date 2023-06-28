@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using MarkdownSharp;
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using NHotkey.Wpf;
 using Pinpoint.Core;
 using Pinpoint.Win.ViewModels;
@@ -33,7 +27,7 @@ namespace Pinpoint.Win.Views
             _ = Dispatcher.InvokeAsync(async () => await DownloadChangelog());
         }
 
-        public SettingsViewModel Model => (SettingsViewModel) DataContext;
+        public SettingsViewModel Model => (SettingsViewModel)DataContext;
 
         private async Task DownloadChangelog()
         {
@@ -47,7 +41,7 @@ namespace Pinpoint.Win.Views
             {
             }
         }
-        
+
         protected override void OnClosing(CancelEventArgs e)
         {
             e.Cancel = true;
@@ -172,7 +166,7 @@ namespace Pinpoint.Win.Views
                 MessageBox.Show("Successfully disabled", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
-        
+
         private void BtnReCenterWindow_OnClick(object sender, RoutedEventArgs e)
         {
             App.Current.MainWindow.MoveWindowToDefaultPosition();

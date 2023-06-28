@@ -629,8 +629,10 @@ namespace Pinpoint.Win.Views
             switch (selection)
             {
                 case ClipboardResult _:
-                    Model.Results.Clear();
                     selection.OnSelect();
+                    Model.Results.Clear();
+                    Model.Watermark = "Pinpoint";
+                    _isClipboardManagerOpen = false;
                     break;
 
                 default:
