@@ -4,8 +4,6 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using PixelFormat = System.Drawing.Imaging.PixelFormat;
-using Size = System.Drawing.Size;
 
 namespace Pinpoint.Win.Extensions
 {
@@ -13,98 +11,12 @@ namespace Pinpoint.Win.Extensions
     {
         public static ImageSource ToImageSource(this Bitmap bitmap)
         {
-            var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
-            var bitmapData = bitmap.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-
-            try
+            unsafe BitmapSource Convert(byte[] bytes, BitmapData data)
             {
-                var size = rect.Width * rect.Height * 4;
-
-                return BitmapSource.Create(
-                    bitmap.Width,
-                    bitmap.Height,
-                    bitmap.HorizontalResolution,
-                    bitmap.VerticalResolution,
-                    PixelFormats.Bgra32,
-                    null,
-                    bitmapData.Scan0,
-                    size,
-                    bitmapData.Stride);
-            }
-            finally
-            {
-                bitmap.UnlockBits(bitmapData);
-            }
-        }
-
-        public static Bitmap Crop(this Bitmap bitmap, Rectangle region)
-        {
-            if (bitmap == null || bitmap.Width == 0 || bitmap.Height == 0)
-            {
-                return default;
+                return BitmapSource.Create(data.Width, data.Height, bitmap.HorizontalResolution, bitmap.VerticalResolution, PixelFormats.Bgra32, null, bytes, data.Stride);
             }
 
-            if (region.Width == 0 || region.Height == 0)
-            {
-                return bitmap;
-            }
-            
-            var tmp = new Bitmap(bitmap);
-            var cropped = new Bitmap(region.Width, region.Height);
-
-            using (var g = Graphics.FromImage(cropped))
-            {
-                g.DrawImage(tmp, -region.X, -region.Y);
-            }
-
-            tmp.Dispose();
-
-            return cropped;
-        }
-
-        public static Bitmap Scale(this Bitmap bitmap, double scalar)
-        {
-            return new Bitmap(bitmap, new Size((int)(bitmap.Width * scalar), (int)(bitmap.Height * scalar)));
-        }
-
-        public static Bitmap CropToContent(this Bitmap bitmap, int padding = 5)
-        {
-            unsafe Rectangle ComputeContentArea(byte[] bytes, BitmapData data)
-            {
-                byte bgR = bytes[2], bgG = bytes[1], bgB = bytes[0];
-
-                int minX = int.MaxValue, minY = int.MaxValue;
-                int maxX = int.MinValue, maxY = int.MinValue;
-
-                var p = (byte*)data.Scan0;
-                var offset = data.Stride - bitmap.Width * 4;
-                for (var y = 0; y < data.Height; y++)
-                {
-                    for (var x = 0; x < data.Width; x++)
-                    {
-                        byte r = p[0], g = p[1], b = p[2];
-                        if (bgR != r && bgG != g && bgB != b)
-                        {
-                            minX = Math.Min(minX, x);
-                            minY = Math.Min(minY, y);
-                            maxX = Math.Max(maxX, x);
-                            maxY = Math.Max(maxY, y);
-                        }
-                        p += 4;
-                    }
-                    p += offset;
-                }
-
-                minX = Math.Max(0, minX - padding);
-                minY = Math.Max(0, minY - padding);
-                maxX = Math.Min(data.Width, maxX + padding);
-                maxY = Math.Min(data.Height, maxY + padding);
-                
-                return new Rectangle(minX, minY, maxX - minX, maxY - minY);
-            }
-            
-            var contentArea = FastBitmapOpDispatcher(bitmap, ComputeContentArea);
-            return Crop(bitmap, contentArea);
+            return FastBitmapOpDispatcher(bitmap, Convert);
         }
 
         public static Bitmap ToBlackAndWhite(this Bitmap bitmap)
@@ -115,7 +27,7 @@ namespace Pinpoint.Win.Extensions
                 for (var i = 0; i < bytes.Length; i += 4)
                 {
                     byte r = bytes[i + 2], g = bytes[i + 1], b = bytes[i];
-                    var avg = (byte) ((r + g + b) / 3);
+                    var avg = (byte)((r + g + b) / 3);
                     p[i + 2] = p[i + 1] = p[i] = avg;
                 }
                 return bitmap;
@@ -128,44 +40,18 @@ namespace Pinpoint.Win.Extensions
         {
             unsafe Bitmap Invert(byte[] bytes, BitmapData data)
             {
-                byte* p = (byte*) data.Scan0;
+                byte* p = (byte*)data.Scan0;
                 for (var i = 0; i < bytes.Length; i += 4)
                 {
                     byte r = bytes[i + 2], g = bytes[i + 1], b = bytes[i];
-                    p[i + 2] = (byte) (255 - r);
-                    p[i + 1] = (byte) (255 - g);
-                    p[i] = (byte) (255 - b);
+                    p[i + 2] = (byte)(255 - r);
+                    p[i + 1] = (byte)(255 - g);
+                    p[i] = (byte)(255 - b);
                 }
                 return bitmap;
             }
 
             return FastBitmapOpDispatcher(bitmap, Invert);
-        }
-
-        public static bool IsDark(this Bitmap bitmap, double percent)
-        {
-            int Brightness(byte r, byte g, byte b)
-            {
-                return (int) Math.Sqrt(r * r * .241 + g * g * .691 + b * b * .068); // Returns between 0-255
-            }
-
-            bool Decider(byte[] bytes, BitmapData data)
-            {
-                int count = 0, all = bitmap.Width * bitmap.Height;
-                for (var i = 0; i < bytes.Length; i += 4)
-                {
-                    byte r = bytes[i + 2], g = bytes[i + 1], b = bytes[i];
-                    var brightness = Brightness(r, g, b);
-                    if (brightness <= 127.5)
-                    {
-                        count++;
-                    }
-                }
-                var ratio = 1d * count / (1d * all);
-                return ratio * 100 >= percent;
-            }
-
-            return FastBitmapOpDispatcher(bitmap, Decider);
         }
 
         private static unsafe T FastBitmapOpDispatcher<T>(Bitmap bitmap, Func<byte[], BitmapData, T> op)
@@ -174,7 +60,7 @@ namespace Pinpoint.Win.Extensions
             var data = bitmap.LockBits(rect, ImageLockMode.ReadOnly, bitmap.PixelFormat);
             var bytes = new byte[data.Height * data.Stride];
             var pointer = (byte*)data.Scan0;
-            Marshal.Copy((IntPtr) pointer, bytes, 0, data.Height * data.Stride);
+            Marshal.Copy((IntPtr)pointer, bytes, 0, data.Height * data.Stride);
             var t = op(bytes, data);
             bitmap.UnlockBits(data);
             return t;
