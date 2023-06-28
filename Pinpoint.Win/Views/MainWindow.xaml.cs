@@ -34,7 +34,6 @@ using Pinpoint.Plugin.Notes;
 using Pinpoint.Plugin.OperatingSystem;
 using Pinpoint.Plugin.PasswordGenerator;
 using Pinpoint.Plugin.ProcessManager;
-using Pinpoint.Plugin.Reddit;
 using Pinpoint.Plugin.Shortcuts;
 using Pinpoint.Win.ViewModels;
 using PinPoint.Plugin.Spotify;
@@ -146,7 +145,6 @@ namespace Pinpoint.Win.Views
                 Model.PluginEngine.AddPlugin(new FinancePlugin()),
                 Model.PluginEngine.AddPlugin(new HackerNewsPlugin()),
                 Model.PluginEngine.AddPlugin(new BookmarksPlugin()),
-                Model.PluginEngine.AddPlugin(new RedditPlugin()),
                 Model.PluginEngine.AddPlugin(new NotesPlugin()),
                 Model.PluginEngine.AddPlugin(new ColorConverterPlugin()),
                 Model.PluginEngine.AddPlugin(new UrlLauncherPlugin()),

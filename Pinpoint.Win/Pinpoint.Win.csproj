@@ -50,7 +50,6 @@
     <ProjectReference Include="..\Pinpoint.Plugin.OperatingSystem\Pinpoint.Plugin.OperatingSystem.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.PasswordGenerator\Pinpoint.Plugin.PasswordGenerator.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.ProcessManager\Pinpoint.Plugin.ProcessManager.csproj" />
-    <ProjectReference Include="..\Pinpoint.Plugin.Reddit\Pinpoint.Plugin.Reddit.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Calculator\Pinpoint.Plugin.Calculator.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Shortcuts\Pinpoint.Plugin.Shortcuts.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Spotify\Pinpoint.Plugin.Spotify.csproj" />
