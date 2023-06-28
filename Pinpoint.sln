@@ -34,8 +34,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.HackerNews"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Bookmarks", "Pinpoint.Plugin.Bookmarks\Pinpoint.Plugin.Bookmarks.csproj", "{27028161-0136-41CD-B374-64046F97FCAD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Reddit", "Pinpoint.Plugin.Reddit\Pinpoint.Plugin.Reddit.csproj", "{B8071A3A-7810-4666-8F18-6CF23A70278F}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Notes", "Pinpoint.Plugin.Notes\Pinpoint.Plugin.Notes.csproj", "{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.ColorConverter", "Pinpoint.Plugin.ColorConverter\Pinpoint.Plugin.ColorConverter.csproj", "{6076A77D-D040-411E-B20E-D893EDFE6AF6}"

@@ -117,10 +117,6 @@ Generates variable length passwords when you need them.
 
 Kills specified processes.
 
-### reddit
-
-Fetches entries from arbitrary subreddits while providing standard sorting options.
-
 ### Shortcuts
 
 Lets you create shortcuts to anything, website, files etc.
