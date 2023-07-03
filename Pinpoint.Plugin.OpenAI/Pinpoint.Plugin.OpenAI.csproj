@@ -12,7 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="OpenAI-DotNet" Version="6.3.1" />
+      <PackageReference Include="OpenAI-DotNet" Version="7.0.3" />
     </ItemGroup>
 
 </Project>
