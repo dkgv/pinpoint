@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -34,10 +35,6 @@ namespace Pinpoint.Plugin.Weather
             return true;
         }
 
-        public void Unload()
-        {
-        }
-
         public async Task<bool> Activate(Query query)
         {
             var hasWeatherPrefix = query.Parts[0].ToLower().Equals("weather");
@@ -46,51 +43,72 @@ namespace Pinpoint.Plugin.Weather
                 return false;
             }
 
-            var defaultCity = Storage.UserSettings.Str(KeyDefaultCity);
-            return !string.IsNullOrEmpty(defaultCity) || query.Parts.Length >= 2;
+            return !string.IsNullOrEmpty(GetDefaultCity()) || query.Parts.Length >= 2;
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            string location;
-            if (query.Parts.Length == 1)
+            var location = GetLocation(query);
+            var isUS = IsUS();
+
+            if (_weatherCache.TryGetValue(location, out var weather))
             {
-                location = Storage.UserSettings.Str(KeyDefaultCity);
+                foreach (var weatherDayModel in weather)
+                {
+                    yield return new WeatherResult(weatherDayModel, isUS);
+                }
             }
             else
             {
-                location = string.Join(" ", query.Parts[1..]).Trim();
-            }
-
-            if (_weatherCache.ContainsKey(location))
-            {
-                foreach (var weatherDayModel in _weatherCache[location])
+                weather = await GetWeatherAt(location);
+                if (weather == null)
                 {
-                    yield return new WeatherResult(weatherDayModel);
+                    yield break;
                 }
 
-                yield break;
-            }
+                _weatherCache[location] = weather;
 
-            var weather = await LookupWeather(location);
-            if (weather == null)
-            {
-                yield break;
-            }
-
-            _weatherCache[location] = weather;
-
-            foreach (var weatherDayModel in weather)
-            {
-                yield return new WeatherResult(weatherDayModel);
+                foreach (var weatherDayModel in weather)
+                {
+                    yield return new WeatherResult(weatherDayModel, isUS);
+                }
             }
         }
 
-        private async Task<List<WeatherDayModel>> LookupWeather(string location)
+        private bool IsUS()
         {
-            var url = $"https://usepinpoint.com/api/weather/{location}";
-            var result = await HttpHelper.SendGet(url,
-                s => s.Contains("error") ? null : JObject.Parse(s)["forecast"]["forecastday"]);
+            var currentRegion = new RegionInfo(CultureInfo.CurrentCulture.LCID);
+            return !currentRegion.IsMetric;
+        }
+
+        private string GetLocation(Query query)
+        {
+            if (query.Parts.Length == 1)
+            {
+                return GetDefaultCity();
+            }
+
+            return string.Join(" ", query.Parts[1..]).Trim();
+        }
+
+        private string GetDefaultCity()
+        {
+            return Storage.UserSettings.Str(KeyDefaultCity);
+        }
+
+        private async Task<List<WeatherDayModel>> GetWeatherAt(string location)
+        {
+            var url = $"https://usepinpoint.com/api/weather/{location.ToLower()}";
+
+            var result = await HttpHelper.SendGet(url, response =>
+            {
+                if (response.Contains("error"))
+                {
+                    return null;
+                }
+
+                return JObject.Parse(response)["forecast"]["forecastday"];
+            });
 
             if (result == null)
             {
@@ -99,12 +117,13 @@ namespace Pinpoint.Plugin.Weather
 
             return result.Select(token =>
             {
-                var weatherDayModel = JsonConvert.DeserializeObject<WeatherDayModel>(token["day"].ToString());
-                weatherDayModel.DayOfWeek = DateTime.Parse(token["date"].ToString()).ToString("ddd").Substring(0, 2);
-                weatherDayModel.Hours = token["hour"]
+                var dayModel = JsonConvert.DeserializeObject<WeatherDayModel>(token["day"].ToString());
+                dayModel.DayOfWeek = DateTime.Parse(token["date"].ToString()).ToString("ddd").Substring(0, 2);
+                dayModel.Hours = token["hour"]
                     .Select(t => JsonConvert.DeserializeObject<WeatherHourModel>(t.ToString()))
                     .ToArray();
-                return weatherDayModel;
+
+                return dayModel;
             }).ToList();
         }
     }
