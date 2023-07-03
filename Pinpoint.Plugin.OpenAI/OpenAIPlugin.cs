@@ -51,9 +51,9 @@ public class OpenAIPlugin : IPlugin
         yield return new TitleOpenAIResult();
         
         var userPrompt = query.RawQuery[1..];
-        var chatPrompts = new List<ChatPrompt>
+        var chatPrompts = new List<Message>
         {
-            new("user", userPrompt),
+            new(Role.User, userPrompt),
         };
         var resp = await _client.ChatEndpoint.GetCompletionAsync(new ChatRequest(chatPrompts), ct);
         if (resp is null)
