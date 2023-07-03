@@ -33,7 +33,7 @@ namespace Pinpoint.Core
                 {
                     return;
                 }
-            }   
+            }
             catch
             {
                 // Plugin threw an exception while loading, so don't add it.
@@ -60,7 +60,7 @@ namespace Pinpoint.Core
                 {
                     continue;
                 }
-                
+
                 if (debouncedPlugins.Contains(plugin))
                 {
                     await foreach (var result in Debounce(ct, plugin, query))
@@ -79,7 +79,7 @@ namespace Pinpoint.Core
                 }
             }
         }
-        
+
         private async IAsyncEnumerable<AbstractQueryResult> Debounce([EnumeratorCancellation] CancellationToken ct, IPlugin plugin, Query query)
         {
             await Task.Delay(plugin.DebounceTime, ct);
