@@ -13,11 +13,31 @@ namespace Pinpoint.Win.Extensions
         {
             unsafe BitmapSource Convert(byte[] bytes, BitmapData data)
             {
-                return BitmapSource.Create(data.Width, data.Height, bitmap.HorizontalResolution, bitmap.VerticalResolution, PixelFormats.Bgra32, null, bytes, data.Stride);
+                var pixelFormat = data.PixelFormat switch
+                {
+                    System.Drawing.Imaging.PixelFormat.Format32bppArgb => System.Windows.Media.PixelFormats.Pbgra32,
+                    System.Drawing.Imaging.PixelFormat.Format24bppRgb => System.Windows.Media.PixelFormats.Bgr24,
+                    System.Drawing.Imaging.PixelFormat.Format32bppRgb => System.Windows.Media.PixelFormats.Bgr32,
+                    System.Drawing.Imaging.PixelFormat.Format16bppRgb555 => System.Windows.Media.PixelFormats.Bgr555,
+                    System.Drawing.Imaging.PixelFormat.Format16bppRgb565 => System.Windows.Media.PixelFormats.Bgr565,
+                    _ => throw new ArgumentException($"Unknown pixel format: {data.PixelFormat}")
+                };
+
+                return BitmapSource.Create(
+                    data.Width,
+                    data.Height,
+                    bitmap.HorizontalResolution,
+                    bitmap.VerticalResolution,
+                    pixelFormat,
+                    null,
+                    bytes,
+                    data.Stride
+                );
             }
 
             return FastBitmapOpDispatcher(bitmap, Convert);
         }
+
 
         public static Bitmap ToBlackAndWhite(this Bitmap bitmap)
         {
