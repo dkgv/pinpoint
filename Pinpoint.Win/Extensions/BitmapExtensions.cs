@@ -20,6 +20,8 @@ namespace Pinpoint.Win.Extensions
                     System.Drawing.Imaging.PixelFormat.Format32bppRgb => System.Windows.Media.PixelFormats.Bgr32,
                     System.Drawing.Imaging.PixelFormat.Format16bppRgb555 => System.Windows.Media.PixelFormats.Bgr555,
                     System.Drawing.Imaging.PixelFormat.Format16bppRgb565 => System.Windows.Media.PixelFormats.Bgr565,
+                    System.Drawing.Imaging.PixelFormat.Format8bppIndexed => System.Windows.Media.PixelFormats.Gray8,
+                    System.Drawing.Imaging.PixelFormat.Format4bppIndexed => System.Windows.Media.PixelFormats.Gray4,
                     _ => throw new ArgumentException($"Unknown pixel format: {data.PixelFormat}")
                 };
 
