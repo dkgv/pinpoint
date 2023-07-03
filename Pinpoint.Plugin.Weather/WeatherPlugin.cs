@@ -21,14 +21,16 @@ namespace Pinpoint.Plugin.Weather
         public PluginMeta Meta { get; set; } = new("Weather", Description, PluginPriority.Highest);
 
         public PluginStorage Storage { get; set; } = new();
-        
+
+        public TimeSpan DebounceTime => TimeSpan.FromMilliseconds(200);
+
         public async Task<bool> TryLoad()
         {
             if (Storage.UserSettings.Count == 0)
             {
                 Storage.UserSettings.Put(KeyDefaultCity, string.Empty);
             }
-            
+
             return true;
         }
 
@@ -69,7 +71,7 @@ namespace Pinpoint.Plugin.Weather
 
                 yield break;
             }
-            
+
             var weather = await LookupWeather(location);
             if (weather == null)
             {
@@ -78,7 +80,7 @@ namespace Pinpoint.Plugin.Weather
 
             _weatherCache[location] = weather;
 
-            foreach(var weatherDayModel in weather)
+            foreach (var weatherDayModel in weather)
             {
                 yield return new WeatherResult(weatherDayModel);
             }
@@ -87,7 +89,7 @@ namespace Pinpoint.Plugin.Weather
         private async Task<List<WeatherDayModel>> LookupWeather(string location)
         {
             var url = $"https://usepinpoint.com/api/weather/{location}";
-            var result = await HttpHelper.SendGet(url, 
+            var result = await HttpHelper.SendGet(url,
                 s => s.Contains("error") ? null : JObject.Parse(s)["forecast"]["forecastday"]);
 
             if (result == null)
