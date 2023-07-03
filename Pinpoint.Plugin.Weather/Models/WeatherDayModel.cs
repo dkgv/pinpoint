@@ -27,7 +27,7 @@ namespace Pinpoint.Plugin.Weather.Models
         [JsonProperty("maxwind_kph")]
         public float WindKph { get; set; }
 
-        public float WindMps => (float) Math.Round(WindKph * 0.27777777777846f, 2);
+        public float WindMps => (float)Math.Round(WindKph * 0.27777777777846f, 2);
 
         [JsonProperty("totalprecip_mm")]
         public float PrecipitationMm { get; set; }
