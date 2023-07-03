@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -22,6 +21,8 @@ namespace Pinpoint.Plugin.Dictionary
         public PluginMeta Meta { get; set; } = new("Dictionary", Description, PluginPriority.Standard);
 
         public PluginStorage Storage { get; set; } = new();
+
+        public TimeSpan DebounceTime => TimeSpan.FromMilliseconds(200);
 
         public async Task<bool> Activate(Query query)
         {
