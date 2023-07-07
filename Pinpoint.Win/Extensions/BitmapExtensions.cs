@@ -28,7 +28,8 @@ namespace Pinpoint.Win.Extensions
                     null,
                     bitmapData.Scan0,
                     size,
-                    bitmapData.Stride);
+                    bitmapData.Stride
+                );
             }
             finally
             {

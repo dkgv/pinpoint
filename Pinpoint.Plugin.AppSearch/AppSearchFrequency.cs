@@ -12,8 +12,8 @@ namespace Pinpoint.Plugin.AppSearch
         public AppSearchFrequency(IPlugin plugin)
         {
             _plugin = plugin;
-            
-            if (_plugin.Storage.InternalSettings.ContainsKey("database"))
+
+            if (_plugin.Storage.Internal.ContainsKey("database"))
             {
                 Load();
             }
@@ -22,7 +22,7 @@ namespace Pinpoint.Plugin.AppSearch
         private void Load()
         {
             Database = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, int>>>(
-                _plugin.Storage.InternalSettings["database"].ToString());
+                _plugin.Storage.Internal["database"].ToString());
         }
 
         public void Track(string query, string exactMatch)
@@ -42,7 +42,7 @@ namespace Pinpoint.Plugin.AppSearch
                 frequency[exactMatch]++;
             }
 
-            _plugin.Storage.InternalSettings["database"] = Database;
+            _plugin.Storage.Internal["database"] = Database;
             _plugin.Save();
         }
 

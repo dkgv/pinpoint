@@ -5,7 +5,7 @@ namespace Pinpoint.Plugin.OpenAI;
 
 public class TitleOpenAIResult : AbstractFontAwesomeQueryResult
 {
-    public TitleOpenAIResult() : base("Waiting for OpenAI. Typing will interrupt current request.")
+    public TitleOpenAIResult() : base("Waiting for OpenAI", "Typing will interrupt current request.")
     {
     }
 

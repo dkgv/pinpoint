@@ -27,7 +27,7 @@ namespace Pinpoint.Plugin.Spotify.Client
         {
             _accessToken = tokens.access_token;
 
-            Plugin.Storage.InternalSettings["refresh_token"] = tokens.refresh_token;
+            Plugin.Storage.Internal["refresh_token"] = tokens.refresh_token;
             await Plugin.Save();
         }
 
@@ -160,7 +160,7 @@ namespace Pinpoint.Plugin.Spotify.Client
 
         private async Task ExchangeRefreshToken()
         {
-            var refreshToken = Plugin.Storage.InternalSettings["refresh_token"].ToString();
+            var refreshToken = Plugin.Storage.Internal["refresh_token"].ToString();
 
             var content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
@@ -186,7 +186,7 @@ namespace Pinpoint.Plugin.Spotify.Client
                 refreshToken = renewedTokens.refresh_token;
             }
 
-            Plugin.Storage.InternalSettings["refresh_token"] = refreshToken;
+            Plugin.Storage.Internal["refresh_token"] = refreshToken;
             await Plugin.Save();
         }
 

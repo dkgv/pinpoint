@@ -29,9 +29,9 @@ namespace PinPoint.Plugin.Spotify
 
         public Task<bool> TryLoad()
         {
-            if (Storage.InternalSettings.ContainsKey("refresh_token"))
+            if (Storage.Internal.ContainsKey("refresh_token"))
             {
-                _isAuthenticated = !string.IsNullOrWhiteSpace(Storage.InternalSettings["refresh_token"].ToString());
+                _isAuthenticated = !string.IsNullOrWhiteSpace(Storage.Internal["refresh_token"].ToString());
             }
 
             SpotifyClient.Plugin = this; // Dirty hack
