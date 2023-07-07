@@ -13,7 +13,7 @@ namespace Pinpoint.Plugin.Spotify.Client
     public class SpotifyClient : IDisposable
     {
         private static SpotifyClient _instance;
-        public static IPlugin Plugin;
+        public static AbstractPlugin Plugin;
         private static readonly HttpClient SpotifyHttpClient = new();
         private string _accessToken;
         private const string SpotifyApiBaseUrl = "https://api.spotify.com/v1";
@@ -28,7 +28,7 @@ namespace Pinpoint.Plugin.Spotify.Client
             _accessToken = tokens.access_token;
 
             Plugin.Storage.Internal["refresh_token"] = tokens.refresh_token;
-            await Plugin.Save();
+            Plugin.Save();
         }
 
         public async Task<List<SpotifyResultEntity>> Search(string query, params string[] itemTypes)
@@ -187,7 +187,7 @@ namespace Pinpoint.Plugin.Spotify.Client
             }
 
             Plugin.Storage.Internal["refresh_token"] = refreshToken;
-            await Plugin.Save();
+            Plugin.Save();
         }
 
         public void Dispose()

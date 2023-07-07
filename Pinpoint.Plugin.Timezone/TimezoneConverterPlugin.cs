@@ -10,7 +10,7 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Timezone
 {
-    public class TimezoneConverterPlugin : IPlugin
+    public class TimezoneConverterPlugin : AbstractPlugin
     {
         private const string TwelveHourTime = @"(1[0-2]|0?[1-9])(:[0-5][0-9])? (AM|am|PM|pm)";
         private const string TwentyFourHourTime = @"([01]\d|2[0-3]):([0-5]\d)";
@@ -35,19 +35,17 @@ namespace Pinpoint.Plugin.Timezone
         private static readonly Regex Pattern =
             new($"^(time|({TwentyFourHourTime}) ?({Timezone})?|({TwelveHourTime}) ?({Timezone})?) (to|in) ({Timezone})$");
 
-        public PluginManifest Manifest { get; set; } = new("Timezone Converter", PluginPriority.High)
+        public override PluginManifest Manifest { get; } = new("Timezone Converter", PluginPriority.High)
         {
             Description = "Convert time to/from different timezones.\n\nExamples: \"time in PST\", \"12:01 to EST\", \"12:00 am GMT to PST\", \"13:24 CET to JST\""
         };
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             return Pattern.IsMatch(query.RawQuery);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var splitQuery = query.RawQuery.Split(" ");
             if (query.RawQuery.Contains("time"))

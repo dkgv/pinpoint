@@ -11,19 +11,17 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.UrlLauncher
 {
-    public class UrlLauncherPlugin : IPlugin
+    public class UrlLauncherPlugin : AbstractPlugin
     {
         private const string HttpsProtocolPrefix = "https://";
         private static readonly HashSet<string> Tlds = new(1577);
 
-        public PluginManifest Manifest { get; set; } = new("Url Launcher", PluginPriority.High)
+        public override PluginManifest Manifest { get; } = new("Url Launcher", PluginPriority.High)
         {
             Description = "Launch URLs.\n\nExamples: \"google.com\", \"images.google.com\""
         };
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public async Task<bool> TryLoad()
+        public override async Task<bool> Initialize()
         {
             var asm = GetType().Assembly;
             await using var stream = asm.GetManifestResourceStream("Pinpoint.Plugin.UrlLauncher.tlds.txt");
@@ -38,7 +36,7 @@ namespace Pinpoint.Plugin.UrlLauncher
 
         public void Unload() { }
 
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             if (query.RawQuery.Length < 3 || query.RawQuery[0] == '.' || !query.RawQuery.Contains("."))
             {
@@ -49,7 +47,7 @@ namespace Pinpoint.Plugin.UrlLauncher
             return split.Length > 0 && Tlds.Contains(split[^1]);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var url = query.RawQuery;
             if (!query.RawQuery.StartsWith(HttpsProtocolPrefix))

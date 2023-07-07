@@ -9,18 +9,16 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.ClipboardUploader
 {
-    public class ClipboardUploaderPlugin : IPlugin
+    public class ClipboardUploaderPlugin : AbstractPlugin
     {
-        public PluginManifest Manifest { get; set; } = new("Clipboard Uploader", PluginPriority.High)
+        public override PluginManifest Manifest { get; } = new("Clipboard Uploader", PluginPriority.High)
         {
             Description = "Upload your clipboard content to a pastebin and receive the resulting URL directly to your clipboard.\n\nExamples: \"paste\""
         };
 
-        public PluginStorage Storage { get; set; } = new();
+        public override async Task<bool> ShouldActivate(Query query) => query.RawQuery.ToLower().Equals("paste");
 
-        public async Task<bool> Activate(Query query) => query.RawQuery.ToLower().Equals("paste");
-
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var item = ClipboardHelper.History.First;
             if (item == null)

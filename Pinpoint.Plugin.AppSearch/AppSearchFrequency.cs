@@ -7,9 +7,9 @@ namespace Pinpoint.Plugin.AppSearch
     public class AppSearchFrequency
     {
         public Dictionary<string, Dictionary<string, int>> Database = new();
-        private readonly IPlugin _plugin;
+        private readonly AbstractPlugin _plugin;
 
-        public AppSearchFrequency(IPlugin plugin)
+        public AppSearchFrequency(AbstractPlugin plugin)
         {
             _plugin = plugin;
 

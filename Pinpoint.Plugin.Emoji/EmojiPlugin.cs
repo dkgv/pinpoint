@@ -7,18 +7,16 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Emoji;
 
-public class EmojiPlugin : IPlugin
+public class EmojiPlugin : AbstractPlugin
 {
-    public PluginManifest Manifest { get; set; } = new("Emoji", PluginPriority.High)
+    public override PluginManifest Manifest { get; } = new("Emoji", PluginPriority.High)
     {
         Description = "Search for and insert emojis anywhere.\n\nExamples: \":smilin\""
     };
 
-    public PluginStorage Storage { get; set; } = new();
+    public override async Task<bool> ShouldActivate(Query query) => query.RawQuery.Length > 1 && query.Prefix() == ":";
 
-    public async Task<bool> Activate(Query query) => query.RawQuery.Length > 1 && query.Prefix() == ":";
-
-    public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, CancellationToken ct)
+    public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, CancellationToken ct)
     {
         foreach (var emoji in GEmojiSharp.Emoji.Find(query.RawQuery))
         {

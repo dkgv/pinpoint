@@ -12,18 +12,19 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Translate
 {
-    public class TranslatePlugin : IPlugin
+    public class TranslatePlugin : AbstractPlugin
     {
-        public PluginManifest Manifest { get; set; } = new("Translate Plugin")
+        public override PluginManifest Manifest { get; } = new("Translate Plugin")
         {
             Description = "Translate to and from different languages.\n\nExamples: \"fr,en bonjour\", \"<from>,<to> <text>\""
         };
 
-        public PluginStorage Storage { get; set; } = new();
+        public override PluginState State => new()
+        {
+            DebounceTime = TimeSpan.FromMilliseconds(250),
+        };
 
-        public TimeSpan DebounceTime => TimeSpan.FromMilliseconds(250);
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             if (query.Parts.Length < 2)
             {
@@ -40,7 +41,7 @@ namespace Pinpoint.Plugin.Translate
             return true;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var first = query.Parts[0];
             var parts = first.Split(",");

@@ -11,18 +11,16 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.ProcessManager
 {
-    public class ProcessManagerPlugin : IPlugin
+    public class ProcessManagerPlugin : AbstractPlugin
     {
-        public PluginManifest Manifest { get; set; } = new("Process Manager", PluginPriority.High);
+        public override PluginManifest Manifest { get; } = new("Process Manager", PluginPriority.High);
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             return query.RawQuery.Length >= 2 && query.Prefix(2).Equals("ps") && query.Parts.Length > 1;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var term = string.Join(' ', query.Parts[1..]).ToLower();
             var visited = new HashSet<string>();

@@ -12,25 +12,26 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Dictionary
 {
-    public class DictionaryPlugin : IPlugin
+    public class DictionaryPlugin : AbstractPlugin
     {
         private static readonly Regex DefineRegex = new(@"^(define)");
 
-        public PluginManifest Manifest { get; set; } = new("Dictionary")
+        public override PluginManifest Manifest { get; } = new("Dictionary")
         {
             Description = "Find word definitions.\n\nExamples: \"define ubiquitous\""
         };
 
-        public PluginStorage Storage { get; set; } = new();
+        public override PluginState State => new()
+        {
+            DebounceTime = TimeSpan.FromMilliseconds(200)
+        };
 
-        public TimeSpan DebounceTime => TimeSpan.FromMilliseconds(200);
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             return query.Parts.Length == 2 && DefineRegex.IsMatch(query.Parts[0]);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var url = $"https://api.dictionaryapi.dev/api/v2/entries/en_US/{query.Parts[^1]}";
 

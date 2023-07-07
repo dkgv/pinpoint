@@ -175,7 +175,7 @@ namespace Pinpoint.Win.Views
 
             // Fetch clipboard results
             var clipboardManagerPlugin = Model.PluginEngine.GetPluginByType<ClipboardManagerPlugin>();
-            var results = await clipboardManagerPlugin.Process(null, _cts.Token).ToListAsync();
+            var results = await clipboardManagerPlugin.ProcessQuery(null, _cts.Token).ToListAsync();
             AddResults(results);
 
             _isClipboardManagerOpen = true;

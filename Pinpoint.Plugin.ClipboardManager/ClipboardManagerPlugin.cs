@@ -8,22 +8,16 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.ClipboardManager
 {
-    public class ClipboardManagerPlugin : IPlugin
+    public class ClipboardManagerPlugin : AbstractPlugin
     {
-        public PluginManifest Manifest { get; set; } = new("Clipboard Manager")
+        public override PluginManifest Manifest { get; } = new("Clipboard Manager")
         {
             Description = "Evaluate mathematical expressions quickly.\n\nExamples: \"9+5*(123/5)\""
         };
 
-        public PluginStorage Storage { get; set; } = new();
+        public override async Task<bool> ShouldActivate(Query query) => false;
 
-        public void Unload()
-        {
-        }
-
-        public async Task<bool> Activate(Query query) => false;
-
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             foreach (var clipboardEntry in ClipboardHelper.History)
             {

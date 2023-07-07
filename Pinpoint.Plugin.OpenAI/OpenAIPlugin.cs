@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using OpenAI;
 using OpenAI.Chat;
 using Pinpoint.Core;
@@ -7,47 +6,48 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.OpenAI;
 
-public class OpenAIPlugin : IPlugin
+public class OpenAIPlugin : AbstractPlugin
 {
     private const string KeyApiKey = "API Key";
 
     private OpenAIClient _client;
 
-    public PluginManifest Manifest { get; set; } = new("OpenAI", PluginPriority.High)
+    public override PluginManifest Manifest { get; } = new("OpenAI", PluginPriority.High)
     {
         Description = "Run queries through OpenAI's models using their API. Prefix prompts with \"?\". Prompts are submitted after 2 seconds of not typing.\n\nExamples: \"?What is the meaning of life?\", \"?how to invert a binary tree\""
     };
 
-    public PluginStorage Storage { get; set; } = new();
-
-    public TimeSpan DebounceTime => TimeSpan.FromMilliseconds(1250);
-
-    public async Task<bool> TryLoad()
+    public override PluginState State => new()
     {
-        if (!Storage.User.Any())
-        {
-            Storage.User.Put(KeyApiKey, "");
-        }
-        else
-        {
-            var apiKey = Storage.User.Str(KeyApiKey);
-            if (string.IsNullOrWhiteSpace(apiKey))
-            {
-                return true;
-            }
+        DebounceTime = TimeSpan.FromMilliseconds(1250)
+    };
 
-            _client = new OpenAIClient(apiKey);
+    public override PluginStorage Storage => new()
+    {
+        User = new UserSettings{
+            {KeyApiKey, ""}
         }
+    };
+
+    public override async Task<bool> Initialize()
+    {
+        var apiKey = Storage.User.Str(KeyApiKey);
+        if (string.IsNullOrWhiteSpace(apiKey))
+        {
+            return true;
+        }
+
+        _client = new OpenAIClient(apiKey);
 
         return true;
     }
 
-    public async Task<bool> Activate(Query query)
+    public override async Task<bool> ShouldActivate(Query query)
     {
         return query.Prefix() == "?" && query.RawQuery.Length > 1;
     }
 
-    public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+    public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
     {
         yield return new TitleOpenAIResult();
 

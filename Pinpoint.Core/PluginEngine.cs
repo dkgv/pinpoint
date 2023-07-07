@@ -10,21 +10,22 @@ namespace Pinpoint.Core;
 
 public class PluginEngine
 {
-    public List<IPlugin> Plugins { get; } = new();
+    public List<AbstractPlugin> Plugins { get; } = new();
 
-    public List<IPluginListener<IPlugin, object>> Listeners { get; } = new();
+    public List<IPluginListener<AbstractPlugin, object>> Listeners { get; } = new();
 
-    public async Task LoadPlugin(IPlugin @new)
+    public async Task LoadPlugin(AbstractPlugin plugin)
     {
-        if (Plugins.Contains(@new))
+        if (Plugins.Contains(plugin))
         {
             return;
         }
 
         try
         {
-            @new.Manifest.Enabled = await @new.TryLoad();
-            @new.Restore();
+
+            var initialized = await plugin.Initialize();
+            plugin.State.IsEnabled = initialized;
         }
         catch
         {
@@ -32,23 +33,24 @@ public class PluginEngine
             return;
         }
 
-        Plugins.Add(@new);
+        Plugins.Add(plugin);
         Plugins.Sort();
 
-        Listeners.ForEach(listener => listener.PluginChange_Added(this, @new, null));
+        Listeners.ForEach(listener => listener.PluginChange_Added(this, plugin, null));
     }
 
-    public T GetPluginByType<T>() where T : IPlugin => Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
+    public T GetPluginByType<T>() where T : AbstractPlugin => Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
 
     public async IAsyncEnumerable<AbstractQueryResult> EvaluateQuery([EnumeratorCancellation] CancellationToken ct,
         Query query)
     {
-        var enabledPlugins = Plugins.Where(p => p.Manifest.Enabled).ToList();
-        var debouncedPlugins = enabledPlugins.Where(p => p.DebounceTime > TimeSpan.Zero).ToHashSet();
+        // TODO: filter by enabled
+        var enabledPlugins = Plugins.ToList();
+        var debouncedPlugins = enabledPlugins.Where(p => p.State.DebounceTime > TimeSpan.Zero).ToHashSet();
         for (var i = 0; i < enabledPlugins.Count && query.ResultCount < 20 && !ct.IsCancellationRequested; i++)
         {
             var plugin = enabledPlugins[i];
-            if (!await plugin.Activate(query))
+            if (!await plugin.ShouldActivate(query))
             {
                 continue;
             }
@@ -63,7 +65,7 @@ public class PluginEngine
             }
             else
             {
-                await foreach (var result in plugin.Process(query, ct))
+                await foreach (var result in plugin.ProcessQuery(query, ct))
                 {
                     query.ResultCount++;
                     yield return result;
@@ -72,15 +74,15 @@ public class PluginEngine
         }
     }
 
-    private async IAsyncEnumerable<AbstractQueryResult> Debounce([EnumeratorCancellation] CancellationToken ct, IPlugin plugin, Query query)
+    private async IAsyncEnumerable<AbstractQueryResult> Debounce([EnumeratorCancellation] CancellationToken ct, AbstractPlugin plugin, Query query)
     {
-        await Task.Delay(plugin.DebounceTime, ct);
+        await Task.Delay(plugin.State.DebounceTime, ct);
         if (ct.IsCancellationRequested)
         {
             yield break;
         }
 
-        await foreach (var result in plugin.Process(query, ct))
+        await foreach (var result in plugin.ProcessQuery(query, ct))
         {
             query.ResultCount++;
             yield return result;

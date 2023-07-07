@@ -14,7 +14,7 @@ using Pinpoint.Plugin.Everything.API;
 
 namespace Pinpoint.Plugin.Everything
 {
-    public class EverythingPlugin : IPlugin
+    public class EverythingPlugin : AbstractPlugin
     {
         private const string KeyIgnoreTempFolder = "Ignore temp folder items";
         private const string KeyIgnoreHiddenFolders = "Ignore hidden folder items";
@@ -30,36 +30,28 @@ namespace Pinpoint.Plugin.Everything
         private static readonly Regex SpreadsheetRegex = new(@"xls|xlsm|xlsx|numbers|ots|xlr");
         private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
 
-        public PluginManifest Manifest { get; set; } = new("Everything (File Search)", PluginPriority.Low)
+        public override PluginManifest Manifest { get; } = new("Everything (File Search)", PluginPriority.Low)
         {
             Description = "Search for files on your computer via Everything by David Carpenter."
         };
 
-        public PluginStorage Storage { get; set; } = new()
+        public override PluginStorage Storage => new()
         {
-            User = UserSettings.Default(new Dictionary<string, object>{
+            User = new UserSettings{
                 {KeyIgnoreTempFolder, true},
                 {KeyIgnoreHiddenFolders, true},
                 {KeyIgnoreWindows, true}
-            })
+            }
         };
 
-        private IEverythingClient _everything;
+        private IEverythingClient _everything = new EverythingClient(new DefaultSearchConfig());
 
-        public Task<bool> TryLoad()
-        {
-            _everything = new EverythingClient(new DefaultSearchConfig());
-            return Task.FromResult(true);
-        }
-
-        public void Unload() => _everything.Dispose();
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             return query.RawQuery.Length >= 3 && query.ResultCount < 3 && !query.RawQuery.Any(ch => InvalidFileNameChars.Contains(ch));
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             await foreach (var result in _everything.SearchAsync(query.RawQuery, ct))
             {

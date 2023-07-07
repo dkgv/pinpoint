@@ -9,20 +9,21 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Finance
 {
-    public class FinancePlugin : IPlugin
+    public class FinancePlugin : AbstractPlugin
     {
         private readonly YahooFinanceApi _yahooFinanceApi = new(TimeSpan.FromMinutes(2));
 
-        public PluginManifest Manifest { get; set; } = new("Finance Plugin", PluginPriority.High)
+        public override PluginManifest Manifest { get; } = new("Finance Plugin", PluginPriority.High)
         {
             Description = "Look up stock tickers.\n\nExamples: \"$GME\", \"$MSFT\""
         };
 
-        public PluginStorage Storage { get; set; } = new();
+        public override PluginState State => new()
+        {
+            DebounceTime = TimeSpan.FromMilliseconds(200)
+        };
 
-        public TimeSpan DebounceTime => TimeSpan.FromMilliseconds(200);
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             if (query.Parts.Length != 1 || !query.Prefix().Equals("$") || query.RawQuery.Length < 3)
             {
@@ -33,7 +34,7 @@ namespace Pinpoint.Plugin.Finance
             return ticker.All(ch => char.IsLetter(ch) || ch == '.' || ch == '^') && ticker.Count(char.IsLetter) >= 2;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             // $GME => GME
             var ticker = query.Parts[0][1..];

@@ -7,28 +7,22 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.HackerNews
 {
-    public class HackerNewsPlugin : IPlugin
+    public class HackerNewsPlugin : AbstractPlugin
     {
         private readonly HackerNewsApi _hackerNewsApi = new();
 
-        public PluginManifest Manifest { get; set; } = new("Hacker News Browser", PluginPriority.High)
+        public override PluginManifest Manifest { get; } = new("Hacker News Browser", PluginPriority.High)
         {
             Description = "Look up stock tickers.\n\nExamples: \"$GME\", \"$MSFT\""
         };
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public void Unload()
-        {
-        }
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             var raw = query.RawQuery.ToLower();
             return raw.Length >= 10 && (raw.Equals("hackernews") || raw.Equals("hacker news") || raw.Equals("hnews"));
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var stories = await _hackerNewsApi.TopSubmissions();
             for (var i = 0; i < stories.Count; i++)

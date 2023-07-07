@@ -8,29 +8,31 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Shortcuts
 {
-    public class ShortcutsPlugin : IPlugin
+    public class ShortcutsPlugin : AbstractPlugin
     {
-        public PluginManifest Manifest { get; set; } = new("Shortcuts", PluginPriority.High)
+        public override PluginManifest Manifest { get; } = new("Shortcuts", PluginPriority.High)
         {
             Description = "Create custom shortcuts to open file locations, settings and even websites.\n\nExamples:\nName: youtube; Value: https://youtube.com,\nName: desktop; Value: C:\\Users\\{Environment.UserName}\\Desktop,\nName: apps; Value: ms-settings:appsfeatures, \nName: desktop; Value: C:\\Users\\{Environment.UserName}\\Desktop,\nName: reddit; Value: https://www.reddit.com/r/{{query}}"
         };
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public bool HasModifiableSettings => true;
-
-        public async Task<bool> TryLoad()
+        public override PluginState State => new()
         {
-            Storage.User.Put("", "");
-            return true;
+            HasModifiableSettings = true
+        };
+
+        public override PluginStorage Storage => new()
+        {
+            User = new UserSettings{
+                {"", ""}
+            }
+        };
+
+        public override async Task<bool> ShouldActivate(Query query)
+        {
+            return Storage.User.Any(s => s.Key.Equals(query.Parts[0]));
         }
 
-        public async Task<bool> Activate(Query query)
-        {
-            return Storage.User.Any(s => s.Name.Equals(query.Parts[0]));
-        }
-
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, CancellationToken ct)
         {
             if (query.Parts.Length == 1)
             {

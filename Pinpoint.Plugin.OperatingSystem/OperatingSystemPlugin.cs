@@ -10,29 +10,23 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.OperatingSystem
 {
-    public class OperatingSystemPlugin : IPlugin
+    public class OperatingSystemPlugin : AbstractPlugin
     {
         private static readonly string[] Commands = {
             "shutdown", "shut down", "restart", "reboot", "sleep"
         };
 
-        public PluginManifest Manifest { get; set; } = new("Operating System", PluginPriority.High)
+        public override PluginManifest Manifest { get; } = new("Operating System", PluginPriority.High)
         {
             Description = "Control your operating system.\n\nExamples: \"sleep\", \"reboot\""
         };
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public void Unload()
-        {
-        }
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             return query.Parts.Length == 1 && Commands.Contains(query.RawQuery);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             switch (query.RawQuery)
             {

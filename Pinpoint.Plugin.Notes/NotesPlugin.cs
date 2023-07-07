@@ -8,7 +8,7 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Notes
 {
-    public class NotesPlugin : IPlugin
+    public class NotesPlugin : AbstractPlugin
     {
         private static readonly string[] Actions = {
             "notes", // List
@@ -21,21 +21,17 @@ namespace Pinpoint.Plugin.Notes
             _notesManager = NotesManager.GetInstance();
         }
 
-        public PluginManifest Manifest { get; set; } = new("Notes Plugin", PluginPriority.High)
+        public override PluginManifest Manifest { get; } = new("Notes Plugin", PluginPriority.High)
         {
             Description = "Create and view quick notes.\n\nExamples: \"note <new note>\" to create a note, \"notes\" to list existing notes"
         };
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public void Unload() { }
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             return Actions.Contains(query.Parts[0]);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             switch (query.Parts[0])
             {

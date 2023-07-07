@@ -30,7 +30,7 @@ namespace Pinpoint.Win.ViewModels
             set => SetProperty(ref _hotkeyPasteClipboard, value);
         }
 
-        public ObservableCollection<IPlugin> Plugins { get; } = new();
+        public ObservableCollection<AbstractPlugin> Plugins { get; } = new();
 
         public List<PluginTabItem> PluginTabItems
         {

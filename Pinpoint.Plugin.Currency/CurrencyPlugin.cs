@@ -11,24 +11,20 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Currency
 {
-    public class CurrencyPlugin : IPlugin
+    public class CurrencyPlugin : AbstractPlugin
     {
         private CurrencyRepository _currencyRepo = new();
         private const string KeyBaseCurrency = "Base currency";
         private const string Symbols = "$£€¥";
 
-        public PluginManifest Manifest { get; set; } = new("Currency Converter", PluginPriority.High)
+        public override PluginManifest Manifest { get; } = new("Currency Converter", PluginPriority.High)
         {
             Description = "Convert between currencies and cryptocurrencies.\n\nExamples: \"5 usd to jpy\", \"1 btc to cad\", \"1 eth to btc\""
         };
 
-        public PluginStorage Storage { get; set; } = new()
+        public override PluginStorage Storage => new()
         {
-            User = UserSettings.Default(
-                new Dictionary<string, object>{
-                    {KeyBaseCurrency, GetDefaultBaseCurrency()}
-                }
-            )
+            User = new UserSettings { { KeyBaseCurrency, GetDefaultBaseCurrency() } }
         };
 
         private static string GetDefaultBaseCurrency()
@@ -47,14 +43,14 @@ namespace Pinpoint.Plugin.Currency
             return baseCurrency;
         }
 
-        public async Task<bool> TryLoad()
+        public override async Task<bool> Initialize()
         {
             await _currencyRepo.LoadCurrenciesInitial();
             return true;
         }
 
         // TODO rewrite into oblivion
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             var raw = query.RawQuery;
 
@@ -95,7 +91,7 @@ namespace Pinpoint.Plugin.Currency
             return hasNumber && isConverting && correctParts;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var from = IdentifyFrom(query);
             var value = IdentifyValue(query);

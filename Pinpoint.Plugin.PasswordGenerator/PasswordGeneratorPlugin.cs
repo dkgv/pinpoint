@@ -8,28 +8,24 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.PasswordGenerator
 {
-    public class PasswordGeneratorPlugin : IPlugin
+    public class PasswordGeneratorPlugin : AbstractPlugin
     {
         private const string ActivateString = "password";
         private readonly char[] _characters =
             "abcdefgijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ1234567890+#¤%&/()=@£$€{[]}?<>".ToCharArray();
 
-        public PluginManifest Manifest { get; set; } = new PluginManifest("Password Generator", PluginPriority.High)
+        public override PluginManifest Manifest { get; } = new PluginManifest("Password Generator", PluginPriority.High)
         {
             Description = "Generate and copy + insert passwords of variable length.\n\nExamples: \"password <length>\", \"password 14\""
         };
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public void Unload() { }
-
-        public Task<bool> Activate(Query query)
+        public override Task<bool> ShouldActivate(Query query)
         {
             var shouldActivate = query.Parts.Length == 2 && query.Parts[0] == ActivateString && int.TryParse(query.Parts[1], out _);
             return Task.FromResult(shouldActivate);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var couldParseLength = int.TryParse(query.Parts[1], out var length);
             if (!couldParseLength || length < 1 || length > 100)

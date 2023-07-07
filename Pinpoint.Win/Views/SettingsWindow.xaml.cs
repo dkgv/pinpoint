@@ -16,7 +16,7 @@ namespace Pinpoint.Win.Views
     /// <summary>
     /// Interaction logic for SettingsWindow.xaml
     /// </summary>
-    public partial class SettingsWindow : Window, IPluginListener<IPlugin, object>
+    public partial class SettingsWindow : Window, IPluginListener<AbstractPlugin, object>
     {
         public SettingsWindow()
         {
@@ -46,13 +46,10 @@ namespace Pinpoint.Win.Views
         {
             e.Cancel = true;
 
-            Dispatcher.InvokeAsync(async () =>
+            foreach (var plugin in Model.Plugins)
             {
-                foreach (var plugin in Model.Plugins)
-                {
-                    await plugin.Save();
-                }
-            });
+                plugin.Save();
+            }
 
             Hide();
         }
@@ -133,7 +130,7 @@ namespace Pinpoint.Win.Views
             AppSettings.PutAndSave("hotkey_toggle_visibility", Model.HotkeyToggleVisibility);
         }
 
-        public void PluginChange_Added(object sender, IPlugin plugin, object target)
+        public void PluginChange_Added(object sender, AbstractPlugin plugin, object target)
         {
             Model.Plugins.Add(plugin);
 
@@ -148,7 +145,7 @@ namespace Pinpoint.Win.Views
             Model.PluginTabItems = Model.PluginTabItems.OrderBy(p => p.Model.Plugin.Manifest.Name).ToList();
         }
 
-        public void PluginChange_Removed(object sender, IPlugin plugin, object target) => Model.Plugins.Remove(plugin);
+        public void PluginChange_Removed(object sender, AbstractPlugin plugin, object target) => Model.Plugins.Remove(plugin);
 
         private void BtnToggleStartupLaunch_OnClick(object sender, RoutedEventArgs evt)
         {

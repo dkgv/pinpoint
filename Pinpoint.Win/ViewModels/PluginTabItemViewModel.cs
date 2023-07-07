@@ -6,9 +6,9 @@ namespace Pinpoint.Win.ViewModels
 {
     public class PluginTabItemViewModel : ObservableObject
     {
-        private IPlugin _plugin;
+        private AbstractPlugin _plugin;
 
-        public IPlugin Plugin
+        public AbstractPlugin Plugin
         {
             get => _plugin;
             set => SetProperty(ref _plugin, value);
@@ -18,10 +18,10 @@ namespace Pinpoint.Win.ViewModels
 
         public bool Enabled
         {
-            get => Plugin.Manifest.Enabled;
+            get => Plugin.State.IsEnabled;
             set
             {
-                Plugin.Manifest.Enabled = value;
+                Plugin.State.IsEnabled = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(StatusColor));
                 OnPropertyChanged(nameof(ToggleEnabledString));
@@ -29,10 +29,5 @@ namespace Pinpoint.Win.ViewModels
         }
 
         public string ToggleEnabledString => Enabled ? "Disable" : "Enable";
-
-        public IRelayCommand ToggleEnabledCommand => new RelayCommand(() =>
-        {
-            Enabled = !Enabled;
-        });
     }
 }

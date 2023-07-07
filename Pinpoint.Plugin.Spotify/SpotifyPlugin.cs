@@ -8,7 +8,7 @@ using Pinpoint.Plugin.Spotify.Client;
 
 namespace PinPoint.Plugin.Spotify
 {
-    public class SpotifyPlugin : IPlugin
+    public class SpotifyPlugin : AbstractPlugin
     {
         private readonly HashSet<string> _keywords = new()
         {
@@ -18,14 +18,12 @@ namespace PinPoint.Plugin.Spotify
         private readonly SpotifyClient _spotifyClient = SpotifyClient.GetInstance();
         private bool _isAuthenticated;
 
-        public PluginManifest Manifest { get; set; } = new("Spotify Controller", PluginPriority.High)
+        public override PluginManifest Manifest { get; } = new("Spotify Controller", PluginPriority.High)
         {
             Description = "Control any Spotify session without leaving your workflow. Requires sign-in on first use.\n\nExamples: \"album <name>\", \"artist <name>\", \"episode <name>\", \"play <name>\", \"playlist <name>\", \"show <name>\", \"skip\", \"next\", \"prev\", \"back\", \"pause\""
         };
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public Task<bool> TryLoad()
+        public Task<bool> Initialize()
         {
             if (Storage.Internal.ContainsKey("refresh_token"))
             {
@@ -37,12 +35,7 @@ namespace PinPoint.Plugin.Spotify
             return Task.FromResult(_isAuthenticated);
         }
 
-        public void Unload()
-        {
-            _spotifyClient.Dispose();
-        }
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             var queryParts = query.RawQuery.Split(new[] { ' ' }, 2);
 
@@ -69,7 +62,7 @@ namespace PinPoint.Plugin.Spotify
             return _isAuthenticated;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var queryParts = query.RawQuery.Split(new[] { ' ' }, 2);
 

@@ -13,31 +13,29 @@ using Pinpoint.Plugin.Weather.Models;
 
 namespace Pinpoint.Plugin.Weather
 {
-    public class WeatherPlugin : IPlugin
+    public class WeatherPlugin : AbstractPlugin
     {
         private const string KeyDefaultCity = "Default city";
         private readonly Dictionary<string, List<WeatherDayModel>> _weatherCache = new();
 
-        public PluginManifest Manifest { get; set; } = new("Weather", PluginPriority.High)
+        public override PluginManifest Manifest { get; } = new("Weather", PluginPriority.High)
         {
             Description = "Look up weather forecasts.\n\nExamples: \"weather <location>\" or \"weather\" if default location is set"
         };
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public TimeSpan DebounceTime => TimeSpan.FromMilliseconds(200);
-
-        public async Task<bool> TryLoad()
+        public override PluginState State => new()
         {
-            if (Storage.User.Count == 0)
-            {
-                Storage.User.Put(KeyDefaultCity, string.Empty);
+            DebounceTime = TimeSpan.FromMilliseconds(200)
+        };
+
+        public override PluginStorage Storage => new()
+        {
+            User = new UserSettings{
+                {KeyDefaultCity, string.Empty}
             }
+        };
 
-            return true;
-        }
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             var hasWeatherPrefix = query.Parts[0].ToLower().Equals("weather");
             if (!hasWeatherPrefix)
@@ -48,7 +46,7 @@ namespace Pinpoint.Plugin.Weather
             return !string.IsNullOrEmpty(GetDefaultCity()) || query.Parts.Length >= 2;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var location = GetLocation(query);
             var isUS = IsUS();

@@ -8,25 +8,19 @@ using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.EncodeDecode
 {
-    public class EncodeDecodePlugin : IPlugin
+    public class EncodeDecodePlugin : AbstractPlugin
     {
         private static readonly string[] Prefixes = { "bin", "hex", "b64" };
 
-        public PluginManifest Manifest { get; set; } = new("Encode/Decode Plugin");
+        public override PluginManifest Manifest { get; } = new("Encode/Decode Plugin");
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public void Unload()
-        {
-        }
-
-        public Task<bool> Activate(Query query)
+        public override Task<bool> ShouldActivate(Query query)
         {
             var match = query.RawQuery.Length > 4 && Prefixes.Any(prefix => query.RawQuery.StartsWith(prefix));
             return Task.FromResult(match);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var prefix = Prefixes.FirstOrDefault(pre => query.RawQuery.StartsWith(pre));
 

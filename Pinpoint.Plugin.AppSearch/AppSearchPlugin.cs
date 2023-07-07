@@ -10,7 +10,7 @@ using Pinpoint.Plugin.AppSearch.Providers;
 
 namespace Pinpoint.Plugin.AppSearch
 {
-    public class AppSearchPlugin : IPlugin
+    public class AppSearchPlugin : AbstractPlugin
     {
         private static readonly UkkonenTrie<IApp> CachedAppsTrie = new();
         private static readonly IAppProvider[] RuntimeAppProviders = {
@@ -20,14 +20,12 @@ namespace Pinpoint.Plugin.AppSearch
 
         public AppSearchFrequency AppSearchFrequency;
 
-        public PluginManifest Manifest { get; set; } = new("App Search")
+        public override PluginManifest Manifest { get; } = new("App Search")
         {
             Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\""
         };
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public async Task<bool> TryLoad()
+        public override async Task<bool> Initialize()
         {
             AppSearchFrequency = new AppSearchFrequency(this);
 
@@ -42,14 +40,9 @@ namespace Pinpoint.Plugin.AppSearch
             return true;
         }
 
-        public void Unload()
-        {
-            AppSearchFrequency.Reset();
-        }
+        public override async Task<bool> ShouldActivate(Query query) => query.RawQuery.Length >= 2;
 
-        public async Task<bool> Activate(Query query) => query.RawQuery.Length >= 2;
-
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var queryLower = query.RawQuery.ToLower();
 
