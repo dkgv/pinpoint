@@ -11,14 +11,15 @@ namespace Pinpoint.Plugin.ColorConverter
 {
     public class ColorConverterPlugin : IPlugin
     {
-        private const string Description = "Convert colors from RGB <-> Hex.\n\nExamples: \"#FF5555\", \"rgb(255,100,50)\"";
-
         private const string RgbPattern =
             @"^rgb\(([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5]),( ?)([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5]),( ?)([01]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])\)$";
         private const string HexPattern = @"^(#)([0-9A-Fa-f]{8}|[0-9A-Fa-f]{6})$";
         private static readonly Regex Pattern = new($@"({HexPattern})|({RgbPattern})");
 
-        public PluginMeta Meta { get; set; } = new("Color Converter", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new("Color Converter", PluginPriority.Highest)
+        {
+            Description = "Convert colors from RGB <-> Hex.\n\nExamples: \"#FF5555\", \"rgb(255,100,50)\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
 
@@ -38,7 +39,7 @@ namespace Pinpoint.Plugin.ColorConverter
             {
                 content = ConvertHexColor(query.RawQuery);
             }
-            
+
             yield return new ColorConversionResult(ConvertHexColor(query.RawQuery), content);
         }
 
@@ -52,7 +53,7 @@ namespace Pinpoint.Plugin.ColorConverter
                 var blueLevel = Convert.ToInt32(color.Substring(5, 2), 16);
                 return $"rgb({redLevel}, {greenLevel}, {blueLevel})";
             }
-            
+
             // Color is RGB
             var modifiedColor = color.Replace("rgb(", "").Replace(")", "");
             var colorLevels = modifiedColor.Split(",");

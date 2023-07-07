@@ -145,7 +145,7 @@ namespace Pinpoint.Win.Views
             }
 
             Model.PluginTabItems.Add(pluginTabItem);
-            Model.PluginTabItems = Model.PluginTabItems.OrderBy(p => p.Model.Plugin.Meta.Name).ToList();
+            Model.PluginTabItems = Model.PluginTabItems.OrderBy(p => p.Model.Plugin.Manifest.Name).ToList();
         }
 
         public void PluginChange_Removed(object sender, IPlugin plugin, object target) => Model.Plugins.Remove(plugin);

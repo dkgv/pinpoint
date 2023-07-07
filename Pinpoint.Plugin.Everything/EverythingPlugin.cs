@@ -19,8 +19,6 @@ namespace Pinpoint.Plugin.Everything
         private const string KeyIgnoreTempFolder = "Ignore temp folder items";
         private const string KeyIgnoreHiddenFolders = "Ignore hidden folder items";
         private const string KeyIgnoreWindows = "Ignore items in Windows folder";
-        private const string Description = "Search for files on your computer via Everything by David Carpenter.";
-
         private static readonly Regex ImageRegex = new(@"png|jpg|gif|psd|svg|raw|jpeg|bmp|tiff");
         private static readonly Regex VideoRegex = new(@"mp4|avi|mkv|flv|webm|mov|wmv|mpg|m4v|mpeg|wmv");
         private static readonly Regex AudioRegex = new(@"mp3|flac|wma|alac");
@@ -32,11 +30,12 @@ namespace Pinpoint.Plugin.Everything
         private static readonly Regex SpreadsheetRegex = new(@"xls|xlsm|xlsx|numbers|ots|xlr");
         private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
 
-        public PluginMeta Meta { get; set; } = new("Everything (File Search)", Description, PluginPriority.Lowest);
+        public PluginManifest Manifest { get; set; } = new("Everything (File Search)", PluginPriority.Lowest)
+        {
+            Description = "Search for files on your computer via Everything by David Carpenter."
+        };
 
         public PluginStorage Storage { get; set; } = new();
-
-        public bool IsLoaded { get; set; }
 
         private IEverythingClient _everything;
 
@@ -51,7 +50,7 @@ namespace Pinpoint.Plugin.Everything
                 Storage.UserSettings.Put(KeyIgnoreWindows, true);
             }
 
-            return Task.FromResult(IsLoaded = true);
+            return Task.FromResult(true);
         }
 
         public void Unload() => _everything.Dispose();

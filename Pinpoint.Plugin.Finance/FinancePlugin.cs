@@ -11,11 +11,12 @@ namespace Pinpoint.Plugin.Finance
 {
     public class FinancePlugin : IPlugin
     {
-        private const string Description = "Look up stock tickers.\n\nExamples: \"$GME\", \"$MSFT\"";
-
         private readonly YahooFinanceApi _yahooFinanceApi = new(TimeSpan.FromMinutes(2));
 
-        public PluginMeta Meta { get; set; } = new("Finance Plugin", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new("Finance Plugin", PluginPriority.Highest)
+        {
+            Description = "Look up stock tickers.\n\nExamples: \"$GME\", \"$MSFT\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
 
@@ -40,7 +41,7 @@ namespace Pinpoint.Plugin.Finance
             var searchResponseTask = _yahooFinanceApi.Search(ticker);
 
             await Task.WhenAll(priceResponseTask, searchResponseTask);
-            
+
             if (priceResponseTask.Result == null || searchResponseTask.Result == null)
             {
                 yield break;

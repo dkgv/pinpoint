@@ -10,20 +10,19 @@ namespace Pinpoint.Plugin.Shortcuts
 {
     public class ShortcutsPlugin : IPlugin
     {
-        private static readonly string Description = $"Create custom shortcuts to open file locations, settings and even websites.\n\nExamples:\nName: youtube; Value: https://youtube.com,\nName: desktop; Value: C:\\Users\\{Environment.UserName}\\Desktop,\nName: apps; Value: ms-settings:appsfeatures, \nName: desktop; Value: C:\\Users\\{Environment.UserName}\\Desktop,\nName: reddit; Value: https://www.reddit.com/r/{{query}}";
-
-        public PluginMeta Meta { get; set; } = new("Shortcuts", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new("Shortcuts", PluginPriority.Highest)
+        {
+            Description = "Create custom shortcuts to open file locations, settings and even websites.\n\nExamples:\nName: youtube; Value: https://youtube.com,\nName: desktop; Value: C:\\Users\\{Environment.UserName}\\Desktop,\nName: apps; Value: ms-settings:appsfeatures, \nName: desktop; Value: C:\\Users\\{Environment.UserName}\\Desktop,\nName: reddit; Value: https://www.reddit.com/r/{{query}}"
+        };
 
         public PluginStorage Storage { get; set; } = new();
 
-        public bool ModifiableSettings => true;
-
-        public bool IsLoaded { get; set; }
+        public bool HasModifiableSettings => true;
 
         public async Task<bool> TryLoad()
         {
             Storage.UserSettings.Put("", "");
-            return IsLoaded = true;
+            return true;
         }
 
         public async Task<bool> Activate(Query query)

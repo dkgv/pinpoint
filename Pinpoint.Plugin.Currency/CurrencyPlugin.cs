@@ -13,17 +13,16 @@ namespace Pinpoint.Plugin.Currency
 {
     public class CurrencyPlugin : IPlugin
     {
-        private const string Description = "Convert between currencies and cryptocurrencies.\n\nExamples: \"5 usd to jpy\", \"1 btc to cad\", \"1 eth to btc\"";
-
         private CurrencyRepository _currencyRepo;
         private const string KeyBaseCurrency = "Base currency";
         private const string Symbols = "$£€¥";
 
-        public PluginMeta Meta { get; set; } = new("Currency Converter", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new("Currency Converter", PluginPriority.Highest)
+        {
+            Description = "Convert between currencies and cryptocurrencies.\n\nExamples: \"5 usd to jpy\", \"1 btc to cad\", \"1 eth to btc\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
-
-        public bool IsLoaded { get; set; }
 
         public async Task<bool> TryLoad()
         {
@@ -47,7 +46,7 @@ namespace Pinpoint.Plugin.Currency
             _currencyRepo = new CurrencyRepository();
             await _currencyRepo.LoadCurrenciesInitial().ConfigureAwait(false);
 
-            return IsLoaded = true;
+            return true;
         }
 
         public void Unload()

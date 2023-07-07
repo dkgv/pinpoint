@@ -20,13 +20,12 @@ namespace PinPoint.Plugin.Spotify
         private readonly SpotifyClient _spotifyClient = SpotifyClient.GetInstance();
         private bool _isAuthenticated;
 
-        private const string Description = "Control Spotify without leaving your workflow. Requires sign-in on first use. Requires Spotify to be running on any device you are signed in to.\n\nExamples: \"album <name>\", \"artist <name>\", \"episode <name>\", \"play <name>\", \"playlist <name>\", \"show <name>\", \"skip\", \"next\", \"prev\", \"back\", \"pause\"";
-
-        public PluginMeta Meta { get; set; } = new("Spotify Controller", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new("Spotify Controller", PluginPriority.Highest)
+        {
+            Description = "Control Spotify without leaving your workflow. Requires sign-in on first use. Requires Spotify to be running on any device you are signed in to.\n\nExamples: \"album <name>\", \"artist <name>\", \"episode <name>\", \"play <name>\", \"playlist <name>\", \"show <name>\", \"skip\", \"next\", \"prev\", \"back\", \"pause\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
-
-        public bool IsLoaded { get; set; }
 
         public Task<bool> TryLoad()
         {
@@ -37,7 +36,7 @@ namespace PinPoint.Plugin.Spotify
 
             SpotifyClient.Plugin = this; // Dirty hack
 
-            return Task.FromResult(IsLoaded = true);
+            return Task.FromResult(_isAuthenticated);
         }
 
         public void Unload()

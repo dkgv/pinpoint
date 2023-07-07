@@ -9,7 +9,10 @@ namespace Pinpoint.Plugin.Emoji;
 
 public class EmojiPlugin : IPlugin
 {
-    public PluginMeta Meta { get; set; } = new("Emoji", "Search for and insert emojis anywhere.\n\nExamples: \":smilin\"", PluginPriority.Highest);
+    public PluginManifest Manifest { get; set; } = new("Emoji", PluginPriority.Highest)
+    {
+        Description = "Search for and insert emojis anywhere.\n\nExamples: \":smilin\""
+    };
 
     public PluginStorage Storage { get; set; } = new();
 
@@ -26,14 +29,14 @@ public class EmojiPlugin : IPlugin
     private class EmojiResult : AbstractQueryResult
     {
         private readonly GEmoji _emoji;
-        
+
         public EmojiResult(GEmoji emoji) : base(emoji.Raw + " " + emoji.Description, string.Join(",", emoji.Aliases))
         {
             _emoji = emoji;
         }
 
-        public override Bitmap Icon { get; } = new(1,1);
-        
+        public override Bitmap Icon { get; } = new(1, 1);
+
         public override void OnSelect()
         {
             ClipboardHelper.Copy(_emoji.Raw, Encoding.Unicode);

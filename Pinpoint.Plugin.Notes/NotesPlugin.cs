@@ -10,8 +10,6 @@ namespace Pinpoint.Plugin.Notes
 {
     public class NotesPlugin : IPlugin
     {
-        private const string Description = "Create and view quick notes.\n\nExamples: \"note <new note>\" to create a note, \"notes\" to list existing notes";
-
         private static readonly string[] Actions = {
             "notes", // List
             "note" // Create
@@ -23,7 +21,10 @@ namespace Pinpoint.Plugin.Notes
             _notesManager = NotesManager.GetInstance();
         }
 
-        public PluginMeta Meta { get; set; } = new("Notes Plugin", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new("Notes Plugin", PluginPriority.Highest)
+        {
+            Description = "Create and view quick notes.\n\nExamples: \"note <new note>\" to create a note, \"notes\" to list existing notes"
+        };
 
         public PluginStorage Storage { get; set; } = new();
 
@@ -43,11 +44,11 @@ namespace Pinpoint.Plugin.Notes
                     {
                         break;
                     }
-                    
+
                     var noteContent = string.Join(' ', query.Parts[1..]);
                     yield return new AddNoteResult(noteContent);
                     break;
-                
+
                 case "notes":
                     var notes = await _notesManager.GetNotes();
                     foreach (var note in notes.OrderByDescending(n => n.CreatedAt))

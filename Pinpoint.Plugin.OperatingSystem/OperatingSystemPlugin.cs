@@ -16,9 +16,10 @@ namespace Pinpoint.Plugin.OperatingSystem
             "shutdown", "shut down", "restart", "reboot", "sleep"
         };
 
-        private const string Description = "Control your operating system.\n\nExamples: \"sleep\", \"reboot\"";
-
-        public PluginMeta Meta { get; set; } = new("Operating System", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new("Operating System", PluginPriority.Highest)
+        {
+            Description = "Control your operating system.\n\nExamples: \"sleep\", \"reboot\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
 

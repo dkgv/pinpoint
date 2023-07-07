@@ -10,9 +10,10 @@ namespace Pinpoint.Plugin.ClipboardManager
 {
     public class ClipboardManagerPlugin : IPlugin
     {
-        private const string Description = "Copy as you normally would with CTRL+C and paste from your clipboard history via CTRL+ALT+V.";
-
-        public PluginMeta Meta { get; set; } = new("Clipboard Manager", Description, PluginPriority.Standard);
+        public PluginManifest Manifest { get; set; } = new("Clipboard Manager")
+        {
+            Description = "Evaluate mathematical expressions quickly.\n\nExamples: \"9+5*(123/5)\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
 

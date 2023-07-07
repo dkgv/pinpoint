@@ -20,18 +20,17 @@ namespace Pinpoint.Plugin.AppSearch
 
         public AppSearchFrequency AppSearchFrequency;
 
-        private const string Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\"";
-
-        public PluginMeta Meta { get; set; } = new("App Search", Description, PluginPriority.NextHighest);
+        public PluginManifest Manifest { get; set; } = new("App Search", PluginPriority.NextHighest)
+        {
+            Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
-
-        public bool IsLoaded { get; set; }
 
         public async Task<bool> TryLoad()
         {
             AppSearchFrequency = new AppSearchFrequency(this);
-            
+
             var tasks = new List<Task>
             {
                 Task.Run(() => PopulateCache(new UwpAppProvider())),
@@ -40,7 +39,7 @@ namespace Pinpoint.Plugin.AppSearch
             );
             await Task.WhenAll(tasks);
 
-            return IsLoaded = true;
+            return true;
         }
 
         public void Unload()
@@ -64,11 +63,11 @@ namespace Pinpoint.Plugin.AppSearch
             var allMatches = staticMatches
                 .Concat(runtimeMatches)
                 .OrderByDescending(a => AppSearchFrequency.FrequencyOfFor(queryLower, a.FilePath));
-            
-           foreach (var app in allMatches)
-           {
-               yield return new AppResult(this, app, queryLower);
-           }
+
+            foreach (var app in allMatches)
+            {
+                yield return new AppResult(this, app, queryLower);
+            }
         }
 
         private void PopulateCache(IAppProvider provider)
@@ -85,13 +84,13 @@ namespace Pinpoint.Plugin.AppSearch
         private IEnumerable<string> GenerateAliases(string appName)
         {
             yield return appName.ToLower();
-            
+
             var camelCaseAliases = GenerateCamelCaseAliases(appName);
             foreach (var alias in camelCaseAliases)
             {
                 yield return alias;
             }
-            
+
             var wordAliases = GenerateWordAliases(appName);
             foreach (var alias in wordAliases)
             {
@@ -125,7 +124,7 @@ namespace Pinpoint.Plugin.AppSearch
             {
                 yield break;
             }
-            
+
             var variations = appName.ToLower().Split(" ");
             foreach (var variation in variations)
             {
@@ -139,7 +138,7 @@ namespace Pinpoint.Plugin.AppSearch
             {
                 yield break;
             }
-            
+
             var subWords = appName.Split(' ');
             foreach (var subWord in subWords)
             {
@@ -152,10 +151,10 @@ namespace Pinpoint.Plugin.AppSearch
                         currentVariation = c.ToString().ToLower();
                         continue;
                     }
-                
+
                     currentVariation += c;
                 }
-                
+
                 if (currentVariation.Length > 1)
                 {
                     yield return currentVariation.ToLower();

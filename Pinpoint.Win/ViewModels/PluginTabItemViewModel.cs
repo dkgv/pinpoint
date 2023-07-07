@@ -18,10 +18,10 @@ namespace Pinpoint.Win.ViewModels
 
         public bool Enabled
         {
-            get => Plugin.Meta.Enabled;
+            get => Plugin.Manifest.Enabled;
             set
             {
-                Plugin.Meta.Enabled = value;
+                Plugin.Manifest.Enabled = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(StatusColor));
                 OnPropertyChanged(nameof(ToggleEnabledString));

@@ -15,9 +15,11 @@ namespace Pinpoint.Plugin.MetricConverter
         //Example of match: 100cm to m | 100cm
         private static readonly Regex Pattern = new Regex(@"^(\d+) ?(mm|cm|km|micrometer|nm|mi|yd|ft|in|m){1}( (to|in) )?(mm|cm|km|m|micrometer|nm|mi|yd|ft|in)?");
         private static Match _match;
-        private const string Description = "Convert between metric/imperial units.\n\nExamples: \"100 cm to m\", \"10in to mm\"";
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Metric Converter", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new PluginManifest("Metric Converter", PluginPriority.Highest)
+        {
+            Description = "Convert between metric/imperial units.\n\nExamples: \"100 cm to m\", \"10in to mm\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
 
@@ -31,7 +33,7 @@ namespace Pinpoint.Plugin.MetricConverter
             var value = _match.Groups[1].Value;
             var fromUnit = _match.Groups[2].Value;
             var toUnit = _match.Groups[5].Value;
-                
+
             // Handle non specified toUnit.
             if (_match.Groups[3].Value == "" || toUnit == "")
             {

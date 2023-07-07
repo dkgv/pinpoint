@@ -9,9 +9,10 @@ namespace Pinpoint.Plugin.Bangs
 {
     public class BangsPlugin : IPlugin
     {
-        private const string Description = "Search 10.000+ websites directly via DuckDuckGo bangs.\n\nExamples: \"breaking bad !imdb\", \"diameter of the earth !g\"";
-
-        public PluginMeta Meta { get; set; } = new("DuckDuckGo !Bangs", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new("DuckDuckGo !Bangs", PluginPriority.Highest)
+        {
+            Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
 

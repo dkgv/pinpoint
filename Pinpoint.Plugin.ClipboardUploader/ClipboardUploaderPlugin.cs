@@ -11,9 +11,10 @@ namespace Pinpoint.Plugin.ClipboardUploader
 {
     public class ClipboardUploaderPlugin : IPlugin
     {
-        private const string Description = "Upload your clipboard content to a pastebin and receive the resulting URL directly to your clipboard.\n\nExamples: \"paste\"";
-
-        public PluginMeta Meta { get; set; } = new("Clipboard Uploader", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new("Clipboard Uploader", PluginPriority.Highest)
+        {
+            Description = "Upload your clipboard content to a pastebin and receive the resulting URL directly to your clipboard.\n\nExamples: \"paste\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
 
@@ -37,7 +38,7 @@ namespace Pinpoint.Plugin.ClipboardUploader
         private readonly AbstractUploader _abstractUploader;
         private readonly string _content;
 
-        public UploadToResult(AbstractUploader abstractUploader, string content) : base($"Paste clipboard content to {abstractUploader.Name}", "")
+        public UploadToResult(AbstractUploader abstractUploader, string content) : base($"Upload clipboard content to {abstractUploader.Name}", "")
         {
             _abstractUploader = abstractUploader;
             _content = content;

@@ -12,15 +12,14 @@ namespace Pinpoint.Plugin.Bookmarks
 {
     public class BookmarksPlugin : IPlugin
     {
-        private const string Description = "Search for browser bookmarks from Brave, Chrome, Firefox.";
-
         private readonly UkkonenTrie<Tuple<BrowserType, AbstractBookmarkModel>> _trie = new();
 
-        public PluginMeta Meta { get; set; } = new("Bookmarks Plugin", Description, PluginPriority.Standard);
+        public PluginManifest Manifest { get; set; } = new("Bookmarks Plugin")
+        {
+            Description = "Search for browser bookmarks from Brave, Chrome, Firefox."
+        };
 
         public PluginStorage Storage { get; set; } = new();
-
-        public bool IsLoaded { get; set; }
 
         public async Task<bool> TryLoad()
         {
@@ -34,8 +33,7 @@ namespace Pinpoint.Plugin.Bookmarks
                 }
             }
 
-            IsLoaded = true;
-            return IsLoaded;
+            return true;
         }
 
         public void Unload()

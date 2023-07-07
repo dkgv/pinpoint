@@ -14,9 +14,10 @@ namespace Pinpoint.Plugin.Translate
 {
     public class TranslatePlugin : IPlugin
     {
-        private const string Description = "Translate to and from different languages.\n\nExamples: \"fr,en bonjour\", \"<from>,<to> <text>\"";
-
-        public PluginMeta Meta { get; set; } = new("Translate Plugin", Description, PluginPriority.NextHighest);
+        public PluginManifest Manifest { get; set; } = new("Translate Plugin", PluginPriority.NextHighest)
+        {
+            Description = "Translate to and from different languages.\n\nExamples: \"fr,en bonjour\", \"<from>,<to> <text>\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
 
@@ -58,7 +59,7 @@ namespace Pinpoint.Plugin.Translate
 
         private async Task<TranslationModel> Translate(string from, string to, string content)
         {
-            var bodyContent = JsonConvert.SerializeObject(new Dictionary<string, string> {{"content", content}});
+            var bodyContent = JsonConvert.SerializeObject(new Dictionary<string, string> { { "content", content } });
             var body = new StringContent(bodyContent, Encoding.UTF8, "application/json");
 
             var url = $"https://usepinpoint.com/api/translate/{from}/{to}";

@@ -10,7 +10,7 @@ namespace Pinpoint.Core
 {
     public class EmptyPlugin : IPlugin
     {
-        public PluginMeta Meta { get; set; }
+        public PluginManifest Manifest { get; set; }
 
         public PluginStorage Storage { get; set; }
 

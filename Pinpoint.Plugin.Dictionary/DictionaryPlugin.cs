@@ -14,11 +14,12 @@ namespace Pinpoint.Plugin.Dictionary
 {
     public class DictionaryPlugin : IPlugin
     {
-        private const string Description = "Find word definitions.\n\nExamples: \"define ubiquitous\"";
-
         private static readonly Regex DefineRegex = new(@"^(define)");
 
-        public PluginMeta Meta { get; set; } = new("Dictionary", Description, PluginPriority.Standard);
+        public PluginManifest Manifest { get; set; } = new("Dictionary")
+        {
+            Description = "Find word definitions.\n\nExamples: \"define ubiquitous\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
 

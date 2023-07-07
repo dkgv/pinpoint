@@ -11,12 +11,12 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.ProcessManager
 {
-    public class ProcessManagerPlugin: IPlugin
+    public class ProcessManagerPlugin : IPlugin
     {
-        public PluginMeta Meta { get; set; } = new("Process Manager", PluginPriority.Highest);
-        
+        public PluginManifest Manifest { get; set; } = new("Process Manager", PluginPriority.Highest);
+
         public PluginStorage Storage { get; set; } = new();
-        
+
         public async Task<bool> Activate(Query query)
         {
             return query.RawQuery.Length >= 2 && query.Prefix(2).Equals("ps") && query.Parts.Length > 1;
@@ -63,11 +63,11 @@ namespace Pinpoint.Plugin.ProcessManager
         }
     }
 
-    public class ProcessResult: AbstractFontAwesomeQueryResult
+    public class ProcessResult : AbstractFontAwesomeQueryResult
     {
         private readonly Process _process;
 
-        public ProcessResult(Process process, string processName, string subtitle): base($"Kill \"{processName}\" (PID {process.Id})", $"{subtitle}")
+        public ProcessResult(Process process, string processName, string subtitle) : base($"Kill \"{processName}\" (PID {process.Id})", $"{subtitle}")
         {
             _process = process;
         }

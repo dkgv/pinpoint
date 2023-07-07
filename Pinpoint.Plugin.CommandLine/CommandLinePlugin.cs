@@ -9,9 +9,10 @@ namespace Pinpoint.Plugin.CommandLine
 {
     public class CommandLinePlugin : IPlugin
     {
-        private const string Description = "Launch CLI programs directly in cmd.\n\nExamples: \">ipconfig\"";
-
-        public PluginMeta Meta { get; set; } = new("Command Line", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new("Command Line", PluginPriority.Highest)
+        {
+            Description = "Convert colors from RGB <-> Hex.\n\nExamples: \"#FF5555\", \"rgb(255,100,50)\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
 

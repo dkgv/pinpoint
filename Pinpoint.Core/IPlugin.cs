@@ -6,64 +6,61 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Pinpoint.Core.Results;
 
-namespace Pinpoint.Core
+namespace Pinpoint.Core;
+
+public interface IPlugin : IComparable<IPlugin>
 {
-    public interface IPlugin : IComparable<IPlugin>
+    public PluginManifest Manifest { get; set; }
+
+    public PluginStorage Storage { get; set; }
+
+    bool HasModifiableSettings => false;
+
+    TimeSpan DebounceTime => TimeSpan.Zero;
+
+    public Task<bool> TryLoad() => Task.FromResult(true);
+
+    public Task<bool> Activate(Query query);
+
+    public IAsyncEnumerable<AbstractQueryResult> Process(Query query, CancellationToken ct);
+
+    int IComparable<IPlugin>.CompareTo(IPlugin other)
     {
-        public PluginMeta Meta { get; set; }
+        return other.Manifest.Priority.CompareTo(Manifest.Priority);
+    }
 
-        public PluginStorage Storage { get; set; }
+    private string FilePath => Path.Combine(AppConstants.MainDirectory, $"{string.Concat(Manifest.Name.Split(Path.GetInvalidFileNameChars()))}.json");
 
-        bool ModifiableSettings => false;
+    public async Task Save()
+    {
+        var json = JsonConvert.SerializeObject(new PluginTransport(Manifest, Storage));
+        await File.WriteAllTextAsync(FilePath, json);
+    }
 
-        bool IsLoaded => true;
-        
-        TimeSpan DebounceTime => TimeSpan.Zero;
-
-        public Task<bool> TryLoad() => Task.FromResult(true);
-
-        public Task<bool> Activate(Query query);
-
-        public IAsyncEnumerable<AbstractQueryResult> Process(Query query, CancellationToken ct);
-
-        int IComparable<IPlugin>.CompareTo(IPlugin other)
+    public void Restore()
+    {
+        if (!File.Exists(FilePath))
         {
-            return other.Meta.Priority.CompareTo(Meta.Priority);
+            return;
         }
 
-        private string FilePath => Path.Combine(AppConstants.MainDirectory, $"{string.Concat(Meta.Name.Split(Path.GetInvalidFileNameChars()))}.json");
-
-        public async Task Save()
+        try
         {
-            var json = JsonConvert.SerializeObject(new PluginState(Meta, Storage));
-            await File.WriteAllTextAsync(FilePath, json);
-        }
-
-        public void Restore()
-        {
-            if (!File.Exists(FilePath))
+            var json = File.ReadAllText(FilePath);
+            if (string.IsNullOrEmpty(json))
             {
                 return;
             }
 
-            try
-            {
-                var json = File.ReadAllText(FilePath);
-                if (string.IsNullOrEmpty(json))
-                {
-                    return;
-                }
-
-                var (meta, storage) = JsonConvert.DeserializeObject<PluginState>(json);
-                Storage = storage;
-                Meta = meta;
-            }
-            catch
-            {
-                // ignored
-            }
+            var (manifest, storage) = JsonConvert.DeserializeObject<PluginTransport>(json);
+            Storage = storage;
+            Manifest = manifest;
         }
-
-        private record PluginState(PluginMeta Meta, PluginStorage Storage);
+        catch
+        {
+            // ignored
+        }
     }
+
+    private record PluginTransport(PluginManifest Meta, PluginStorage Storage);
 }

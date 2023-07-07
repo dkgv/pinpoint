@@ -9,11 +9,12 @@ namespace Pinpoint.Plugin.HackerNews
 {
     public class HackerNewsPlugin : IPlugin
     {
-        private const string Description = "Browse the frontpage of Hacker News.\n\nExamples: \"hackernews\", \"hacker news\", \"hnews\"";
-
         private readonly HackerNewsApi _hackerNewsApi = new();
 
-        public PluginMeta Meta { get; set; } = new("Hacker News Browser", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new("Hacker News Browser", PluginPriority.Highest)
+        {
+            Description = "Look up stock tickers.\n\nExamples: \"$GME\", \"$MSFT\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
 

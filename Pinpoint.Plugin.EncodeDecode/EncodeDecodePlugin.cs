@@ -8,11 +8,11 @@ using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.EncodeDecode
 {
-    public class EncodeDecodePlugin: IPlugin
+    public class EncodeDecodePlugin : IPlugin
     {
-        private static readonly string[] Prefixes = {"bin", "hex", "b64"};
-        
-        public PluginMeta Meta { get; set; } = new("Encode/Decode Plugin", PluginPriority.NextHighest);
+        private static readonly string[] Prefixes = { "bin", "hex", "b64" };
+
+        public PluginManifest Manifest { get; set; } = new("Encode/Decode Plugin", PluginPriority.NextHighest);
 
         public PluginStorage Storage { get; set; } = new();
 

@@ -16,10 +16,12 @@ namespace Pinpoint.Plugin.Weather
     public class WeatherPlugin : IPlugin
     {
         private const string KeyDefaultCity = "Default city";
-        private const string Description = "Look up weather forecasts.\n\nExamples: \"weather <location>\" or \"weather\" if default location is set";
         private readonly Dictionary<string, List<WeatherDayModel>> _weatherCache = new();
 
-        public PluginMeta Meta { get; set; } = new("Weather", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new("Weather", PluginPriority.Highest)
+        {
+            Description = "Look up weather forecasts.\n\nExamples: \"weather <location>\" or \"weather\" if default location is set"
+        };
 
         public PluginStorage Storage { get; set; } = new();
 

@@ -8,14 +8,16 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.PasswordGenerator
 {
-    public class PasswordGeneratorPlugin: IPlugin
+    public class PasswordGeneratorPlugin : IPlugin
     {
         private const string ActivateString = "password";
         private readonly char[] _characters =
             "abcdefgijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ1234567890+#¤%&/()=@£$€{[]}?<>".ToCharArray();
-        private const string Description = "Generate and copy + insert passwords of variable length.\n\nExamples: \"password <length>\", \"password 14\"";
 
-        public PluginMeta Meta { get; set; } = new PluginMeta("Password Generator", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new PluginManifest("Password Generator", PluginPriority.Highest)
+        {
+            Description = "Generate and copy + insert passwords of variable length.\n\nExamples: \"password <length>\", \"password 14\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
 

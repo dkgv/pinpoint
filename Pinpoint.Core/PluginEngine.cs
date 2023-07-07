@@ -51,7 +51,7 @@ namespace Pinpoint.Core
         public async IAsyncEnumerable<AbstractQueryResult> EvaluateQuery([EnumeratorCancellation] CancellationToken ct,
             Query query)
         {
-            var enabledPlugins = Plugins.Where(p => p.Meta.Enabled && p.IsLoaded).ToList();
+            var enabledPlugins = Plugins.Where(p => p.Manifest.Enabled).ToList();
             var debouncedPlugins = enabledPlugins.Where(p => p.DebounceTime > TimeSpan.Zero).ToHashSet();
             for (var i = 0; i < enabledPlugins.Count && query.ResultCount < 20 && !ct.IsCancellationRequested; i++)
             {

@@ -12,9 +12,10 @@ namespace Pinpoint.Plugin.Text
 {
     public class TextPlugin : IPlugin
     {
-        private const string Description = "Easily perform various transformative text actions. Wrap your text in \" and select and option.\n\nExamples: \"this is some text\"";
-
-        public PluginMeta Meta { get; set; } = new("Text Plugin", Description, PluginPriority.NextHighest);
+        public PluginManifest Manifest { get; set; } = new("Text Plugin", PluginPriority.NextHighest)
+        {
+            Description = "Easily perform various transformative text actions. Wrap your text in \" and select and option.\n\nExamples: \"this is some text\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
 

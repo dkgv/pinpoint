@@ -13,10 +13,12 @@ namespace Pinpoint.Plugin.Calculator
 {
     public class CalculatorPlugin : IPlugin
     {
-        private const string Description = "Evaluate mathematical expressions quickly.\n\nExamples: \"9+5*(123/5)\"";
         private static readonly Regex MathPattern = new(@"([-+]?[0-9]*\.?[0-9]+[\/\+\-\*])+([-+]?[0-9]*\.?[0-9]+)");
-        
-        public PluginMeta Meta { get; set; } = new("Calculator", Description, PluginPriority.Highest);
+
+        public PluginManifest Manifest { get; set; } = new("Calculator", PluginPriority.Highest)
+        {
+            Description = "Evaluate mathematical expressions quickly.\n\nExamples: \"9+5*(123/5)\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
 

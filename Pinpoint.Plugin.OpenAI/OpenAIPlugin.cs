@@ -11,11 +11,12 @@ public class OpenAIPlugin : IPlugin
 {
     private const string KeyApiKey = "API Key";
 
-    private const string Description =
-        "Run queries through OpenAI's models using their API. Prefix prompts with \"?\". Prompts are submitted after 2 seconds of not typing.\n\nExamples: \"?What is the meaning of life?\", \"?how to invert a binary tree\"";
     private OpenAIClient _client;
-    
-    public PluginMeta Meta { get; set; } = new("OpenAI", Description, PluginPriority.Highest);
+
+    public PluginManifest Manifest { get; set; } = new("OpenAI", PluginPriority.Highest)
+    {
+        Description = "Run queries through OpenAI's models using their API. Prefix prompts with \"?\". Prompts are submitted after 2 seconds of not typing.\n\nExamples: \"?What is the meaning of life?\", \"?how to invert a binary tree\""
+    };
 
     public PluginStorage Storage { get; set; } = new();
 
@@ -34,7 +35,7 @@ public class OpenAIPlugin : IPlugin
             {
                 return true;
             }
-            
+
             _client = new OpenAIClient(apiKey);
         }
 
@@ -49,7 +50,7 @@ public class OpenAIPlugin : IPlugin
     public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
     {
         yield return new TitleOpenAIResult();
-        
+
         var userPrompt = query.RawQuery[1..];
         var chatPrompts = new List<Message>
         {
@@ -63,7 +64,7 @@ public class OpenAIPlugin : IPlugin
 
         var reply = resp.FirstChoice.Message.Content;
         reply = reply.TrimStart('\n');
-        
+
         yield return new OpenAIResult(userPrompt, reply);
     }
 }

@@ -11,17 +11,17 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.UrlLauncher
 {
-    public class UrlLauncherPlugin: IPlugin
+    public class UrlLauncherPlugin : IPlugin
     {
         private const string HttpsProtocolPrefix = "https://";
         private static readonly HashSet<string> Tlds = new(1577);
-        private const string Description = "Launch URLs.\n\nExamples: \"google.com\", \"images.google.com\"";
 
-        public PluginMeta Meta { get; set; } = new("Url Launcher", Description, PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new("Url Launcher", PluginPriority.Highest)
+        {
+            Description = "Launch URLs.\n\nExamples: \"google.com\", \"images.google.com\""
+        };
 
         public PluginStorage Storage { get; set; } = new();
-
-        public bool IsLoaded { get; set; }
 
         public async Task<bool> TryLoad()
         {
@@ -33,7 +33,6 @@ namespace Pinpoint.Plugin.UrlLauncher
                 Tlds.Add(line);
             }
 
-            IsLoaded = true;
             return true;
         }
 
