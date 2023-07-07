@@ -29,9 +29,9 @@ namespace Pinpoint.Plugin.Weather
 
         public async Task<bool> TryLoad()
         {
-            if (Storage.UserSettings.Count == 0)
+            if (Storage.User.Count == 0)
             {
-                Storage.UserSettings.Put(KeyDefaultCity, string.Empty);
+                Storage.User.Put(KeyDefaultCity, string.Empty);
             }
 
             return true;
@@ -95,7 +95,7 @@ namespace Pinpoint.Plugin.Weather
 
         private string GetDefaultCity()
         {
-            return Storage.UserSettings.Str(KeyDefaultCity);
+            return Storage.User.Str(KeyDefaultCity);
         }
 
         private async Task<List<WeatherDayModel>> GetWeatherAt(string location)

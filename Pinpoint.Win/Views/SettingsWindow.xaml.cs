@@ -139,7 +139,7 @@ namespace Pinpoint.Win.Views
 
             // Add to tab control
             var pluginTabItem = new PluginTabItem(plugin);
-            if (plugin.Storage.UserSettings.Count == 0)
+            if (plugin.Storage.User.Count == 0)
             {
                 pluginTabItem.LblSettings.Visibility = pluginTabItem.PluginSettings.Visibility = Visibility.Hidden;
             }

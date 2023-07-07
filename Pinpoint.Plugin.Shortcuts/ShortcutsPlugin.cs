@@ -21,25 +21,25 @@ namespace Pinpoint.Plugin.Shortcuts
 
         public async Task<bool> TryLoad()
         {
-            Storage.UserSettings.Put("", "");
+            Storage.User.Put("", "");
             return true;
         }
 
         public async Task<bool> Activate(Query query)
         {
-            return Storage.UserSettings.Any(s => s.Name.Equals(query.Parts[0]));
+            return Storage.User.Any(s => s.Name.Equals(query.Parts[0]));
         }
 
         public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, CancellationToken ct)
         {
             if (query.Parts.Length == 1)
             {
-                yield return new ShortcutsResult(query.RawQuery, Storage.UserSettings.Str(query.RawQuery));
+                yield return new ShortcutsResult(query.RawQuery, Storage.User.Str(query.RawQuery));
                 yield break;
             }
 
             var q = query.Parts;
-            var shortcut = Storage.UserSettings.Str(q[0]).Replace("{query}", q[1]);
+            var shortcut = Storage.User.Str(q[0]).Replace("{query}", q[1]);
             yield return new ShortcutsResult(q[0], shortcut);
         }
     }

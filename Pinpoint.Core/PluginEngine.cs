@@ -23,13 +23,7 @@ public class PluginEngine
 
         try
         {
-            var successfullyLoaded = await @new.TryLoad();
-            if (!successfullyLoaded)
-            {
-                return;
-            }
-
-            @new.Manifest.Enabled = true;
+            @new.Manifest.Enabled = await @new.TryLoad();
             @new.Restore();
         }
         catch

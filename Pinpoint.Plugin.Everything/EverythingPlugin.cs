@@ -35,21 +35,20 @@ namespace Pinpoint.Plugin.Everything
             Description = "Search for files on your computer via Everything by David Carpenter."
         };
 
-        public PluginStorage Storage { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new()
+        {
+            User = UserSettings.Default(new Dictionary<string, object>{
+                {KeyIgnoreTempFolder, true},
+                {KeyIgnoreHiddenFolders, true},
+                {KeyIgnoreWindows, true}
+            })
+        };
 
         private IEverythingClient _everything;
 
         public Task<bool> TryLoad()
         {
             _everything = new EverythingClient(new DefaultSearchConfig());
-
-            if (Storage.UserSettings.Count != 3)
-            {
-                Storage.UserSettings.Put(KeyIgnoreTempFolder, true);
-                Storage.UserSettings.Put(KeyIgnoreHiddenFolders, true);
-                Storage.UserSettings.Put(KeyIgnoreWindows, true);
-            }
-
             return Task.FromResult(true);
         }
 
@@ -69,17 +68,17 @@ namespace Pinpoint.Plugin.Everything
                     continue;
                 }
 
-                if (Storage.UserSettings.Bool(KeyIgnoreTempFolder) && IsInTempFolder(result.FullPath))
+                if (Storage.User.Bool(KeyIgnoreTempFolder) && IsInTempFolder(result.FullPath))
                 {
                     continue;
                 }
 
-                if (Storage.UserSettings.Bool(KeyIgnoreWindows) && result.FullPath.StartsWith(@"C:\Windows"))
+                if (Storage.User.Bool(KeyIgnoreWindows) && result.FullPath.StartsWith(@"C:\Windows"))
                 {
                     continue;
                 }
 
-                if (Storage.UserSettings.Bool(KeyIgnoreHiddenFolders) && IsInHiddenFolder(result.FullPath))
+                if (Storage.User.Bool(KeyIgnoreHiddenFolders) && IsInHiddenFolder(result.FullPath))
                 {
                     continue;
                 }

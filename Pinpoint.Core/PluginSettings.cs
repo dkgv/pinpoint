@@ -8,20 +8,20 @@ public class PluginStorage
 {
     public PluginStorage()
     {
-        UserSettings = new PluginSettings();
+        User = new UserSettings();
         Internal = new Dictionary<string, object>();
     }
 
-    public PluginSettings UserSettings { get; set; }
+    public UserSettings User { get; set; }
 
     public Dictionary<string, object> Internal { get; set; }
 }
 
-public class PluginSettings : ObservableCollection<StorageEntry>
+public class UserSettings : ObservableCollection<Record>
 {
     public bool Contains(string key) => this.Any(entry => entry.Name == key);
 
-    public void Put(string name, object value) => Add(new StorageEntry(name, value));
+    public void Put(string name, object value) => Add(new Record(name, value));
 
     public bool Bool(string key)
     {
@@ -31,7 +31,20 @@ public class PluginSettings : ObservableCollection<StorageEntry>
 
     public string Str(string key) => Get(key).Value.ToString();
 
-    private StorageEntry Get(string key) => this.FirstOrDefault(setting => setting.Name.Equals(key));
+    private Record Get(string key) => this.FirstOrDefault(setting => setting.Name.Equals(key));
+
+    public static UserSettings Default(Dictionary<string, object> settings)
+    {
+        var instance = new UserSettings();
+        foreach (var setting in settings)
+        {
+            if (!instance.Contains(setting.Key))
+            {
+                instance.Put(setting.Key, setting.Value);
+            }
+        }
+        return instance;
+    }
 }
 
-public record StorageEntry(string Name, object Value);
+public record Record(string Name, object Value);

@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,7 +20,7 @@ namespace PinPoint.Plugin.Spotify
 
         public PluginManifest Manifest { get; set; } = new("Spotify Controller", PluginPriority.High)
         {
-            Description = "Control Spotify without leaving your workflow. Requires sign-in on first use. Requires Spotify to be running on any device you are signed in to.\n\nExamples: \"album <name>\", \"artist <name>\", \"episode <name>\", \"play <name>\", \"playlist <name>\", \"show <name>\", \"skip\", \"next\", \"prev\", \"back\", \"pause\""
+            Description = "Control any Spotify session without leaving your workflow. Requires sign-in on first use.\n\nExamples: \"album <name>\", \"artist <name>\", \"episode <name>\", \"play <name>\", \"playlist <name>\", \"show <name>\", \"skip\", \"next\", \"prev\", \"back\", \"pause\""
         };
 
         public PluginStorage Storage { get; set; } = new();

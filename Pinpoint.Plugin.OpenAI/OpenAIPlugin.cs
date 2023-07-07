@@ -24,13 +24,13 @@ public class OpenAIPlugin : IPlugin
 
     public async Task<bool> TryLoad()
     {
-        if (!Storage.UserSettings.Any())
+        if (!Storage.User.Any())
         {
-            Storage.UserSettings.Put(KeyApiKey, "");
+            Storage.User.Put(KeyApiKey, "");
         }
         else
         {
-            var apiKey = Storage.UserSettings.Str(KeyApiKey);
+            var apiKey = Storage.User.Str(KeyApiKey);
             if (string.IsNullOrWhiteSpace(apiKey))
             {
                 return true;

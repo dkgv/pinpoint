@@ -13,7 +13,7 @@ namespace Pinpoint.Plugin.Currency
 {
     public class CurrencyPlugin : IPlugin
     {
-        private CurrencyRepository _currencyRepo;
+        private CurrencyRepository _currencyRepo = new();
         private const string KeyBaseCurrency = "Base currency";
         private const string Symbols = "$£€¥";
 
@@ -22,35 +22,35 @@ namespace Pinpoint.Plugin.Currency
             Description = "Convert between currencies and cryptocurrencies.\n\nExamples: \"5 usd to jpy\", \"1 btc to cad\", \"1 eth to btc\""
         };
 
-        public PluginStorage Storage { get; set; } = new();
+        public PluginStorage Storage { get; set; } = new()
+        {
+            User = UserSettings.Default(
+                new Dictionary<string, object>{
+                    {KeyBaseCurrency, GetDefaultBaseCurrency()}
+                }
+            )
+        };
+
+        private static string GetDefaultBaseCurrency()
+        {
+            string baseCurrency;
+            try
+            {
+                // Find base currency
+                var ri = new RegionInfo(CultureInfo.CurrentCulture.Name);
+                baseCurrency = ri.ISOCurrencySymbol;
+            }
+            catch (ArgumentException)
+            {
+                baseCurrency = "USD";
+            }
+            return baseCurrency;
+        }
 
         public async Task<bool> TryLoad()
         {
-            if (Storage.UserSettings.Count == 0)
-            {
-                string baseCurrency;
-                try
-                {
-                    // Find base currency
-                    var ri = new RegionInfo(CultureInfo.CurrentCulture.Name);
-                    baseCurrency = ri.ISOCurrencySymbol;
-                }
-                catch (ArgumentException)
-                {
-                    baseCurrency = "USD";
-                }
-
-                Storage.UserSettings.Put(KeyBaseCurrency, baseCurrency);
-            }
-
-            _currencyRepo = new CurrencyRepository();
-            await _currencyRepo.LoadCurrenciesInitial().ConfigureAwait(false);
-
+            await _currencyRepo.LoadCurrenciesInitial();
             return true;
-        }
-
-        public void Unload()
-        {
         }
 
         // TODO rewrite into oblivion
@@ -142,7 +142,7 @@ namespace Pinpoint.Plugin.Currency
             // Handles queries like 100 usd, 100 eur
             if (!query.RawQuery.Contains("in") && !query.RawQuery.Contains("to"))
             {
-                return Storage.UserSettings.Str(KeyBaseCurrency);
+                return Storage.User.Str(KeyBaseCurrency);
             }
 
             // Get last part
