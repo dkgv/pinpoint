@@ -20,7 +20,7 @@ namespace PinPoint.Plugin.Spotify
         private readonly SpotifyClient _spotifyClient = SpotifyClient.GetInstance();
         private bool _isAuthenticated;
 
-        public PluginManifest Manifest { get; set; } = new("Spotify Controller", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("Spotify Controller", PluginPriority.High)
         {
             Description = "Control Spotify without leaving your workflow. Requires sign-in on first use. Requires Spotify to be running on any device you are signed in to.\n\nExamples: \"album <name>\", \"artist <name>\", \"episode <name>\", \"play <name>\", \"playlist <name>\", \"show <name>\", \"skip\", \"next\", \"prev\", \"back\", \"pause\""
         };

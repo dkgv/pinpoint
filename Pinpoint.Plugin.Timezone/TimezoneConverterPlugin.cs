@@ -35,7 +35,7 @@ namespace Pinpoint.Plugin.Timezone
         private static readonly Regex Pattern =
             new($"^(time|({TwentyFourHourTime}) ?({Timezone})?|({TwelveHourTime}) ?({Timezone})?) (to|in) ({Timezone})$");
 
-        public PluginManifest Manifest { get; set; } = new("Timezone Converter", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("Timezone Converter", PluginPriority.High)
         {
             Description = "Convert time to/from different timezones.\n\nExamples: \"time in PST\", \"12:01 to EST\", \"12:00 am GMT to PST\", \"13:24 CET to JST\""
         };

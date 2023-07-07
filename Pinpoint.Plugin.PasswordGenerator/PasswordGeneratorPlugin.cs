@@ -14,7 +14,7 @@ namespace Pinpoint.Plugin.PasswordGenerator
         private readonly char[] _characters =
             "abcdefgijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ1234567890+#¤%&/()=@£$€{[]}?<>".ToCharArray();
 
-        public PluginManifest Manifest { get; set; } = new PluginManifest("Password Generator", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new PluginManifest("Password Generator", PluginPriority.High)
         {
             Description = "Generate and copy + insert passwords of variable length.\n\nExamples: \"password <length>\", \"password 14\""
         };

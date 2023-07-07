@@ -13,7 +13,7 @@ namespace Pinpoint.Plugin.Finance
     {
         private readonly YahooFinanceApi _yahooFinanceApi = new(TimeSpan.FromMinutes(2));
 
-        public PluginManifest Manifest { get; set; } = new("Finance Plugin", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("Finance Plugin", PluginPriority.High)
         {
             Description = "Look up stock tickers.\n\nExamples: \"$GME\", \"$MSFT\""
         };

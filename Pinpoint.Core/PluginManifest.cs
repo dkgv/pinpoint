@@ -24,3 +24,10 @@ public class PluginManifest
 
     public bool Enabled { get; set; }
 }
+
+public enum PluginPriority
+{
+    High = int.MaxValue,
+    Standard = 0,
+    Low = int.MinValue
+}

@@ -16,7 +16,7 @@ namespace Pinpoint.Plugin.UrlLauncher
         private const string HttpsProtocolPrefix = "https://";
         private static readonly HashSet<string> Tlds = new(1577);
 
-        public PluginManifest Manifest { get; set; } = new("Url Launcher", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("Url Launcher", PluginPriority.High)
         {
             Description = "Launch URLs.\n\nExamples: \"google.com\", \"images.google.com\""
         };

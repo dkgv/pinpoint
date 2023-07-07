@@ -15,7 +15,7 @@ namespace Pinpoint.Plugin.Calculator
     {
         private static readonly Regex MathPattern = new(@"([-+]?[0-9]*\.?[0-9]+[\/\+\-\*])+([-+]?[0-9]*\.?[0-9]+)");
 
-        public PluginManifest Manifest { get; set; } = new("Calculator", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("Calculator", PluginPriority.High)
         {
             Description = "Evaluate mathematical expressions quickly.\n\nExamples: \"9+5*(123/5)\""
         };

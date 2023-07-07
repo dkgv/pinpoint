@@ -14,7 +14,7 @@ namespace Pinpoint.Plugin.Translate
 {
     public class TranslatePlugin : IPlugin
     {
-        public PluginManifest Manifest { get; set; } = new("Translate Plugin", PluginPriority.NextHighest)
+        public PluginManifest Manifest { get; set; } = new("Translate Plugin")
         {
             Description = "Translate to and from different languages.\n\nExamples: \"fr,en bonjour\", \"<from>,<to> <text>\""
         };

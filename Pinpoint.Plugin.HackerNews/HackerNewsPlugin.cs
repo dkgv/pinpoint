@@ -11,7 +11,7 @@ namespace Pinpoint.Plugin.HackerNews
     {
         private readonly HackerNewsApi _hackerNewsApi = new();
 
-        public PluginManifest Manifest { get; set; } = new("Hacker News Browser", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("Hacker News Browser", PluginPriority.High)
         {
             Description = "Look up stock tickers.\n\nExamples: \"$GME\", \"$MSFT\""
         };

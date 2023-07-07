@@ -16,7 +16,7 @@ namespace Pinpoint.Plugin.ColorConverter
         private const string HexPattern = @"^(#)([0-9A-Fa-f]{8}|[0-9A-Fa-f]{6})$";
         private static readonly Regex Pattern = new($@"({HexPattern})|({RgbPattern})");
 
-        public PluginManifest Manifest { get; set; } = new("Color Converter", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("Color Converter", PluginPriority.High)
         {
             Description = "Convert colors from RGB <-> Hex.\n\nExamples: \"#FF5555\", \"rgb(255,100,50)\""
         };

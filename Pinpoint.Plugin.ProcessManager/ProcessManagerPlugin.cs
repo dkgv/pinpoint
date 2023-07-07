@@ -13,7 +13,7 @@ namespace Pinpoint.Plugin.ProcessManager
 {
     public class ProcessManagerPlugin : IPlugin
     {
-        public PluginManifest Manifest { get; set; } = new("Process Manager", PluginPriority.Highest);
+        public PluginManifest Manifest { get; set; } = new("Process Manager", PluginPriority.High);
 
         public PluginStorage Storage { get; set; } = new();
 

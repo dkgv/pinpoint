@@ -18,7 +18,7 @@ namespace Pinpoint.Plugin.Weather
         private const string KeyDefaultCity = "Default city";
         private readonly Dictionary<string, List<WeatherDayModel>> _weatherCache = new();
 
-        public PluginManifest Manifest { get; set; } = new("Weather", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("Weather", PluginPriority.High)
         {
             Description = "Look up weather forecasts.\n\nExamples: \"weather <location>\" or \"weather\" if default location is set"
         };

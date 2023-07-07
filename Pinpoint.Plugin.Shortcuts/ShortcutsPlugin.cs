@@ -10,7 +10,7 @@ namespace Pinpoint.Plugin.Shortcuts
 {
     public class ShortcutsPlugin : IPlugin
     {
-        public PluginManifest Manifest { get; set; } = new("Shortcuts", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("Shortcuts", PluginPriority.High)
         {
             Description = "Create custom shortcuts to open file locations, settings and even websites.\n\nExamples:\nName: youtube; Value: https://youtube.com,\nName: desktop; Value: C:\\Users\\{Environment.UserName}\\Desktop,\nName: apps; Value: ms-settings:appsfeatures, \nName: desktop; Value: C:\\Users\\{Environment.UserName}\\Desktop,\nName: reddit; Value: https://www.reddit.com/r/{{query}}"
         };

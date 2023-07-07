@@ -9,7 +9,7 @@ namespace Pinpoint.Plugin.Emoji;
 
 public class EmojiPlugin : IPlugin
 {
-    public PluginManifest Manifest { get; set; } = new("Emoji", PluginPriority.Highest)
+    public PluginManifest Manifest { get; set; } = new("Emoji", PluginPriority.High)
     {
         Description = "Search for and insert emojis anywhere.\n\nExamples: \":smilin\""
     };

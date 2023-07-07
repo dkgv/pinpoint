@@ -12,7 +12,7 @@ namespace Pinpoint.Plugin.EncodeDecode
     {
         private static readonly string[] Prefixes = { "bin", "hex", "b64" };
 
-        public PluginManifest Manifest { get; set; } = new("Encode/Decode Plugin", PluginPriority.NextHighest);
+        public PluginManifest Manifest { get; set; } = new("Encode/Decode Plugin");
 
         public PluginStorage Storage { get; set; } = new();
 

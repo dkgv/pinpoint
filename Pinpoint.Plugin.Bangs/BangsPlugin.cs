@@ -9,7 +9,7 @@ namespace Pinpoint.Plugin.Bangs
 {
     public class BangsPlugin : IPlugin
     {
-        public PluginManifest Manifest { get; set; } = new("DuckDuckGo !Bangs", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("DuckDuckGo !Bangs", PluginPriority.High)
         {
             Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\""
         };

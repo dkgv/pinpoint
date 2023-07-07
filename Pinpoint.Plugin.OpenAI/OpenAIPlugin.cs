@@ -13,7 +13,7 @@ public class OpenAIPlugin : IPlugin
 
     private OpenAIClient _client;
 
-    public PluginManifest Manifest { get; set; } = new("OpenAI", PluginPriority.Highest)
+    public PluginManifest Manifest { get; set; } = new("OpenAI", PluginPriority.High)
     {
         Description = "Run queries through OpenAI's models using their API. Prefix prompts with \"?\". Prompts are submitted after 2 seconds of not typing.\n\nExamples: \"?What is the meaning of life?\", \"?how to invert a binary tree\""
     };

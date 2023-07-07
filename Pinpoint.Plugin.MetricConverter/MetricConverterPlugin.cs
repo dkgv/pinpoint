@@ -16,7 +16,7 @@ namespace Pinpoint.Plugin.MetricConverter
         private static readonly Regex Pattern = new Regex(@"^(\d+) ?(mm|cm|km|micrometer|nm|mi|yd|ft|in|m){1}( (to|in) )?(mm|cm|km|m|micrometer|nm|mi|yd|ft|in)?");
         private static Match _match;
 
-        public PluginManifest Manifest { get; set; } = new PluginManifest("Metric Converter", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new PluginManifest("Metric Converter", PluginPriority.High)
         {
             Description = "Convert between metric/imperial units.\n\nExamples: \"100 cm to m\", \"10in to mm\""
         };

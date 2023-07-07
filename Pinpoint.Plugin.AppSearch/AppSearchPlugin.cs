@@ -20,7 +20,7 @@ namespace Pinpoint.Plugin.AppSearch
 
         public AppSearchFrequency AppSearchFrequency;
 
-        public PluginManifest Manifest { get; set; } = new("App Search", PluginPriority.NextHighest)
+        public PluginManifest Manifest { get; set; } = new("App Search")
         {
             Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\""
         };

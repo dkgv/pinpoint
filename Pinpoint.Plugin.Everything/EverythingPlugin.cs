@@ -30,7 +30,7 @@ namespace Pinpoint.Plugin.Everything
         private static readonly Regex SpreadsheetRegex = new(@"xls|xlsm|xlsx|numbers|ots|xlr");
         private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
 
-        public PluginManifest Manifest { get; set; } = new("Everything (File Search)", PluginPriority.Lowest)
+        public PluginManifest Manifest { get; set; } = new("Everything (File Search)", PluginPriority.Low)
         {
             Description = "Search for files on your computer via Everything by David Carpenter."
         };

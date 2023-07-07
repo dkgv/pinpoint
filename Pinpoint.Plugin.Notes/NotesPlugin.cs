@@ -21,7 +21,7 @@ namespace Pinpoint.Plugin.Notes
             _notesManager = NotesManager.GetInstance();
         }
 
-        public PluginManifest Manifest { get; set; } = new("Notes Plugin", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("Notes Plugin", PluginPriority.High)
         {
             Description = "Create and view quick notes.\n\nExamples: \"note <new note>\" to create a note, \"notes\" to list existing notes"
         };

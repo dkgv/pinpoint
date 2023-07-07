@@ -16,7 +16,7 @@ namespace Pinpoint.Plugin.OperatingSystem
             "shutdown", "shut down", "restart", "reboot", "sleep"
         };
 
-        public PluginManifest Manifest { get; set; } = new("Operating System", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("Operating System", PluginPriority.High)
         {
             Description = "Control your operating system.\n\nExamples: \"sleep\", \"reboot\""
         };

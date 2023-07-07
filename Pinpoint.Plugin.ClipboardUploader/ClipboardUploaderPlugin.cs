@@ -11,7 +11,7 @@ namespace Pinpoint.Plugin.ClipboardUploader
 {
     public class ClipboardUploaderPlugin : IPlugin
     {
-        public PluginManifest Manifest { get; set; } = new("Clipboard Uploader", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("Clipboard Uploader", PluginPriority.High)
         {
             Description = "Upload your clipboard content to a pastebin and receive the resulting URL directly to your clipboard.\n\nExamples: \"paste\""
         };

@@ -9,7 +9,7 @@ namespace Pinpoint.Plugin.CommandLine
 {
     public class CommandLinePlugin : IPlugin
     {
-        public PluginManifest Manifest { get; set; } = new("Command Line", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("Command Line", PluginPriority.High)
         {
             Description = "Convert colors from RGB <-> Hex.\n\nExamples: \"#FF5555\", \"rgb(255,100,50)\""
         };

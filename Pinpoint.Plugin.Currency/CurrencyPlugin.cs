@@ -17,7 +17,7 @@ namespace Pinpoint.Plugin.Currency
         private const string KeyBaseCurrency = "Base currency";
         private const string Symbols = "$£€¥";
 
-        public PluginManifest Manifest { get; set; } = new("Currency Converter", PluginPriority.Highest)
+        public PluginManifest Manifest { get; set; } = new("Currency Converter", PluginPriority.High)
         {
             Description = "Convert between currencies and cryptocurrencies.\n\nExamples: \"5 usd to jpy\", \"1 btc to cad\", \"1 eth to btc\""
         };
