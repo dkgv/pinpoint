@@ -27,12 +27,13 @@ namespace Pinpoint.Core
 
             try
             {
-                var pluginLoaded = await @new.TryLoad();
-
-                if (!pluginLoaded)
+                var successfullyLoaded = await @new.TryLoad();
+                if (!successfullyLoaded)
                 {
                     return;
                 }
+
+                @new.Manifest.Enabled = true;
             }
             catch
             {

@@ -22,7 +22,7 @@ public class PluginManifest
 
     public PluginPriority Priority { get; set; }
 
-    public bool Enabled { get; set; }
+    public bool Enabled { get; set; } = false;
 }
 
 public enum PluginPriority
