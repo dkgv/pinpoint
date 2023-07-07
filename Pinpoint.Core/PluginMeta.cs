@@ -31,7 +31,7 @@ public enum PluginPriority
 
 public class PluginState
 {
-    public bool IsEnabled { get; set; } = false;
+    public bool IsEnabled { get; set; }
 
     public bool HasModifiableSettings { get; set; } = false;
 

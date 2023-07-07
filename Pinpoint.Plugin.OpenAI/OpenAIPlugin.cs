@@ -17,7 +17,7 @@ public class OpenAIPlugin : AbstractPlugin
         Description = "Run queries through OpenAI's models using their API. Prefix prompts with \"?\". Prompts are submitted after 2 seconds of not typing.\n\nExamples: \"?What is the meaning of life?\", \"?how to invert a binary tree\""
     };
 
-    public override PluginState State => new()
+    public override PluginState State { get; } = new()
     {
         DebounceTime = TimeSpan.FromMilliseconds(1250)
     };

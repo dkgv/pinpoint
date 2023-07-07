@@ -19,7 +19,7 @@ namespace Pinpoint.Plugin.Translate
             Description = "Translate to and from different languages.\n\nExamples: \"fr,en bonjour\", \"<from>,<to> <text>\""
         };
 
-        public override PluginState State => new()
+        public override PluginState State { get; } = new()
         {
             DebounceTime = TimeSpan.FromMilliseconds(250),
         };

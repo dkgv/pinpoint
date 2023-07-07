@@ -15,7 +15,7 @@ namespace Pinpoint.Plugin.Shortcuts
             Description = "Create custom shortcuts to open file locations, settings and even websites.\n\nExamples:\nName: youtube; Value: https://youtube.com,\nName: desktop; Value: C:\\Users\\{Environment.UserName}\\Desktop,\nName: apps; Value: ms-settings:appsfeatures, \nName: desktop; Value: C:\\Users\\{Environment.UserName}\\Desktop,\nName: reddit; Value: https://www.reddit.com/r/{{query}}"
         };
 
-        public override PluginState State => new()
+        public override PluginState State { get; } = new()
         {
             HasModifiableSettings = true
         };

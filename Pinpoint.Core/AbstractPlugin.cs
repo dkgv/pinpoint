@@ -51,8 +51,8 @@ public abstract class AbstractPlugin : IComparable<AbstractPlugin>
     {
         dynamic dump = new
         {
-            State = State,
-            Storage = Storage
+            State,
+            Storage
         };
         var json = JsonConvert.SerializeObject(dump, Formatting.Indented);
         File.WriteAllText(FilePath, json);

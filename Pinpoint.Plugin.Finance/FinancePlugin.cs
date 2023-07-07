@@ -18,7 +18,7 @@ namespace Pinpoint.Plugin.Finance
             Description = "Look up stock tickers.\n\nExamples: \"$GME\", \"$MSFT\""
         };
 
-        public override PluginState State => new()
+        public override PluginState State { get; } = new()
         {
             DebounceTime = TimeSpan.FromMilliseconds(200)
         };

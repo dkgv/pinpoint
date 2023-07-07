@@ -1,5 +1,4 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.Input;
 using Pinpoint.Core;
 
 namespace Pinpoint.Win.ViewModels

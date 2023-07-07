@@ -21,7 +21,7 @@ namespace Pinpoint.Plugin.Dictionary
             Description = "Find word definitions.\n\nExamples: \"define ubiquitous\""
         };
 
-        public override PluginState State => new()
+        public override PluginState State { get; } = new()
         {
             DebounceTime = TimeSpan.FromMilliseconds(200)
         };

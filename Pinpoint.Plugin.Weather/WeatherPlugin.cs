@@ -23,7 +23,7 @@ namespace Pinpoint.Plugin.Weather
             Description = "Look up weather forecasts.\n\nExamples: \"weather <location>\" or \"weather\" if default location is set"
         };
 
-        public override PluginState State => new()
+        public override PluginState State { get; } = new() 
         {
             DebounceTime = TimeSpan.FromMilliseconds(200)
         };

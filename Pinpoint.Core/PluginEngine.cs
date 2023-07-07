@@ -23,9 +23,7 @@ public class PluginEngine
 
         try
         {
-
-            var initialized = await plugin.Initialize();
-            plugin.State.IsEnabled = initialized;
+            await plugin.Initialize();
         }
         catch
         {
