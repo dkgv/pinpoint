@@ -24,7 +24,7 @@ namespace Pinpoint.Win.Views
 
             DataContext = App.Current.SettingsViewModel;
 
-            _ = Dispatcher.InvokeAsync(async () => await DownloadChangelog());
+            _ = Dispatcher.InvokeAsync(DownloadChangelog);
         }
 
         public SettingsViewModel Model => (SettingsViewModel)DataContext;

@@ -9,7 +9,7 @@
     <TabItem.Header>
         <DockPanel>
             <TextBlock DockPanel.Dock="Left"
-                       Text="{Binding Plugin.Meta.Name}"></TextBlock>
+                       Text="{Binding Plugin.Manifest.Name}"></TextBlock>
             <Ellipse DockPanel.Dock="Right" 
                      HorizontalAlignment="Right" 
                      Width="8" 
@@ -29,7 +29,7 @@
             <!-- Tab content header -->
             <Label FontSize="18" 
                    FontWeight="SemiBold" 
-                   Content="{Binding Plugin.Meta.Name}"></Label>
+                   Content="{Binding Plugin.Manifest.Name}"></Label>
 
             <!-- Enable/disable plugin -->
             <Grid>
@@ -52,7 +52,7 @@
             <TextBox TextWrapping="Wrap"
                      AcceptsReturn="True"
                      IsReadOnly="True"
-                     Text="{Binding Plugin.Meta.Description}"
+                     Text="{Binding Plugin.Manifest.Description}"
                      BorderThickness="1"
                      BorderBrush="LightGray"
                      Focusable="False"

@@ -9,12 +9,12 @@ public class PluginStorage
     public PluginStorage()
     {
         UserSettings = new PluginSettings();
-        InternalSettings = new Dictionary<string, object>();
+        Internal = new Dictionary<string, object>();
     }
 
     public PluginSettings UserSettings { get; set; }
 
-    public Dictionary<string, object> InternalSettings { get; set; }
+    public Dictionary<string, object> Internal { get; set; }
 }
 
 public class PluginSettings : ObservableCollection<StorageEntry>
