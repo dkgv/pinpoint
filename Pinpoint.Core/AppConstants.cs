@@ -13,6 +13,8 @@ namespace Pinpoint.Core
         public const string HotkeyToggleVisibilityId = "ToggleVisibility";
         public const string HotkeyPasteId = "PasteFromClipboard";
 
+        public const string LocalPluginsDirectoryKey = "local_plugins_directory";
+
         public const string Version = "0.3.9";
     }
 }

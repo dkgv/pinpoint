@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -18,11 +20,19 @@ namespace Pinpoint.Win.Views
     /// </summary>
     public partial class SettingsWindow : Window, IPluginListener<AbstractPlugin, object>
     {
-        public SettingsWindow()
+        private readonly PluginEngine _pluginEngine;
+
+        public SettingsWindow(PluginEngine pluginEngine)
         {
             InitializeComponent();
 
             DataContext = App.Current.SettingsViewModel;
+            _pluginEngine = pluginEngine;
+
+            if (AppSettings.TryGet(AppConstants.LocalPluginsDirectoryKey, out string localPluginsDirectory))
+            {
+                Model.LocalPluginsDirectory = localPluginsDirectory;
+            }
 
             _ = Dispatcher.InvokeAsync(DownloadChangelog);
         }
@@ -142,10 +152,19 @@ namespace Pinpoint.Win.Views
             }
 
             Model.PluginTabItems.Add(pluginTabItem);
-            Model.PluginTabItems = Model.PluginTabItems.OrderBy(p => p.Model.Plugin.Manifest.Name).ToList();
+            Model.PluginTabItems = new ObservableCollection<PluginTabItem>(Model.PluginTabItems.OrderBy(p => p.Model.Plugin.Manifest.Name).ToList());
         }
 
-        public void PluginChange_Removed(object sender, AbstractPlugin plugin, object target) => Model.Plugins.Remove(plugin);
+        public void PluginChange_Removed(object sender, AbstractPlugin plugin, object target)
+        {
+            Model.Plugins.Remove(plugin);
+
+            var pluginTabItem = Model.PluginTabItems.FirstOrDefault(p => p.Model.Plugin == plugin);
+            if (pluginTabItem != null)
+            {
+                Model.PluginTabItems.Remove(pluginTabItem);
+            }
+        }
 
         private void BtnToggleStartupLaunch_OnClick(object sender, RoutedEventArgs evt)
         {
@@ -169,6 +188,53 @@ namespace Pinpoint.Win.Views
             App.Current.MainWindow.MoveWindowToDefaultPosition();
             Close();
             App.Current.MainWindow.Show();
+        }
+
+        private void BrowseButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new OpenFileDialog
+            {
+                CheckFileExists = false,
+                CheckPathExists = true,
+                FileName = "Select Folder",
+                Filter = "Folders|*.none",
+                Title = "Select Local Plugins Directory"
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                var selectedPath = Path.GetDirectoryName(dialog.FileName);
+                Model.LocalPluginsDirectory = selectedPath;
+            }
+        }
+
+        private async void ReloadLocalPlugins_Click(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(Model.LocalPluginsDirectory))
+            {
+                return;
+            }
+
+            ReloadLocalPlugins.IsEnabled = false;
+
+            for (int i = 0; i < _pluginEngine.LocalPlugins.Count; i++)
+            {
+                var plugin = _pluginEngine.LocalPlugins[i];
+                _pluginEngine.Unload(plugin);
+            }
+
+            var exceptions = await _pluginEngine.LoadLocalPlugins(Model.LocalPluginsDirectory);
+            if (exceptions.Count > 0)
+            {
+                var message = string.Join("\n", exceptions.Select(ex => ex.Message));
+                MessageBox.Show(message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                AppSettings.PutAndSave(AppConstants.LocalPluginsDirectoryKey, Model.LocalPluginsDirectory);
+            }
+
+            ReloadLocalPlugins.IsEnabled = true;
         }
     }
 }

@@ -23,6 +23,7 @@
                         <TextBlock>General</TextBlock>
                     </StackPanel>
                 </TabItem.Header>
+
                 <Border Margin="5">
                     <Grid>
                         <Grid.RowDefinitions>
@@ -30,7 +31,7 @@
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
-                            <RowDefinition Height="Auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                             <RowDefinition Height="Auto"></RowDefinition>
                         </Grid.RowDefinitions>
@@ -42,12 +43,12 @@
                             <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
-                        <Label Grid.Row="1"
+                        <Label Grid.Row="0"
                                Grid.Column="1"
                                HorizontalAlignment="Right">
-                            Pinpoint visibility hotkey
+                            Toggle Pinpoint
                         </Label>
-                        <TextBox Grid.Row="1" Grid.Column="2" x:Name="TxtHotkeyToggleVisiblity"
+                        <TextBox Grid.Row="0" Grid.Column="2" x:Name="TxtHotkeyToggleVisiblity"
                                  IsReadOnly="True"
                                  PreviewKeyDown="TxtHotkey_PreviewKeyDown"
                                  HorizontalContentAlignment="Center"
@@ -57,8 +58,8 @@
                                  IsUndoEnabled="False"
                                  Text="{Binding HotkeyToggleVisibility, Mode=OneWay}"></TextBox>
                         
-                        <Label Grid.Row="2" Grid.Column="1">Clipboard manager hotkey</Label>
-                        <TextBox Grid.Row="2" Grid.Column="2" x:Name="TxtHotkeyClipboardManager"
+                        <Label Grid.Row="1" Grid.Column="1">Toggle Clipboard Manager</Label>
+                        <TextBox Grid.Row="1" Grid.Column="2" x:Name="TxtHotkeyClipboardManager"
                                  IsReadOnly="True"
                                  PreviewKeyDown="TxtHotkeyClipboardManager_OnPreviewKeyDown"
                                  HorizontalContentAlignment="Center"
@@ -68,24 +69,44 @@
                                  IsUndoEnabled="False"
                                  Text="{Binding HotkeyPasteClipboard, Mode=OneWay}"></TextBox>
                         
-                        <Label Grid.Row="4"
+                        <Label Grid.Row="2"
                                Grid.Column="1" 
-                               HorizontalAlignment="Right">Window location</Label>
-                        <Button Grid.Row="4" 
+                               HorizontalAlignment="Right">Window Location</Label>
+                        <Button Grid.Row="2" 
                                 Grid.Column="2" 
                                 x:Name="BtnReCenterWindow" 
                                 Content="Reset to default" 
                                 VerticalAlignment="Center"
                                 Click="BtnReCenterWindow_OnClick"></Button>
-                        <Label Grid.Row="5"
+
+                        <Label Grid.Row="3"
                                Grid.Column="1"
-                               HorizontalAlignment="Right">Launch on startup</Label>
-                        <Button Grid.Row="5"
+                               HorizontalAlignment="Right">Launch on Startup</Label>
+                        <Button Grid.Row="3"
                                   Grid.Column="2"
                                   VerticalAlignment="Center"
                                   Content="Toggle on/off"
                                   Click="BtnToggleStartupLaunch_OnClick"></Button>
 
+                        <Label Grid.Row="5"
+                               Grid.Column="1"
+                               HorizontalAlignment="Right">Local Plugins Directory</Label>
+                        <Grid Grid.Row="5" Grid.Column="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="250" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <xctk:WatermarkTextBox Grid.Column="0" Text="{Binding LocalPluginsDirectory}" Watermark="C:/Plugins" IsReadOnly="True" Focusable="False"/>
+                            <Button Grid.Column="1" Content="Browse" Click="BrowseButton_Click" />
+                        </Grid>
+
+                        <Button Grid.Row="6" 
+                                Grid.Column="2"
+                                Content="Reload"
+                                Margin="0 5 0 0"
+                                Name="ReloadLocalPlugins"
+                                Click="ReloadLocalPlugins_Click"
+                                />
                     </Grid>
                 </Border>
             </TabItem>

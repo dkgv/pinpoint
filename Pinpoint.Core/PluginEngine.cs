@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,13 +14,15 @@ public class PluginEngine
 {
     public List<AbstractPlugin> Plugins { get; } = new();
 
+    public List<AbstractPlugin> LocalPlugins { get; } = new();
+
     public List<IPluginListener<AbstractPlugin, object>> Listeners { get; } = new();
 
-    public async Task LoadPlugin(AbstractPlugin plugin)
+    public async Task<bool> LoadPlugin(AbstractPlugin plugin)
     {
         if (Plugins.Contains(plugin))
         {
-            return;
+            return true;
         }
 
         try
@@ -28,13 +32,67 @@ public class PluginEngine
         catch
         {
             // Plugin threw an exception while loading, so don't add it.
-            return;
+            return false;
         }
 
         Plugins.Add(plugin);
         Plugins.Sort();
 
         Listeners.ForEach(listener => listener.PluginChange_Added(this, plugin, null));
+
+        return true;
+    }
+
+    public void Unload(AbstractPlugin plugin)
+    {
+        Plugins.Remove(plugin);
+        LocalPlugins.Remove(plugin);
+        Listeners.ForEach(listener => listener.PluginChange_Removed(this, plugin, null));
+    }
+
+    public async Task<List<Exception>> LoadLocalPlugins(string directory)
+    {
+        var path = new DirectoryInfo(directory);
+        var dlls = path.GetFiles("*.dll", SearchOption.TopDirectoryOnly);
+        var exceptions = new List<Exception>();
+
+        foreach (var dll in dlls)
+        {
+            var dllFilePath = dll.FullName;
+            Assembly assembly;
+            try
+            {
+                assembly = Assembly.LoadFrom(dllFilePath);
+            }
+            catch (BadImageFormatException)
+            {
+                continue;
+            }
+
+            var types = assembly.GetTypes();
+            foreach (var type in types)
+            {
+                if (!type.IsSubclassOf(typeof(AbstractPlugin)))
+                {
+                    continue;
+                }
+
+                try
+                {
+                    var plugin = (AbstractPlugin)Activator.CreateInstance(type);
+                    if (await LoadPlugin(plugin))
+                    {
+                        LocalPlugins.Add(plugin);
+                    }
+                }
+                catch (Exception e)
+                {
+                    exceptions.Add(e);
+                }
+            }
+        }
+
+        return exceptions;
     }
 
     public T GetPluginByType<T>() where T : AbstractPlugin => Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();

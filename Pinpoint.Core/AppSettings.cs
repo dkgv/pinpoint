@@ -34,7 +34,8 @@ namespace Pinpoint.Core
 
             try
             {
-                settings = JsonConvert.DeserializeObject<T>(value.ToString());
+                // Deserialize the object from the string value. or a string from a string value.
+                settings = typeof(T) == typeof(string) ? value.ToString() as T : JsonConvert.DeserializeObject<T>(value.ToString());
                 return true;
             }
             catch (Exception)
@@ -49,6 +50,10 @@ namespace Pinpoint.Core
             if (value.GetType().IsArray)
             {
                 token = JArray.FromObject(value);
+            }
+            else if (value is string)
+            {
+                token = value.ToString();
             }
             else
             {

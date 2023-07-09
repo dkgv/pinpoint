@@ -9,10 +9,13 @@ namespace Pinpoint.Win.ViewModels
     public class MainViewModel : ObservableObject
     {
         private string _watermark;
+        private readonly PluginEngine _pluginEngine;
 
-        public MainViewModel()
+        public MainViewModel(PluginEngine pluginEngine)
         {
+            _pluginEngine = pluginEngine;
             Watermark = "Loading plugins...";
+
             try
             {
                 Clipboard = new SharpClipboard();
@@ -26,7 +29,7 @@ namespace Pinpoint.Win.ViewModels
 
         public ObservableUniqueCollection<AbstractQueryResult> CacheResults { get; set; } = new();
 
-        public PluginEngine PluginEngine { get; set; } = new();
+        public PluginEngine PluginEngine => _pluginEngine;
 
         public SharpClipboard Clipboard { get; }
 

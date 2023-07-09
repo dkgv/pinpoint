@@ -128,6 +128,11 @@ namespace Pinpoint.Win.Views
 
         private async Task LoadPlugins()
         {
+            if (AppSettings.TryGet(AppConstants.LocalPluginsDirectoryKey, out string localPluginsDirectory))
+            {
+                await Model.PluginEngine.LoadLocalPlugins(localPluginsDirectory);
+            }
+
             var addPluginTasks = new List<Task>
             {
                 Model.PluginEngine.LoadPlugin(new EverythingPlugin()),
