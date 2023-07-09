@@ -35,7 +35,7 @@ namespace Pinpoint.Plugin.Everything
             Description = "Search for files on your computer via Everything by David Carpenter."
         };
 
-        public override PluginStorage Storage => new()
+        public override PluginStorage Storage { get; } = new()
         {
             User = new UserSettings{
                 {KeyIgnoreTempFolder, true},

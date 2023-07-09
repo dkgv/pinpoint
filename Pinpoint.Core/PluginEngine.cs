@@ -42,8 +42,7 @@ public class PluginEngine
     public async IAsyncEnumerable<AbstractQueryResult> EvaluateQuery([EnumeratorCancellation] CancellationToken ct,
         Query query)
     {
-        // TODO: filter by enabled
-        var enabledPlugins = Plugins.ToList();
+        var enabledPlugins = Plugins.Where(p => p.State.IsEnabled.GetValueOrDefault(false)).ToList();
         var debouncedPlugins = enabledPlugins.Where(p => p.State.DebounceTime > TimeSpan.Zero).ToHashSet();
         for (var i = 0; i < enabledPlugins.Count && query.ResultCount < 20 && !ct.IsCancellationRequested; i++)
         {
@@ -75,6 +74,7 @@ public class PluginEngine
     private async IAsyncEnumerable<AbstractQueryResult> Debounce([EnumeratorCancellation] CancellationToken ct, AbstractPlugin plugin, Query query)
     {
         await Task.Delay(plugin.State.DebounceTime, ct);
+
         if (ct.IsCancellationRequested)
         {
             yield break;

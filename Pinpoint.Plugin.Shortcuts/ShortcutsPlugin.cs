@@ -20,10 +20,11 @@ namespace Pinpoint.Plugin.Shortcuts
             HasModifiableSettings = true
         };
 
-        public override PluginStorage Storage => new()
+
+        public override PluginStorage Storage { get; } = new()
         {
             User = new UserSettings{
-                {"", ""}
+                { "", "" }
             }
         };
 

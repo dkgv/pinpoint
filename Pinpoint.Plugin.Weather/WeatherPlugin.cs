@@ -23,12 +23,12 @@ namespace Pinpoint.Plugin.Weather
             Description = "Look up weather forecasts.\n\nExamples: \"weather <location>\" or \"weather\" if default location is set"
         };
 
-        public override PluginState State { get; } = new() 
+        public override PluginState State { get; } = new()
         {
             DebounceTime = TimeSpan.FromMilliseconds(200)
         };
 
-        public override PluginStorage Storage => new()
+        public override PluginStorage Storage { get; } = new()
         {
             User = new UserSettings{
                 {KeyDefaultCity, string.Empty}
@@ -77,7 +77,7 @@ namespace Pinpoint.Plugin.Weather
 
         private bool IsUS()
         {
-            var currentRegion = new RegionInfo(CultureInfo.CurrentCulture.LCID);
+            var currentRegion = new RegionInfo(CultureInfo.CurrentCulture.Name);
             return !currentRegion.IsMetric;
         }
 

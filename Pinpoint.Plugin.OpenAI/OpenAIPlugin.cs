@@ -22,7 +22,7 @@ public class OpenAIPlugin : AbstractPlugin
         DebounceTime = TimeSpan.FromMilliseconds(1250)
     };
 
-    public override PluginStorage Storage => new()
+    public override PluginStorage Storage { get; } = new()
     {
         User = new UserSettings{
             {KeyApiKey, ""}

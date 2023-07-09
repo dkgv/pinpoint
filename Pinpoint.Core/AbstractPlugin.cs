@@ -17,24 +17,32 @@ public abstract class AbstractPlugin : IComparable<AbstractPlugin>
         try
         {
             dynamic obj = JsonConvert.DeserializeObject(File.ReadAllText(FilePath));
-            State = JsonConvert.DeserializeObject<PluginState>(obj.State.ToString());
-            Storage = JsonConvert.DeserializeObject<PluginStorage>(obj.Storage.ToString());
+
+            State ??= new PluginState();
+            State.IsEnabled = obj?.IsEnabled ?? true;
+
+            Storage ??= new PluginStorage();
+            var storage = JsonConvert.DeserializeObject<PluginStorage>(obj.Storage.ToString());
+            Storage.User = storage.User;
         }
         catch (FileNotFoundException e)
         {
-            Debug.WriteLine(Manifest.Name + ": " + e);
+            Debug.WriteLine(Manifest.Name + ": " + e.Message);
         }
         catch (RuntimeBinderException e)
         {
             Debug.WriteLine(Manifest.Name + ": " + e.Message);
         }
+        catch (JsonSerializationException)
+        {
+        }
     }
 
     public abstract PluginManifest Manifest { get; }
 
-    public virtual PluginStorage Storage { get; } = new();
+    public virtual PluginStorage Storage { get; }
 
-    public virtual PluginState State { get; } = new();
+    public virtual PluginState State { get; }
 
     public virtual Task<bool> Initialize() => Task.FromResult(true);
 
@@ -51,7 +59,7 @@ public abstract class AbstractPlugin : IComparable<AbstractPlugin>
     {
         dynamic dump = new
         {
-            State,
+            State.IsEnabled,
             Storage
         };
         var json = JsonConvert.SerializeObject(dump, Formatting.Indented);

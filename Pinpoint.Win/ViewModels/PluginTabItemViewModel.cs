@@ -1,32 +1,31 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Pinpoint.Core;
 
-namespace Pinpoint.Win.ViewModels
+namespace Pinpoint.Win.ViewModels;
+
+public class PluginTabItemViewModel : ObservableObject
 {
-    public class PluginTabItemViewModel : ObservableObject
+    private AbstractPlugin _plugin;
+
+    public AbstractPlugin Plugin
     {
-        private AbstractPlugin _plugin;
-
-        public AbstractPlugin Plugin
-        {
-            get => _plugin;
-            set => SetProperty(ref _plugin, value);
-        }
-
-        public string StatusColor => Enabled ? "LightGreen" : "Red";
-
-        public bool Enabled
-        {
-            get => Plugin.State.IsEnabled;
-            set
-            {
-                Plugin.State.IsEnabled = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(StatusColor));
-                OnPropertyChanged(nameof(ToggleEnabledString));
-            }
-        }
-
-        public string ToggleEnabledString => Enabled ? "Disable" : "Enable";
+        get => _plugin;
+        set => SetProperty(ref _plugin, value);
     }
+
+    public string StatusColor => Enabled ? "LightGreen" : "Red";
+
+    public bool Enabled
+    {
+        get => Plugin.State.IsEnabled.Value;
+        set
+        {
+            Plugin.State.IsEnabled = value;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(StatusColor));
+            OnPropertyChanged(nameof(ToggleEnabledString));
+        }
+    }
+
+    public string ToggleEnabledString => Enabled ? "Disable" : "Enable";
 }

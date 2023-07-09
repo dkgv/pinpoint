@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Pinpoint.Core;
 
@@ -31,9 +33,13 @@ public enum PluginPriority
 
 public class PluginState
 {
-    public bool IsEnabled { get; set; }
+    public PluginState()
+    {
+    }
 
-    public bool HasModifiableSettings { get; set; } = false;
+    public bool? IsEnabled { get; set; }
+
+    public bool? HasModifiableSettings { get; set; } = false;
 
     public TimeSpan DebounceTime { get; set; } = TimeSpan.Zero;
 }
@@ -51,8 +57,35 @@ public class PluginStorage
     public Dictionary<string, object> Internal { get; set; }
 }
 
-public class UserSettings : Dictionary<string, object>
+public class UserSettings : ObservableCollection<MutableKeyValuePair<string, object>>
 {
+    public void Add(string key, object value)
+    {
+        Add(new MutableKeyValuePair<string, object>(key, value));
+    }
+
+    public object this[string key]
+    {
+        get
+        {
+            var setting = this.FirstOrDefault(s => s.Key.Equals(key));
+            return setting.Value;
+        }
+        set
+        {
+            var setting = this.FirstOrDefault(s => s.Key.Equals(key));
+            if (!string.IsNullOrEmpty(setting.Key))
+            {
+                var index = IndexOf(setting);
+                this[index] = new MutableKeyValuePair<string, object>(key, value);
+            }
+            else
+            {
+                Add(new MutableKeyValuePair<string, object>(key, value));
+            }
+        }
+    }
+
     public bool Bool(string key)
     {
         var setting = Str(key).ToLower();
@@ -60,4 +93,17 @@ public class UserSettings : Dictionary<string, object>
     }
 
     public string Str(string key) => this[key].ToString();
+}
+
+public class MutableKeyValuePair<TKey, TValue>
+{
+    public MutableKeyValuePair(TKey key, TValue value)
+    {
+        Key = key;
+        Value = value;
+    }
+
+    public TKey Key { get; set; }
+
+    public TValue Value { get; set; }
 }

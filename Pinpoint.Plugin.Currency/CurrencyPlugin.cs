@@ -22,7 +22,12 @@ namespace Pinpoint.Plugin.Currency
             Description = "Convert between currencies and cryptocurrencies.\n\nExamples: \"5 usd to jpy\", \"1 btc to cad\", \"1 eth to btc\""
         };
 
-        public override PluginStorage Storage => new()
+        public override PluginState State { get; } = new()
+        {
+            HasModifiableSettings = true
+        };
+
+        public override PluginStorage Storage { get; } = new()
         {
             User = new UserSettings { { KeyBaseCurrency, GetDefaultBaseCurrency() } }
         };
