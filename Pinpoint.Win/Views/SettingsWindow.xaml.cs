@@ -61,6 +61,8 @@ namespace Pinpoint.Win.Views
                 plugin.Save();
             }
 
+            AppSettings.PutAndSave(AppConstants.LocalPluginsDirectoryKey, Model.LocalPluginsDirectory);
+
             Hide();
         }
 
@@ -212,6 +214,13 @@ namespace Pinpoint.Win.Views
         {
             if (string.IsNullOrEmpty(Model.LocalPluginsDirectory))
             {
+                MessageBox.Show("Please select a directory first", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            if (!Directory.Exists(Model.LocalPluginsDirectory))
+            {
+                MessageBox.Show("Directory does not exist", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 

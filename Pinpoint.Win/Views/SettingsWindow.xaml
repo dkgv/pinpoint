@@ -96,7 +96,7 @@
                                 <ColumnDefinition Width="250" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <xctk:WatermarkTextBox Grid.Column="0" Text="{Binding LocalPluginsDirectory}" Watermark="C:/Plugins" IsReadOnly="True" Focusable="False"/>
+                            <xctk:WatermarkTextBox Grid.Column="0" Text="{Binding LocalPluginsDirectory, Mode=TwoWay}" Watermark="C:/Plugins" Name="LocalPluginsDirectory" />
                             <Button Grid.Column="1" Content="Browse" Click="BrowseButton_Click" />
                         </Grid>
 

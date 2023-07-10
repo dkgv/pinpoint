@@ -52,6 +52,11 @@ public class PluginEngine
 
     public async Task<List<Exception>> LoadLocalPlugins(string directory)
     {
+        if (!Directory.Exists(directory))
+        {
+            return new List<Exception>();
+        }
+
         var path = new DirectoryInfo(directory);
         var dlls = path.GetFiles("*.dll", SearchOption.TopDirectoryOnly);
         var exceptions = new List<Exception>();
