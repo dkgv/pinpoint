@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using FontAwesome5;
+using Pinpoint.Core.Clipboard;
 
 namespace Pinpoint.Core.Results
 {
@@ -21,16 +22,7 @@ namespace Pinpoint.Core.Results
 
         public override void OnSelect()
         {
-            var clipboardExecutable = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    RedirectStandardInput = true, FileName = @"clip",
-                }
-            };
-            clipboardExecutable.Start();
-            clipboardExecutable.StandardInput.Write(Content);
-            clipboardExecutable.StandardInput.Close();
+            ClipboardHelper.CopyUtf8(Content);
         }
     }
 }
