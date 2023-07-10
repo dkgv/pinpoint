@@ -11,20 +11,16 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Calculator
 {
-    public class CalculatorPlugin : IPlugin
+    public class CalculatorPlugin : AbstractPlugin
     {
-        private const string Description = "Evaluate mathematical expressions quickly.\n\nExamples: \"9+5*(123/5)\"";
         private static readonly Regex MathPattern = new(@"([-+]?[0-9]*\.?[0-9]+[\/\+\-\*])+([-+]?[0-9]*\.?[0-9]+)");
-        
-        public PluginMeta Meta { get; set; } = new("Calculator", Description, PluginPriority.Highest);
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public void Unload()
+        public override PluginManifest Manifest { get; } = new("Calculator", PluginPriority.High)
         {
-        }
+            Description = "Evaluate mathematical expressions quickly.\n\nExamples: \"9+5*(123/5)\""
+        };
 
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             var trimmedQuery = query.RawQuery.Replace(" ", "");
             // Ensure query ends with 0-9 or )
@@ -46,7 +42,7 @@ namespace Pinpoint.Plugin.Calculator
             return MathPattern.IsMatch(trimmedQuery);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var table = new DataTable();
             var failed = true;

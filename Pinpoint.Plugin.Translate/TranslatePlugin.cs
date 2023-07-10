@@ -12,17 +12,19 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Translate
 {
-    public class TranslatePlugin : IPlugin
+    public class TranslatePlugin : AbstractPlugin
     {
-        private const string Description = "Translate to and from different languages.\n\nExamples: \"fr,en bonjour\", \"<from>,<to> <text>\"";
+        public override PluginManifest Manifest { get; } = new("Translate Plugin")
+        {
+            Description = "Translate to and from different languages.\n\nExamples: \"fr,en bonjour\", \"<from>,<to> <text>\""
+        };
 
-        public PluginMeta Meta { get; set; } = new("Translate Plugin", Description, PluginPriority.NextHighest);
+        public override PluginState State { get; } = new()
+        {
+            DebounceTime = TimeSpan.FromMilliseconds(250),
+        };
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public TimeSpan DebounceTime => TimeSpan.FromMilliseconds(250);
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             if (query.Parts.Length < 2)
             {
@@ -39,7 +41,7 @@ namespace Pinpoint.Plugin.Translate
             return true;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var first = query.Parts[0];
             var parts = first.Split(",");
@@ -58,7 +60,7 @@ namespace Pinpoint.Plugin.Translate
 
         private async Task<TranslationModel> Translate(string from, string to, string content)
         {
-            var bodyContent = JsonConvert.SerializeObject(new Dictionary<string, string> {{"content", content}});
+            var bodyContent = JsonConvert.SerializeObject(new Dictionary<string, string> { { "content", content } });
             var body = new StringContent(bodyContent, Encoding.UTF8, "application/json");
 
             var url = $"https://usepinpoint.com/api/translate/{from}/{to}";

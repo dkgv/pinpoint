@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace Pinpoint.Win.Extensions
 {
@@ -11,35 +12,30 @@ namespace Pinpoint.Win.Extensions
     {
         public static ImageSource ToImageSource(this Bitmap bitmap)
         {
-            unsafe BitmapSource Convert(byte[] bytes, BitmapData data)
+            var rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            var bitmapData = bitmap.LockBits(rect, ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+
+            try
             {
-                var pixelFormat = data.PixelFormat switch
-                {
-                    System.Drawing.Imaging.PixelFormat.Format32bppArgb => System.Windows.Media.PixelFormats.Pbgra32,
-                    System.Drawing.Imaging.PixelFormat.Format24bppRgb => System.Windows.Media.PixelFormats.Bgr24,
-                    System.Drawing.Imaging.PixelFormat.Format32bppRgb => System.Windows.Media.PixelFormats.Bgr32,
-                    System.Drawing.Imaging.PixelFormat.Format16bppRgb555 => System.Windows.Media.PixelFormats.Bgr555,
-                    System.Drawing.Imaging.PixelFormat.Format16bppRgb565 => System.Windows.Media.PixelFormats.Bgr565,
-                    System.Drawing.Imaging.PixelFormat.Format8bppIndexed => System.Windows.Media.PixelFormats.Gray8,
-                    System.Drawing.Imaging.PixelFormat.Format4bppIndexed => System.Windows.Media.PixelFormats.Gray4,
-                    _ => throw new ArgumentException($"Unknown pixel format: {data.PixelFormat}")
-                };
+                var size = rect.Width * rect.Height * 4;
 
                 return BitmapSource.Create(
-                    data.Width,
-                    data.Height,
+                    bitmap.Width,
+                    bitmap.Height,
                     bitmap.HorizontalResolution,
                     bitmap.VerticalResolution,
-                    pixelFormat,
+                    PixelFormats.Bgra32,
                     null,
-                    bytes,
-                    data.Stride
+                    bitmapData.Scan0,
+                    size,
+                    bitmapData.Stride
                 );
             }
-
-            return FastBitmapOpDispatcher(bitmap, Convert);
+            finally
+            {
+                bitmap.UnlockBits(bitmapData);
+            }
         }
-
 
         public static Bitmap ToBlackAndWhite(this Bitmap bitmap)
         {

@@ -8,7 +8,7 @@ namespace Pinpoint.Win.ViewModels
 {
     public class SettingsViewModel : ObservableObject
     {
-        private List<PluginTabItem> _pluginTabItems = new();
+        private ObservableCollection<PluginTabItem> _pluginTabItems = new();
 
         private HotkeyModel _hotkeyPasteClipboard = AppSettings.Contains("hotkey_paste_clipboard")
             ? new HotkeyModel(AppSettings.Get<HotkeyModel>("hotkey_paste_clipboard").Text)
@@ -30,14 +30,21 @@ namespace Pinpoint.Win.ViewModels
             set => SetProperty(ref _hotkeyPasteClipboard, value);
         }
 
-        public ObservableCollection<IPlugin> Plugins { get; } = new();
+        public ObservableCollection<AbstractPlugin> Plugins { get; } = new();
 
-        public List<PluginTabItem> PluginTabItems
+        public ObservableCollection<PluginTabItem> PluginTabItems
         {
             get => _pluginTabItems;
             set => SetProperty(ref _pluginTabItems, value);
         }
 
         public string WindowTitle => "Pinpoint " + AppConstants.Version;
+
+        private string _localPluginsDirectory;
+
+        public string LocalPluginsDirectory {
+            get => _localPluginsDirectory;
+            set => SetProperty(ref _localPluginsDirectory, value);
+        }
     }
 }

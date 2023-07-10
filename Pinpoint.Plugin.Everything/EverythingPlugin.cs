@@ -14,13 +14,11 @@ using Pinpoint.Plugin.Everything.API;
 
 namespace Pinpoint.Plugin.Everything
 {
-    public class EverythingPlugin : IPlugin
+    public class EverythingPlugin : AbstractPlugin
     {
         private const string KeyIgnoreTempFolder = "Ignore temp folder items";
         private const string KeyIgnoreHiddenFolders = "Ignore hidden folder items";
         private const string KeyIgnoreWindows = "Ignore items in Windows folder";
-        private const string Description = "Search for files on your computer via Everything by David Carpenter.";
-
         private static readonly Regex ImageRegex = new(@"png|jpg|gif|psd|svg|raw|jpeg|bmp|tiff");
         private static readonly Regex VideoRegex = new(@"mp4|avi|mkv|flv|webm|mov|wmv|mpg|m4v|mpeg|wmv");
         private static readonly Regex AudioRegex = new(@"mp3|flac|wma|alac");
@@ -32,36 +30,28 @@ namespace Pinpoint.Plugin.Everything
         private static readonly Regex SpreadsheetRegex = new(@"xls|xlsm|xlsx|numbers|ots|xlr");
         private static readonly char[] InvalidFileNameChars = Path.GetInvalidFileNameChars();
 
-        public PluginMeta Meta { get; set; } = new("Everything (File Search)", Description, PluginPriority.Lowest);
-
-        public PluginStorage Storage { get; set; } = new();
-
-        public bool IsLoaded { get; set; }
-
-        private IEverythingClient _everything;
-
-        public Task<bool> TryLoad()
+        public override PluginManifest Manifest { get; } = new("Everything (File Search)", PluginPriority.Low)
         {
-            _everything = new EverythingClient(new DefaultSearchConfig());
+            Description = "Search for files on your computer via Everything by David Carpenter."
+        };
 
-            if (Storage.UserSettings.Count != 3)
-            {
-                Storage.UserSettings.Put(KeyIgnoreTempFolder, true);
-                Storage.UserSettings.Put(KeyIgnoreHiddenFolders, true);
-                Storage.UserSettings.Put(KeyIgnoreWindows, true);
+        public override PluginStorage Storage { get; } = new()
+        {
+            User = new UserSettings{
+                {KeyIgnoreTempFolder, true},
+                {KeyIgnoreHiddenFolders, true},
+                {KeyIgnoreWindows, true}
             }
+        };
 
-            return Task.FromResult(IsLoaded = true);
-        }
+        private IEverythingClient _everything = new EverythingClient(new DefaultSearchConfig());
 
-        public void Unload() => _everything.Dispose();
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             return query.RawQuery.Length >= 3 && query.ResultCount < 3 && !query.RawQuery.Any(ch => InvalidFileNameChars.Contains(ch));
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             await foreach (var result in _everything.SearchAsync(query.RawQuery, ct))
             {
@@ -70,17 +60,17 @@ namespace Pinpoint.Plugin.Everything
                     continue;
                 }
 
-                if (Storage.UserSettings.Bool(KeyIgnoreTempFolder) && IsInTempFolder(result.FullPath))
+                if (Storage.User.Bool(KeyIgnoreTempFolder) && IsInTempFolder(result.FullPath))
                 {
                     continue;
                 }
 
-                if (Storage.UserSettings.Bool(KeyIgnoreWindows) && result.FullPath.StartsWith(@"C:\Windows"))
+                if (Storage.User.Bool(KeyIgnoreWindows) && result.FullPath.StartsWith(@"C:\Windows"))
                 {
                     continue;
                 }
 
-                if (Storage.UserSettings.Bool(KeyIgnoreHiddenFolders) && IsInHiddenFolder(result.FullPath))
+                if (Storage.User.Bool(KeyIgnoreHiddenFolders) && IsInHiddenFolder(result.FullPath))
                 {
                     continue;
                 }

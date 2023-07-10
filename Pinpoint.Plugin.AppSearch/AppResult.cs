@@ -1,6 +1,5 @@
 ﻿using System.Drawing;
 using FontAwesome5;
-using Pinpoint.Core;
 using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.AppSearch
@@ -22,11 +21,10 @@ namespace Pinpoint.Plugin.AppSearch
         }
 
         public override Bitmap Icon => IconRepository.GetIcon(_app.IconLocation) ?? FontAwesomeBitmapRepository.Get(EFontAwesomeIcon.Solid_Rocket);
-        
+
         public override void OnSelect()
         {
             _plugin.AppSearchFrequency.Track(_query, _app.FilePath);
-            (_plugin as IPlugin).Save();
             _app.Open();
         }
 

@@ -62,7 +62,6 @@ namespace Pinpoint.Win.Views
         private CancellationTokenSource _cts = new();
         private int _showingOptionsForIndex = -1;
         private double _leftOffsetRatio = 0, _topOffsetRatio = 0;
-        private Point _defaultWindowPosition;
         private readonly WindowPositionHelper _windowPositionHelper = new();
         private bool _isClipboardManagerOpen;
 
@@ -129,41 +128,45 @@ namespace Pinpoint.Win.Views
 
         private async Task LoadPlugins()
         {
+            if (AppSettings.TryGet(AppConstants.LocalPluginsDirectoryKey, out string localPluginsDirectory) && !string.IsNullOrEmpty(localPluginsDirectory))
+            {
+                await Model.PluginEngine.LoadLocalPlugins(localPluginsDirectory);
+            }
+
             var addPluginTasks = new List<Task>
             {
-                Model.PluginEngine.AddPlugin(new EverythingPlugin()),
-                Model.PluginEngine.AddPlugin(new AppSearchPlugin()),
-                Model.PluginEngine.AddPlugin(new ControlPanelPlugin()),
-                Model.PluginEngine.AddPlugin(new CalculatorPlugin()),
-                Model.PluginEngine.AddPlugin(new CurrencyPlugin()),
-                Model.PluginEngine.AddPlugin(new MetricConverterPlugin()),
-                Model.PluginEngine.AddPlugin(new BangsPlugin()),
-                Model.PluginEngine.AddPlugin(new DictionaryPlugin()),
-                Model.PluginEngine.AddPlugin(new CommandLinePlugin()),
-                Model.PluginEngine.AddPlugin(new SpotifyPlugin()),
-                Model.PluginEngine.AddPlugin(new EncodeDecodePlugin()),
-                Model.PluginEngine.AddPlugin(new FinancePlugin()),
-                Model.PluginEngine.AddPlugin(new HackerNewsPlugin()),
-                Model.PluginEngine.AddPlugin(new BookmarksPlugin()),
-                Model.PluginEngine.AddPlugin(new NotesPlugin()),
-                Model.PluginEngine.AddPlugin(new ColorConverterPlugin()),
-                Model.PluginEngine.AddPlugin(new UrlLauncherPlugin()),
-                Model.PluginEngine.AddPlugin(new PasswordGeneratorPlugin()),
-                Model.PluginEngine.AddPlugin(new ClipboardManagerPlugin()),
-                Model.PluginEngine.AddPlugin(new WeatherPlugin()),
-                Model.PluginEngine.AddPlugin(new OperatingSystemPlugin()),
-                Model.PluginEngine.AddPlugin(new ProcessManagerPlugin()),
-                Model.PluginEngine.AddPlugin(new TextPlugin()),
-                Model.PluginEngine.AddPlugin(new ClipboardUploaderPlugin()),
-                Model.PluginEngine.AddPlugin(new TimezoneConverterPlugin()),
-                Model.PluginEngine.AddPlugin(new TranslatePlugin()),
-                Model.PluginEngine.AddPlugin(new ShortcutsPlugin()),
-                Model.PluginEngine.AddPlugin(new EmojiPlugin()),
-                Model.PluginEngine.AddPlugin(new OpenAIPlugin())
+                Model.PluginEngine.LoadPlugin(new EverythingPlugin()),
+                Model.PluginEngine.LoadPlugin(new AppSearchPlugin()),
+                Model.PluginEngine.LoadPlugin(new ControlPanelPlugin()),
+                Model.PluginEngine.LoadPlugin(new CalculatorPlugin()),
+                Model.PluginEngine.LoadPlugin(new CurrencyPlugin()),
+                Model.PluginEngine.LoadPlugin(new MetricConverterPlugin()),
+                Model.PluginEngine.LoadPlugin(new BangsPlugin()),
+                Model.PluginEngine.LoadPlugin(new DictionaryPlugin()),
+                Model.PluginEngine.LoadPlugin(new CommandLinePlugin()),
+                Model.PluginEngine.LoadPlugin(new SpotifyPlugin()),
+                Model.PluginEngine.LoadPlugin(new EncodeDecodePlugin()),
+                Model.PluginEngine.LoadPlugin(new FinancePlugin()),
+                Model.PluginEngine.LoadPlugin(new HackerNewsPlugin()),
+                Model.PluginEngine.LoadPlugin(new BookmarksPlugin()),
+                Model.PluginEngine.LoadPlugin(new NotesPlugin()),
+                Model.PluginEngine.LoadPlugin(new ColorConverterPlugin()),
+                Model.PluginEngine.LoadPlugin(new UrlLauncherPlugin()),
+                Model.PluginEngine.LoadPlugin(new PasswordGeneratorPlugin()),
+                Model.PluginEngine.LoadPlugin(new ClipboardManagerPlugin()),
+                Model.PluginEngine.LoadPlugin(new WeatherPlugin()),
+                Model.PluginEngine.LoadPlugin(new OperatingSystemPlugin()),
+                Model.PluginEngine.LoadPlugin(new ProcessManagerPlugin()),
+                Model.PluginEngine.LoadPlugin(new TextPlugin()),
+                Model.PluginEngine.LoadPlugin(new ClipboardUploaderPlugin()),
+                Model.PluginEngine.LoadPlugin(new TimezoneConverterPlugin()),
+                Model.PluginEngine.LoadPlugin(new TranslatePlugin()),
+                Model.PluginEngine.LoadPlugin(new ShortcutsPlugin()),
+                Model.PluginEngine.LoadPlugin(new EmojiPlugin()),
+                Model.PluginEngine.LoadPlugin(new OpenAIPlugin())
             };
 
             await Task.WhenAll(addPluginTasks);
-            Model.PluginEngine.Plugins.Sort();
         }
 
         public async void OnSystemClipboardPaste([CanBeNull] object sender, HotkeyEventArgs e)
@@ -177,7 +180,7 @@ namespace Pinpoint.Win.Views
 
             // Fetch clipboard results
             var clipboardManagerPlugin = Model.PluginEngine.GetPluginByType<ClipboardManagerPlugin>();
-            var results = await clipboardManagerPlugin.Process(null, _cts.Token).ToListAsync();
+            var results = await clipboardManagerPlugin.ProcessQuery(null, _cts.Token).ToListAsync();
             AddResults(results);
 
             _isClipboardManagerOpen = true;
@@ -219,8 +222,6 @@ namespace Pinpoint.Win.Views
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _defaultWindowPosition = ComputeDpiAwareWindowCenterPosition();
-
             MoveWindowToDefaultPosition();
 
             await LoadPlugins();
@@ -245,7 +246,7 @@ namespace Pinpoint.Win.Views
                 return;
             }
 
-            var response = MessageBox.Show("A newer version of Pinpoint is available. Do you want to download it?", "Update available", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            var response = MessageBox.Show($"Pinpoint v{newestVersion} is available, you are using v{currentVersion}. Do you want to update?", "Update Available", MessageBoxButton.YesNo, MessageBoxImage.Information);
             if (response == MessageBoxResult.Yes)
             {
                 ProcessHelper.OpenUrl("https://github.com/dkgv/pinpoint/releases");
@@ -254,11 +255,11 @@ namespace Pinpoint.Win.Views
 
         public void MoveWindowToDefaultPosition()
         {
-            // Locate window horizontal center near top of screen
-            Left = _defaultWindowPosition.X;
-            Top = _defaultWindowPosition.Y;
+            var defaultWindowPosition = ComputeDpiAwareWindowCenterPosition();
+            Left = defaultWindowPosition.X;
+            Top = defaultWindowPosition.Y;
 
-            var defaultOffsetRatio = _windowPositionHelper.CalculateWindowOffsetRatioFromPoint(_defaultWindowPosition);
+            var defaultOffsetRatio = _windowPositionHelper.CalculateWindowOffsetRatioFromPoint(defaultWindowPosition);
 
             _leftOffsetRatio = defaultOffsetRatio.LeftOffsetRatio;
             _topOffsetRatio = defaultOffsetRatio.TopOffsetRatio;

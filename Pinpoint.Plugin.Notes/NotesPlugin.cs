@@ -8,10 +8,8 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Notes
 {
-    public class NotesPlugin : IPlugin
+    public class NotesPlugin : AbstractPlugin
     {
-        private const string Description = "Create and view quick notes.\n\nExamples: \"note <new note>\" to create a note, \"notes\" to list existing notes";
-
         private static readonly string[] Actions = {
             "notes", // List
             "note" // Create
@@ -23,18 +21,17 @@ namespace Pinpoint.Plugin.Notes
             _notesManager = NotesManager.GetInstance();
         }
 
-        public PluginMeta Meta { get; set; } = new("Notes Plugin", Description, PluginPriority.Highest);
+        public override PluginManifest Manifest { get; } = new("Notes Plugin", PluginPriority.High)
+        {
+            Description = "Create and view quick notes.\n\nExamples: \"note <new note>\" to create a note, \"notes\" to list existing notes"
+        };
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public void Unload() { }
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             return Actions.Contains(query.Parts[0]);
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             switch (query.Parts[0])
             {
@@ -43,11 +40,11 @@ namespace Pinpoint.Plugin.Notes
                     {
                         break;
                     }
-                    
+
                     var noteContent = string.Join(' ', query.Parts[1..]);
                     yield return new AddNoteResult(noteContent);
                     break;
-                
+
                 case "notes":
                     var notes = await _notesManager.GetNotes();
                     foreach (var note in notes.OrderByDescending(n => n.CreatedAt))

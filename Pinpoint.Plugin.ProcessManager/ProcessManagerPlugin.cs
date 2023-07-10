@@ -11,18 +11,16 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.ProcessManager
 {
-    public class ProcessManagerPlugin: IPlugin
+    public class ProcessManagerPlugin : AbstractPlugin
     {
-        public PluginMeta Meta { get; set; } = new("Process Manager", PluginPriority.Highest);
-        
-        public PluginStorage Storage { get; set; } = new();
-        
-        public async Task<bool> Activate(Query query)
+        public override PluginManifest Manifest { get; } = new("Process Manager", PluginPriority.High);
+
+        public override async Task<bool> ShouldActivate(Query query)
         {
             return query.RawQuery.Length >= 2 && query.Prefix(2).Equals("ps") && query.Parts.Length > 1;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var term = string.Join(' ', query.Parts[1..]).ToLower();
             var visited = new HashSet<string>();
@@ -63,11 +61,11 @@ namespace Pinpoint.Plugin.ProcessManager
         }
     }
 
-    public class ProcessResult: AbstractFontAwesomeQueryResult
+    public class ProcessResult : AbstractFontAwesomeQueryResult
     {
         private readonly Process _process;
 
-        public ProcessResult(Process process, string processName, string subtitle): base($"Kill \"{processName}\" (PID {process.Id})", $"{subtitle}")
+        public ProcessResult(Process process, string processName, string subtitle) : base($"Kill \"{processName}\" (PID {process.Id})", $"{subtitle}")
         {
             _process = process;
         }

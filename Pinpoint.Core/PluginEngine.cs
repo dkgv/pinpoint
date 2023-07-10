@@ -1,98 +1,158 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core.Results;
 
-namespace Pinpoint.Core
+namespace Pinpoint.Core;
+
+public class PluginEngine
 {
-    public class PluginEngine
+    public List<AbstractPlugin> Plugins { get; } = new();
+
+    public List<AbstractPlugin> LocalPlugins { get; } = new();
+
+    public List<IPluginListener<AbstractPlugin, object>> Listeners { get; } = new();
+
+    public async Task<bool> LoadPlugin(AbstractPlugin plugin)
     {
-        public List<IPlugin> Plugins { get; } = new();
-
-        public List<IPluginListener<IPlugin, object>> Listeners { get; } = new();
-
-        public async Task AddPlugin(IPlugin @new)
+        if (Plugins.Contains(plugin))
         {
-            @new.Restore();
+            return true;
+        }
 
-            // Ensure plugin hasn't been added and that it was able to load
-            if (Plugins.Contains(@new))
+        try
+        {
+            await plugin.Initialize();
+        }
+        catch
+        {
+            // Plugin threw an exception while loading, so don't add it.
+            return false;
+        }
+
+        Plugins.Add(plugin);
+        Plugins.Sort();
+
+        Listeners.ForEach(listener => listener.PluginChange_Added(this, plugin, null));
+
+        return true;
+    }
+
+    public void Unload(AbstractPlugin plugin)
+    {
+        Plugins.Remove(plugin);
+        LocalPlugins.Remove(plugin);
+        Listeners.ForEach(listener => listener.PluginChange_Removed(this, plugin, null));
+    }
+
+    public async Task<List<Exception>> LoadLocalPlugins(string directory)
+    {
+        if (!Directory.Exists(directory))
+        {
+            return new List<Exception>();
+        }
+
+        var path = new DirectoryInfo(directory);
+        var dlls = path.GetFiles("*.dll", SearchOption.TopDirectoryOnly);
+        var exceptions = new List<Exception>();
+
+        foreach (var dll in dlls)
+        {
+            var dllFilePath = dll.FullName;
+            Assembly assembly;
+            try
             {
-                return;
+                assembly = Assembly.LoadFrom(dllFilePath);
+            }
+            catch (BadImageFormatException)
+            {
+                continue;
             }
 
             try
             {
-                var pluginLoaded = await @new.TryLoad();
-
-                if (!pluginLoaded)
+                var types = assembly.GetTypes();
+                foreach (var type in types)
                 {
-                    return;
-                }
-            }
-            catch
-            {
-                // Plugin threw an exception while loading, so don't add it.
-                return;
-            }
-
-            Plugins.Add(@new);
-            Plugins.Sort();
-
-            Listeners.ForEach(listener => listener.PluginChange_Added(this, @new, null));
-        }
-
-        public T GetPluginByType<T>() where T : IPlugin => Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
-
-        public async IAsyncEnumerable<AbstractQueryResult> EvaluateQuery([EnumeratorCancellation] CancellationToken ct,
-            Query query)
-        {
-            var enabledPlugins = Plugins.Where(p => p.Meta.Enabled && p.IsLoaded).ToList();
-            var debouncedPlugins = enabledPlugins.Where(p => p.DebounceTime > TimeSpan.Zero).ToHashSet();
-            for (var i = 0; i < enabledPlugins.Count && query.ResultCount < 20 && !ct.IsCancellationRequested; i++)
-            {
-                var plugin = enabledPlugins[i];
-                if (!await plugin.Activate(query))
-                {
-                    continue;
-                }
-
-                if (debouncedPlugins.Contains(plugin))
-                {
-                    await foreach (var result in Debounce(ct, plugin, query))
+                    if (!type.IsSubclassOf(typeof(AbstractPlugin)))
                     {
-                        query.ResultCount++;
-                        yield return result;
+                        continue;
                     }
-                }
-                else
-                {
-                    await foreach (var result in plugin.Process(query, ct))
+
+                    try
                     {
-                        query.ResultCount++;
-                        yield return result;
+                        var plugin = (AbstractPlugin)Activator.CreateInstance(type);
+                        if (await LoadPlugin(plugin))
+                        {
+                            LocalPlugins.Add(plugin);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        exceptions.Add(e);
                     }
                 }
             }
+            catch (ReflectionTypeLoadException)
+            {
+            }
         }
 
-        private async IAsyncEnumerable<AbstractQueryResult> Debounce([EnumeratorCancellation] CancellationToken ct, IPlugin plugin, Query query)
+        return exceptions;
+    }
+
+    public T GetPluginByType<T>() where T : AbstractPlugin => Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
+
+    public async IAsyncEnumerable<AbstractQueryResult> EvaluateQuery([EnumeratorCancellation] CancellationToken ct,
+        Query query)
+    {
+        var enabledPlugins = Plugins.Where(p => p.State.IsEnabled.GetValueOrDefault(false)).ToList();
+        var debouncedPlugins = enabledPlugins.Where(p => p.State.DebounceTime > TimeSpan.Zero).ToHashSet();
+        for (var i = 0; i < enabledPlugins.Count && query.ResultCount < 20 && !ct.IsCancellationRequested; i++)
         {
-            await Task.Delay(plugin.DebounceTime, ct);
-            if (ct.IsCancellationRequested)
+            var plugin = enabledPlugins[i];
+            if (!await plugin.ShouldActivate(query))
             {
-                yield break;
+                continue;
             }
 
-            await foreach (var result in plugin.Process(query, ct))
+            if (debouncedPlugins.Contains(plugin))
             {
-                query.ResultCount++;
-                yield return result;
+                await foreach (var result in Debounce(ct, plugin, query))
+                {
+                    query.ResultCount++;
+                    yield return result;
+                }
             }
+            else
+            {
+                await foreach (var result in plugin.ProcessQuery(query, ct))
+                {
+                    query.ResultCount++;
+                    yield return result;
+                }
+            }
+        }
+    }
+
+    private async IAsyncEnumerable<AbstractQueryResult> Debounce([EnumeratorCancellation] CancellationToken ct, AbstractPlugin plugin, Query query)
+    {
+        await Task.Delay(plugin.State.DebounceTime, ct);
+
+        if (ct.IsCancellationRequested)
+        {
+            yield break;
+        }
+
+        await foreach (var result in plugin.ProcessQuery(query, ct))
+        {
+            query.ResultCount++;
+            yield return result;
         }
     }
 }

@@ -10,17 +10,16 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Text
 {
-    public class TextPlugin : IPlugin
+    public class TextPlugin : AbstractPlugin
     {
-        private const string Description = "Easily perform various transformative text actions. Wrap your text in \" and select and option.\n\nExamples: \"this is some text\"";
+        public override PluginManifest Manifest { get; } = new("Text Plugin")
+        {
+            Description = "Easily perform various transformative text actions. Wrap your text in \" and select and option.\n\nExamples: \"this is some text\""
+        };
 
-        public PluginMeta Meta { get; set; } = new("Text Plugin", Description, PluginPriority.NextHighest);
+        public override async Task<bool> ShouldActivate(Query query) => query.RawQuery.Length > 2 && query.RawQuery.StartsWith("\"") && query.RawQuery.EndsWith("\"");
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public async Task<bool> Activate(Query query) => query.RawQuery.Length > 2 && query.RawQuery.StartsWith("\"") && query.RawQuery.EndsWith("\"");
-
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var text = query.RawQuery[1..^1];
             yield return new URLOption(HttpUtility.UrlEncode(text), true);

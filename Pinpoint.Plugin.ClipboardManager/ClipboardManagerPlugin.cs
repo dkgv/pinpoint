@@ -8,21 +8,16 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.ClipboardManager
 {
-    public class ClipboardManagerPlugin : IPlugin
+    public class ClipboardManagerPlugin : AbstractPlugin
     {
-        private const string Description = "Copy as you normally would with CTRL+C and paste from your clipboard history via CTRL+ALT+V.";
-
-        public PluginMeta Meta { get; set; } = new("Clipboard Manager", Description, PluginPriority.Standard);
-
-        public PluginStorage Storage { get; set; } = new();
-
-        public void Unload()
+        public override PluginManifest Manifest { get; } = new("Clipboard Manager")
         {
-        }
+            Description = "Evaluate mathematical expressions quickly.\n\nExamples: \"9+5*(123/5)\""
+        };
 
-        public async Task<bool> Activate(Query query) => false;
+        public override async Task<bool> ShouldActivate(Query query) => false;
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             foreach (var clipboardEntry in ClipboardHelper.History)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using Pinpoint.Core;
 using Pinpoint.Win.ViewModels;
 using Pinpoint.Win.Views;
 
@@ -24,6 +25,7 @@ namespace Pinpoint.Win
             services.AddSingleton<SettingsViewModel>();
             services.AddTransient<PluginTabItem>();
             services.AddTransient<PluginTabItemViewModel>();
+            services.AddSingleton<PluginEngine>();
             return services.BuildServiceProvider();
         }
 
@@ -36,6 +38,8 @@ namespace Pinpoint.Win
         public SettingsViewModel SettingsViewModel => Services.GetService<SettingsViewModel>();
 
         public PluginTabItemViewModel PluginTabItemViewModel => Services.GetService<PluginTabItemViewModel>();
+
+        public PluginEngine PluginEngine => Services.GetService<PluginEngine>();
 
         private void App_OnStartup(object sender, StartupEventArgs e)
         {

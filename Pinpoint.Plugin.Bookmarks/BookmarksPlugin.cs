@@ -10,19 +10,17 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Bookmarks
 {
-    public class BookmarksPlugin : IPlugin
+    public class BookmarksPlugin : AbstractPlugin
     {
-        private const string Description = "Search for browser bookmarks from Brave, Chrome, Firefox.";
-
         private readonly UkkonenTrie<Tuple<BrowserType, AbstractBookmarkModel>> _trie = new();
 
-        public PluginMeta Meta { get; set; } = new("Bookmarks Plugin", Description, PluginPriority.Standard);
+        public override PluginManifest Manifest { get; } = new("Bookmarks Plugin")
+        {
+            Description = "Search for browser bookmarks from Brave, Chrome, Firefox.",
+            Priority = PluginPriority.Low,
+        };
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public bool IsLoaded { get; set; }
-
-        public async Task<bool> TryLoad()
+        public override async Task<bool> Initialize()
         {
             foreach (var browserType in Enum.GetValues(typeof(BrowserType)).Cast<BrowserType>())
             {
@@ -34,17 +32,12 @@ namespace Pinpoint.Plugin.Bookmarks
                 }
             }
 
-            IsLoaded = true;
-            return IsLoaded;
+            return true;
         }
 
-        public void Unload()
-        {
-        }
+        public override async Task<bool> ShouldActivate(Query query) => query.RawQuery.Length >= 2;
 
-        public async Task<bool> Activate(Query query) => query.RawQuery.Length >= 2;
-
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var seen = new HashSet<string>();
             foreach (var bookmarkModel in _trie.Retrieve(query.RawQuery.ToLower()))

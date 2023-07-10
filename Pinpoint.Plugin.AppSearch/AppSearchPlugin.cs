@@ -10,7 +10,7 @@ using Pinpoint.Plugin.AppSearch.Providers;
 
 namespace Pinpoint.Plugin.AppSearch
 {
-    public class AppSearchPlugin : IPlugin
+    public class AppSearchPlugin : AbstractPlugin
     {
         private static readonly UkkonenTrie<IApp> CachedAppsTrie = new();
         private static readonly IAppProvider[] RuntimeAppProviders = {
@@ -20,18 +20,15 @@ namespace Pinpoint.Plugin.AppSearch
 
         public AppSearchFrequency AppSearchFrequency;
 
-        private const string Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\"";
+        public override PluginManifest Manifest { get; } = new("App Search")
+        {
+            Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\""
+        };
 
-        public PluginMeta Meta { get; set; } = new("App Search", Description, PluginPriority.NextHighest);
-
-        public PluginStorage Storage { get; set; } = new();
-
-        public bool IsLoaded { get; set; }
-
-        public async Task<bool> TryLoad()
+        public override async Task<bool> Initialize()
         {
             AppSearchFrequency = new AppSearchFrequency(this);
-            
+
             var tasks = new List<Task>
             {
                 Task.Run(() => PopulateCache(new UwpAppProvider())),
@@ -40,17 +37,12 @@ namespace Pinpoint.Plugin.AppSearch
             );
             await Task.WhenAll(tasks);
 
-            return IsLoaded = true;
+            return true;
         }
 
-        public void Unload()
-        {
-            AppSearchFrequency.Reset();
-        }
+        public override async Task<bool> ShouldActivate(Query query) => query.RawQuery.Length >= 2;
 
-        public async Task<bool> Activate(Query query) => query.RawQuery.Length >= 2;
-
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var queryLower = query.RawQuery.ToLower();
 
@@ -64,11 +56,11 @@ namespace Pinpoint.Plugin.AppSearch
             var allMatches = staticMatches
                 .Concat(runtimeMatches)
                 .OrderByDescending(a => AppSearchFrequency.FrequencyOfFor(queryLower, a.FilePath));
-            
-           foreach (var app in allMatches)
-           {
-               yield return new AppResult(this, app, queryLower);
-           }
+
+            foreach (var app in allMatches)
+            {
+                yield return new AppResult(this, app, queryLower);
+            }
         }
 
         private void PopulateCache(IAppProvider provider)
@@ -85,13 +77,13 @@ namespace Pinpoint.Plugin.AppSearch
         private IEnumerable<string> GenerateAliases(string appName)
         {
             yield return appName.ToLower();
-            
+
             var camelCaseAliases = GenerateCamelCaseAliases(appName);
             foreach (var alias in camelCaseAliases)
             {
                 yield return alias;
             }
-            
+
             var wordAliases = GenerateWordAliases(appName);
             foreach (var alias in wordAliases)
             {
@@ -125,7 +117,7 @@ namespace Pinpoint.Plugin.AppSearch
             {
                 yield break;
             }
-            
+
             var variations = appName.ToLower().Split(" ");
             foreach (var variation in variations)
             {
@@ -139,7 +131,7 @@ namespace Pinpoint.Plugin.AppSearch
             {
                 yield break;
             }
-            
+
             var subWords = appName.Split(' ');
             foreach (var subWord in subWords)
             {
@@ -152,10 +144,10 @@ namespace Pinpoint.Plugin.AppSearch
                         currentVariation = c.ToString().ToLower();
                         continue;
                     }
-                
+
                     currentVariation += c;
                 }
-                
+
                 if (currentVariation.Length > 1)
                 {
                     yield return currentVariation.ToLower();

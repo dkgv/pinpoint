@@ -9,17 +9,16 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.ClipboardUploader
 {
-    public class ClipboardUploaderPlugin : IPlugin
+    public class ClipboardUploaderPlugin : AbstractPlugin
     {
-        private const string Description = "Upload your clipboard content to a pastebin and receive the resulting URL directly to your clipboard.\n\nExamples: \"paste\"";
+        public override PluginManifest Manifest { get; } = new("Clipboard Uploader", PluginPriority.High)
+        {
+            Description = "Upload your clipboard content to a pastebin and receive the resulting URL directly to your clipboard.\n\nExamples: \"paste\""
+        };
 
-        public PluginMeta Meta { get; set; } = new("Clipboard Uploader", Description, PluginPriority.Highest);
+        public override async Task<bool> ShouldActivate(Query query) => query.RawQuery.ToLower().Equals("paste");
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public async Task<bool> Activate(Query query) => query.RawQuery.ToLower().Equals("paste");
-
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var item = ClipboardHelper.History.First;
             if (item == null)
@@ -37,7 +36,7 @@ namespace Pinpoint.Plugin.ClipboardUploader
         private readonly AbstractUploader _abstractUploader;
         private readonly string _content;
 
-        public UploadToResult(AbstractUploader abstractUploader, string content) : base($"Paste clipboard content to {abstractUploader.Name}", "")
+        public UploadToResult(AbstractUploader abstractUploader, string content) : base($"Upload clipboard content to {abstractUploader.Name}", "")
         {
             _abstractUploader = abstractUploader;
             _content = content;

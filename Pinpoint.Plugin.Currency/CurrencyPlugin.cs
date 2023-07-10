@@ -11,51 +11,51 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Currency
 {
-    public class CurrencyPlugin : IPlugin
+    public class CurrencyPlugin : AbstractPlugin
     {
-        private const string Description = "Convert between currencies and cryptocurrencies.\n\nExamples: \"5 usd to jpy\", \"1 btc to cad\", \"1 eth to btc\"";
-
-        private CurrencyRepository _currencyRepo;
+        private CurrencyRepository _currencyRepo = new();
         private const string KeyBaseCurrency = "Base currency";
         private const string Symbols = "$£€¥";
 
-        public PluginMeta Meta { get; set; } = new("Currency Converter", Description, PluginPriority.Highest);
-
-        public PluginStorage Storage { get; set; } = new();
-
-        public bool IsLoaded { get; set; }
-
-        public async Task<bool> TryLoad()
+        public override PluginManifest Manifest { get; } = new("Currency Converter", PluginPriority.High)
         {
-            if (Storage.UserSettings.Count == 0)
+            Description = "Convert between currencies and cryptocurrencies.\n\nExamples: \"5 usd to jpy\", \"1 btc to cad\", \"1 eth to btc\""
+        };
+
+        public override PluginState State { get; } = new()
+        {
+            HasModifiableSettings = true
+        };
+
+        public override PluginStorage Storage { get; } = new()
+        {
+            User = new UserSettings { { KeyBaseCurrency, GetDefaultBaseCurrency() } }
+        };
+
+        private static string GetDefaultBaseCurrency()
+        {
+            string baseCurrency;
+            try
             {
-                string baseCurrency;
-                try
-                {
-                    // Find base currency
-                    var ri = new RegionInfo(CultureInfo.CurrentCulture.Name);
-                    baseCurrency = ri.ISOCurrencySymbol;
-                }
-                catch (ArgumentException)
-                {
-                    baseCurrency = "USD";
-                }
-
-                Storage.UserSettings.Put(KeyBaseCurrency, baseCurrency);
+                // Find base currency
+                var ri = new RegionInfo(CultureInfo.CurrentCulture.Name);
+                baseCurrency = ri.ISOCurrencySymbol;
             }
-
-            _currencyRepo = new CurrencyRepository();
-            await _currencyRepo.LoadCurrenciesInitial().ConfigureAwait(false);
-
-            return IsLoaded = true;
+            catch (ArgumentException)
+            {
+                baseCurrency = "USD";
+            }
+            return baseCurrency;
         }
 
-        public void Unload()
+        public override async Task<bool> Initialize()
         {
+            await _currencyRepo.LoadCurrenciesInitial();
+            return true;
         }
 
         // TODO rewrite into oblivion
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             var raw = query.RawQuery;
 
@@ -96,7 +96,7 @@ namespace Pinpoint.Plugin.Currency
             return hasNumber && isConverting && correctParts;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var from = IdentifyFrom(query);
             var value = IdentifyValue(query);
@@ -143,7 +143,7 @@ namespace Pinpoint.Plugin.Currency
             // Handles queries like 100 usd, 100 eur
             if (!query.RawQuery.Contains("in") && !query.RawQuery.Contains("to"))
             {
-                return Storage.UserSettings.Str(KeyBaseCurrency);
+                return Storage.User.Str(KeyBaseCurrency);
             }
 
             // Get last part

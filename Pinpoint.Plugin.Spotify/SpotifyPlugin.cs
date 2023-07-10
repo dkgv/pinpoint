@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +8,7 @@ using Pinpoint.Plugin.Spotify.Client;
 
 namespace PinPoint.Plugin.Spotify
 {
-    public class SpotifyPlugin : IPlugin
+    public class SpotifyPlugin : AbstractPlugin
     {
         private readonly HashSet<string> _keywords = new()
         {
@@ -20,32 +18,24 @@ namespace PinPoint.Plugin.Spotify
         private readonly SpotifyClient _spotifyClient = SpotifyClient.GetInstance();
         private bool _isAuthenticated;
 
-        private const string Description = "Control Spotify without leaving your workflow. Requires sign-in on first use. Requires Spotify to be running on any device you are signed in to.\n\nExamples: \"album <name>\", \"artist <name>\", \"episode <name>\", \"play <name>\", \"playlist <name>\", \"show <name>\", \"skip\", \"next\", \"prev\", \"back\", \"pause\"";
-
-        public PluginMeta Meta { get; set; } = new("Spotify Controller", Description, PluginPriority.Highest);
-
-        public PluginStorage Storage { get; set; } = new();
-
-        public bool IsLoaded { get; set; }
-
-        public Task<bool> TryLoad()
+        public override PluginManifest Manifest { get; } = new("Spotify Controller", PluginPriority.High)
         {
-            if (Storage.InternalSettings.ContainsKey("refresh_token"))
+            Description = "Control any Spotify session without leaving your workflow. Requires sign-in on first use.\n\nExamples: \"album <name>\", \"artist <name>\", \"episode <name>\", \"play <name>\", \"playlist <name>\", \"show <name>\", \"skip\", \"next\", \"prev\", \"back\", \"pause\""
+        };
+
+        public Task<bool> Initialize()
+        {
+            if (Storage.Internal.ContainsKey("refresh_token"))
             {
-                _isAuthenticated = !string.IsNullOrWhiteSpace(Storage.InternalSettings["refresh_token"].ToString());
+                _isAuthenticated = !string.IsNullOrWhiteSpace(Storage.Internal["refresh_token"].ToString());
             }
 
             SpotifyClient.Plugin = this; // Dirty hack
 
-            return Task.FromResult(IsLoaded = true);
+            return Task.FromResult(_isAuthenticated);
         }
 
-        public void Unload()
-        {
-            _spotifyClient.Dispose();
-        }
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             var queryParts = query.RawQuery.Split(new[] { ' ' }, 2);
 
@@ -72,7 +62,7 @@ namespace PinPoint.Plugin.Spotify
             return _isAuthenticated;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var queryParts = query.RawQuery.Split(new[] { ' ' }, 2);
 

@@ -13,29 +13,29 @@ using Pinpoint.Plugin.Weather.Models;
 
 namespace Pinpoint.Plugin.Weather
 {
-    public class WeatherPlugin : IPlugin
+    public class WeatherPlugin : AbstractPlugin
     {
         private const string KeyDefaultCity = "Default city";
-        private const string Description = "Look up weather forecasts.\n\nExamples: \"weather <location>\" or \"weather\" if default location is set";
         private readonly Dictionary<string, List<WeatherDayModel>> _weatherCache = new();
 
-        public PluginMeta Meta { get; set; } = new("Weather", Description, PluginPriority.Highest);
-
-        public PluginStorage Storage { get; set; } = new();
-
-        public TimeSpan DebounceTime => TimeSpan.FromMilliseconds(200);
-
-        public async Task<bool> TryLoad()
+        public override PluginManifest Manifest { get; } = new("Weather", PluginPriority.High)
         {
-            if (Storage.UserSettings.Count == 0)
-            {
-                Storage.UserSettings.Put(KeyDefaultCity, string.Empty);
+            Description = "Look up weather forecasts.\n\nExamples: \"weather <location>\" or \"weather\" if default location is set"
+        };
+
+        public override PluginState State { get; } = new()
+        {
+            DebounceTime = TimeSpan.FromMilliseconds(200)
+        };
+
+        public override PluginStorage Storage { get; } = new()
+        {
+            User = new UserSettings{
+                {KeyDefaultCity, string.Empty}
             }
+        };
 
-            return true;
-        }
-
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             var hasWeatherPrefix = query.Parts[0].ToLower().Equals("weather");
             if (!hasWeatherPrefix)
@@ -46,7 +46,7 @@ namespace Pinpoint.Plugin.Weather
             return !string.IsNullOrEmpty(GetDefaultCity()) || query.Parts.Length >= 2;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var location = GetLocation(query);
             var isUS = IsUS();
@@ -77,7 +77,7 @@ namespace Pinpoint.Plugin.Weather
 
         private bool IsUS()
         {
-            var currentRegion = new RegionInfo(CultureInfo.CurrentCulture.LCID);
+            var currentRegion = new RegionInfo(CultureInfo.CurrentCulture.Name);
             return !currentRegion.IsMetric;
         }
 
@@ -93,7 +93,7 @@ namespace Pinpoint.Plugin.Weather
 
         private string GetDefaultCity()
         {
-            return Storage.UserSettings.Str(KeyDefaultCity);
+            return Storage.User.Str(KeyDefaultCity);
         }
 
         private async Task<List<WeatherDayModel>> GetWeatherAt(string location)

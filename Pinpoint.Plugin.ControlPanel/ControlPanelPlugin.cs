@@ -14,20 +14,17 @@ using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.ControlPanel
 {
-    public class ControlPanelPlugin : IPlugin
+    public class ControlPanelPlugin : AbstractPlugin
     {
-        private const string Description = "Search for Windows control panel items.";
-
         private UkkonenTrie<ControlPanelItem> _controlPanelItems = new();
         private const string ControlPanelRegistryPath = @"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\ControlPanel\NameSpace";
 
-        public PluginMeta Meta { get; set; } = new("Control Panel Search", Description, PluginPriority.Standard);
+        public override PluginManifest Manifest { get; } = new("Control Panel Search")
+        {
+            Description = "Search for Windows control panel items."
+        };
 
-        public PluginStorage Storage { get; set; } = new();
-
-        public bool IsLoaded { get; set; }
-
-        public Task<bool> TryLoad()
+        public Task<bool> Initialize()
         {
             // Load actual control panel items
             var items = LoadControlPanelItems();
@@ -52,8 +49,7 @@ namespace Pinpoint.Plugin.ControlPanel
                 _controlPanelItems.Add(controlPanelItem.Name.ToLower(), controlPanelItem);
             }
 
-            IsLoaded = true;
-            return Task.FromResult(IsLoaded);
+            return Task.FromResult(true);
         }
 
         public void Unload()
@@ -61,12 +57,12 @@ namespace Pinpoint.Plugin.ControlPanel
             _controlPanelItems = null;
         }
 
-        public async Task<bool> Activate(Query query)
+        public override async Task<bool> ShouldActivate(Query query)
         {
             return query.RawQuery.Length >= 3;
         }
 
-        public async IAsyncEnumerable<AbstractQueryResult> Process(Query query, [EnumeratorCancellation] CancellationToken ct)
+        public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             foreach (var item in _controlPanelItems.Retrieve(query.RawQuery.ToLower()).Where(i => i.RegistryKey != null))
             {
