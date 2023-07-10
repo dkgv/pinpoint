@@ -40,9 +40,10 @@ namespace Pinpoint.Win.ViewModels
 
         public string WindowTitle => "Pinpoint " + AppConstants.Version;
 
-        private string _localPluginsDirectory;
+        private string _localPluginsDirectory = string.Empty;
 
-        public string LocalPluginsDirectory {
+        public string LocalPluginsDirectory
+        {
             get => _localPluginsDirectory;
             set => SetProperty(ref _localPluginsDirectory, value);
         }
