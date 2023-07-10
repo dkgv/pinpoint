@@ -24,6 +24,7 @@ public abstract class AbstractPlugin : IComparable<AbstractPlugin>
             Storage ??= new PluginStorage();
             var storage = JsonConvert.DeserializeObject<PluginStorage>(obj.Storage.ToString());
             Storage.User = storage.User;
+            Storage.Internal = storage.Internal;
         }
         catch (FileNotFoundException e)
         {
