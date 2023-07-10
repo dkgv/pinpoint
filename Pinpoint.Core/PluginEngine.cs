@@ -74,26 +74,32 @@ public class PluginEngine
                 continue;
             }
 
-            var types = assembly.GetTypes();
-            foreach (var type in types)
+            try
             {
-                if (!type.IsSubclassOf(typeof(AbstractPlugin)))
+                var types = assembly.GetTypes();
+                foreach (var type in types)
                 {
-                    continue;
-                }
-
-                try
-                {
-                    var plugin = (AbstractPlugin)Activator.CreateInstance(type);
-                    if (await LoadPlugin(plugin))
+                    if (!type.IsSubclassOf(typeof(AbstractPlugin)))
                     {
-                        LocalPlugins.Add(plugin);
+                        continue;
+                    }
+
+                    try
+                    {
+                        var plugin = (AbstractPlugin)Activator.CreateInstance(type);
+                        if (await LoadPlugin(plugin))
+                        {
+                            LocalPlugins.Add(plugin);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        exceptions.Add(e);
                     }
                 }
-                catch (Exception e)
-                {
-                    exceptions.Add(e);
-                }
+            }
+            catch (ReflectionTypeLoadException)
+            {
             }
         }
 

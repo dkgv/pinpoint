@@ -16,7 +16,8 @@ namespace Pinpoint.Plugin.Bookmarks
 
         public override PluginManifest Manifest { get; } = new("Bookmarks Plugin")
         {
-            Description = "Search for browser bookmarks from Brave, Chrome, Firefox."
+            Description = "Search for browser bookmarks from Brave, Chrome, Firefox.",
+            Priority = PluginPriority.Low,
         };
 
         public override async Task<bool> Initialize()
