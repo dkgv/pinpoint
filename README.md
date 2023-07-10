@@ -23,7 +23,7 @@ https://user-images.githubusercontent.com/11279580/227036269-3b8be90f-71b6-4fb9-
 
 ## Installation
 
-- Download the latest pre-compiled release [here](https://github.com/dkgv/pinpoint/releases) (pick the standalone version if you do not have .NET 6 installed)
+- Download the latest pre-compiled release [here](https://github.com/dkgv/pinpoint/releases) (pick the standalone version if you do not have .NET 7 installed)
 - Extract the `Pinpoint-X.X.X.zip` file
 - Launch `Pinpoint.exe`
 
