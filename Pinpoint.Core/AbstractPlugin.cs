@@ -23,8 +23,15 @@ public abstract class AbstractPlugin : IComparable<AbstractPlugin>
 
             Storage ??= new PluginStorage();
             var storage = JsonConvert.DeserializeObject<PluginStorage>(obj.Storage.ToString());
-            Storage.User = storage.User;
-            Storage.Internal = storage.Internal;
+            if (storage.User != null)
+            {
+                Storage.User = storage.User;
+            }
+
+            if (storage.Internal != null)
+            {
+                Storage.Internal = storage.Internal;
+            }
         }
         catch (FileNotFoundException e)
         {
@@ -34,8 +41,9 @@ public abstract class AbstractPlugin : IComparable<AbstractPlugin>
         {
             Debug.WriteLine(Manifest.Name + ": " + e.Message);
         }
-        catch (JsonSerializationException)
+        catch (JsonSerializationException e)
         {
+            Debug.WriteLine(Manifest.Name + ": " + e.Message);
         }
     }
 
