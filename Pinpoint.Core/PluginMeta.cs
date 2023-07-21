@@ -69,7 +69,7 @@ public class UserSettings : ObservableCollection<MutableKeyValuePair<string, obj
         get
         {
             var setting = this.FirstOrDefault(s => s.Key.Equals(key));
-            return setting.Value;
+            return setting != default ? setting.Value : default;
         }
         set
         {
@@ -92,7 +92,11 @@ public class UserSettings : ObservableCollection<MutableKeyValuePair<string, obj
         return setting.Equals("yes") || setting.Equals("true");
     }
 
-    public string Str(string key) => this[key].ToString();
+    public string Str(string key)
+    {
+        var value = this[key];
+        return value != default ? value.ToString() : null;
+    }
 }
 
 public class MutableKeyValuePair<TKey, TValue>
