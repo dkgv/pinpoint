@@ -13,9 +13,11 @@ namespace Pinpoint.Plugin.AppSearch
     public class AppSearchPlugin : AbstractPlugin
     {
         private static readonly UkkonenTrie<IApp> CachedAppsTrie = new();
+        private static readonly IAppProvider StandardAppProvider = new StandardAppProvider();
+        private static readonly IAppProvider PathAppProvider = new PathAppProvider();
         private static readonly IAppProvider[] RuntimeAppProviders = {
-            new StandardAppProvider(),
-            new PathAppProvider()
+            StandardAppProvider,
+            PathAppProvider,
         };
 
         public AppSearchFrequency AppSearchFrequency;
@@ -32,9 +34,9 @@ namespace Pinpoint.Plugin.AppSearch
             var tasks = new List<Task>
             {
                 Task.Run(() => PopulateCache(new UwpAppProvider())),
-            }.Concat(
-                RuntimeAppProviders.Select(provider => Task.Run(() => PopulateCache(provider))).ToList()
-            );
+                Task.Run(() => PathAppProvider.Provide().ToList()),
+                Task.Run(() => StandardAppProvider.Provide().ToList()),
+            };
             await Task.WhenAll(tasks);
 
             return true;
@@ -46,14 +48,14 @@ namespace Pinpoint.Plugin.AppSearch
         {
             var queryLower = query.RawQuery.ToLower();
 
-            var staticMatches = CachedAppsTrie.Retrieve(queryLower);
+            var cachedMatches = CachedAppsTrie.Retrieve(queryLower);
             var runtimeMatches = RuntimeAppProviders.SelectMany(provider => provider.Provide())
                     .Where(a =>
                     {
                         var variations = GenerateAliases(a.Name);
                         return variations.Any(v => v.StartsWith(queryLower));
                     });
-            var allMatches = staticMatches
+            var allMatches = cachedMatches
                 .Concat(runtimeMatches)
                 .OrderByDescending(a => AppSearchFrequency.FrequencyOfFor(queryLower, a.FilePath));
 
