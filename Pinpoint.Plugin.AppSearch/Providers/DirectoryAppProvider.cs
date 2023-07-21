@@ -38,9 +38,19 @@ namespace Pinpoint.Plugin.AppSearch.Providers
                     _cachedApps.Add(app);
                 }
             }
-            
-            foreach (var cachedApp in _cachedApps)
+
+            for (int i = 0; i < _cachedApps.Count;)
             {
+                var cachedApp = _cachedApps[i];
+                if (!File.Exists(cachedApp.FilePath))
+                {
+                    _uniqueAppNames.Remove(cachedApp.Name);
+                    _cachedApps.Remove(cachedApp);
+                    _lastPathWriteCache[Path.GetDirectoryName(cachedApp.FilePath)] = DateTime.MinValue;
+                    continue;
+                }
+
+                i++;
                 yield return cachedApp;
             }
         }
@@ -65,10 +75,10 @@ namespace Pinpoint.Plugin.AppSearch.Providers
                     return Array.Empty<string>();
                 }
             }
-            
-            return extensions.SelectMany(SafeGetFiles); 
+
+            return extensions.SelectMany(SafeGetFiles);
         }
-        
+
         private IEnumerable<string> GetPathsNeedUpdate()
         {
             foreach (var path in _paths.Where(Directory.Exists))
@@ -78,7 +88,7 @@ namespace Pinpoint.Plugin.AppSearch.Providers
                 {
                     continue;
                 }
-                
+
                 _lastPathWriteCache[path] = currentLastWrite;
                 yield return path;
             }
