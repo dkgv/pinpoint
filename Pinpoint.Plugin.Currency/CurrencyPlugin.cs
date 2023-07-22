@@ -37,7 +37,6 @@ namespace Pinpoint.Plugin.Currency
             string baseCurrency;
             try
             {
-                // Find base currency
                 var ri = new RegionInfo(CultureInfo.CurrentCulture.Name);
                 baseCurrency = ri.ISOCurrencySymbol;
             }
