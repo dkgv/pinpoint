@@ -25,7 +25,7 @@ public abstract class AbstractPlugin : IComparable<AbstractPlugin>
             var storage = JsonConvert.DeserializeObject<PluginStorage>(obj.Storage.ToString());
             if (storage.User != null)
             {
-                Storage.User = storage.User;
+                Storage.User.Overwrite(storage.User);
             }
 
             if (storage.Internal != null)

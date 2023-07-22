@@ -86,6 +86,14 @@ public class UserSettings : ObservableCollection<MutableKeyValuePair<string, obj
         }
     }
 
+    public void Overwrite(UserSettings other)
+    {
+        foreach (var setting in other)
+        {
+            this[setting.Key] = setting.Value;
+        }
+    }
+
     public bool Bool(string key)
     {
         var setting = Str(key).ToLower();
