@@ -15,6 +15,6 @@ namespace Pinpoint.Core
 
         public const string LocalPluginsDirectoryKey = "local_plugins_directory";
 
-        public const string Version = "0.4.0";
+        public const string Version = "0.4.1";
     }
 }

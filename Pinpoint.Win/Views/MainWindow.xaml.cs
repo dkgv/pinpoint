@@ -246,7 +246,7 @@ namespace Pinpoint.Win.Views
                 return;
             }
 
-            var response = MessageBox.Show($"Pinpoint v{newestVersion} is available, you are using v{currentVersion}. Do you want to update?", "Update Available", MessageBoxButton.YesNo, MessageBoxImage.Information);
+            var response = MessageBox.Show($"Pinpoint version {newestVersion} is available, you are using {currentVersion}. Do you want to update?", "Update Available", MessageBoxButton.YesNo, MessageBoxImage.Information);
             if (response == MessageBoxResult.Yes)
             {
                 ProcessHelper.OpenUrl("https://github.com/dkgv/pinpoint/releases");
