@@ -17,7 +17,7 @@ namespace Pinpoint.Plugin.PasswordGenerator
         {
             base.OnSelect();
 
-            ClipboardHelper.CopyUtf8(Content);
+            ClipboardHelper.Copy(Content);
             ClipboardHelper.PasteClipboard();
         }
     }

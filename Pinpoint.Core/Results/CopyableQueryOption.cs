@@ -22,7 +22,7 @@ namespace Pinpoint.Core.Results
 
         public override void OnSelect()
         {
-            ClipboardHelper.CopyUtf8(Content);
+            ClipboardHelper.Copy(Content);
         }
     }
 }
