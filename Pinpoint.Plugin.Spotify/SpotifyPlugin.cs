@@ -23,7 +23,7 @@ namespace PinPoint.Plugin.Spotify
             Description = "Control any Spotify session without leaving your workflow. Requires sign-in on first use.\n\nExamples: \"album <name>\", \"artist <name>\", \"episode <name>\", \"play <name>\", \"playlist <name>\", \"show <name>\", \"skip\", \"next\", \"prev\", \"back\", \"pause\""
         };
 
-        public Task<bool> Initialize()
+        public override Task<bool> Initialize()
         {
             if (Storage.Internal.ContainsKey("refresh_token"))
             {

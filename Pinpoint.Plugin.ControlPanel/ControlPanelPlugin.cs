@@ -24,7 +24,7 @@ namespace Pinpoint.Plugin.ControlPanel
             Description = "Search for Windows control panel items."
         };
 
-        public Task<bool> Initialize()
+        public override Task<bool> Initialize()
         {
             // Load actual control panel items
             var items = LoadControlPanelItems();
