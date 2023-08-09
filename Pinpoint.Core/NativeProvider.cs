@@ -50,5 +50,24 @@ namespace Pinpoint.Core
 
             return hIcon == IntPtr.Zero ? null : Icon.FromHandle(hIcon).ToBitmap();
         }
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool OpenClipboard(IntPtr hWndNewOwner);
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern bool CloseClipboard();
+
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
+
+        public static void Copy(string text)
+        {
+            const uint cfUnicodeText = 13;
+            OpenClipboard(IntPtr.Zero);
+            var ptr = Marshal.StringToHGlobalUni(text);
+            SetClipboardData(cfUnicodeText, ptr);
+            CloseClipboard();
+            // No freeing of memory here
+        }
     }
 }

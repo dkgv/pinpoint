@@ -23,31 +23,14 @@ namespace Pinpoint.Core.Clipboard
         {
             _ = Task.Run(async () =>
               {
-                  await Task.Delay(150);
+                  await Task.Delay(50);
                   SendKeys.SendWait("^{v}");
               });
         }
 
-        public static void CopyUtf8(string content)
+        public static void Copy(string content)
         {
-            Copy(content, Encoding.UTF8);
-        }
-
-        public static void Copy(string content, Encoding encoding)
-        {
-            var clipboardExecutable = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    RedirectStandardInput = true,
-                    StandardInputEncoding = encoding,
-                    FileName = @"clip",
-                }
-            };
-            clipboardExecutable.Start();
-            clipboardExecutable.StandardInput.Write(content);
-            clipboardExecutable.StandardInput.Close();
-            clipboardExecutable.WaitForExit();
+            NativeProvider.Copy(content);
         }
     }
 }

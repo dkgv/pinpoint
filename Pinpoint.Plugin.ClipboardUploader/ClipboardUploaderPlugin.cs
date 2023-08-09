@@ -52,7 +52,7 @@ namespace Pinpoint.Plugin.ClipboardUploader
                     return;
                 }
 
-                ClipboardHelper.CopyUtf8(result.Trim());
+                ClipboardHelper.Copy(result.Trim());
 
                 Url = result;
                 base.OnSelect();

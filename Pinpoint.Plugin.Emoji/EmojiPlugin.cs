@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using System.Globalization;
 using System.Text;
 using GEmojiSharp;
 using Pinpoint.Core;
@@ -37,7 +38,8 @@ public class EmojiPlugin : AbstractPlugin
 
         public override void OnSelect()
         {
-            ClipboardHelper.Copy(_emoji.Raw, Encoding.Unicode);
+            var unicode = _emoji.Raw;
+            ClipboardHelper.Copy(unicode);
             ClipboardHelper.PasteClipboard();
         }
     }
