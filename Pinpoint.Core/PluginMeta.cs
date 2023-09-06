@@ -74,7 +74,7 @@ public class UserSettings : ObservableCollection<MutableKeyValuePair<string, obj
         set
         {
             var setting = this.FirstOrDefault(s => s.Key.Equals(key));
-            if (!string.IsNullOrEmpty(setting.Key))
+            if (setting != default && !string.IsNullOrEmpty(setting.Key))
             {
                 var index = IndexOf(setting);
                 this[index] = new MutableKeyValuePair<string, object>(key, value);
