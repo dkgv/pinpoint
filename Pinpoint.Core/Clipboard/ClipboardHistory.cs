@@ -6,7 +6,7 @@ namespace Pinpoint.Core.Clipboard
     {
         private readonly int _capacity;
 
-        public ClipboardHistory(int capacity = 100)
+        public ClipboardHistory(int capacity = 300)
         {
             _capacity = capacity;
         }
