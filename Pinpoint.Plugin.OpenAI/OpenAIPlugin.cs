@@ -44,14 +44,14 @@ public class OpenAIPlugin : AbstractPlugin
 
     public override async Task<bool> ShouldActivate(Query query)
     {
-        return query.Prefix() == "?" && query.RawQuery.Length > 1;
+        return query.Prefix() == "?" && query.Raw.Length > 1;
     }
 
     public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
     {
         yield return new TitleOpenAIResult();
 
-        var userPrompt = query.RawQuery[1..];
+        var userPrompt = query.Raw[1..];
         var chatPrompts = new List<Message>
         {
             new(Role.User, userPrompt),

@@ -15,11 +15,11 @@ public class EmojiPlugin : AbstractPlugin
         Description = "Search for and insert emojis anywhere.\n\nExamples: \":smilin\""
     };
 
-    public override async Task<bool> ShouldActivate(Query query) => query.RawQuery.Length > 1 && query.Prefix() == ":";
+    public override async Task<bool> ShouldActivate(Query query) => query.Raw.Length > 1 && query.Prefix() == ":";
 
     public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, CancellationToken ct)
     {
-        foreach (var emoji in GEmojiSharp.Emoji.Find(query.RawQuery))
+        foreach (var emoji in GEmojiSharp.Emoji.Find(query.Raw))
         {
             yield return new EmojiResult(emoji);
         }

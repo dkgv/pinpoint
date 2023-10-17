@@ -16,12 +16,12 @@ namespace Pinpoint.Plugin.CommandLine
 
         public override async Task<bool> ShouldActivate(Query query)
         {
-            return query.Prefix().Equals(">") && query.RawQuery.Length > 1;
+            return query.Prefix().Equals(">") && query.Raw.Length > 1;
         }
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            yield return new CommandLineResult(query.RawQuery);
+            yield return new CommandLineResult(query.Raw);
         }
     }
 }

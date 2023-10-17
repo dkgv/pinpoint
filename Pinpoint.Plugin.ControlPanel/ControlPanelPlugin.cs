@@ -59,12 +59,12 @@ namespace Pinpoint.Plugin.ControlPanel
 
         public override async Task<bool> ShouldActivate(Query query)
         {
-            return query.RawQuery.Length >= 3;
+            return query.Raw.Length >= 3;
         }
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            foreach (var item in _controlPanelItems.Retrieve(query.RawQuery.ToLower()).Where(i => i.RegistryKey != null))
+            foreach (var item in _controlPanelItems.Retrieve(query.Raw.ToLower()).Where(i => i.RegistryKey != null))
             {
                 yield return new ControlPanelResult(item.Name, item.Description, ControlPanelIconProvider.GetIcon(item.RegistryKey));
             }

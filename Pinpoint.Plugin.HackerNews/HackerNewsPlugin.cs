@@ -18,7 +18,7 @@ namespace Pinpoint.Plugin.HackerNews
 
         public override async Task<bool> ShouldActivate(Query query)
         {
-            var raw = query.RawQuery.ToLower();
+            var raw = query.Raw.ToLower();
             return raw.Length >= 10 && (raw.Equals("hackernews") || raw.Equals("hacker news") || raw.Equals("hnews"));
         }
 

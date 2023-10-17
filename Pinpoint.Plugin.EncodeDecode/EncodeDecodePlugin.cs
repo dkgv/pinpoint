@@ -16,16 +16,16 @@ namespace Pinpoint.Plugin.EncodeDecode
 
         public override Task<bool> ShouldActivate(Query query)
         {
-            var match = query.RawQuery.Length > 4 && Prefixes.Any(prefix => query.RawQuery.StartsWith(prefix));
+            var match = query.Raw.Length > 4 && Prefixes.Any(prefix => query.Raw.StartsWith(prefix));
             return Task.FromResult(match);
         }
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var prefix = Prefixes.FirstOrDefault(pre => query.RawQuery.StartsWith(pre));
+            var prefix = Prefixes.FirstOrDefault(pre => query.Raw.StartsWith(pre));
 
             var handler = CreateHandler(prefix);
-            var queryParts = query.RawQuery.Split(' ');
+            var queryParts = query.Raw.Split(' ');
 
             if (handler != null && queryParts.Length > 1)
             {

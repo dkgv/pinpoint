@@ -48,12 +48,12 @@ namespace Pinpoint.Plugin.Everything
 
         public override async Task<bool> ShouldActivate(Query query)
         {
-            return query.RawQuery.Length >= 3 && query.ResultCount < 3 && !query.RawQuery.Any(ch => InvalidFileNameChars.Contains(ch));
+            return query.Raw.Length >= 3 && query.ResultCount < 3 && !query.Raw.Any(ch => InvalidFileNameChars.Contains(ch));
         }
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            await foreach (var result in _everything.SearchAsync(query.RawQuery, ct))
+            await foreach (var result in _everything.SearchAsync(query.Raw, ct))
             {
                 if (result == null)
                 {

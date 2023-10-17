@@ -37,7 +37,7 @@ namespace Pinpoint.Plugin.Shortcuts
         {
             if (query.Parts.Length == 1)
             {
-                yield return new ShortcutsResult(query.RawQuery, Storage.User.Str(query.RawQuery));
+                yield return new ShortcutsResult(query.Raw, Storage.User.Str(query.Raw));
                 yield break;
             }
 

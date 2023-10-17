@@ -38,19 +38,19 @@ namespace Pinpoint.Plugin.UrlLauncher
 
         public override async Task<bool> ShouldActivate(Query query)
         {
-            if (query.RawQuery.Length < 3 || query.RawQuery[0] == '.' || !query.RawQuery.Contains("."))
+            if (query.Raw.Length < 3 || query.Raw[0] == '.' || !query.Raw.Contains("."))
             {
                 return false;
             }
 
-            var split = query.RawQuery.Split(".");
+            var split = query.Raw.Split(".");
             return split.Length > 0 && Tlds.Contains(split[^1]);
         }
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var url = query.RawQuery;
-            if (!query.RawQuery.StartsWith(HttpsProtocolPrefix))
+            var url = query.Raw;
+            if (!query.Raw.StartsWith(HttpsProtocolPrefix))
             {
                 url = HttpsProtocolPrefix + url;
             }

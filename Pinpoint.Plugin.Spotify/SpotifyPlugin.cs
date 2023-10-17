@@ -37,7 +37,7 @@ namespace PinPoint.Plugin.Spotify
 
         public override async Task<bool> ShouldActivate(Query query)
         {
-            var queryParts = query.RawQuery.Split(new[] { ' ' }, 2);
+            var queryParts = query.Raw.Split(new[] { ' ' }, 2);
 
             var shouldActivate = queryParts.Length > 0 && _keywords.Contains(queryParts[0]);
 
@@ -64,7 +64,7 @@ namespace PinPoint.Plugin.Spotify
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var queryParts = query.RawQuery.Split(new[] { ' ' }, 2);
+            var queryParts = query.Raw.Split(new[] { ' ' }, 2);
 
             if (queryParts[0] == "skip" || queryParts[0] == "next" ||
                 queryParts[0] == "prev" || queryParts[0] == "back")

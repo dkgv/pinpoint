@@ -42,11 +42,11 @@ namespace Pinpoint.Plugin.AppSearch
             return true;
         }
 
-        public override async Task<bool> ShouldActivate(Query query) => query.RawQuery.Length >= 2;
+        public override async Task<bool> ShouldActivate(Query query) => query.Raw.Length >= 2;
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var queryLower = query.RawQuery.ToLower();
+            var queryLower = query.Raw.ToLower();
 
             var cachedMatches = CachedAppsTrie.Retrieve(queryLower);
             var runtimeMatches = RuntimeAppProviders.SelectMany(provider => provider.Provide())

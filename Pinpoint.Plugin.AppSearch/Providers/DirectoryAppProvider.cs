@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -19,7 +20,9 @@ namespace Pinpoint.Plugin.AppSearch.Providers
 
         public IEnumerable<IApp> Provide()
         {
-            foreach (var path in GetPathsNeedUpdate())
+            var needsUpdate = GetPathsNeedUpdate().ToList();
+            Debug.WriteLine($"Refreshing {needsUpdate.Count()} paths");
+            foreach (var path in needsUpdate)
             {
                 foreach (var shortcut in FindApps(path))
                 {

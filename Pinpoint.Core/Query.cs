@@ -4,15 +4,15 @@ public sealed class Query
 {
     public Query(string rawQuery)
     {
-        RawQuery = rawQuery;
+        Raw = rawQuery;
         Parts = rawQuery.Split(' ');
     }
 
-    public string Prefix(int n = 1) => RawQuery[..n];
+    public string Prefix(int n = 1) => Raw[..n];
 
-    public bool IsEmpty => RawQuery.Length == 0;
+    public bool IsEmpty => Raw.Length == 0;
 
-    public string RawQuery { get; }
+    public string Raw { get; }
 
     public string[] Parts { get; }
 
