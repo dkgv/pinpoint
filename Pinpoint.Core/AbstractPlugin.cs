@@ -75,6 +75,5 @@ public abstract class AbstractPlugin : IComparable<AbstractPlugin>
         File.WriteAllText(FilePath, json);
     }
 
-
     private string FilePath => Path.Combine(AppConstants.MainDirectory, $"{string.Concat(Manifest.Name.Split(Path.GetInvalidFileNameChars()))}.json");
 }

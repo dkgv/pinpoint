@@ -108,7 +108,7 @@ public class PluginEngine
 
     public T GetPluginByType<T>() where T : AbstractPlugin => Plugins.Where(p => p is T).Cast<T>().FirstOrDefault();
 
-    public async IAsyncEnumerable<AbstractQueryResult> EvaluateQuery([EnumeratorCancellation] CancellationToken ct,
+    public async IAsyncEnumerable<AbstractQueryResult> RunPlugins([EnumeratorCancellation] CancellationToken ct,
         Query query)
     {
         var enabledPlugins = Plugins.Where(p => p.State.IsEnabled.GetValueOrDefault(false)).ToList();

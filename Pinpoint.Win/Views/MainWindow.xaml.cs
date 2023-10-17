@@ -490,15 +490,15 @@ namespace Pinpoint.Win.Views
                 return;
             }
 
-            // Remove old results and add clipboard history content
-            Model.Results.Clear();
-            await AwaitAddEnumerable(Model.PluginEngine.EvaluateQuery(_cts.Token, query));
-        }
+            var results = new List<AbstractQueryResult>();
+            await foreach (var result in Model.PluginEngine.RunPlugins(_cts.Token, query)) {
+                results.Add(result);
+            }
 
-        private async Task AwaitAddEnumerable(IAsyncEnumerable<AbstractQueryResult> enumerable)
-        {
+            Model.Results.RemoveWhere(r => !results.Contains(r));
+
             var shortcutKey = 0;
-            await foreach (var result in enumerable)
+            foreach (var result in results)
             {
                 // If one of first 9 results, set keyboard shortcut for result
                 if (Model.Results.TryAdd(result) && shortcutKey < 9)
