@@ -16,23 +16,27 @@ public abstract class AbstractPlugin : IComparable<AbstractPlugin>
     {
         try
         {
-            dynamic obj = JsonConvert.DeserializeObject(File.ReadAllText(FilePath));
-
             State ??= new PluginState();
-            State.IsEnabled = obj?.IsEnabled ?? true;
-
             Storage ??= new PluginStorage();
-            var storage = JsonConvert.DeserializeObject<PluginStorage>(obj.Storage.ToString());
-            if (storage.User != null)
-            {
-                Storage.User.Overwrite(storage.User);
-            }
+            State.IsEnabled = true;
 
-            if (storage.Internal != null)
+            if (File.Exists(FilePath))
             {
-                Storage.Internal = storage.Internal;
+                dynamic obj = JsonConvert.DeserializeObject(File.ReadAllText(FilePath));
+                State.IsEnabled = obj?.IsEnabled ?? true;
+
+                var storage = JsonConvert.DeserializeObject<PluginStorage>(obj.Storage.ToString());
+                if (storage.User != null)
+                {
+                    Storage.User.Overwrite(storage.User);
+                }
+
+                if (storage.Internal != null)
+                {
+                    Storage.Internal = storage.Internal;
+                }
             }
-        }
+       }
         catch (FileNotFoundException e)
         {
             Debug.WriteLine(Manifest.Name + ": " + e.Message);
