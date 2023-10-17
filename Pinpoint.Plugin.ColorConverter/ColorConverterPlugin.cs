@@ -23,18 +23,18 @@ namespace Pinpoint.Plugin.ColorConverter
 
         public override async Task<bool> ShouldActivate(Query query)
         {
-            return Pattern.IsMatch(query.RawQuery);
+            return Pattern.IsMatch(query.Raw);
         }
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var content = query.RawQuery;
-            if (query.RawQuery.Contains("rgb"))
+            var content = query.Raw;
+            if (query.Raw.Contains("rgb"))
             {
-                content = ConvertHexColor(query.RawQuery);
+                content = ConvertHexColor(query.Raw);
             }
 
-            yield return new ColorConversionResult(ConvertHexColor(query.RawQuery), content);
+            yield return new ColorConversionResult(ConvertHexColor(query.Raw), content);
         }
 
         private static string ConvertHexColor(string color)

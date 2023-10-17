@@ -40,7 +40,7 @@ namespace Pinpoint.Plugin.MetricConverter
 
         public override async Task<bool> ShouldActivate(Query query)
         {
-            _match = Pattern.Match(query.RawQuery);
+            _match = Pattern.Match(query.Raw);
             return _match != default && _match.Success;
         }
 

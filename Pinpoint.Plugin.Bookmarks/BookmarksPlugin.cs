@@ -35,12 +35,12 @@ namespace Pinpoint.Plugin.Bookmarks
             return true;
         }
 
-        public override async Task<bool> ShouldActivate(Query query) => query.RawQuery.Length >= 2;
+        public override async Task<bool> ShouldActivate(Query query) => query.Raw.Length >= 2;
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var seen = new HashSet<string>();
-            foreach (var bookmarkModel in _trie.Retrieve(query.RawQuery.ToLower()))
+            foreach (var bookmarkModel in _trie.Retrieve(query.Raw.ToLower()))
             {
                 if (seen.Add(bookmarkModel.Item2.Url))
                 {

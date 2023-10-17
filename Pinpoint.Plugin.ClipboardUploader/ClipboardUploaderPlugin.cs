@@ -16,7 +16,7 @@ namespace Pinpoint.Plugin.ClipboardUploader
             Description = "Upload your clipboard content to a pastebin and receive the resulting URL directly to your clipboard.\n\nExamples: \"paste\""
         };
 
-        public override async Task<bool> ShouldActivate(Query query) => query.RawQuery.ToLower().Equals("paste");
+        public override async Task<bool> ShouldActivate(Query query) => query.Raw.ToLower().Equals("paste");
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {

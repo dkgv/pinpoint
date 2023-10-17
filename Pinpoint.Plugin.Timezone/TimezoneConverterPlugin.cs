@@ -42,13 +42,13 @@ namespace Pinpoint.Plugin.Timezone
 
         public override async Task<bool> ShouldActivate(Query query)
         {
-            return Pattern.IsMatch(query.RawQuery);
+            return Pattern.IsMatch(query.Raw);
         }
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var splitQuery = query.RawQuery.Split(" ");
-            if (query.RawQuery.Contains("time"))
+            var splitQuery = query.Raw.Split(" ");
+            if (query.Raw.Contains("time"))
             {
                 var targetTimezone = ConvertTimezoneCode(splitQuery[2]);
                 var time = TimeZoneInfo.ConvertTime(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById(targetTimezone));

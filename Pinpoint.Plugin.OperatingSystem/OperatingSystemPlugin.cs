@@ -23,12 +23,12 @@ namespace Pinpoint.Plugin.OperatingSystem
 
         public override async Task<bool> ShouldActivate(Query query)
         {
-            return query.Parts.Length == 1 && Commands.Contains(query.RawQuery);
+            return query.Parts.Length == 1 && Commands.Contains(query.Raw);
         }
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            switch (query.RawQuery)
+            switch (query.Raw)
             {
                 case "shutdown":
                 case "shut down":

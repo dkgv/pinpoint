@@ -56,7 +56,7 @@ namespace Pinpoint.Plugin.Currency
         // TODO rewrite into oblivion
         public override async Task<bool> ShouldActivate(Query query)
         {
-            var raw = query.RawQuery;
+            var raw = query.Raw;
 
             if (raw.Length < 2)
             {
@@ -112,7 +112,7 @@ namespace Pinpoint.Plugin.Currency
 
         private double IdentifyValue(Query query)
         {
-            var match = Regex.Match(query.RawQuery, @"[+-]?([0-9]*[.])?[0-9]+");
+            var match = Regex.Match(query.Raw, @"[+-]?([0-9]*[.])?[0-9]+");
             return double.Parse(match.Groups[0].Value, CultureInfo.InvariantCulture);
         }
 
@@ -140,7 +140,7 @@ namespace Pinpoint.Plugin.Currency
         private string IdentifyTo(Query query)
         {
             // Handles queries like 100 usd, 100 eur
-            if (!query.RawQuery.Contains("in") && !query.RawQuery.Contains("to"))
+            if (!query.Raw.Contains("in") && !query.Raw.Contains("to"))
             {
                 return Storage.User.Str(KeyBaseCurrency);
             }

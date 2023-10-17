@@ -17,7 +17,7 @@ namespace Pinpoint.Plugin.ProcessManager
 
         public override async Task<bool> ShouldActivate(Query query)
         {
-            return query.RawQuery.Length >= 2 && query.Prefix(2).Equals("ps") && query.Parts.Length > 1;
+            return query.Raw.Length >= 2 && query.Prefix(2).Equals("ps") && query.Parts.Length > 1;
         }
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)

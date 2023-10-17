@@ -17,11 +17,11 @@ namespace Pinpoint.Plugin.Text
             Description = "Easily perform various transformative text actions. Wrap your text in \" and select and option.\n\nExamples: \"this is some text\""
         };
 
-        public override async Task<bool> ShouldActivate(Query query) => query.RawQuery.Length > 2 && query.RawQuery.StartsWith("\"") && query.RawQuery.EndsWith("\"");
+        public override async Task<bool> ShouldActivate(Query query) => query.Raw.Length > 2 && query.Raw.StartsWith("\"") && query.Raw.EndsWith("\"");
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var text = query.RawQuery[1..^1];
+            var text = query.Raw[1..^1];
             yield return new URLOption(HttpUtility.UrlEncode(text), true);
             yield return new URLOption(HttpUtility.UrlDecode(text), false);
 

@@ -27,7 +27,7 @@ namespace Pinpoint.Plugin.Bangs
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            yield return new BangResult($"https://duckduckgo.com/?q={query.RawQuery.Replace(' ', '+')}");
+            yield return new BangResult($"https://duckduckgo.com/?q={query.Raw.Replace(' ', '+')}");
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Pinpoint.Plugin.Calculator
 
         public override async Task<bool> ShouldActivate(Query query)
         {
-            var trimmedQuery = query.RawQuery.Replace(" ", "");
+            var trimmedQuery = query.Raw.Replace(" ", "");
             // Ensure query ends with 0-9 or )
             var lastChar = trimmedQuery[^1];
             if (!char.IsDigit(lastChar) && lastChar != ')')
@@ -49,7 +49,7 @@ namespace Pinpoint.Plugin.Calculator
             var result = 0.0;
             try
             {
-                result = Convert.ToDouble(table.Compute(query.RawQuery, string.Empty));
+                result = Convert.ToDouble(table.Compute(query.Raw, string.Empty));
                 result = Math.Round(result, 5);
                 failed = false;
             }

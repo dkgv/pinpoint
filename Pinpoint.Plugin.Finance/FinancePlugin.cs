@@ -25,7 +25,7 @@ namespace Pinpoint.Plugin.Finance
 
         public override async Task<bool> ShouldActivate(Query query)
         {
-            if (query.Parts.Length != 1 || !query.Prefix().Equals("$") || query.RawQuery.Length < 3)
+            if (query.Parts.Length != 1 || !query.Prefix().Equals("$") || query.Raw.Length < 3)
             {
                 return false;
             }
