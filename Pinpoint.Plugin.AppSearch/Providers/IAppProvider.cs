@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Pinpoint.Plugin.AppSearch.Models;
 
-namespace Pinpoint.Plugin.AppSearch.Providers
+namespace Pinpoint.Plugin.AppSearch.Providers;
+
+public interface IAppProvider
 {
-    public interface IAppProvider
-    {
-        IEnumerable<IApp> Provide();
-    }
+    Task<IEnumerable<IApp>> Provide();
 }

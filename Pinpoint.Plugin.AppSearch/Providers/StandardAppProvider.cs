@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using Pinpoint.Plugin.AppSearch.Models;
 
 namespace Pinpoint.Plugin.AppSearch.Providers;
 
@@ -29,7 +31,7 @@ public class StandardAppProvider : IAppProvider
         );
     }
 
-    public IEnumerable<IApp> Provide() => _directoryAppProvider.Provide();
+    public async Task<IEnumerable<IApp>> Provide() => await _directoryAppProvider.Provide();
 
     private string GetPathForKnownFolder(Guid guid)
     {
