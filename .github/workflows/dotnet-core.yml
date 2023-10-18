@@ -1,4 +1,4 @@
-name: Build and Upload Release
+name: Publish Release
 
 on:
   push:
@@ -48,9 +48,6 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-          body: |
-            **News:**
-            **Improvements:**
           draft: false
           prerelease: true
 
