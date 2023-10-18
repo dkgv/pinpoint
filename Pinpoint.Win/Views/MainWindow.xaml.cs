@@ -487,6 +487,7 @@ namespace Pinpoint.Win.Views
             var query = new Query(TxtQuery.Text.Trim());
             if (query.IsEmpty)
             {
+                Model.Results.Clear();
                 return;
             }
 
