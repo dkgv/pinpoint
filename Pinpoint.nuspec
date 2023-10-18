@@ -5,10 +5,13 @@
     <title>Pinpoint</title>
     <version>0.0.0</version>
     <authors>dkgv</authors>
-    <description>Pinpoint is a keystroke launcher for Windows, much like Spotlight for macOS</description>
+    <description>Pinpoint is a keystroke launcher</description>
     <projectUrl>https://github.com/dkgv/pinpoint</projectUrl>
     <tags>keystroke launcher, clipboard manager</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <iconUrl>https://raw.githubusercontent.com/dkgv/pinpoint/master/Pinpoint.Win/Icons/Icon.ico</iconUrl>
   </metadata>
+  <files>
+    <file src="a/**" />
+  </files>
 </package>
