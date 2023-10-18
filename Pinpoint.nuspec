@@ -7,14 +7,18 @@
     <authors>dkgv</authors>
     <description>Pinpoint is a keystroke launcher</description>
     <projectUrl>https://github.com/dkgv/pinpoint</projectUrl>
-    <tags>keystroke launcher, clipboard manager</tags>
+    <tags>keystroke-launcher clipboard-manager</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <iconUrl>https://raw.githubusercontent.com/dkgv/pinpoint/master/Pinpoint.Win/Icons/Icon.ico</iconUrl>
     <dependencies>
       <dependency id="dotnet-runtime" version="7.0.10" />
     </dependencies>
+    <licenseUrl>https://raw.githubusercontent.com/dkgv/pinpoint/master/LICENSE</licenseUrl>
+    <projectSourceUrl>https://github.com/dkgv/pinpoint</projectSourceUrl>
   </metadata>
   <files>
     <file src="a/**" />
+    <file src="LICENSE" />
+    <file src="VERIFICATION" />
   </files>
 </package>
