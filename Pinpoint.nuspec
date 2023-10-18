@@ -10,6 +10,9 @@
     <tags>keystroke launcher, clipboard manager</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <iconUrl>https://raw.githubusercontent.com/dkgv/pinpoint/master/Pinpoint.Win/Icons/Icon.ico</iconUrl>
+    <dependencies>
+      <dependency id="dotnet-runtime" version="7.0.10" />
+    </dependencies>
   </metadata>
   <files>
     <file src="a/**" />
