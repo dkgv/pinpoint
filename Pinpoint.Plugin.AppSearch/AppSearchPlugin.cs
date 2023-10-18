@@ -24,7 +24,8 @@ public class AppSearchPlugin : AbstractPlugin
 
     public override PluginManifest Manifest { get; } = new("App Search")
     {
-        Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\""
+        Description = "Search for installed apps. Type an app name or an abbreviation thereof.\n\nExamples: \"visual studio code\", \"vsc\"",
+        Priority = PluginPriority.High,
     };
 
     public override async Task<bool> Initialize()

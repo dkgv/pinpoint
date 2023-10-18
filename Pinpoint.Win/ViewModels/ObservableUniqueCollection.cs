@@ -6,7 +6,7 @@ namespace Pinpoint.Win.ViewModels
 {
     public class ObservableUniqueCollection<T> : ObservableCollection<T>
     {
-        private readonly HashSet<T> _hashSet = new();
+        private readonly Dictionary<T, int> _items = new();
 
         public void AddRange(IEnumerable<T> items)
         {
@@ -25,46 +25,66 @@ namespace Pinpoint.Win.ViewModels
 
         protected override void InsertItem(int index, T item)
         {
-            if (_hashSet.Add(item))
+            if (_items.ContainsKey(item))
             {
-                base.InsertItem(index, item);
+                return;
             }
+
+            _items[item] = index;
+            base.InsertItem(index, item);
         }
 
         protected override void ClearItems()
         {
             base.ClearItems();
-            _hashSet.Clear();
+            _items.Clear();
         }
 
         protected override void RemoveItem(int index)
         {
-            var item = this[index];
-            _hashSet.Remove(item);
+            _items.Remove(this[index]);
             base.RemoveItem(index);
         }
 
         protected override void SetItem(int index, T item)
         {
-            if (_hashSet.Add(item))
+            if (_items.ContainsKey(item))
             {
-                var oldItem = this[index];
-                _hashSet.Remove(oldItem);
-                base.SetItem(index, item);
+                return;
             }
+
+            _items.Remove(this[index]);
+            _items[item] = index;
+
+            base.SetItem(index, item);
         }
 
-        public void RemoveWhere(Predicate<T> predicate)
+        public void RemoveWhere(Predicate<T> filter)
         {
             for (var i = Count - 1; i >= 0; i--)
             {
-                if (!predicate(this[i]))
+                if (filter(this[i]))
                 {
-                    continue;
+                    RemoveItem(i);
                 }
-
-                RemoveItem(i);
             }
+        }
+
+        public new bool Contains(T item)
+        {
+            return _items.ContainsKey(item);
+        }
+
+        public new bool Remove(T item) {
+            if (!_items.ContainsKey(item))
+            {
+                return false;
+            }
+
+            _items.Remove(item);
+            base.Remove(item);
+
+            return true;
         }
     }
 }

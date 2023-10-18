@@ -387,7 +387,7 @@ namespace Pinpoint.Win.Views
 
                 if (!Model.PreviousQuery.Equals(query))
                 {
-                    _ = Dispatcher.Invoke(async () => await UpdateResults());
+                    _ = Dispatcher.Invoke(UpdateResults);
                 }
             }
 
@@ -495,17 +495,22 @@ namespace Pinpoint.Win.Views
                 results.Add(result);
             }
 
-            Model.Results.RemoveWhere(r => !results.Contains(r));
-
             var shortcutKey = 0;
             foreach (var result in results)
             {
+                if (Model.Results.Contains(result))
+                {
+                    Model.Results.Remove(result);
+                }
+
                 // If one of first 9 results, set keyboard shortcut for result
                 if (Model.Results.TryAdd(result) && shortcutKey < 9)
                 {
                     result.Shortcut = "CTRL+" + ++shortcutKey;
                 }
             }
+
+            Model.Results.RemoveWhere(r => !results.Contains(r));
 
             if (Model.Results.Count > 0 && LstResults.SelectedIndex == -1)
             {
