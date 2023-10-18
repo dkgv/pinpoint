@@ -7,23 +7,19 @@
 
 Pinpoint is an extensible keystroke launcher and productivity tool written in C#.
 
+https://user-images.githubusercontent.com/11279580/227036269-3b8be90f-71b6-4fb9-85e0-02361dfd5db2.mp4
+
 ## Table of Contents
 
-- [Media](#media)
 - [Installation](#installation)
 - [Features](#features)
 - [Keyboard Shortcuts](#keyboard-shortcuts)
 - [Contributing](#contributing)
 
-## Media
-
-The following video showcases a subset of the features that Pinpoint offers.
-
-https://user-images.githubusercontent.com/11279580/227036269-3b8be90f-71b6-4fb9-85e0-02361dfd5db2.mp4
-
 ## Installation
 
-- Download the latest pre-compiled release [here](https://github.com/dkgv/pinpoint/releases) (pick the standalone version if you do not have .NET 7 installed)
+### Manually
+- Download the latest release [here](https://github.com/dkgv/pinpoint/releases) (pick the standalone version if you do not have .NET 7 installed)
 - Extract the `Pinpoint-X.X.X.zip` file
 - Launch `Pinpoint.exe`
 
