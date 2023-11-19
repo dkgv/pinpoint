@@ -10,33 +10,18 @@ namespace Pinpoint.Plugin.Notes
 {
     public class NotesManager
     {
-        private readonly string _notesFilePath = AppConstants.MainDirectory + "/notes/notes.json";
         private List<Note> _notesCached;
+        private readonly NotesPlugin _notes;
         private static NotesManager _instance;
 
-        public static NotesManager GetInstance()
+        public static NotesManager GetInstance(NotesPlugin notes = null)
         {
-            return _instance ??= new NotesManager();
+            return _instance ??= new NotesManager(notes);
         }
 
-        private NotesManager()
+        private NotesManager(NotesPlugin notes)
         {
-            if (!File.Exists(_notesFilePath))
-            {
-                if (!Directory.Exists(AppConstants.MainDirectory + "/notes"))
-                {
-                    Directory.CreateDirectory(AppConstants.MainDirectory + "/notes");
-                }
-
-                var defaultValue = new NotesFile();
-                var defaultValueJson = JsonConvert.SerializeObject(defaultValue);
-                File.WriteAllText(_notesFilePath, defaultValueJson);
-            }
-
-            var json = File.ReadAllText(_notesFilePath);
-            var notesFile = JsonConvert.DeserializeObject<NotesFile>(json);
-
-            _notesCached = notesFile.Notes;
+            _notes = notes;
         }
 
         public async Task<List<Note>> GetNotes()
@@ -46,22 +31,19 @@ namespace Pinpoint.Plugin.Notes
                 return _notesCached;
             }
 
-            var json = await File.ReadAllTextAsync(_notesFilePath);
-            var notesFile = JsonConvert.DeserializeObject<NotesFile>(json);
+            var notes = _notes.Storage.User["notes"];
+            if (notes != null)
+            {
+                return _notesCached = JsonConvert.DeserializeObject<List<Note>>(notes.ToString());
+            }
 
-            return _notesCached = notesFile.Notes;
+            return _notesCached = new List<Note>();
         }
 
         public async Task AddNote(Note note)
         {
             _notesCached.Add(note);
-
-            var json = JsonConvert.SerializeObject(new NotesFile
-            {
-                Notes = _notesCached
-            });
-
-            await File.WriteAllTextAsync(_notesFilePath, json);
+            await SaveNotes();
         }
 
         public async Task RemoveNote(Guid noteId)
@@ -69,18 +51,13 @@ namespace Pinpoint.Plugin.Notes
             var filteredNotes = _notesCached.Where(note => note.Id != noteId).ToList();
 
             _notesCached = filteredNotes;
-
-            await SaveNotes(filteredNotes);
+            await SaveNotes();
         }
 
-        private async Task SaveNotes(List<Note> notes)
+        private async Task SaveNotes()
         {
-            var json = JsonConvert.SerializeObject(new NotesFile
-            {
-                Notes = notes
-            });
-
-            await File.WriteAllTextAsync(_notesFilePath, json);
+            _notes.Storage.User["notes"] = _notesCached;
+            _notes.Save();
         }
     }
 }
