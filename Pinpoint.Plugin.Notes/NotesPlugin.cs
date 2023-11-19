@@ -18,7 +18,7 @@ namespace Pinpoint.Plugin.Notes
 
         public NotesPlugin()
         {
-            _notesManager = NotesManager.GetInstance();
+            _notesManager = NotesManager.GetInstance(this);
         }
 
         public override PluginManifest Manifest { get; } = new("Notes Plugin", PluginPriority.High)

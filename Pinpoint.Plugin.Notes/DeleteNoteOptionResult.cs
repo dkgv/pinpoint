@@ -11,6 +11,7 @@ namespace Pinpoint.Plugin.Notes
         {
             _note = note;
         }
+        
         public override void OnSelect()
         {
             NotesManager.GetInstance().RemoveNote(_note.Id);
