@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.CSharp.RuntimeBinder;
 using Newtonsoft.Json;
-using Pinpoint.Core.Results;
 
-namespace Pinpoint.Core;
+namespace Pinpoint.Plugin;
 
 public abstract class AbstractPlugin : IComparable<AbstractPlugin>
 {
@@ -79,5 +73,7 @@ public abstract class AbstractPlugin : IComparable<AbstractPlugin>
         File.WriteAllText(FilePath, json);
     }
 
-    private string FilePath => Path.Combine(AppConstants.MainDirectory, $"{string.Concat(Manifest.Name.Split(Path.GetInvalidFileNameChars()))}.json");
+    public static readonly string MainDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + Path.DirectorySeparatorChar + "Pinpoint" + Path.DirectorySeparatorChar;
+
+    private string FilePath => Path.Combine(MainDirectory, $"{string.Concat(Manifest.Name.Split(Path.GetInvalidFileNameChars()))}.json");
 }

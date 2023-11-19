@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Controls;
-using Pinpoint.Core;
+using Pinpoint.Plugin;
 using Pinpoint.Win.ViewModels;
 
 namespace Pinpoint.Win.Views

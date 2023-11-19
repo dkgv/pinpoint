@@ -1,4 +1,4 @@
-﻿namespace Pinpoint.Core;
+﻿namespace Pinpoint.Plugin;
 
 public sealed class Query
 {

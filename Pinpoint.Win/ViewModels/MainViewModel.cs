@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Pinpoint.Core;
-using Pinpoint.Core.Results;
+using Pinpoint.Plugin;
 using WK.Libraries.SharpClipboardNS;
 
 namespace Pinpoint.Win.ViewModels

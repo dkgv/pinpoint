@@ -6,8 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Pinpoint.Core;
-using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Calculator
 {

@@ -58,11 +58,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Timezone", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Translate", "Pinpoint.Plugin.Translate\Pinpoint.Plugin.Translate.csproj", "{8D3C61AC-B7F2-482D-94AD-25CB94193ADF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.Shortcuts", "Pinpoint.Plugin.Shortcuts\Pinpoint.Plugin.Shortcuts.csproj", "{1527D0F7-2320-4E85-A122-AFAB4E546877}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Shortcuts", "Pinpoint.Plugin.Shortcuts\Pinpoint.Plugin.Shortcuts.csproj", "{1527D0F7-2320-4E85-A122-AFAB4E546877}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.Emoji", "Pinpoint.Plugin.Emoji\Pinpoint.Plugin.Emoji.csproj", "{33C9E3CF-1D56-4CB2-8A2E-D9A804E7D72A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.Emoji", "Pinpoint.Plugin.Emoji\Pinpoint.Plugin.Emoji.csproj", "{33C9E3CF-1D56-4CB2-8A2E-D9A804E7D72A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin.OpenAI", "Pinpoint.Plugin.OpenAI\Pinpoint.Plugin.OpenAI.csproj", "{E2F969CA-A20D-4331-BBE1-22F3A4B40EF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pinpoint.Plugin.OpenAI", "Pinpoint.Plugin.OpenAI\Pinpoint.Plugin.OpenAI.csproj", "{E2F969CA-A20D-4331-BBE1-22F3A4B40EF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pinpoint.Plugin", "Pinpoint.Plugin\Pinpoint.Plugin.csproj", "{29277012-68DD-4367-868F-5A836674C6B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -266,18 +268,6 @@ Global
 		{27028161-0136-41CD-B374-64046F97FCAD}.Release|x64.Build.0 = Release|Any CPU
 		{27028161-0136-41CD-B374-64046F97FCAD}.Release|x86.ActiveCfg = Release|Any CPU
 		{27028161-0136-41CD-B374-64046F97FCAD}.Release|x86.Build.0 = Release|Any CPU
-		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Debug|x64.Build.0 = Debug|Any CPU
-		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Debug|x86.Build.0 = Debug|Any CPU
-		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Release|x64.ActiveCfg = Release|Any CPU
-		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Release|x64.Build.0 = Release|Any CPU
-		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Release|x86.ActiveCfg = Release|Any CPU
-		{B8071A3A-7810-4666-8F18-6CF23A70278F}.Release|x86.Build.0 = Release|Any CPU
 		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2E1242BC-19BB-4973-990E-7A47F8D1AD7F}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -458,6 +448,18 @@ Global
 		{E2F969CA-A20D-4331-BBE1-22F3A4B40EF4}.Release|x64.Build.0 = Release|Any CPU
 		{E2F969CA-A20D-4331-BBE1-22F3A4B40EF4}.Release|x86.ActiveCfg = Release|Any CPU
 		{E2F969CA-A20D-4331-BBE1-22F3A4B40EF4}.Release|x86.Build.0 = Release|Any CPU
+		{29277012-68DD-4367-868F-5A836674C6B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29277012-68DD-4367-868F-5A836674C6B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29277012-68DD-4367-868F-5A836674C6B6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{29277012-68DD-4367-868F-5A836674C6B6}.Debug|x64.Build.0 = Debug|Any CPU
+		{29277012-68DD-4367-868F-5A836674C6B6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{29277012-68DD-4367-868F-5A836674C6B6}.Debug|x86.Build.0 = Debug|Any CPU
+		{29277012-68DD-4367-868F-5A836674C6B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29277012-68DD-4367-868F-5A836674C6B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29277012-68DD-4367-868F-5A836674C6B6}.Release|x64.ActiveCfg = Release|Any CPU
+		{29277012-68DD-4367-868F-5A836674C6B6}.Release|x64.Build.0 = Release|Any CPU
+		{29277012-68DD-4367-868F-5A836674C6B6}.Release|x86.ActiveCfg = Release|Any CPU
+		{29277012-68DD-4367-868F-5A836674C6B6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

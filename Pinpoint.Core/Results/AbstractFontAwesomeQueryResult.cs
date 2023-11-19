@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using FontAwesome5;
+using Pinpoint.Plugin;
 
 namespace Pinpoint.Core.Results
 {

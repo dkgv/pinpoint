@@ -1,8 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using OpenAI;
 using OpenAI.Chat;
-using Pinpoint.Core;
-using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.OpenAI;
 

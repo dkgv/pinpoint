@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using FontAwesome5;
-using Pinpoint.Core;
 using Pinpoint.Core.Results;
 using Pinpoint.Plugin.Everything.API;
 

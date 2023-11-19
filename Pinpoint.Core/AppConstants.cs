@@ -1,20 +1,20 @@
 ﻿using System;
 using System.IO;
 
-namespace Pinpoint.Core
+namespace Pinpoint.Core;
+
+public static class AppConstants
 {
-    public static class AppConstants
-    {
-        private static readonly string UserHome = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+    private static readonly string UserHome = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
-        public static readonly string MainDirectory = UserHome + Path.DirectorySeparatorChar + "Pinpoint" + Path.DirectorySeparatorChar;
-        public static readonly string SettingsFilePath = MainDirectory + "Settings.json";
+    public static readonly string MainDirectory = UserHome + Path.DirectorySeparatorChar + "Pinpoint" + Path.DirectorySeparatorChar;
 
-        public const string HotkeyToggleVisibilityId = "ToggleVisibility";
-        public const string HotkeyPasteId = "PasteFromClipboard";
+    public static readonly string SettingsFilePath = MainDirectory + "Settings.json";
 
-        public const string LocalPluginsDirectoryKey = "local_plugins_directory";
+    public const string HotkeyToggleVisibilityId = "ToggleVisibility";
+    public const string HotkeyPasteId = "PasteFromClipboard";
 
-        public const string Version = "0.4.4";
-    }
+    public const string LocalPluginsDirectoryKey = "local_plugins_directory";
+
+    public const string Version = "0.4.4";
 }
