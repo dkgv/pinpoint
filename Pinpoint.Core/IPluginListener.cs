@@ -1,4 +1,6 @@
-﻿namespace Pinpoint.Core
+﻿using Pinpoint.Plugin;
+
+namespace Pinpoint.Core
 {
     public interface IPluginListener<in Plugin, in Target> where Plugin : AbstractPlugin
     {

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 
-namespace Pinpoint.Core.Results
+namespace Pinpoint.Plugin
 {
     public abstract class AbstractQueryResult
     {
@@ -21,7 +19,7 @@ namespace Pinpoint.Core.Results
         public string Title { get; set; }
 
         public string Subtitle { get; set; }
-        
+
         public string Shortcut { get; set; }
 
         public abstract Bitmap Icon { get; }
@@ -50,12 +48,12 @@ namespace Pinpoint.Core.Results
                 return true;
             }
 
-            if (obj.GetType() != this.GetType())
+            if (obj.GetType() != GetType())
             {
                 return false;
             }
 
-            return Equals((AbstractQueryResult) obj);
+            return Equals((AbstractQueryResult)obj);
         }
 
         public override int GetHashCode()

@@ -3,8 +3,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Pinpoint.Core.Results;
-using Pinpoint.Core;
 
 namespace Pinpoint.Plugin.EncodeDecode
 {

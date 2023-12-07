@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using Pinpoint.Core.Results;
 using System.Windows.Forms;
 using Pinpoint.Core.Clipboard;
 

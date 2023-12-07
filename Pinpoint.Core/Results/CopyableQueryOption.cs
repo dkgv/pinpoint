@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using FontAwesome5;
+﻿using FontAwesome5;
 using Pinpoint.Core.Clipboard;
 
 namespace Pinpoint.Core.Results

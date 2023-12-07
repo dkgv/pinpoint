@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Pinpoint.Core;
-using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Dictionary
 {

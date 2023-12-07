@@ -4,8 +4,6 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Gma.DataStructures.StringSearch;
-using Pinpoint.Core;
-using Pinpoint.Core.Results;
 using Pinpoint.Plugin.AppSearch.Models;
 using Pinpoint.Plugin.AppSearch.Providers;
 
@@ -85,6 +83,7 @@ public class AppSearchPlugin : AbstractPlugin
             .SelectMany(apps => apps)
             .Where(app => GenerateAliases(app.Name).Any(alias => alias.StartsWith(queryLower)));
     }
+    
     private IEnumerable<string> GenerateAliases(string appName)
     {
         yield return appName.ToLower();

@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Pinpoint.Core.Results;
+using Pinpoint.Plugin;
 
 namespace Pinpoint.Core;
 

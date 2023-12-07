@@ -3,7 +3,6 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using FontAwesome5;
-using Pinpoint.Core;
 using Pinpoint.Core.Clipboard;
 using Pinpoint.Core.Results;
 

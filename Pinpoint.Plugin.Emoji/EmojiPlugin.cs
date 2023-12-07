@@ -1,10 +1,6 @@
 ﻿using System.Drawing;
-using System.Globalization;
-using System.Text;
 using GEmojiSharp;
-using Pinpoint.Core;
 using Pinpoint.Core.Clipboard;
-using Pinpoint.Core.Results;
 
 namespace Pinpoint.Plugin.Emoji;
 

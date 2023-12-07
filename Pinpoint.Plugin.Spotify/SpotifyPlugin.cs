@@ -2,8 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Pinpoint.Core;
-using Pinpoint.Core.Results;
+using Pinpoint.Plugin;
 using Pinpoint.Plugin.Spotify.Client;
 
 namespace PinPoint.Plugin.Spotify

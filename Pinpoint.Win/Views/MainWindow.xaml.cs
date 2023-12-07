@@ -15,7 +15,6 @@ using Pinpoint.Core;
 using Pinpoint.Core.Clipboard;
 using Pinpoint.Plugin.Currency;
 using Pinpoint.Plugin.Everything;
-using Pinpoint.Core.Results;
 using Pinpoint.Plugin.AppSearch;
 using Pinpoint.Plugin.Bangs;
 using Pinpoint.Plugin.Bookmarks;
@@ -51,6 +50,7 @@ using Pinpoint.Win.Utils;
 using System.Windows.Media;
 using Pinpoint.Plugin.Emoji;
 using Pinpoint.Plugin.OpenAI;
+using Pinpoint.Plugin;
 
 namespace Pinpoint.Win.Views
 {
