@@ -12,6 +12,7 @@ using Microsoft.Win32;
 using NHotkey.Wpf;
 using Pinpoint.Core;
 using Pinpoint.Plugin;
+using Pinpoint.Win.Utils;
 using Pinpoint.Win.ViewModels;
 
 namespace Pinpoint.Win.Views

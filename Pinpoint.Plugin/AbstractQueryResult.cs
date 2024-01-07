@@ -25,7 +25,7 @@ namespace Pinpoint.Plugin
         public abstract Bitmap Icon { get; }
 
         /// <summary>
-        /// Fired when result is selected (double-clicked or when "ENTER" is pressed) from list.
+        /// Fired when result is selected (on mouse click or on "ENTER" press).
         /// </summary>
         public abstract void OnSelect();
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Pinpoint.Core;
 using Pinpoint.Plugin;
+using Pinpoint.Win.Utils;
 using Pinpoint.Win.Views;
 
 namespace Pinpoint.Win.ViewModels

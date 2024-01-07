@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Pinpoint.Core;
+namespace Pinpoint.Win.Utils;
 
 public static class AppConstants
 {
