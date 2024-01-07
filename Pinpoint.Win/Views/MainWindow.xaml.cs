@@ -163,7 +163,8 @@ namespace Pinpoint.Win.Views
                 Model.PluginEngine.LoadPlugin(new TranslatePlugin()),
                 Model.PluginEngine.LoadPlugin(new ShortcutsPlugin()),
                 Model.PluginEngine.LoadPlugin(new EmojiPlugin()),
-                Model.PluginEngine.LoadPlugin(new OpenAIPlugin())
+                Model.PluginEngine.LoadPlugin(new OpenAIPlugin()),
+                Model.PluginEngine.LoadPlugin(new WindowerPlugin())
             };
 
             await Task.WhenAll(addPluginTasks);

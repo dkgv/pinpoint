@@ -59,6 +59,7 @@
     <ProjectReference Include="..\Pinpoint.Plugin.Translate\Pinpoint.Plugin.Translate.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.UrlLauncher\Pinpoint.Plugin.UrlLauncher.csproj" />
     <ProjectReference Include="..\Pinpoint.Plugin.Weather\Pinpoint.Plugin.Weather.csproj" />
+    <ProjectReference Include="..\Pinpoint.Plugin.Windower\Pinpoint.Plugin.Windower.csproj" />
   </ItemGroup>
 
   <ItemGroup>
