@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net7.0-windows</TargetFramework>
+    <RollForward>LatestMajor</RollForward>
     <UseWPF>true</UseWPF>
     <StartupObject>Pinpoint.Win.App</StartupObject>
     <AssemblyName>Pinpoint</AssemblyName>
