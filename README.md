@@ -141,7 +141,7 @@ Launches URLs in your default browser.
 
 Fetches weather forecasts (daily and weekly) for provided locations.
 
-## Window Switcher
+### Window Switcher
 
 Search and switch between open windows.
 
