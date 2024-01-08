@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Pinpoint.Plugin.Windower;
 
@@ -23,7 +24,7 @@ public class WindowManager
         return IconCache.TryGetValue(windowHandle, out Bitmap value) ? value : default;
     }
 
-    public static void Focus(IntPtr windowHandle)
+    public static void FocusWindow(IntPtr windowHandle)
     {
         if (windowHandle == IntPtr.Zero)
         {
@@ -51,6 +52,52 @@ public class WindowManager
         SetForegroundWindow(windowHandle);
     }
 
+    public static List<WindowModel> GetWindows()
+    {
+        var shell = GetShellWindow();
+        var windows = new List<WindowModel>();
+
+        EnumWindows(delegate (IntPtr hWnd, IntPtr lParam)
+        {
+            if (hWnd == shell || !IsWindowVisible(hWnd))
+            {
+                return true;
+            }
+
+            var length = GetWindowTextLength(hWnd);
+            if (length == 0)
+            {
+                return true;
+            }
+
+            var builder = new StringBuilder(length);
+            GetWindowText(hWnd, builder, length + 1);
+
+            GetWindowThreadProcessId(hWnd, out var pid);
+            var process = Process.GetProcessById(pid);
+
+            windows.Add(new WindowModel(builder.ToString(), process.ProcessName, hWnd));
+
+            return true;
+        }, IntPtr.Zero);
+
+        return windows;
+    }
+
+    [DllImport("user32.dll")]
+    private static extern bool EnumWindows(EnumWindowsProc enumProc, IntPtr lParam);
+
+    private delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
+
+    [DllImport("user32.dll")]
+    private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
+    
+    [DllImport("user32.dll")]
+    private static extern int GetWindowTextLength(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    private static extern IntPtr GetShellWindow();
+
     [DllImport("user32.dll")]
     private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
@@ -68,4 +115,7 @@ public class WindowManager
 
     [DllImport("user32.dll")]
     private static extern bool IsZoomed(IntPtr hWnd);
+
+    [DllImport("user32.dll")]
+    private static extern bool IsWindowVisible(IntPtr hWnd);
 }

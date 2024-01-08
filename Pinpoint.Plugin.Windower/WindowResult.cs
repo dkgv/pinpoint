@@ -17,6 +17,6 @@ public class WindowResult : AbstractQueryResult
 
     public override void OnSelect()
     {
-        WindowManager.Focus(_window.Handle);
+        WindowManager.FocusWindow(_window.Handle);
     }
 }
