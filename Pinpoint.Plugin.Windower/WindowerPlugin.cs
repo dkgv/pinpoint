@@ -23,8 +23,7 @@ public class WindowerPlugin : AbstractPlugin
 
         foreach (var result in windows
             .Where(w => w.QueryMatch(app))
-            .Select(w => new WindowResult(w))
-            .Cast<AbstractQueryResult>())
+            .Select(w => new WindowResult(w)))
         {
             yield return result;
         }
