@@ -51,6 +51,7 @@ using System.Windows.Media;
 using Pinpoint.Plugin.Emoji;
 using Pinpoint.Plugin.OpenAI;
 using Pinpoint.Plugin;
+using Pinpoint.Plugin.Windower;
 
 namespace Pinpoint.Win.Views
 {
@@ -163,7 +164,8 @@ namespace Pinpoint.Win.Views
                 Model.PluginEngine.LoadPlugin(new TranslatePlugin()),
                 Model.PluginEngine.LoadPlugin(new ShortcutsPlugin()),
                 Model.PluginEngine.LoadPlugin(new EmojiPlugin()),
-                Model.PluginEngine.LoadPlugin(new OpenAIPlugin())
+                Model.PluginEngine.LoadPlugin(new OpenAIPlugin()),
+                Model.PluginEngine.LoadPlugin(new WindowerPlugin())
             };
 
             await Task.WhenAll(addPluginTasks);

@@ -141,6 +141,10 @@ Launches URLs in your default browser.
 
 Fetches weather forecasts (daily and weekly) for provided locations.
 
+## Window Switcher
+
+Search and switch between open windows.
+
 ## Keyboard Shortcuts
 
 | Key Combination                                                                                                                        | Action                                       |
@@ -160,4 +164,4 @@ Fetches weather forecasts (daily and weekly) for provided locations.
 
 ## Contributing
 
-Contributions are valued and welcome. Feel free to add new features but naturally also to improve existing ones. You can browse current [open issues](https://github.com/dkgv/pinpoint/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) if you need inspiration. Please create one branch + PR per major change you make🙏
+Feel free to add or improve features, for inspiration [browse current open issues](https://github.com/dkgv/pinpoint/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc). Please create one branch + PR per major change you make🙏
