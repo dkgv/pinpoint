@@ -13,7 +13,7 @@ public class WindowerPlugin : AbstractPlugin
 {
     public override PluginManifest Manifest { get; } = new("Window Plugin")
     {
-        Description = "Easily search and toggle between open app windows."
+        Description = "Easily search and toggle between open app windows.\n\nExamples: w <window query>"
     };
 
     public async override IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, CancellationToken ct)
