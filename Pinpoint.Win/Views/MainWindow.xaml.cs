@@ -51,6 +51,7 @@ using System.Windows.Media;
 using Pinpoint.Plugin.Emoji;
 using Pinpoint.Plugin.OpenAI;
 using Pinpoint.Plugin;
+using Pinpoint.Plugin.Windower;
 
 namespace Pinpoint.Win.Views
 {
