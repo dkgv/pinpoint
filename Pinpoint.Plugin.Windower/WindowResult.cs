@@ -9,6 +9,7 @@ public class WindowResult : AbstractQueryResult
     public WindowResult(WindowModel window)
     {
         Title = window.Title;
+        Subtitle = window.ProcessName;
         _window = window;
     }
 
