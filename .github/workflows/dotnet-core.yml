@@ -8,7 +8,7 @@ on:
 jobs:
   create_release:
     name: Create New Release
-    runs-on: windows-2019
+    runs-on: windows-latest
     
     steps:
       - name: Install 7Zip PowerShell Module
