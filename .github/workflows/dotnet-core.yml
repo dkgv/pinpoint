@@ -84,7 +84,10 @@ jobs:
 
       - name: Create VERIFICATION file
         run: |
-          echo "If you wish to compare checksums, you have the option to compile Pinpoint yourself: https://github.com/dkgv/pinpoint" > VERIFICATION
+          echo "If you wish to compare checksums, you have the option to compile Pinpoint yourself: https://github.com/dkgv/pinpoint" > VERIFICATION.txt
+
+      - name: Rename LICENSE to LICENSE.txt
+        run: mv LICENSE LICENSE.txt
 
       - name: Package and push to Chocolatey
         run: |

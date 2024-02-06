@@ -15,10 +15,11 @@
     </dependencies>
     <licenseUrl>https://raw.githubusercontent.com/dkgv/pinpoint/master/LICENSE</licenseUrl>
     <projectSourceUrl>https://github.com/dkgv/pinpoint</projectSourceUrl>
+    <packageSourceUrl>https://github.com/dkgv/pinpoint</packageSourceUrl>
   </metadata>
   <files>
     <file src="a/**" />
-    <file src="LICENSE" />
-    <file src="VERIFICATION" />
+    <file src="LICENSE.txt" />
+    <file src="VERIFICATION.txt" />
   </files>
 </package>
