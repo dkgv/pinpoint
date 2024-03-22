@@ -55,7 +55,6 @@ namespace Pinpoint.Plugin.Currency
         public override async Task<bool> ShouldActivate(Query query)
         {
             var raw = query.Raw;
-
             if (raw.Length < 2)
             {
                 return false;
@@ -95,16 +94,16 @@ namespace Pinpoint.Plugin.Currency
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
-            var from = IdentifyFrom(query);
+            var from = IdentifyFrom(query).ToUpper();
             var value = IdentifyValue(query);
-            var to = IdentifyTo(query);
+            var to = IdentifyTo(query).ToUpper();
 
-            if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to))
+            if (string.IsNullOrEmpty(from) || string.IsNullOrEmpty(to) || from.Equals(to))
             {
                 yield break;
             }
 
-            var conversion = Math.Round(_currencyRepo.ConvertFromTo(from, value, to), 5);
+            var conversion = Math.Round(_currencyRepo.ConvertFromTo(from, value, to), 10);
             yield return new CurrencyResult(conversion, to);
         }
 
