@@ -31,7 +31,7 @@ namespace Pinpoint.Plugin.Finance
             var quotes = await HttpHelper.SendGet(string.Format(SearchUrl, ticker),
                 s => JObject.Parse(s)["quotes"].ToArray());
             
-            if (quotes.Length == 0)
+            if (quotes?.Length == 0)
             {
                 return null;
             }
@@ -51,7 +51,7 @@ namespace Pinpoint.Plugin.Finance
             var result = await HttpHelper.SendGet(string.Format(PriceUrl, ticker), 
                 s => JObject.Parse(s)["chart"]["result"].ToArray());
             
-            if (result.Length == 0)
+            if (result?.Length == 0)
             {
                 return null;
             }
