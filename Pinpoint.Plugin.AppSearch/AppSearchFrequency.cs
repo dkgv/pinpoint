@@ -27,21 +27,30 @@ public class AppSearchFrequency
 
     public void Hit(string query, string exactMatch)
     {
-        if (!Database.ContainsKey(query))
+        void Increment(string subQuery, string exactMatch)
         {
-            Database[query] = new Dictionary<string, int>();
+            if (!Database.ContainsKey(subQuery))
+            {
+                Database[subQuery] = new Dictionary<string, int>();
+            }
+
+            var frequency = Database[subQuery];
+            if (!frequency.ContainsKey(exactMatch))
+            {
+                frequency[exactMatch] = 1;
+            }
+            else
+            {
+                frequency[exactMatch]++;
+            }
         }
 
-        var frequency = Database[query];
-        if (!frequency.ContainsKey(exactMatch))
+        for (var i = 2; i <= query.Length; i++)
         {
-            frequency[exactMatch] = 1;
+            var subQuery = query[..i];
+            Increment(subQuery, exactMatch);
         }
-        else
-        {
-            frequency[exactMatch]++;
-        }
-
+        
         _plugin.Storage.Internal["database"] = Database;
         _plugin.Save();
     }
