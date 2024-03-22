@@ -12,12 +12,23 @@ namespace Pinpoint.Plugin.Currency
 
         private static string FormatValue(double amount, string currencyToISO4217)
         {
-            var numberFormat = CultureInfo.CurrentCulture.NumberFormat;
-            var formattedAmount = amount.ToString("N", numberFormat);
+            var numDigits = 3;
 
-            currencyToISO4217 = currencyToISO4217.ToUpper();
+            if (amount < 0.001)
+            {
+                var decimalPart = amount.ToString(CultureInfo.InvariantCulture).Split('.')[1];
+                if (decimalPart.Length > numDigits)
+                {
+                    numDigits = decimalPart.Length;
+                }
+            }
 
-            return $"{formattedAmount} {currencyToISO4217}";
+            var numberFormat = new NumberFormatInfo
+            {
+                NumberDecimalDigits = numDigits
+            };
+
+            return $"{amount.ToString("N", numberFormat)} {currencyToISO4217.ToUpper()}";
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_Coins;
