@@ -12,7 +12,7 @@ namespace Pinpoint.Plugin.OperatingSystem
     public class OperatingSystemPlugin : AbstractPlugin
     {
         private static readonly string[] Commands = {
-            "shutdown", "shut down", "restart", "reboot", "sleep"
+            "shutdown", "shut down", "restart", "reboot", "sleep", "emptytrash", "emptybin", "trash", "bin"
         };
 
         public override PluginManifest Manifest { get; } = new("Operating System", PluginPriority.High)
@@ -42,7 +42,45 @@ namespace Pinpoint.Plugin.OperatingSystem
                 case "sleep":
                     yield return new SleepResult();
                     break;
+
+                case "emptytrash":
+                case "emptybin":
+                    yield return new EmptyTrashResult();
+                    break;
+
+                case "trash":
+                case "bin":
+                    yield return new RecycleBin();
+                    break;
             }
+        }
+
+        private class RecycleBin : AbstractFontAwesomeQueryResult
+        {
+            public RecycleBin() : base("Open recycle bin")
+            {
+            }
+
+            public override void OnSelect()
+            {
+                System.Diagnostics.Process.Start("explorer.exe", "shell:RecycleBinFolder");
+            }
+
+            public override EFontAwesomeIcon FontAwesomeIcon { get; } = EFontAwesomeIcon.Solid_TrashAlt;
+        }
+
+        private class EmptyTrashResult : AbstractFontAwesomeQueryResult
+        {
+            public EmptyTrashResult() : base("Empty recycle bin")
+            {
+            }
+
+            public override void OnSelect()
+            {
+                System.Diagnostics.Process.Start("cmd.exe", "/c rd /s /q C:\\$Recycle.Bin");
+            }
+
+            public override EFontAwesomeIcon FontAwesomeIcon { get; } = EFontAwesomeIcon.Solid_TrashAlt;
         }
 
         private class ShutdownResult : AbstractFontAwesomeQueryResult
