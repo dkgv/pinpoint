@@ -23,6 +23,12 @@ https://user-images.githubusercontent.com/11279580/227036269-3b8be90f-71b6-4fb9-
 - Extract the `Pinpoint-X.X.X.zip` file
 - Launch `Pinpoint.exe`
 
+### Chocolatey
+
+```bash
+choco install pinpoint -y
+```
+
 ## Features
 
 ### App search
@@ -141,7 +147,7 @@ Launches URLs in your default browser.
 
 Fetches weather forecasts (daily and weekly) for provided locations.
 
-### Window Switcher
+### Window switcher
 
 Search and switch between open windows.
 
