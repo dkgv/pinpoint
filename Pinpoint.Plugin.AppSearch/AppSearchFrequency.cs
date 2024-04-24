@@ -45,7 +45,7 @@ public class AppSearchFrequency
             }
         }
 
-        for (var i = 2; i <= query.Length; i++)
+        for (var i = 1; i <= query.Length; i++)
         {
             var subQuery = query[..i];
             Increment(subQuery, exactMatch);
