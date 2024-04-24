@@ -58,7 +58,7 @@ public class AppSearchPlugin : AbstractPlugin
         await Task.WhenAll(tasks);
     }
 
-    public override async Task<bool> ShouldActivate(Query query) => query.Raw.Length >= 2;
+    public override async Task<bool> ShouldActivate(Query query) => query.Raw.Length >= 1;
 
     public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
     {
