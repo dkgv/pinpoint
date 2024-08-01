@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,6 +12,9 @@ namespace Pinpoint.Plugin.ProcessManager
 {
     public class ProcessManagerPlugin : AbstractPlugin
     {
+        private List<Process> _cachedProcesses = new();
+        private DateTime _lastProcessDump = DateTime.MinValue;
+
         public override PluginManifest Manifest { get; } = new("Process Manager", PluginPriority.High);
 
         public override async Task<bool> ShouldActivate(Query query)
@@ -21,16 +25,25 @@ namespace Pinpoint.Plugin.ProcessManager
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
         {
             var term = string.Join(' ', query.Parts[1..]).ToLower();
-            var visited = new HashSet<string>();
+            foreach (var process in await FilterProcesses(term, ct))
+            {
+                yield return process;
+            }
+        }
 
-            foreach (var process in System.Diagnostics.Process.GetProcesses().Where(p => visited.Add(p.ProcessName)))
+        private async Task<List<ProcessResult>> FilterProcesses(string query, CancellationToken ct)
+        {
+            var results = new List<ProcessResult>();
+            var all = await Task.Run(GetAllProcesses, ct);
+
+            ProcessResult Collect(Process process)
             {
                 var windowTitle = process.MainWindowTitle;
-                var contains = windowTitle.ToLower().Contains(term);
+                var contains = windowTitle.ToLower().Contains(query);
 
                 if (!contains)
                 {
-                    contains = process.ProcessName.ToLower().Contains(term);
+                    contains = process.ProcessName.ToLower().Contains(query);
                 }
 
                 var processName = $"{process.ProcessName}.exe";
@@ -42,7 +55,7 @@ namespace Pinpoint.Plugin.ProcessManager
                         if (!string.IsNullOrEmpty(description))
                         {
                             processName = $"{description}";
-                            contains = description.ToLower().Contains(term);
+                            contains = description.ToLower().Contains(query);
                         }
                     }
                     catch
@@ -50,14 +63,46 @@ namespace Pinpoint.Plugin.ProcessManager
                     }
                 }
 
-                if (contains)
+                if (!contains)
                 {
-                    var subtitle = string.IsNullOrEmpty(windowTitle) ? $"{process.ProcessName}.exe" : windowTitle;
-                    yield return new ProcessResult(process, processName, subtitle);
+                    return null;
                 }
+
+                var subtitle = string.IsNullOrEmpty(windowTitle) ? $"{process.ProcessName}.exe" : windowTitle;
+                return new ProcessResult(process, processName, subtitle);
             }
+
+            var tasks = new List<Task<ProcessResult>>();
+            foreach (var process in all)
+            {
+                tasks.Add(Task.Run(() => Collect(process), ct));
+            }
+
+            var taskResults = await Task.WhenAll(tasks);
+            results.AddRange(taskResults.Where(x => x != null));
+
+            return results;
+        }
+
+        private List<Process> GetAllProcesses()
+        {
+            if (DateTime.Now - _lastProcessDump < TimeSpan.FromSeconds(10))
+            {
+                return _cachedProcesses;
+            }
+
+            // Old results expired
+            var visited = new HashSet<string>();
+            var start = DateTime.Now;
+            var processes = Process.GetProcesses().Where(p => p.SessionId != 0 && visited.Add(p.ProcessName));
+
+            _lastProcessDump = DateTime.Now;
+            _cachedProcesses = processes.ToList();
+
+            return _cachedProcesses;
         }
     }
+
 
     public class ProcessResult : AbstractFontAwesomeQueryResult
     {
