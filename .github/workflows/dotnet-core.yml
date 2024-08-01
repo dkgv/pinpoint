@@ -7,11 +7,11 @@ on:
 
 jobs:
   create_release:
-    name: Create New Release
+    name: Create new release
     runs-on: windows-latest
     
     steps:
-      - name: Install 7Zip PowerShell Module
+      - name: Install 7Zip PowerShell module
         shell: powershell
         run: Install-Module 7Zip4PowerShell -Force
       
@@ -21,25 +21,25 @@ jobs:
           dotnet-version: '7.0.x'
       - uses: actions/checkout@v2
       
-      - name: Extract Tag Version
+      - name: Extract tag version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
         shell: bash
       
-      - name: Restore Packages
+      - name: Restore packages
         run: dotnet restore
       
-      - name: Build Artifacts
+      - name: Build artifacts
         run: |
           dotnet publish -c Release Pinpoint.Win/Pinpoint.Win.csproj -o ./a -r win-x64 --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true
           dotnet publish -c Release Pinpoint.Win/Pinpoint.Win.csproj -o ./b -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeAllContentForSelfExtract=true
       
-      - name: Zip Artifacts
+      - name: Zip artifacts
         run: |
           7z a -tzip Pinpoint-${{ steps.get_version.outputs.VERSION }}.zip ./a/Pinpoint.exe
           7z a -tzip Pinpoint-Standalone-${{ steps.get_version.outputs.VERSION }}.zip ./b/Pinpoint.exe
 
-      - name: Create GitHub Release
+      - name: Create GitHub release
         if: ${{ !env.ACT }}
         id: create_release
         uses: actions/create-release@latest
@@ -50,8 +50,19 @@ jobs:
           release_name: ${{ github.ref }}
           draft: false
           prerelease: true
-
-      - name: Upload Release Asset (self-contained)
+      
+      - name: Upload binary for checksum verification
+        if: ${{ !env.ACT }}
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./a/Pinpoint.exe
+          asset_name: Pinpoint-${{ steps.get_version.outputs.VERSION }}.exe
+          asset_content_type: application/octet-stream
+      
+      - name: Upload release asset (zip of self-contained)
         if: ${{ !env.ACT }}
         uses: actions/upload-release-asset@v1
         env:
@@ -62,7 +73,7 @@ jobs:
           asset_name: Pinpoint-Standalone-${{ steps.get_version.outputs.VERSION }}.zip
           asset_content_type: application/zip
       
-      - name: Upload Release Asset (not self-contained)
+      - name: Upload release asset (zip of not self-contained)
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -81,15 +92,29 @@ jobs:
         shell: bash
         run: |
           sed -i "s/<version>.*<\/version>/<version>${{ steps.get_version.outputs.VERSION }}<\/version>/g" Pinpoint.nuspec
+          sed -i "s/<packageSourceUrl>.*<\/packageSourceUrl>/<packageSourceUrl>https:\/\/github.com\/dkgv\/pinpoint\/releases\/tag\/${{ steps.get_version.outputs.VERSION }}<\/packageSourceUrl>/g" Pinpoint.nuspec
 
       - name: Create VERIFICATION file
         run: |
-          echo "If you wish to compare checksums, you have the option to compile Pinpoint yourself: https://github.com/dkgv/pinpoint" > VERIFICATION.txt
+          echo "In order to verify checksum contents please navigate to https://github.com/dkgv/pinpoint/releases/tag/${{ steps.get_version.outputs.VERSION }} and compare against the official Pinpoint-${{ steps.get_version.outputs.VERSION }}.exe file." > VERIFICATION.txt
 
       - name: Rename LICENSE to LICENSE.txt
         run: mv LICENSE LICENSE.txt
 
-      - name: Package and push to Chocolatey
+      - name: Create Chocolatey package
         run: |
           choco pack
+    
+      - name: Upload Chocolatey package to GitHub
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./Pinpoint.${{ steps.get_version.outputs.VERSION }}.nupkg
+          asset_name: Chocolatey.${{ steps.get_version.outputs.VERSION }}.nupkg
+          asset_content_type: application/zip
+      
+      - name: Publish Chocolatey package
+        run: |
           choco push Pinpoint.${{ steps.get_version.outputs.VERSION }}.nupkg --source https://push.chocolatey.org/

@@ -5,17 +5,20 @@
     <title>Pinpoint</title>
     <version>0.0.0</version>
     <authors>dkgv</authors>
-    <description>Pinpoint is a keystroke launcher</description>
-    <projectUrl>https://github.com/dkgv/pinpoint</projectUrl>
+    <owners>dkgv</owners>
+    <description>Pinpoint is a keystroke launcher and productivity tool for Windows (think Spotlight, Raycast, Alfred for macOS).</description>
+    <summary>Pinpoint is a keystroke launcher.</summary>
     <tags>keystroke-launcher clipboard-manager</tags>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <iconUrl>https://raw.githubusercontent.com/dkgv/pinpoint/master/Pinpoint.Win/Icons/Icon.ico</iconUrl>
+    <iconUrl>https://rawcdn.githack.com/dkgv/pinpoint/ed4473f85a4d6cf7dc2da6333a70f9f852c80c67/Pinpoint.Win/Icons/Icon.ico</iconUrl>
     <dependencies>
       <dependency id="dotnet-runtime" version="7.0.10" />
     </dependencies>
+    <projectUrl>https://github.com/dkgv/pinpoint</projectUrl>
     <licenseUrl>https://raw.githubusercontent.com/dkgv/pinpoint/master/LICENSE</licenseUrl>
     <projectSourceUrl>https://github.com/dkgv/pinpoint</projectSourceUrl>
-    <packageSourceUrl>https://github.com/dkgv/pinpoint</packageSourceUrl>
+    <bugTrackerUrl>https://github.com/dkgv/pinpoint/issues</bugTrackerUrl>
+    <packageSourceUrl></packageSourceUrl>
   </metadata>
   <files>
     <file src="a/**" />
