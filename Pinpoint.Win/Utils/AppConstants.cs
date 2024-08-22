@@ -16,5 +16,5 @@ public static class AppConstants
 
     public const string LocalPluginsDirectoryKey = "local_plugins_directory";
 
-    public const string Version = "0.4.6";
+    public const string Version = "0.4.7";
 }
