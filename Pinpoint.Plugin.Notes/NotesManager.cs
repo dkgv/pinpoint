@@ -10,7 +10,7 @@ namespace Pinpoint.Plugin.Notes
 {
     public class NotesManager
     {
-        private List<Note> _notesCached;
+        private List<Note> _notesCached = new();
         private readonly NotesPlugin _notes;
         private static NotesManager _instance;
 

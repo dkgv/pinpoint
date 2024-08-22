@@ -12,6 +12,7 @@ namespace Pinpoint.Plugin.Notes
             "notes", // List
             "note" // Create
         };
+
         private readonly NotesManager _notesManager;
 
         public NotesPlugin()
