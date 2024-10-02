@@ -14,7 +14,7 @@ namespace PinPoint.Plugin.Spotify
             "album", "artist", "episode", "play", "playlist", "show", "skip", "next", "prev", "back", "pause"
         };
         private readonly AuthenticationManager _authManager = new();
-        private readonly SpotifyClient _spotifyClient = SpotifyClient.GetInstance();
+        private SpotifyClient _spotifyClient;
         private bool _isAuthenticated;
 
         public override PluginManifest Manifest { get; } = new("Spotify Controller", PluginPriority.High)
@@ -24,12 +24,12 @@ namespace PinPoint.Plugin.Spotify
 
         public override Task<bool> Initialize()
         {
-            if (Storage.Internal.ContainsKey("refresh_token"))
+            if (Storage.Internal.TryGetValue("refresh_token", out object value))
             {
-                _isAuthenticated = !string.IsNullOrWhiteSpace(Storage.Internal["refresh_token"].ToString());
+                _isAuthenticated = !string.IsNullOrWhiteSpace(value.ToString());
             }
 
-            SpotifyClient.Plugin = this; // Dirty hack
+            _spotifyClient = new SpotifyClient(new SpotifyRefreshTokenClient(this));
 
             return Task.FromResult(_isAuthenticated);
         }
@@ -68,11 +68,11 @@ namespace PinPoint.Plugin.Spotify
             if (queryParts[0] == "skip" || queryParts[0] == "next" ||
                 queryParts[0] == "prev" || queryParts[0] == "back")
             {
-                yield return new ChangeTrackResult(queryParts[0]);
+                yield return new ChangeTrackResult(_spotifyClient, queryParts[0]);
                 yield break;
             }
 
-            yield return new PlayPauseResult();
+            yield return new PlayPauseResult(_spotifyClient);
 
             var isSearchQuery = queryParts.Length > 1 &&
                                 queryParts[1].Length > 3 &&
@@ -94,7 +94,7 @@ namespace PinPoint.Plugin.Spotify
 
             foreach (var searchResult in searchResults)
             {
-                yield return new SpotifySearchResult(searchResult.DisplayString, searchResult.Uri, searchResult.Type);
+                yield return new SpotifySearchResult(_spotifyClient, searchResult.DisplayString, searchResult.Uri, searchResult.Type);
             }
         }
 

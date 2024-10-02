@@ -6,12 +6,14 @@ namespace PinPoint.Plugin.Spotify
 {
     public class SpotifySearchResult : AbstractFontAwesomeQueryResult
     {
+        private readonly SpotifyClient _spotifyClient;
         private readonly string _type;
 
-        public SpotifySearchResult(string result, string uri, string type) : base(result, $"{char.ToUpper(type[0]) + type[1..]} on Spotify")
+        public SpotifySearchResult(SpotifyClient spotifyClient, string result, string uri, string type) : base(result, $"{char.ToUpper(type[0]) + type[1..]} on Spotify")
         {
+            _spotifyClient = spotifyClient;
             Uri = uri;
-            Options.Add(new QueueOption("Queue", uri));
+            Options.Add(new QueueOption(_spotifyClient, "Queue", uri));
             _type = type;
         }
 
@@ -21,33 +23,38 @@ namespace PinPoint.Plugin.Spotify
 
         public override async void OnSelect()
         {
-            if (!await SpotifyClient.GetInstance().IsCurrentlyPlaying())
+            if (!await _spotifyClient.IsCurrentlyPlaying())
             {
-                await SpotifyClient.GetInstance().PlayPauseCurrentTrack();
+                await _spotifyClient.PlayPauseCurrentTrack();
             }
-            _ = SpotifyClient.GetInstance().PlayItem(Uri);
+            _ = _spotifyClient.PlayItem(Uri);
         }
     }
 
     public class PausePlayResult : AbstractFontAwesomeQueryResult
     {
-        public PausePlayResult() : base("Play/pause current track")
-        {
+        private readonly SpotifyClient _spotifyClient;
 
+        public PausePlayResult(SpotifyClient spotifyClient) : base("Play/pause current track")
+        {
+            _spotifyClient = spotifyClient;
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Brands_Spotify;
 
         public override void OnSelect()
         {
-            _ = SpotifyClient.GetInstance().PlayPauseCurrentTrack();
+            _ = _spotifyClient.PlayPauseCurrentTrack();
         }
     }
 
     public class QueueOption : AbstractFontAwesomeQueryResult
     {
-        public QueueOption(string result, string uri) : base(result)
+        private readonly SpotifyClient _spotifyClient;
+
+        public QueueOption(SpotifyClient spotifyClient, string result, string uri) : base(result)
         {
+            _spotifyClient = spotifyClient;
             Uri = uri;
         }
 
@@ -55,7 +62,7 @@ namespace PinPoint.Plugin.Spotify
 
         public override void OnSelect()
         {
-            _ = SpotifyClient.GetInstance().QueueItem(Uri);
+            _ = _spotifyClient.QueueItem(Uri);
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Solid_List;
