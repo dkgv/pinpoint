@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using FontAwesome5;
 using Pinpoint.Core.Results;
@@ -9,14 +10,16 @@ namespace PinPoint.Plugin.Spotify
     {
         private readonly AuthenticationManager _authenticationManager;
         private readonly SpotifyClient _spotifyClient;
+        private readonly Action _onAuthenticated;
 
-        public UnauthenticatedResult(AuthenticationManager authenticationManager, SpotifyClient spotifyClient)
+        public UnauthenticatedResult(AuthenticationManager authenticationManager, SpotifyClient spotifyClient, Action onAuthenticated) : base("Not signed in to Spotify", "Select this option to sign in.")
         {
-            _authenticationManager = authenticationManager;    
+            _authenticationManager = authenticationManager;
             _spotifyClient = spotifyClient;
+            _onAuthenticated = onAuthenticated;
         }
 
-        public override EFontAwesomeIcon FontAwesomeIcon => throw new System.NotImplementedException();
+        public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Brands_Spotify;
 
         public override void OnSelect()
         {
@@ -25,6 +28,7 @@ namespace PinPoint.Plugin.Spotify
                 if (tokens?.access_token != null && tokens.refresh_token != null)
                 {
                     await _spotifyClient.InitializeClientWithTokens(tokens);
+                    _onAuthenticated();
                 }
             });
         }

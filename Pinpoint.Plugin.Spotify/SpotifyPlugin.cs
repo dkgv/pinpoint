@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,7 +19,6 @@ namespace PinPoint.Plugin.Spotify
         private SpotifyClient _spotifyClient;
         // TODO: Add event/callback so authentication manager can set _isAuthenticated 
         private bool _isAuthenticated;
-
         public override PluginManifest Manifest { get; } = new("Spotify Controller", PluginPriority.High)
         {
             Description = "Control any Spotify session without leaving your workflow. Requires sign-in on first use.\n\nExamples: \"album <name>\", \"artist <name>\", \"episode <name>\", \"play <name>\", \"playlist <name>\", \"show <name>\", \"skip\", \"next\", \"prev\", \"back\", \"pause\""
@@ -98,7 +98,7 @@ namespace PinPoint.Plugin.Spotify
         {
             if (!_isAuthenticated)
             {
-                return new UnauthenticatedResult(_authManager, _spotifyClient);
+                return new UnauthenticatedResult(_authManager, _spotifyClient, () => { _isAuthenticated = true; });
             }
             else
             {
