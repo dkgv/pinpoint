@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Pinpoint.Core.Results;
 using Pinpoint.Plugin;
 using Pinpoint.Plugin.Spotify.Client;
 
@@ -15,6 +16,7 @@ namespace PinPoint.Plugin.Spotify
         };
         private readonly AuthenticationManager _authManager = new();
         private SpotifyClient _spotifyClient;
+        // TODO: Add event/callback so authentication manager can set _isAuthenticated 
         private bool _isAuthenticated;
 
         public override PluginManifest Manifest { get; } = new("Spotify Controller", PluginPriority.High)
@@ -34,31 +36,13 @@ namespace PinPoint.Plugin.Spotify
             return Task.FromResult(_isAuthenticated);
         }
 
-        public override async Task<bool> ShouldActivate(Query query)
+        public override Task<bool> ShouldActivate(Query query)
         {
             var queryParts = query.Raw.Split(new[] { ' ' }, 2);
 
             var shouldActivate = queryParts.Length > 0 && _keywords.Contains(queryParts[0]);
 
-            switch (shouldActivate)
-            {
-                case false:
-                    return false;
-
-                case true when !_isAuthenticated:
-                    {
-                        var tokens = await _authManager.Authenticate();
-                        if (tokens?.access_token != null && tokens.refresh_token != null)
-                        {
-                            await _spotifyClient.InitializeClientWithTokens(tokens);
-                            _isAuthenticated = true;
-                        }
-
-                        break;
-                    }
-            }
-
-            return _isAuthenticated;
+            return Task.FromResult(shouldActivate);
         }
 
         public override async IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, [EnumeratorCancellation] CancellationToken ct)
@@ -68,11 +52,11 @@ namespace PinPoint.Plugin.Spotify
             if (queryParts[0] == "skip" || queryParts[0] == "next" ||
                 queryParts[0] == "prev" || queryParts[0] == "back")
             {
-                yield return new ChangeTrackResult(_spotifyClient, queryParts[0]);
+                yield return CreateResultOrUnauthenticated(new ChangeTrackResult(_spotifyClient, queryParts[0]));
                 yield break;
             }
 
-            yield return new PlayPauseResult(_spotifyClient);
+            yield return CreateResultOrUnauthenticated(new PlayPauseResult(_spotifyClient));
 
             var isSearchQuery = queryParts.Length > 1 &&
                                 queryParts[1].Length > 3 &&
@@ -94,7 +78,7 @@ namespace PinPoint.Plugin.Spotify
 
             foreach (var searchResult in searchResults)
             {
-                yield return new SpotifySearchResult(_spotifyClient, searchResult.DisplayString, searchResult.Uri, searchResult.Type);
+                yield return CreateResultOrUnauthenticated(new SpotifySearchResult(_spotifyClient, searchResult.DisplayString, searchResult.Uri, searchResult.Type));
             }
         }
 
@@ -107,6 +91,18 @@ namespace PinPoint.Plugin.Spotify
 
                 default:
                     return new[] { type };
+            }
+        }
+
+        private AbstractFontAwesomeQueryResult CreateResultOrUnauthenticated(AbstractFontAwesomeQueryResult result)
+        {
+            if (!_isAuthenticated)
+            {
+                return new UnauthenticatedResult(_authManager, _spotifyClient);
+            }
+            else
+            {
+                return result;
             }
         }
     }
