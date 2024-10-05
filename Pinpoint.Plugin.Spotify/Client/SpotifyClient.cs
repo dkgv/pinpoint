@@ -5,30 +5,28 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Pinpoint.Core;
 using PinPoint.Plugin.Spotify;
 
 namespace Pinpoint.Plugin.Spotify.Client
 {
     public class SpotifyClient : IDisposable
     {
-        private static SpotifyClient _instance;
-        public static AbstractPlugin Plugin;
         private static readonly HttpClient SpotifyHttpClient = new();
-        private string _accessToken;
         private const string SpotifyApiBaseUrl = "https://api.spotify.com/v1";
+        private readonly ISpotifyRefreshTokenClient _refreshTokenClient;
+        private string _accessToken;
 
-        public static SpotifyClient GetInstance()
+        public SpotifyClient(ISpotifyRefreshTokenClient refreshTokenClient)
         {
-            return _instance ??= new SpotifyClient();
+            _refreshTokenClient = refreshTokenClient;
         }
 
-        public async Task InitializeClientWithTokens(TokenResult tokens)
+        public Task InitializeClientWithTokens(TokenResult tokens)
         {
             _accessToken = tokens.access_token;
+            _refreshTokenClient.SaveRefreshToken(tokens.refresh_token);
 
-            Plugin.Storage.Internal["refresh_token"] = tokens.refresh_token;
-            Plugin.Save();
+            return Task.CompletedTask;
         }
 
         public async Task<List<SpotifyResultEntity>> Search(string query, params string[] itemTypes)
@@ -160,8 +158,8 @@ namespace Pinpoint.Plugin.Spotify.Client
 
         private async Task ExchangeRefreshToken()
         {
-            var refreshToken = Plugin.Storage.Internal["refresh_token"].ToString();
-
+            var refreshToken = _refreshTokenClient.GetRefreshToken();
+            
             var content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
                 { "grant_type", "refresh_token" },
@@ -186,8 +184,7 @@ namespace Pinpoint.Plugin.Spotify.Client
                 refreshToken = renewedTokens.refresh_token;
             }
 
-            Plugin.Storage.Internal["refresh_token"] = refreshToken;
-            Plugin.Save();
+            _refreshTokenClient.SaveRefreshToken(refreshToken);
         }
 
         public void Dispose()

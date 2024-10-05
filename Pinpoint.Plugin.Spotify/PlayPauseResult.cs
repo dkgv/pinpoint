@@ -6,10 +6,16 @@ namespace PinPoint.Plugin.Spotify
 {
     public class PlayPauseResult: AbstractFontAwesomeQueryResult
     {
-        public PlayPauseResult(): base("Play/pause current track") { }
+        private readonly SpotifyClient _spotifyClient;
+
+        public PlayPauseResult(SpotifyClient spotifyClient): base("Play/pause current track") 
+        { 
+            _spotifyClient = spotifyClient;
+        }
+
         public override void OnSelect()
         {
-            SpotifyClient.GetInstance().PlayPauseCurrentTrack();
+            _ = _spotifyClient.PlayPauseCurrentTrack();
         }
 
         public override EFontAwesomeIcon FontAwesomeIcon => EFontAwesomeIcon.Brands_Spotify;
