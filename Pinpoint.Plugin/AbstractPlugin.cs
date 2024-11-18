@@ -64,6 +64,17 @@ public abstract class AbstractPlugin : IComparable<AbstractPlugin>
 
     public void Save()
     {
+        var directory = Path.GetDirectoryName(FilePath);
+        if (directory == null)
+        {
+            return;
+        }
+
+        if (!Directory.Exists(directory))
+        {
+            Directory.CreateDirectory(directory);
+        }
+
         dynamic dump = new
         {
             State.IsEnabled,
@@ -72,6 +83,7 @@ public abstract class AbstractPlugin : IComparable<AbstractPlugin>
         var json = JsonConvert.SerializeObject(dump, Formatting.Indented);
         File.WriteAllText(FilePath, json);
     }
+
 
     public static readonly string MainDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + Path.DirectorySeparatorChar + "Pinpoint" + Path.DirectorySeparatorChar;
 
