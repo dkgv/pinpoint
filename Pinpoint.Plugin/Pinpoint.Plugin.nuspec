@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>Pinpoint.Plugin</id>
+    <version>0.0.1</version>
+    <title>$title$</title>
+    <authors>dkgv</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <description>Reference this to develop plugins for Pinpoint</description>
+  </metadata>
+</package>
