@@ -12,9 +12,9 @@ https://user-images.githubusercontent.com/11279580/227036269-3b8be90f-71b6-4fb9-
 ## Table of Contents
 
 - [Installation](#installation)
+- [Usage](#usage)
+- [Development](#development)
 - [Features](#features)
-- [Keyboard Shortcuts](#keyboard-shortcuts)
-- [Contributing](#contributing)
 
 ## Installation
 
@@ -28,6 +28,54 @@ https://user-images.githubusercontent.com/11279580/227036269-3b8be90f-71b6-4fb9-
 ```bash
 choco install pinpoint -y
 ```
+
+## Usage
+
+| Keyboard Shortcut                                                                                                                        | Action                                       |
+| -------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| <kbd>ALT</kbd>+<kbd>SPACE</kbd>                                                                                                        | Open/close query box                         |
+| <kbd>ESC</kbd>                                                                                                                         | Close query box if empty                     |
+| <kbd>Enter</kbd>                                                                                                                       | Execute selected query result                |
+| <kbd>ALT</kbd>+<kbd>ENTER</kbd>                                                                                                        | Open primary option of selected query result |
+| <kbd>↑</kbd>,<kbd>↓</kbd>                                                                                                              | Select item above or below                   |
+| <kbd>CTRL</kbd>+<kbd>,</kbd>                                                                                                           | Open settings panel                          |
+| <kbd>CTRL</kbd>+<kbd>L</kbd>                                                                                                           | Focus query box and its contents             |
+| <kbd>CTRL</kbd>+[<kbd>1</kbd>,<kbd>2</kbd>,<kbd>3</kbd>,<kbd>4</kbd>,<kbd>5</kbd>,<kbd>6</kbd>,<kbd>7</kbd>,<kbd>8</kbd>,<kbd>9</kbd>] | Quick open result                            |
+| <kbd>ALT</kbd>+[<kbd>1</kbd>,<kbd>2</kbd>,<kbd>3</kbd>,<kbd>4</kbd>,<kbd>5</kbd>,<kbd>6</kbd>,<kbd>7</kbd>,<kbd>8</kbd>,<kbd>9</kbd>]  | Quick open options of result                 |
+| <kbd>ALT</kbd>/<kbd>ESC</kbd>                                                                                                          | View result options / go back                |
+| <kbd>TAB</kbd>                                                                                                                         | Auto-complete query according to results     |
+| <kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>V</kbd>                                                                                            | Paste an entry from your clipboard history   |
+
+## Development
+
+### Plugins
+To develop your own local plugins, reference [Pinpoint.Plugin](https://www.nuget.org/packages/Pinpoint.Plugin) via NuGet and implement their capabilities. Example:
+
+```csharp
+using Pinpoint.Plugin;
+
+namespace SamplePlugin;
+
+public class SamplePlugin : AbstractPlugin
+{
+    public override PluginManifest Manifest => throw new NotImplementedException();
+
+    public override IAsyncEnumerable<AbstractQueryResult> ProcessQuery(Query query, CancellationToken ct)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override Task<bool> ShouldActivate(Query query)
+    {
+        throw new NotImplementedException();
+    }
+}
+```
+
+To use your plugin with Pinpoint, specify the path to its build directory in the settings UI.
+
+### Core
+Feel free to add or improve features, for inspiration [browse current open issues](https://github.com/dkgv/pinpoint/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc). Please create one branch + PR per major change you make🙏
 
 ## Features
 
@@ -150,24 +198,3 @@ Fetches weather forecasts (daily and weekly) for provided locations.
 ### Window switcher
 
 Search and switch between open windows.
-
-## Keyboard Shortcuts
-
-| Key Combination                                                                                                                        | Action                                       |
-| -------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| <kbd>ALT</kbd>+<kbd>SPACE</kbd>                                                                                                        | Open/close query box                         |
-| <kbd>ESC</kbd>                                                                                                                         | Close query box if empty                     |
-| <kbd>Enter</kbd>                                                                                                                       | Execute selected query result                |
-| <kbd>ALT</kbd>+<kbd>ENTER</kbd>                                                                                                        | Open primary option of selected query result |
-| <kbd>↑</kbd>,<kbd>↓</kbd>                                                                                                              | Select item above or below                   |
-| <kbd>CTRL</kbd>+<kbd>,</kbd>                                                                                                           | Open settings panel                          |
-| <kbd>CTRL</kbd>+<kbd>L</kbd>                                                                                                           | Focus query box and its contents             |
-| <kbd>CTRL</kbd>+[<kbd>1</kbd>,<kbd>2</kbd>,<kbd>3</kbd>,<kbd>4</kbd>,<kbd>5</kbd>,<kbd>6</kbd>,<kbd>7</kbd>,<kbd>8</kbd>,<kbd>9</kbd>] | Quick open result `n`                        |
-| <kbd>ALT</kbd>+[<kbd>1</kbd>,<kbd>2</kbd>,<kbd>3</kbd>,<kbd>4</kbd>,<kbd>5</kbd>,<kbd>6</kbd>,<kbd>7</kbd>,<kbd>8</kbd>,<kbd>9</kbd>]  | Quick open options of result `n`             |
-| <kbd>ALT</kbd>/<kbd>ESC</kbd>                                                                                                          | View result options / go back                |
-| <kbd>TAB</kbd>                                                                                                                         | Auto-complete query according to results     |
-| <kbd>CTRL</kbd>+<kbd>ALT</kbd>+<kbd>V</kbd>                                                                                            | Paste an entry from your clipboard history   |
-
-## Contributing
-
-Feel free to add or improve features, for inspiration [browse current open issues](https://github.com/dkgv/pinpoint/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc). Please create one branch + PR per major change you make🙏
