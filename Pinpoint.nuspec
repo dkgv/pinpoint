@@ -18,7 +18,7 @@
     <licenseUrl>https://raw.githubusercontent.com/dkgv/pinpoint/master/LICENSE</licenseUrl>
     <projectSourceUrl>https://github.com/dkgv/pinpoint</projectSourceUrl>
     <bugTrackerUrl>https://github.com/dkgv/pinpoint/issues</bugTrackerUrl>
-    <packageSourceUrl></packageSourceUrl>
+    <packageSourceUrl>https://github.com/dkgv/pinpoint</packageSourceUrl>
   </metadata>
   <files>
     <file src="a/**" />
