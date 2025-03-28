@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net9.0-windows</TargetFramework>
     <AssemblyName>Pinpoint.Core</AssemblyName>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
