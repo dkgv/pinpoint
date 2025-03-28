@@ -12,15 +12,22 @@ namespace Pinpoint.Core
         {
             try
             {
-                var response = await HttpClient.GetStringAsync(url);
-                return string.IsNullOrEmpty(response) ? default : parse(response);
+                var request = new HttpRequestMessage(HttpMethod.Get, url)
+                {
+                    Headers = {
+                        { "User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36" }
+                    }
+                };
+
+                var response = await HttpClient.SendAsync(request);
+                return !response.IsSuccessStatusCode ? default : parse(await response.Content.ReadAsStringAsync());
             }
             catch (HttpRequestException)
             {
                 return default;
             }
         }
-        
+
         public static async Task<T> SendPost<T>(string url, HttpContent content, Func<HttpResponseMessage, T> parse)
         {
             try
