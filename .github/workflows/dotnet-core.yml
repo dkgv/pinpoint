@@ -16,9 +16,10 @@ jobs:
         run: Install-Module 7Zip4PowerShell -Force
       
       - name: Setup .NET SDK
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '7.0.x'
+          dotnet-version: '9.0.x'
+
       - uses: actions/checkout@v2
       
       - name: Extract tag version
